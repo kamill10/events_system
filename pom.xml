@@ -32,6 +32,10 @@
             <name>Kamil Cieślak</name>
             <id>242369</id>
         </developer>
+        <developer>
+            <name>Adam Przybylski</name>
+            <id>242506</id>
+        </developer>
     </developers>
 
     <properties>
