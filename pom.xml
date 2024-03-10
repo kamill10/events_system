@@ -12,7 +12,10 @@
     <name>ssbd01</name>
 
     <developers>
-
+        <developer>
+            <name>Piotr Płeska</name>
+            <id>242499</id>
+        </developer>
     </developers>
 
     <properties>
