@@ -24,6 +24,10 @@
             <name>Kamil Maciocha</name>
             <id>242461</id>
         </developer>
+        <developer>
+            <name>Maciej Wilczyński</name>
+            <id>242560</id>
+        </developer>
     </developers>
 
     <properties>
