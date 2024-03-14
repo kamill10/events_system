@@ -36,6 +36,10 @@
             <name>Adam Przybylski</name>
             <id>242506</id>
         </developer>
+        <developer>
+            <name>Wojciech Kulesza</name>
+            <id>224350</id>
+        </developer>
     </developers>
 
     <properties>
