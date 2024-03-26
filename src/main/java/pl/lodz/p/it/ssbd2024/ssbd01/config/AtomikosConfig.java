@@ -8,9 +8,6 @@ import jakarta.transaction.UserTransaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.orm.jpa.JpaVendorAdapter;
-import org.springframework.orm.jpa.vendor.Database;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
@@ -18,14 +15,6 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 @Configuration
 @EnableTransactionManagement
 public class AtomikosConfig {
-
-    @Bean(name = "jpaVendorAdapter")
-    public JpaVendorAdapter jpaVendorAdapter() {
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setDatabase(Database.POSTGRESQL);
-        vendorAdapter.setGenerateDdl(false);
-        return vendorAdapter;
-    }
 
     @Bean(name = "userTransaction")
     public UserTransaction userTransaction() throws Throwable {

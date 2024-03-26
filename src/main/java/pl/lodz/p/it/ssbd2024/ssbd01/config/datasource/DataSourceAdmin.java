@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.config;
+package pl.lodz.p.it.ssbd2024.ssbd01.config.datasource;
 
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import java.util.HashMap;
@@ -20,10 +19,9 @@ public class DataSourceAdmin {
 
     private final Environment env;
 
-    private final JpaVendorAdapter jpaVendorAdapter;
-
     public Map<String, String> jpaProperties() {
         Map<String, String> jpaProperties = new HashMap<>();
+        jpaProperties.put("jakarta.persistence.exclude-unlisted-classes", "false");
         jpaProperties.put("jakarta.persistence.schema-generation.database.action", "drop-and-create");
         jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         jpaProperties.put("hibernate.show_sql", "true");
@@ -53,10 +51,10 @@ public class DataSourceAdmin {
         dataSource.setDefaultTransactionIsolation(2);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setJtaDataSource(dataSource);
         em.setPersistenceUnitName("ssbd01admin");
+        em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
+        em.setJtaDataSource(dataSource);
         em.setPackagesToScan("pl.lodz.p.it.ssbd2024.ssbd01.mok.entity");
-        em.setJpaVendorAdapter(jpaVendorAdapter);
         em.setJpaPropertyMap(jpaProperties());
         em.afterPropertiesSet();
         return em.getObject();

@@ -4,6 +4,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({DataSourceAdmin.class, AtomikosConfig.class})
+@Import({DataSourceConfig.class, AtomikosConfig.class})
 public class RootConfig {
 }
