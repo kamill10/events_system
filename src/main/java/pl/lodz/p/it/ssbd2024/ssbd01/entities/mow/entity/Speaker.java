@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
-import java.util.UUID;
-
 @Data
 @Entity
 public class Speaker extends AbstractEntity {

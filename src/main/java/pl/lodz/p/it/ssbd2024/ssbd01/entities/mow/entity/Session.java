@@ -5,7 +5,6 @@ import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Entity
