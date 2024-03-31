@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "account")
 @SecondaryTable(name = "personal_data", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"))
-public class Account extends ControlledEntity implements UserDetails {
+public class Account extends AbstractEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

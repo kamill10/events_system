@@ -5,13 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.util.UUID;
 
 @Data
 @Entity
-public class Room extends ControlledEntity {
+public class Room extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

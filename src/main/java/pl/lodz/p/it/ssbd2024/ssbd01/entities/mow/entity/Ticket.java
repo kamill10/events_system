@@ -3,14 +3,14 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.entity.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Entity
-public class Ticket extends ControlledEntity {
+public class Ticket extends AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
