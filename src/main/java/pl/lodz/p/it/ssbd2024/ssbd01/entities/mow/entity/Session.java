@@ -10,17 +10,20 @@ import java.util.UUID;
 @Data
 @Entity
 public class Session extends AbstractEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+
     @OneToOne
+    @Column(nullable = false)
     private Room room;
     @ManyToOne
+    @Column(nullable = false)
     private Speaker speaker;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Boolean isActive;
     private String description;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    @Column(nullable = false, length = 4)
     private Integer maxSeats;
 }

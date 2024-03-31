@@ -11,14 +11,15 @@ import java.util.UUID;
 @Data
 @Entity
 public class Ticket extends AbstractEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private LocalDateTime reservationTime;
+
     @OneToOne
+    @Column(nullable = false)
     private Account account;
     @OneToOne
+    @Column(nullable = false)
     private Session session;
+    @Column(nullable = false)
     private Boolean isConfirmed;
+    private LocalDateTime reservationTime;
 
 }
