@@ -21,17 +21,11 @@ import java.util.UUID;
 @SecondaryTable(name = "personal_data", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"))
 public class Account extends AbstractEntity implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Setter(AccessLevel.NONE)
-    @Column(name = "id", columnDefinition = "UUID", updatable = false)
-    private UUID id;
-
-    @Setter(AccessLevel.NONE)
-    @Column(unique = true, updatable = false, nullable = false)
+    @Column(unique = true, updatable = false, nullable = false, length = 32)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 64)
     @ToString.Exclude
     private String password;
 
@@ -43,22 +37,22 @@ public class Account extends AbstractEntity implements UserDetails {
 
     private LocalDateTime lastFailedLogin;
 
-    @Column(name = "active", nullable = false)
-    private Boolean active = true;
+    @Column(nullable = false)
+    private Boolean active;
 
-    @Column(name = "verified", nullable = false)
-    private Boolean verified = false;
+    @Column(nullable = false)
+    private Boolean verified;
 
-    @Column(name = "email", table = "personal_data", unique = true, nullable = false)
+    @Column(table = "personal_data",nullable = false, unique = true)
     private String email;
 
-    @Column(name = "gender", table = "personal_data")
+    @Column(table = "personal_data",nullable = false, length = 1)
     private Integer gender;
 
-    @Column(name = "first_name", table = "personal_data")
+    @Column(table = "personal_data",nullable = false, length = 32)
     private String firstName;
 
-    @Column(name = "last_name", table = "personal_data")
+    @Column(table = "personal_data",nullable = false, length = 64)
     private String lastName;
 
     @Override
