@@ -56,7 +56,7 @@ public class DataSourceMow {
         em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
         em.setJtaDataSource(dataSource);
         em.setPackagesToScan(
-                "pl.lodz.p.it.ssbd2024"
+                "pl.lodz.p.it.ssbd2024.ssbd01.entities"
         );
         em.setJpaPropertyMap(jpaProperties());
         em.afterPropertiesSet();

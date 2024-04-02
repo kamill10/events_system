@@ -18,7 +18,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 /*@EnableJpaRepositories(
         basePackages = "pl.lodz.p.it.ssbd2024.ssbd01.repositories.mok",
-        entityManagerFactoryRef = "mokEntityManagerFactory",
+        entityManagerFactoryRef = "adminEntityManagerFactory",
         transactionManagerRef = "transactionManager"
 )*/
 public class DataSourceAdmin {
@@ -28,17 +28,17 @@ public class DataSourceAdmin {
     public Map<String, String> jpaProperties() {
         Map<String, String> jpaProperties = new HashMap<>();
         jpaProperties.put("jakarta.persistence.exclude-unlisted-classes", "false");
-        jpaProperties.put("jakarta.persistence.schema-generation.database.action", "drop-and-create");
+        jpaProperties.put("jakarta.persistence.schema-generation.database.action", "update");
         jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         jpaProperties.put("hibernate.show_sql", "true");
         jpaProperties.put("hibernate.temp.use_jdbc_metadata_defaults", "false");
         jpaProperties.put("jakarta.persistence.transactionType", "JTA");
-//        jpaProperties.put("jakarta.persistence.sql-load-script-source", "sql/init.sql");
+        jpaProperties.put("jakarta.persistence.sql-load-script-source", "sql/init.sql");
 
         return jpaProperties;
     }
 
-    @Bean(name = "mokEntityManagerFactory")
+    @Bean(name = "adminEntityManagerFactory")
     public EntityManagerFactory entityManagerFactory() {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         dataSource.setUrl(env.getProperty("jdbc.url"));
@@ -61,7 +61,7 @@ public class DataSourceAdmin {
         em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
         em.setJtaDataSource(dataSource);
         em.setPackagesToScan(
-                "pl.lodz.p.it.ssbd2024.ssbd01"
+                "pl.lodz.p.it.ssbd2024.ssbd01.entities"
                 );
         em.setJpaPropertyMap(jpaProperties());
         em.afterPropertiesSet();

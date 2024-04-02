@@ -35,7 +35,12 @@ public class Account extends ControlledEntity implements UserDetails {
     @ToString.Exclude
     private String password;
 
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "account_role",
+            joinColumns = { @JoinColumn(name = "account_id") },
+            inverseJoinColumns = { @JoinColumn(name = "roles_id") }
+    )
     @ToString.Exclude
     private List<Role> roles;
 
