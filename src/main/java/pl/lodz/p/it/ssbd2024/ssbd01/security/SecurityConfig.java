@@ -42,8 +42,8 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> {
                     requests
-                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/auth/**")).permitAll()
-                            .anyRequest().authenticated();
+                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/auth/**")).permitAll();
+
                 });
         return http.build();
     }

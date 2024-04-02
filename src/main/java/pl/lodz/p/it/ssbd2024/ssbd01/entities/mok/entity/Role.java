@@ -22,6 +22,10 @@ public class Role {
     @Column(nullable = false, unique = true, updatable = false)
     private String name;
 
+    public Role(String name) {
+        this.name = name;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

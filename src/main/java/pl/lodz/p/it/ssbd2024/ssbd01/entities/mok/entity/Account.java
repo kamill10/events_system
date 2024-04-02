@@ -36,11 +36,6 @@ public class Account extends ControlledEntity implements UserDetails {
     private String password;
 
     @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "account_role",
-            joinColumns = { @JoinColumn(name = "account_id") },
-            inverseJoinColumns = { @JoinColumn(name = "roles_id") }
-    )
     @ToString.Exclude
     private List<Role> roles;
 
@@ -113,7 +108,9 @@ public class Account extends ControlledEntity implements UserDetails {
         this.gender = gender;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.roles = List.of(new Role(UUID.randomUUID(),"ROLE_USER"));
+    }
+    public void addRole(Role role ){
+        roles.add(role);
     }
 
 }
