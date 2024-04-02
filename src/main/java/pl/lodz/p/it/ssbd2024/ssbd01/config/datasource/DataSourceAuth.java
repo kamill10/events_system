@@ -56,7 +56,9 @@ public class DataSourceAuth {
         em.setPersistenceUnitName("ssbd01auth");
         em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
         em.setJtaDataSource(dataSource);
-        em.setPackagesToScan("pl.lodz.p.it.ssbd2024.ssbd01.mok.entity");
+        em.setPackagesToScan(
+                "pl.lodz.p.it.ssbd2024"
+        );
         em.setJpaPropertyMap(jpaProperties());
         em.afterPropertiesSet();
         return em.getObject();

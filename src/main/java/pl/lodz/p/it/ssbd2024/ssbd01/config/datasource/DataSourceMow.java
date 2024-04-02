@@ -55,7 +55,9 @@ public class DataSourceMow {
         em.setPersistenceUnitName("ssbd01mow");
         em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
         em.setJtaDataSource(dataSource);
-        em.setPackagesToScan("pl.lodz.p.it.ssbd2024.ssbd01.mow.entity");
+        em.setPackagesToScan(
+                "pl.lodz.p.it.ssbd2024"
+        );
         em.setJpaPropertyMap(jpaProperties());
         em.afterPropertiesSet();
         return em.getObject();

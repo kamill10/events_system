@@ -108,5 +108,7 @@ public class Account extends ControlledEntity implements UserDetails {
         this.gender = gender;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.roles = List.of(new Role(UUID.randomUUID(),"ROLE_USER"));
     }
+
 }

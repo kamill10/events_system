@@ -6,13 +6,17 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.RootConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.security.ApplicationConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.security.JwtAuthFilter;
+import pl.lodz.p.it.ssbd2024.ssbd01.security.JwtService;
+import pl.lodz.p.it.ssbd2024.ssbd01.security.SecurityConfig;
 
 import java.nio.charset.StandardCharsets;
 
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{RootConfig.class};
+        return new Class[]{RootConfig.class, ApplicationConfig.class, JwtService.class, JwtAuthFilter.class, SecurityConfig.class};
     }
 
     @Override
