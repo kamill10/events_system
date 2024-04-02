@@ -2,25 +2,27 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Entity
-public class Session extends ControlledEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class Session extends AbstractEntity {
+
     @OneToOne
+    @Column(nullable = false)
     private Room room;
     @ManyToOne
+    @Column(nullable = false)
     private Speaker speaker;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private Boolean isActive;
     private String description;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    @Column(nullable = false, length = 4)
     private Integer maxSeats;
 }

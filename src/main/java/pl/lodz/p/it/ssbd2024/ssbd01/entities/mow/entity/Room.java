@@ -1,20 +1,15 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
-
-import java.util.UUID;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 @Data
 @Entity
-public class Room extends ControlledEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class Room extends AbstractEntity {
+
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false, length = 4)
     private Integer maxCapacity;
 }
