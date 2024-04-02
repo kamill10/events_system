@@ -2,22 +2,19 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
-
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Entity
-public class Event extends ControlledEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+public class Event extends AbstractEntity {
 
+    @Column(nullable = false)
     private String name;
 
     private String description;
 
+    @Column(nullable = false)
     private Boolean isActive;
 
     @OneToMany(cascade = CascadeType.ALL)
