@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 public class Ticket extends AbstractEntity {
 
     @OneToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Account account;
     @OneToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Session session;
     @Column(nullable = false)
     private Boolean isConfirmed;

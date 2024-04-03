@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 public class Session extends AbstractEntity {
 
     @OneToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Room room;
     @ManyToOne
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     private Speaker speaker;
     @Column(nullable = false)
     private String name;

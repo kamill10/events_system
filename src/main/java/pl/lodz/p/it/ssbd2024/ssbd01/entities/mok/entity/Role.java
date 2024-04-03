@@ -19,6 +19,7 @@ public class Role extends AbstractEntity {
     @Column(nullable = false, unique = true, updatable = false, length = 32)
     private String name;
 
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

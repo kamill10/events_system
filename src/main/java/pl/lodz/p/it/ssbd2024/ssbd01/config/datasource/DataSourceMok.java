@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import java.util.HashMap;
@@ -15,11 +16,11 @@ import java.util.Objects;
 
 @Configuration
 @PropertySource("classpath:data-access.properties")
-//@EnableJpaRepositories(
-//        basePackages = "com.example.mok.repository",
-//        entityManagerFactoryRef = "mokEntityManagerFactory",
-//        transactionManagerRef = "transactionManager"
-//)
+@EnableJpaRepositories(
+        basePackages = "pl.lodz.p.it.ssbd2024.ssbd01.repositories.mok",
+        entityManagerFactoryRef = "mokEntityManagerFactory",
+        transactionManagerRef = "transactionManager"
+)
 @RequiredArgsConstructor
 public class DataSourceMok {
 
@@ -56,7 +57,9 @@ public class DataSourceMok {
         em.setPersistenceUnitName("ssbd01mok");
         em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
         em.setJtaDataSource(dataSource);
-        em.setPackagesToScan("pl.lodz.p.it.ssbd2024.ssbd01.mok.entity");
+        em.setPackagesToScan(
+                "pl.lodz.p.it.ssbd2024.ssbd01.entities"
+        );
         em.setJpaPropertyMap(jpaProperties());
         em.afterPropertiesSet();
         return em.getObject();

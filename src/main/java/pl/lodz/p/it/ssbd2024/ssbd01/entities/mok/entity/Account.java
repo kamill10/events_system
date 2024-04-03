@@ -18,7 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "account")
-@SecondaryTable(name = "personal_data", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id"))
+//@SecondaryTable(name = "personal_data", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id"))
 public class Account extends AbstractEntity implements UserDetails {
 
     @Setter(AccessLevel.NONE)
@@ -29,7 +29,7 @@ public class Account extends AbstractEntity implements UserDetails {
     @ToString.Exclude
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @ToString.Exclude
     private List<Role> roles;
 
@@ -43,17 +43,22 @@ public class Account extends AbstractEntity implements UserDetails {
     @Column(nullable = false)
     private Boolean verified;
 
-    @Column(table = "personal_data",nullable = false, unique = true)
+    //    @Column(name = "email", table = "personal_data")
+    @Column(nullable = false,unique = true)
     private String email;
 
-    @Column(table = "personal_data",nullable = false, length = 1)
+    //    @Column(table = "personal_data")
+    @Column(nullable = false,length = 1)
     private Integer gender;
 
-    @Column(table = "personal_data",nullable = false, length = 32)
+    //    @Column(table = "personal_data")
+    @Column(nullable = false,length = 32)
     private String firstName;
 
-    @Column(table = "personal_data",nullable = false, length = 64)
+    //    @Column(table = "personal_data")
+    @Column(nullable = false,length = 64)
     private String lastName;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -102,5 +107,12 @@ public class Account extends AbstractEntity implements UserDetails {
         this.gender = gender;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.active = true;
+        this.verified = false;
     }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
 }
