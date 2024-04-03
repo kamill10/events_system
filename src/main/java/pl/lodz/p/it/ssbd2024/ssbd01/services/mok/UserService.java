@@ -25,14 +25,14 @@ public class UserService {
     }
     @Transactional
     public Account addUser(Account account) {
-        //user get the role CLIENT on the start,toCHANGE
-        //if role CLIENT not exist, create it
-        if(roleRepository.findByName("CLIENT") == null) {
-            Role role = new Role("CLIENT");
+        //user get the role GUEST on the start,toCHANGE
+        //if role guest not exist, create it
+        if(roleRepository.findByName("GUEST") == null) {
+            Role role = new Role("GUEST");
             roleRepository.save(role);
         }
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        account.setRoles(List.of(roleRepository.findByName("CLIENT")));
+        account.setRoles(List.of(roleRepository.findByName("GUEST")));
         return userRepository.save(account);
     }
 
