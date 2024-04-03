@@ -44,19 +44,19 @@ public class Account extends AbstractEntity implements UserDetails {
     private Boolean verified;
 
     //    @Column(name = "email", table = "personal_data")
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String email;
 
     //    @Column(table = "personal_data")
-    @Column(nullable = false)
+    @Column(nullable = false,length = 1)
     private Integer gender;
 
     //    @Column(table = "personal_data")
-    @Column(nullable = false)
+    @Column(nullable = false,length = 32)
     private String firstName;
 
     //    @Column(table = "personal_data")
-    @Column(nullable = false)
+    @Column(nullable = false,length = 64)
     private String lastName;
 
 
