@@ -19,5 +19,5 @@ public abstract class AbstractEntity {
     private UUID id;
 
     @Version
-    private BigInteger version;
+    private Integer version;
 }
