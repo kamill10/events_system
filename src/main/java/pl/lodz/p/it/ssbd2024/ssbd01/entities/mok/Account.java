@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.entity;
+package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter

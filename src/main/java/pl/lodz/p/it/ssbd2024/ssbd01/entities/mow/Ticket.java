@@ -1,8 +1,8 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow.entity;
+package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.entity.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;

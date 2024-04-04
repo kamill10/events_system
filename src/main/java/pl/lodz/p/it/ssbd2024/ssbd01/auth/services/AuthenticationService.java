@@ -1,15 +1,15 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.services.mauth;
+package pl.lodz.p.it.ssbd2024.ssbd01.auth.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.entity.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.repositories.mok.UserRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.UserRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.request.mauth.LoginRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.request.mauth.RegisterUserRequest;
-import pl.lodz.p.it.ssbd2024.ssbd01.security.JwtService;
-import pl.lodz.p.it.ssbd2024.ssbd01.services.mok.UserService;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.UserService;
 
 @Service
 @RequiredArgsConstructor

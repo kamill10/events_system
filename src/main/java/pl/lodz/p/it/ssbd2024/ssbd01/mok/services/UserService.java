@@ -1,18 +1,15 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.services.mok;
+package pl.lodz.p.it.ssbd2024.ssbd01.mok.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.entity.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.entity.Role;
-import pl.lodz.p.it.ssbd2024.ssbd01.repositories.mok.RoleRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.repositories.mok.UserRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Role;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.RoleRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

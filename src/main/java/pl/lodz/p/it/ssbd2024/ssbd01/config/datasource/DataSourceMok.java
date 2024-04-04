@@ -17,7 +17,7 @@ import java.util.Objects;
 @Configuration
 @PropertySource("classpath:data-access.properties")
 @EnableJpaRepositories(
-        basePackages = "pl.lodz.p.it.ssbd2024.ssbd01.repositories.mok",
+        basePackages = "pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories",
         entityManagerFactoryRef = "mokEntityManagerFactory",
         transactionManagerRef = "transactionManager"
 )
@@ -58,7 +58,7 @@ public class DataSourceMok {
         em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
         em.setJtaDataSource(dataSource);
         em.setPackagesToScan(
-                "pl.lodz.p.it.ssbd2024.ssbd01.entities"
+                "pl.lodz.p.it.ssbd2024.ssbd01.entities.mok"
         );
         em.setJpaPropertyMap(jpaProperties());
         em.afterPropertiesSet();

@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.controllers.mauth;
+package pl.lodz.p.it.ssbd2024.ssbd01.auth.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.p.it.ssbd2024.ssbd01.request.mauth.LoginRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.request.mauth.RegisterUserRequest;
-import pl.lodz.p.it.ssbd2024.ssbd01.services.mauth.AuthenticationService;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.services.AuthenticationService;
 
 @RestController
 @RequestMapping("api/auth")

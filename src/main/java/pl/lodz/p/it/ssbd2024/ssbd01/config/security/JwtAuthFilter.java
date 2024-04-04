@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.security;
+package pl.lodz.p.it.ssbd2024.ssbd01.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

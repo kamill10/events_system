@@ -1,6 +1,5 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.security;
+package pl.lodz.p.it.ssbd2024.ssbd01.config.security;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.it.ssbd2024.ssbd01.repositories.mok.UserRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.UserRepository;
 
 @Configuration
 public class ApplicationConfig {

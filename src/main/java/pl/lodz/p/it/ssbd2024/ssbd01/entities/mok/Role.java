@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.entity;
+package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
-
-import java.util.UUID;
 
 @ToString
 @Getter

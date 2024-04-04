@@ -1,7 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.converters.mok;
 
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.AccountDto;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.entity.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.dto.AccountDto;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 
 import java.util.List;
 
