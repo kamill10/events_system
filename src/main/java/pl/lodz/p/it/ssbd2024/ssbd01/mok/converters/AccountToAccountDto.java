@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.converters.mok;
+package pl.lodz.p.it.ssbd2024.ssbd01.mok.converters;
 
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.dto.AccountDto;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;

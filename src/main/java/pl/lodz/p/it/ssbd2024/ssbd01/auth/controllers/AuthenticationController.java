@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lodz.p.it.ssbd2024.ssbd01.request.mauth.LoginRequest;
-import pl.lodz.p.it.ssbd2024.ssbd01.request.mauth.RegisterUserRequest;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.dto.LoginRequest;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.dto.RegisterUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.services.AuthenticationService;
 
 @RestController

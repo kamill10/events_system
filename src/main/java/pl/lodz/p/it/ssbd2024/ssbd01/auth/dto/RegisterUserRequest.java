@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.request.mauth;
+package pl.lodz.p.it.ssbd2024.ssbd01.auth.dto;
 
 import lombok.Getter;
 import lombok.Setter;
