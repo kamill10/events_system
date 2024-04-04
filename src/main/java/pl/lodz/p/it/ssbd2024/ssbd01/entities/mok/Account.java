@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,14 +25,19 @@ public class Account extends AbstractEntity implements UserDetails {
 
     @Setter(AccessLevel.NONE)
     @Column(unique = true, updatable = false, nullable = false, length = 32)
+    @Size(min = 3, max=32)
+    @NotNull
     private String username;
 
     @Column(nullable = false, length = 64)
+    @Size(min =64, max=64)
     @ToString.Exclude
+    @NotNull
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @ToString.Exclude
+    @NotNull
     private List<Role> roles;
 
     private LocalDateTime lastSuccessfulLogin;
@@ -37,25 +45,34 @@ public class Account extends AbstractEntity implements UserDetails {
     private LocalDateTime lastFailedLogin;
 
     @Column(nullable = false)
+    @NotNull
     private Boolean active;
 
     @Column(nullable = false)
+    @NotNull
     private Boolean verified;
 
     //    @Column(name = "email", table = "personal_data")
     @Column(nullable = false,unique = true)
+    @Email
+    @NotNull
     private String email;
 
     //    @Column(table = "personal_data")
     @Column(nullable = false,length = 1)
+    @NotNull
     private Integer gender;
 
     //    @Column(table = "personal_data")
     @Column(nullable = false,length = 32)
+    @NotNull
+    @Size(min = 2, max = 32)
     private String firstName;
 
     //    @Column(table = "personal_data")
     @Column(nullable = false,length = 64)
+    @NotNull
+    @Size(min = 2, max = 64)
     private String lastName;
 
 
