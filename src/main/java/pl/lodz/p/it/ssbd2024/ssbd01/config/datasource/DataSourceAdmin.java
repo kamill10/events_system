@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class DataSourceAdmin {
     public Map<String, String> jpaProperties() {
         Map<String, String> jpaProperties = new HashMap<>();
         jpaProperties.put("jakarta.persistence.exclude-unlisted-classes", "false");
-        jpaProperties.put("jakarta.persistence.schema-generation.database.action", "update");
+        jpaProperties.put("jakarta.persistence.schema-generation.database.action", "drop-and-create");
         jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         jpaProperties.put("hibernate.show_sql", "true");
         jpaProperties.put("hibernate.temp.use_jdbc_metadata_defaults", "false");
