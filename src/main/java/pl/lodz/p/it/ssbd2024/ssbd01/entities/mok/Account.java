@@ -1,9 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,19 +27,21 @@ public class Account extends AbstractEntity implements UserDetails {
     @NotNull
     private String username;
 
+    @ToString.Exclude
     @Column(nullable = false, length = 64)
     @Size(min =64, max=64)
-    @ToString.Exclude
     @NotNull
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @ToString.Exclude
-    @NotNull
+    @NotEmpty
     private List<Role> roles;
 
+    @PastOrPresent
     private LocalDateTime lastSuccessfulLogin;
 
+    @PastOrPresent
     private LocalDateTime lastFailedLogin;
 
     @Column(nullable = false)
@@ -54,8 +54,8 @@ public class Account extends AbstractEntity implements UserDetails {
 
     //    @Column(name = "email", table = "personal_data")
     @Column(nullable = false,unique = true)
+    @NotEmpty
     @Email
-    @NotNull
     private String email;
 
     //    @Column(table = "personal_data")
@@ -65,14 +65,14 @@ public class Account extends AbstractEntity implements UserDetails {
 
     //    @Column(table = "personal_data")
     @Column(nullable = false,length = 32)
-    @NotNull
-    @Size(min = 2, max = 32)
+    @NotEmpty
+    @Size(max = 32)
     private String firstName;
 
     //    @Column(table = "personal_data")
     @Column(nullable = false,length = 64)
-    @NotNull
-    @Size(min = 2, max = 64)
+    @NotEmpty
+    @Size(max = 64)
     private String lastName;
 
 

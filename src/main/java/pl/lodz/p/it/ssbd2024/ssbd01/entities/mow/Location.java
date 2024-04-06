@@ -1,6 +1,10 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
@@ -11,7 +15,10 @@ import java.util.List;
 public class Location extends AbstractEntity {
 
     @Column(nullable = false)
+    @NotBlank
+    @Size(min = 3, max = 32)
     private String name;
+
     @OneToMany(cascade = CascadeType.ALL)
     private List<Room> rooms;
 }

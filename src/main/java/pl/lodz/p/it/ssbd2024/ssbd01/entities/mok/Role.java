@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +18,9 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 public class Role extends AbstractEntity {
 
     @Column(nullable = false, unique = true, updatable = false, length = 32)
+    @NotNull
+    @NotBlank
+    @Size(max = 32)
     private String name;
 
 
