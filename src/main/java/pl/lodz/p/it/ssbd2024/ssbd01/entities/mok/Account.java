@@ -3,12 +3,12 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -23,13 +23,13 @@ public class Account extends AbstractEntity implements UserDetails {
 
     @Setter(AccessLevel.NONE)
     @Column(unique = true, updatable = false, nullable = false, length = 32)
-    @Size(min = 3, max=32)
-    @NotNull
+    @Size(min = 3, max = 32)
+    @NotBlank
     private String username;
 
     @ToString.Exclude
     @Column(nullable = false, length = 64)
-    @Size(min =64, max=64)
+    @Size(min = 64, max = 64)
     @NotNull
     private String password;
 
@@ -53,28 +53,39 @@ public class Account extends AbstractEntity implements UserDetails {
     private Boolean verified;
 
     //    @Column(name = "email", table = "personal_data")
-    @Column(nullable = false,unique = true)
-    @NotEmpty
+    @Column(nullable = false, unique = true)
+    @NotBlank
     @Email
     private String email;
 
     //    @Column(table = "personal_data")
-    @Column(nullable = false,length = 1)
-    @NotNull
+    @Column(nullable = false, length = 1)
+    @Range(max = 150)
     private Integer gender;
 
     //    @Column(table = "personal_data")
-    @Column(nullable = false,length = 32)
-    @NotEmpty
+    @Column(nullable = false, length = 32)
+    @NotBlank
     @Size(max = 32)
     private String firstName;
 
     //    @Column(table = "personal_data")
-    @Column(nullable = false,length = 64)
-    @NotEmpty
+    @Column(nullable = false, length = 64)
+    @NotBlank
     @Size(max = 64)
     private String lastName;
 
+
+    public Account(String username, String password, String email, Integer gender, String firstName, String lastName) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.gender = gender;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.active = true;
+        this.verified = false;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -114,17 +125,6 @@ public class Account extends AbstractEntity implements UserDetails {
     public final int hashCode() {
         if (username != null) return username.hashCode();
         return super.hashCode();
-    }
-
-    public Account(String username, String password, String email, Integer gender, String firstName, String lastName) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.gender = gender;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.active = true;
-        this.verified = false;
     }
 
     public void addRole(Role role) {

@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -29,6 +30,6 @@ public class Event extends AbstractEntity {
     private Boolean isActive = false;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @NotNull
+    @NotEmpty
     private List<Session> sessions;
 }

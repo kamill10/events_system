@@ -2,7 +2,6 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -32,7 +31,7 @@ public class Session extends AbstractEntity {
     @NotNull
     private Boolean isActive;
 
-    @Size(max =1024)
+    @Size(max = 1024)
     private String description;
 
     @NotNull
