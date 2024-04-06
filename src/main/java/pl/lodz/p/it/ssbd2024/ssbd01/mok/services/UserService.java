@@ -9,7 +9,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.UserRepository;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,15 +22,21 @@ public class UserService {
     }
     @Transactional
     public Account addUser(Account account) {
-        //user get the role GUEST on the start,toCHANGE
-        //if role guest not exist, create it
-        if(roleRepository.findByName("GUEST") == null) {
-            Role role = new Role("GUEST");
-            roleRepository.save(role);
-        }
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        account.setRoles(List.of(roleRepository.findByName("GUEST")));
+        Role role = roleRepository.findByName("PARTICIPANT")
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: PARTICIPANT"));
+        account.addRole(role);
         return userRepository.save(account);
+    }
+    public Account addRoleToAccount(UUID id, String roleName){
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
+        Account account = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
+        account.addRole(role);
+        //todo Handle the exceptions ,for example when ADMIN is going to get PARTICIPANT role
+        userRepository.save(account);
+        return account;
     }
 
 

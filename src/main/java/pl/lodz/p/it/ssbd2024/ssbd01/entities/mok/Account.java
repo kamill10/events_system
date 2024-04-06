@@ -8,6 +8,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class Account extends AbstractEntity implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @ToString.Exclude
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     private LocalDateTime lastSuccessfulLogin;
 
