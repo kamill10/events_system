@@ -36,4 +36,11 @@ public class AccountController {
                 .toAccountDto(userService.addRoleToAccount(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+    @DeleteMapping("/{id}/takeRole")
+    public ResponseEntity<AccountDto> takeRoleOffAccount(@PathVariable UUID id,
+                                                       @RequestParam String roleName) {
+        AccountDto updatedAccount =AccountToAccountDto
+                .toAccountDto(userService.takeRole(id, roleName));
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
 }

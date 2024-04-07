@@ -64,6 +64,19 @@ public class UserService {
             return userRepository.save(account);
         }
     }
+    public Account takeRole(UUID id, String roleName){
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
+        Account account = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
+        for(Role roles : account.getRoles()){
+            if(roles.getName().equals(roleName)){
+                account.removeRole(role);
+                return userRepository.save(account);
+            }
+        }
+        throw new IllegalArgumentException("This account does not have role "+roleName);
+    }
 
 
 }
