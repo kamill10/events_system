@@ -23,9 +23,6 @@ public class UserService {
     @Transactional
     public Account addUser(Account account) {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        Role role = roleRepository.findByName("PARTICIPANT")
-                .orElseThrow(() -> new IllegalArgumentException("Role not found: PARTICIPANT"));
-        account.addRole(role);
         return userRepository.save(account);
     }
     public Account addRoleToAccount(UUID id, String roleName){
@@ -33,10 +30,39 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
         Account account = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
-        account.addRole(role);
-        //todo Handle the exceptions ,for example when ADMIN is going to get PARTICIPANT role
-        userRepository.save(account);
-        return account;
+        if(account.getRoles().isEmpty()){
+            account.addRole(role);
+            return userRepository.save(account);
+        }
+        else if(account.getRoles().size() == 2){
+            throw new IllegalArgumentException("This account has maximum amount of roles");
+        }
+        else if (Objects.equals(account.getRoles().getFirst().getName(), "ADMIN")
+        && Objects.equals(roleName, "PARTICIPANT")) {
+            throw new IllegalArgumentException("ADMIN cannot has role PARTICIPANT");
+        }
+        if (Objects.equals(account.getRoles().getFirst().getName(), "ADMIN")
+                && Objects.equals(roleName, "ADMIN")) {
+            throw new IllegalArgumentException("This account alread has role ADMIN");
+        }
+        else if (Objects.equals(account.getRoles().getFirst().getName(), "MANAGER")
+                && Objects.equals(roleName, "PARTICIPANT")) {
+            throw new IllegalArgumentException("MANAGER cannot has role PARTICIPANT");
+        }
+        else if (Objects.equals(account.getRoles().getFirst().getName(), "MANAGER")
+                && Objects.equals(roleName, "MANAGER")) {
+            throw new IllegalArgumentException("This account alread has role MANAGER");
+        }
+        else if (Objects.equals(account.getRoles().getFirst().getName(), "PARTICIPANT")&&(
+                 Objects.equals(roleName, "ADMIN")
+                ||  Objects.equals(roleName, "MANAGER"))) {
+            throw new IllegalArgumentException("PARTICIPANT cannot has any other role");
+        }
+
+        else{
+            account.addRole(role);
+            return userRepository.save(account);
+        }
     }
 
 
