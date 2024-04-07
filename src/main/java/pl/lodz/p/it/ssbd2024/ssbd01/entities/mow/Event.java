@@ -30,6 +30,5 @@ public class Event extends AbstractEntity {
     private Boolean isActive = false;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @NotEmpty
     private List<Session> sessions;
 }

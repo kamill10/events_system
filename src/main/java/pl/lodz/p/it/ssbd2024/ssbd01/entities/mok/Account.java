@@ -35,7 +35,6 @@ public class Account extends AbstractEntity implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @ToString.Exclude
-    @NotEmpty
     private List<Role> roles;
 
     @PastOrPresent
@@ -60,7 +59,7 @@ public class Account extends AbstractEntity implements UserDetails {
 
     //    @Column(table = "personal_data")
     @Column(nullable = false, length = 1)
-    @Range(max = 150)
+    @NotNull
     private Integer gender;
 
     //    @Column(table = "personal_data")

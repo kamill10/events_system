@@ -1,11 +1,8 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
-import org.hibernate.validator.constraints.Range;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;
@@ -41,7 +38,8 @@ public class Session extends AbstractEntity {
     private LocalDateTime endTime;
 
     @Column(nullable = false, length = 4)
-    @Range(min = 0, max = 1024)
     @NotNull
+    @Min(0)
+    @Max(1024)
     private Integer maxSeats;
 }

@@ -19,6 +19,7 @@ public class Ticket extends AbstractEntity {
 
     @OneToOne
     @JoinColumn(nullable = false)
+    @NotNull
     private Session session;
 
     @Column(nullable = false)

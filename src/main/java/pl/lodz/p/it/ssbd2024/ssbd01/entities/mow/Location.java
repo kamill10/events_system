@@ -22,6 +22,5 @@ public class Location extends AbstractEntity {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @NotEmpty
     private List<Room> rooms;
 }
