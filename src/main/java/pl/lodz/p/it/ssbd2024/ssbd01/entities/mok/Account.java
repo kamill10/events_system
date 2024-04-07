@@ -3,7 +3,6 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entities.mok;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;

@@ -41,7 +41,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> {
                     requests
                             .requestMatchers(antMatcher(HttpMethod.POST,"/api/auth/**")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.GET,"/api/accounts")).hasAuthority("CLIENT");
+                            .requestMatchers(antMatcher(HttpMethod.GET,"/api/accounts")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/accounts/**")).permitAll()
+                             .requestMatchers(antMatcher(HttpMethod.DELETE,"/api/accounts/**")).permitAll();
 
 
                 });

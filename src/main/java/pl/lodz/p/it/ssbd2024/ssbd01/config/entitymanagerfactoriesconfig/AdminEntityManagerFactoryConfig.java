@@ -54,7 +54,7 @@ public class AdminEntityManagerFactoryConfig {
         em.setJtaDataSource(dataSource);
         em.setPackagesToScan(
                 "pl.lodz.p.it.ssbd2024.ssbd01.entities"
-                );
+        );
         em.setJpaPropertyMap(jpaProperties());
         em.afterPropertiesSet();
         return em.getObject();
