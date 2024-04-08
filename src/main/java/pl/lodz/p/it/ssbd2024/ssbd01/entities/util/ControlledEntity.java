@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.enums.ActionTypeEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 
@@ -22,7 +24,7 @@ public abstract class ControlledEntity {
     private LocalDateTime updatedAt;
 
     @OneToOne
-//    @JoinColumn(name = "created_by", updatable = false)
+    @JoinColumn(name = "created_by", updatable = false)
     private Account createdBy;
 
     @OneToOne
@@ -37,12 +39,20 @@ public abstract class ControlledEntity {
     public void prePersist() {
         createdAt = LocalDateTime.now();
         actionType = ActionTypeEnum.CREATE;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof Account) {
+            createdBy = (Account) authentication.getPrincipal();
+        }
     }
 
     @PreUpdate
     public void preUpdate() {
         updatedAt = LocalDateTime.now();
         actionType = ActionTypeEnum.UPDATE;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            updatedBy = (Account) authentication.getPrincipal();
+        }
     }
 
 }
