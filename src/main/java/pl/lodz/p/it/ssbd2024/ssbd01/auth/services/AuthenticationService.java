@@ -9,12 +9,12 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.dto.LoginRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.dto.RegisterUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.UserRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.UserService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    private final UserService accountService;
+    private final AccountService accountService;
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
