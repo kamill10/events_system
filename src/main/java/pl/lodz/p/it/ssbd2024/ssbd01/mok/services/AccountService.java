@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class AccountService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;

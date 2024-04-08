@@ -14,7 +14,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controllers.AccountController;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.UserService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +26,7 @@ public class AccountControllerTest {
     private AccountController accountController;
 
     @Autowired
-    private UserService userService;
+    private AccountService accountService;
 
     @Autowired
     private HandlerExceptionResolver handlerExceptionResolver;
@@ -48,7 +48,7 @@ public class AccountControllerTest {
     public void testGetAllAccountsEndpoint() throws Exception {
 
         Account account = new Account("user3", passwordEncoder.encode("password"), "email3@email.com", 0, "firstName3", "lastName3");
-        userService.addUser(account);
+        accountService.addUser(account);
 
         MvcResult result = mockMvcAccount.perform(get("/api/accounts"))
                 .andExpect(status().isOk())
@@ -82,7 +82,7 @@ public class AccountControllerTest {
     public void testAddRoleToAccountEndpoint() throws Exception {
 
         Account account = new Account("user4", passwordEncoder.encode("password"), "email4@email.com", 0, "firstName4", "lastName4");
-        userService.addUser(account);
+        accountService.addUser(account);
 
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                         .param("roleName", "ADMIN"))
@@ -93,7 +93,7 @@ public class AccountControllerTest {
     public void testRemoveRoleFromAccountEndpoint() throws Exception {
 
         Account account = new Account("user5", passwordEncoder.encode("password"), "email5@email.com", 1, "firstName5", "lastName5");
-        userService.addUser(account);
+        accountService.addUser(account);
 
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                         .param("roleName", "ADMIN"))

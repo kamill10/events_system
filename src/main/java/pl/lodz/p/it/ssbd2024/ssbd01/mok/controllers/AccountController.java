@@ -8,7 +8,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.request.RegisterUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountToAccountDto;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.dto.AccountDto;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.UserService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,11 +18,11 @@ import java.util.UUID;
 public class AccountController {
 
     @Autowired
-    UserService userService;
+    AccountService accountService;
 
     @GetMapping
     public List<AccountDto> getAllAccounts() {
-        List<AccountDto> accountDtos = AccountToAccountDto.accountDtoList(userService.getAllUsers());
+        List<AccountDto> accountDtos = AccountToAccountDto.accountDtoList(accountService.getAllUsers());
         return ResponseEntity.status(HttpStatus.OK).body(accountDtos).getBody();
     }
 
@@ -30,7 +30,7 @@ public class AccountController {
     public ResponseEntity<AccountDto> createAccount(@RequestBody RegisterUserRequest request) {
         Account account = new Account(request.getUsername(), request.getPassword(), request.getEmail(), request.getGender(),
                 request.getFirstName(), request.getLastName());
-        AccountDto accountDto = AccountToAccountDto.toAccountDto(userService.addUser(account));
+        AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.addUser(account));
         return ResponseEntity.status(HttpStatus.CREATED).body(accountDto);
     }
 
@@ -38,7 +38,7 @@ public class AccountController {
     public ResponseEntity<AccountDto> addRoleToAccount(@PathVariable UUID id,
                                                        @RequestParam String roleName) {
         AccountDto updatedAccount = AccountToAccountDto
-                .toAccountDto(userService.addRoleToAccount(id, roleName));
+                .toAccountDto(accountService.addRoleToAccount(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -46,7 +46,7 @@ public class AccountController {
     public ResponseEntity<AccountDto> takeRoleOffAccount(@PathVariable UUID id,
                                                          @RequestParam String roleName) {
         AccountDto updatedAccount = AccountToAccountDto
-                .toAccountDto(userService.takeRole(id, roleName));
+                .toAccountDto(accountService.takeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 }
