@@ -7,8 +7,7 @@ import lombok.Setter;
 import java.math.BigInteger;
 import java.util.UUID;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 @Getter
 public abstract class AbstractEntity {
 
@@ -19,5 +18,5 @@ public abstract class AbstractEntity {
     private UUID id;
 
     @Version
-    private Integer version;
+    private Long version;
 }
