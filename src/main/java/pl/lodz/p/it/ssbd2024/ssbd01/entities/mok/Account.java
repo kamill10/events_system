@@ -29,7 +29,7 @@ public class Account extends AbstractEntity implements UserDetails {
 
     @ToString.Exclude
     @Column(nullable = false, length = 64)
-    @Size(min = 64, max = 64)
+    //@Size(min = 64, max = 64)
     @NotNull
     private String password;
 
@@ -130,4 +130,7 @@ public class Account extends AbstractEntity implements UserDetails {
         roles.add(role);
     }
 
+    public void removeRole(Role role) {
+        roles.remove(role);
+    }
 }
