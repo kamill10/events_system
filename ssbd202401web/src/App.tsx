@@ -1,8 +1,11 @@
+import {BrowserRouter} from "react-router-dom";
+import RouterComponent from "./router/RouterComponent.tsx";
+
 function App() {
   return (
-    <div>
-      <h1>Hello world!</h1>
-    </div>
+    <BrowserRouter>
+        <RouterComponent></RouterComponent>
+    </BrowserRouter>
   )
 }
 
