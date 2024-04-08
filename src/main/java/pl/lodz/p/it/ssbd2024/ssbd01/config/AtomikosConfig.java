@@ -19,7 +19,7 @@ public class AtomikosConfig {
     @Bean(name = "userTransaction")
     public UserTransaction userTransaction() throws Throwable {
         J2eeUserTransaction userTransactionImp = new J2eeUserTransaction();
-        userTransactionImp.setTransactionTimeout(10000);
+        userTransactionImp.setTransactionTimeout(300);
         return userTransactionImp;
     }
 

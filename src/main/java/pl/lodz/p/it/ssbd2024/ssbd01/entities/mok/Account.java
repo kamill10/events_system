@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,14 +28,14 @@ public class Account extends AbstractEntity implements UserDetails {
     private String username;
 
     @ToString.Exclude
-    @Column(nullable = false, length = 64)
-    @Size(min = 64, max = 64)
+    @Column(nullable = false /*, length = 64*/)
+//    @Size(min = 64, max = 64)
     @NotNull
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @ToString.Exclude
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     @PastOrPresent
     private LocalDateTime lastSuccessfulLogin;
@@ -57,7 +58,7 @@ public class Account extends AbstractEntity implements UserDetails {
     private String email;
 
     //    @Column(table = "personal_data")
-    @Column(nullable = false, length = 1)
+    @Column(nullable = false)
     @NotNull
     private Integer gender;
 
@@ -127,6 +128,10 @@ public class Account extends AbstractEntity implements UserDetails {
 
     public void addRole(Role role) {
         roles.add(role);
+    }
+
+    public void removeRole(Role role){
+        roles.remove(role);
     }
 
 }
