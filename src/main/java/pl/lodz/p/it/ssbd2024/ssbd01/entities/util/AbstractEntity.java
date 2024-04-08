@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter
-public abstract class AbstractEntity extends ControlledEntity {
+public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

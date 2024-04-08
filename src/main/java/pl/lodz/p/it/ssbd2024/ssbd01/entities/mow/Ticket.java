@@ -6,12 +6,13 @@ import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-public class Ticket extends AbstractEntity {
+public class Ticket extends ControlledEntity {
 
     @OneToOne
     @JoinColumn(nullable = false)

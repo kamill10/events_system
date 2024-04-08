@@ -9,10 +9,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
 import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
 @Data
 @Entity
-public class Room extends AbstractEntity {
+public class Room extends ControlledEntity {
 
     @Column(nullable = false)
     @NotBlank

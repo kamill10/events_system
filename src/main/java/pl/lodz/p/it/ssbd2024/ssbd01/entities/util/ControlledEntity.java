@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class ControlledEntity {
+public abstract class ControlledEntity extends AbstractEntity {
 
     @NotNull
     @Column(name = "created_at", nullable = false, updatable = false)
