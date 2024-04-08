@@ -1,11 +1,11 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.auth.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequest {
     private String username;
     private String password;
