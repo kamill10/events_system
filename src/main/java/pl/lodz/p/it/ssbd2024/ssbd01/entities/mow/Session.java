@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-public class Session extends AbstractEntity {
+public class Session extends ControlledEntity {
 
     @OneToOne
     @JoinColumn(nullable = false)
