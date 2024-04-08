@@ -28,8 +28,8 @@ public class Account extends AbstractEntity implements UserDetails {
     private String username;
 
     @ToString.Exclude
-    @Column(nullable = false /*, length = 64*/)
-//    @Size(min = 64, max = 64)
+    @Column(nullable = false, length = 72)
+    @Size(min = 8, max = 72)
     @NotNull
     private String password;
 

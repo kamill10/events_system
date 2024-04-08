@@ -8,7 +8,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoriesconfig.MokEntit
 import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoriesconfig.MowEntityManagerFactoryConfig;
 
 @Configuration
-@Import({AdminEntityManagerFactoryConfig.class, MokEntityManagerFactoryConfig.class, AuthEntityManagerFactoryConfig.class
-        , MowEntityManagerFactoryConfig.class, AtomikosConfig.class})
+@Import({AdminEntityManagerFactoryConfig.class, MokEntityManagerFactoryConfig.class, AuthEntityManagerFactoryConfig.class,
+        MowEntityManagerFactoryConfig.class, AtomikosConfig.class})
 public class RootConfig {
 }
