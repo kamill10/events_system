@@ -6,10 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
 @Data
 @Entity
-public class Speaker extends AbstractEntity {
+public class Speaker extends ControlledEntity {
 
     @Column(nullable = false, length = 32)
     @NotBlank

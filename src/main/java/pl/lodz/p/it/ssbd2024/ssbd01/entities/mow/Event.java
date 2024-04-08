@@ -9,12 +9,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
 import java.util.List;
 
 @Data
 @Entity
-public class Event extends AbstractEntity {
+public class Event extends ControlledEntity {
 
     @Column(nullable = false)
     @NotBlank

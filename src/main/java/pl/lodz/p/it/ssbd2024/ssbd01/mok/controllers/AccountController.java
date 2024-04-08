@@ -21,15 +21,15 @@ public class AccountController {
     AccountService accountService;
 
     @GetMapping
-    public List<AccountDto> getAllAccounts() {
+    public List<AccountDto> getAllUsers() {
         List<AccountDto> accountDtos = AccountToAccountDto.accountDtoList(accountService.getAllUsers());
         return ResponseEntity.status(HttpStatus.OK).body(accountDtos).getBody();
     }
 
     @PostMapping
-    public ResponseEntity<AccountDto> createAccount(@RequestBody RegisterUserRequest request) {
-        Account account = new Account(request.getUsername(), request.getPassword(), request.getEmail(), request.getGender(),
-                request.getFirstName(), request.getLastName());
+    public ResponseEntity<AccountDto> createUser(@RequestBody RegisterUserRequest request) {
+        Account account = new Account(request.getUsername(), request.getPassword(), request.getEmail()
+                , request.getGender(), request.getFirstName(), request.getLastName());
         AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.addUser(account));
         return ResponseEntity.status(HttpStatus.CREATED).body(accountDto);
     }
