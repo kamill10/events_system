@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.auth.dto;
+package pl.lodz.p.it.ssbd2024.ssbd01.auth.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

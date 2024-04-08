@@ -15,14 +15,12 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AccountService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     public List<Account> getAllUsers(){
         return userRepository.findAll();
     }
     @Transactional
     public Account addUser(Account account) {
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
         return userRepository.save(account);
     }
     public Account addRoleToAccount(UUID id, String roleName){

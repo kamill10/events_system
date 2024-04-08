@@ -6,7 +6,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.List;
 @Entity
 @Table(name = "account")
 //@SecondaryTable(name = "personal_data", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id"))
-public class Account extends ControlledEntity implements UserDetails {
+public class Account extends AbstractEntity implements UserDetails {
 
     @Setter(AccessLevel.NONE)
     @Column(unique = true, updatable = false, nullable = false, length = 32)
@@ -29,8 +28,8 @@ public class Account extends ControlledEntity implements UserDetails {
     private String username;
 
     @ToString.Exclude
-    @Column(nullable = false, length = 64)
-    //@Size(min = 64, max = 64)
+    @Column(nullable = false, length = 72)
+    @Size(min = 8, max = 72)
     @NotNull
     private String password;
 
@@ -59,7 +58,7 @@ public class Account extends ControlledEntity implements UserDetails {
     private String email;
 
     //    @Column(table = "personal_data")
-    @Column(nullable = false, length = 1)
+    @Column(nullable = false)
     @NotNull
     private Integer gender;
 
@@ -131,7 +130,8 @@ public class Account extends ControlledEntity implements UserDetails {
         roles.add(role);
     }
 
-    public void removeRole(Role role) {
+    public void removeRole(Role role){
         roles.remove(role);
     }
+
 }
