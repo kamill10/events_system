@@ -8,6 +8,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.request.RegisterUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountToAccountDto;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.dto.AccountDto;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.request.CreateUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<AccountDto> createUser(@RequestBody RegisterUserRequest request) {
+    public ResponseEntity<AccountDto> createUser(@RequestBody CreateUserRequest request) {
         Account account = new Account(request.getUsername(), request.getPassword(), request.getEmail()
                 , request.getGender(), request.getFirstName(), request.getLastName());
         AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.addUser(account));
