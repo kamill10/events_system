@@ -1,3 +1,3 @@
 export default interface PublicLayoutPropType {
-    Page: React.ReactNode
+    page: React.ReactNode
 }

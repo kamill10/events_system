@@ -7,19 +7,23 @@ import SigninPage from "../pages/SigninPage.tsx";
 
 export const PublicRoutes: RouteType[] = [
     {
-        Pathname: Pathnames.public.home,
-        Page: HomePage()
+        pathname: Pathnames.public.home,
+        page: HomePage(),
+        name: "Home"
     },
     {
-        Pathname: Pathnames.public.events,
-        Page: EventsPage()
+        pathname: Pathnames.public.events,
+        page: EventsPage(),
+        name: "Events"
     },
     {
-        Pathname: Pathnames.public.login,
-        Page: LoginPage()
+        pathname: Pathnames.public.login,
+        page: LoginPage(),
+        name: "Log in"
     },
     {
-        Pathname: Pathnames.public.signIn,
-        Page: SigninPage()
+        pathname: Pathnames.public.signIn,
+        page: SigninPage(),
+        name: "Sign in"
     }
 ];

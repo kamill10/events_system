@@ -1,4 +1,5 @@
 export interface RouteType {
-    Page: React.ReactNode
-    Pathname: string
+    page: React.ReactNode
+    pathname: string
+    name: string
 }

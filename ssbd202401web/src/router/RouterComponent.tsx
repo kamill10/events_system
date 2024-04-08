@@ -6,7 +6,8 @@ export default function RouterComponent() {
     return (
         <Routes>
             {PublicRoutes.map((route, key) => {
-                return <Route key={key} path={route.Pathname} element={<PublicLayout Page={route.Page}></PublicLayout>}></Route>
+                return <Route key={key} path={route.pathname}
+                              element={<PublicLayout page={route.page}></PublicLayout>}></Route>
             })}
         </Routes>
     )

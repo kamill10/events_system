@@ -1,7 +1,9 @@
+import { Typography } from "@mui/material";
+
 export default function LoginPage() {
     return (
-        <div id={"login-page"}>
-            <h1>Login Page</h1>
-        </div>
+        <Typography variant={"h4"}>
+            Log in page
+        </Typography>
     );
 }
