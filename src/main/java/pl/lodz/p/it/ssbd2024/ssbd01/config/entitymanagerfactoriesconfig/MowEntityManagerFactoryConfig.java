@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 import java.sql.Connection;
@@ -15,11 +16,11 @@ import java.util.Objects;
 
 @Configuration
 @PropertySource("classpath:data-access.properties")
-//@EnableJpaRepositories(
-//        basePackages = "com.example.mow.repository",
-//        entityManagerFactoryRef = "mowEntityManagerFactory",
-//        transactionManagerRef = "transactionManager"
-//)
+@EnableJpaRepositories(
+        basePackages = "pl.lodz.p.it.ssbd2024.ssbd01.mow.repositories",
+        entityManagerFactoryRef = "mowEntityManagerFactory",
+        transactionManagerRef = "transactionManager"
+)
 @RequiredArgsConstructor
 public class MowEntityManagerFactoryConfig {
 
