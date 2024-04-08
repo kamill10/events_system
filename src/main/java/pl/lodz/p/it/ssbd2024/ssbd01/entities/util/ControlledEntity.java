@@ -50,7 +50,7 @@ public abstract class ControlledEntity {
         updatedAt = LocalDateTime.now();
         actionType = ActionTypeEnum.UPDATE;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
+        if (authentication != null && authentication.getPrincipal() instanceof Account){
             updatedBy = (Account) authentication.getPrincipal();
         }
     }
