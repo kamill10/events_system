@@ -2,25 +2,42 @@ version: '3'
 
 services:
   nginx:
-    image: ssbd01/nginx:v0.11
+    image: nginx:1.25.4
     volumes:
-      -  /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    build:
+        context: .
+        dockerfile: Dockerfile
     ports:
       - "80:80"
       - "443:443"
 
   tomcat:
+    depends_on:
+      postgres:
+        condition: service_healthy
     image: tomcat:10.1.19-jre21
+    hostname: tomcat
+    networks:
+      - ssbd01
     ports:
       - "8080:8080"
+    container_name: tomcat
+    volumes:
+      - '../target/ssbd01.war:/usr/local/tomcat/webapps/ssbd01.war'
 
   postgres:
     image: postgres:16.2
     restart: always
-    environment: 
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ssbd01admin" ]
+    environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    hostname: postgres
+    networks:
+      - ssbd01
     ports:
       - "5432:5432"
     volumes:
@@ -28,4 +45,8 @@ services:
 
 volumes:
   pg:
+
+networks:
+  ssbd01:
+    driver: bridge
 

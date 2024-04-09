@@ -1,4 +1,4 @@
-FROM nginx:12.5-alpine
+FROM nginx:1.25.4
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY html /etc/nginx/html
 
