@@ -2,9 +2,12 @@ version: '3'
 
 services:
   nginx:
-    image: ssbd01/nginx:v0.11
+    image: nginx:12.5-alpine
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
+    build:
+        context: .
+        dockerfile: Dockerfile
     ports:
       - "80:80"
       - "443:443"
