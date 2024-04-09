@@ -66,5 +66,12 @@ public class AccountService {
         throw new IllegalArgumentException("This account does not have role "+roleName);
     }
 
+    public Account setAccountStatus(UUID id, boolean status){
+        Account account = accountMokRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
+        account.setActive(status);
+        return accountMokRepository.save(account);
+    }
+
 
 }
