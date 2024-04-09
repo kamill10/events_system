@@ -2,31 +2,30 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Role;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.RoleRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.UserRepository;
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class AccountService {
-    private final UserRepository userRepository;
+    private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
     public List<Account> getAllUsers(){
-        return userRepository.findAll();
+        return accountMokRepository.findAll();
     }
     @Transactional
     public Account addUser(Account account) {
-        return userRepository.save(account);
+        return accountMokRepository.save(account);
     }
     public Account addRoleToAccount(UUID id, String roleName){
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
-        Account account = userRepository.findById(id)
+        Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
         List<Role> accountRoles = account.getRoles();
         if(accountRoles.size() == 1) {
@@ -51,20 +50,27 @@ public class AccountService {
             throw new IllegalArgumentException("This account has the maximum number of roles");
         }
         account.addRole(role);
-        return userRepository.save(account);
+        return accountMokRepository.save(account);
     }
     public Account takeRole(UUID id, String roleName){
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
-        Account account = userRepository.findById(id)
+        Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
         for(Role roles : account.getRoles()){
             if(roles.getName().equals(roleName)){
                 account.removeRole(role);
-                return userRepository.save(account);
+                return accountMokRepository.save(account);
             }
         }
         throw new IllegalArgumentException("This account does not have role "+roleName);
+    }
+
+    public Account setAccountStatus(UUID id, boolean status){
+        Account account = accountMokRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
+        account.setActive(status);
+        return accountMokRepository.save(account);
     }
 
 

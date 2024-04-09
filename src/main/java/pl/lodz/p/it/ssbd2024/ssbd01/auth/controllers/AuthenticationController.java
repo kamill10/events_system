@@ -15,18 +15,18 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.services.AuthenticationService;
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final AuthenticationService service;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/user")
     public ResponseEntity<String> registerUser(
             @RequestBody RegisterUserRequest request
     ) {
-        return ResponseEntity.ok(service.registerUser(request));
+        return ResponseEntity.ok(authenticationService.registerUser(request));
     }
 
 
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody LoginRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(service.authenticate(request));
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request));
     }
 }

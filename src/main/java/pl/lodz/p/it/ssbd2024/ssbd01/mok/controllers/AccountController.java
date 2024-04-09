@@ -54,4 +54,16 @@ public class AccountController {
                 .toAccountDto(accountService.takeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+    @PatchMapping("/{id}/setActive")
+    public ResponseEntity<AccountDto> setActive(@PathVariable UUID id) {
+        AccountDto updatedAccount = AccountToAccountDto
+                .toAccountDto(accountService.setAccountStatus(id, true));
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
+    @PatchMapping("/{id}/setInactive")
+    public ResponseEntity<AccountDto> setInactive(@PathVariable UUID id) {
+        AccountDto updatedAccount = AccountToAccountDto
+                .toAccountDto(accountService.setAccountStatus(id, false));
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
 }

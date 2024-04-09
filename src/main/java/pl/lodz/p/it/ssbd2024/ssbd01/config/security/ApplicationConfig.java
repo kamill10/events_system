@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,17 +10,17 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.UserRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.repositories.AccountAuthRepository;
 
 @Configuration
+@RequiredArgsConstructor
 public class ApplicationConfig {
 
-    @Autowired
-    private  UserRepository userRepository;
+    private final AccountAuthRepository accountAuthRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return userRepository::findByUsername;
+        return accountAuthRepository::findByUsername;
     }
 
     @Bean
