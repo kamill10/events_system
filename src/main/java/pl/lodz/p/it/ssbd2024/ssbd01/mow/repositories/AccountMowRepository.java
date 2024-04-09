@@ -5,5 +5,5 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 
 import java.util.UUID;
 
-public interface AccountRepository extends JpaRepository<Account, UUID> {
+public interface AccountMowRepository extends JpaRepository<Account, UUID> {
 }
