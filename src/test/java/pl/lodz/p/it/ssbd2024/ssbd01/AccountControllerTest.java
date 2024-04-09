@@ -188,5 +188,32 @@ public class AccountControllerTest {
                     .andExpect(status().isOk());
         });
 
+
+    }
+    @Test
+    public void testSetActiveAccountEndpoint() throws Exception {
+
+        Account account = new Account("user10", passwordEncoder.encode("password"), "email10@email.com", 0, "firstName10", "lastName10");
+        account = accountService.addUser(account);
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setActive"))
+                .andExpect(status().isOk());
+        Assertions.assertThrows(AssertionError.class, () -> {
+            mockMvcAccount.perform(patch("/api/accounts/" + "BAD_ID" + "/setActive"))
+                    .andExpect(status().isOk());
+
+        });
+    }
+    @Test
+    public void testSetInactiveAccountEndpoint() throws Exception {
+
+        Account account = new Account("user11", passwordEncoder.encode("password"), "email11@email.com", 0, "firstName11", "lastName11");
+        account = accountService.addUser(account);
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setInactive"))
+                .andExpect(status().isOk());
+        Assertions.assertThrows(AssertionError.class, () -> {
+            mockMvcAccount.perform(patch("/api/accounts/" + "BAD_ID" + "/setInactive"))
+                    .andExpect(status().isOk());
+        });
+
     }
 }
