@@ -29,10 +29,15 @@ services:
   postgres:
     image: postgres:16.2
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ssbd01admin" ]
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    hostname: postgres
+    networks:
+      - ssbd01
     ports:
       - "5432:5432"
     volumes:
