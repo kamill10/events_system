@@ -4,20 +4,29 @@ services:
   nginx:
     image: ssbd01/nginx:v0.11
     volumes:
-      -  /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     ports:
       - "80:80"
       - "443:443"
 
   tomcat:
+    depends_on:
+      db:
+        condition: service_healthy
     image: tomcat:10.1.19-jre21
+    hostname: tomcat
+    networks:
+      - ssbd01
     ports:
       - "8080:8080"
+    container_name: tomcat
+    volumes:
+      - '../target/EventSymphony.war:/usr/local/tomcat/webapps/EventSymphony.war:ro'
 
   postgres:
     image: postgres:16.2
     restart: always
-    environment: 
+    environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -29,4 +38,8 @@ services:
 
 volumes:
   pg:
+
+networks:
+  ssbd01:
+    driver: bridge
 
