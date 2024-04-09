@@ -24,7 +24,7 @@ services:
       - "8080:8080"
     container_name: tomcat
     volumes:
-      - '../target/EventSymphony.war:/usr/local/tomcat/webapps/EventSymphony.war:ro'
+      - '../target/ssbd01.war:/usr/local/tomcat/webapps/ssbd01.war'
 
   postgres:
     image: postgres:16.2
