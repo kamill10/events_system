@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nginx:
-    image: nginx:12.5-alpine
+    image: nginx:1.25.4
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     build:
