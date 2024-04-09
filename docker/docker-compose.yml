@@ -11,7 +11,7 @@ services:
 
   tomcat:
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
     image: tomcat:10.1.19-jre21
     hostname: tomcat
