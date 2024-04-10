@@ -33,7 +33,7 @@ public class Account extends AbstractEntity implements UserDetails {
     @NotNull
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+    @ManyToMany(fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Role> roles = new ArrayList<>();
 
