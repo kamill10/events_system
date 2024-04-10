@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Location extends ControlledEntity {
 
     @Column(nullable = false, unique = true, updatable = false)
@@ -28,6 +30,10 @@ public class Location extends ControlledEntity {
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Room> rooms = new ArrayList<>();
+
+    public Location(String name) {
+        this.name = name;
+    }
 
     /**
      * Business identifier of location is its name

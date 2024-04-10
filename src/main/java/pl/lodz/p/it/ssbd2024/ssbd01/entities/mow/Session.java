@@ -54,6 +54,20 @@ public class Session extends ControlledEntity {
     @Max(1024)
     private Integer maxSeats;
 
+    public Session(Room room, Speaker speaker, String name, Event event,
+                   Boolean isActive, String description, LocalDateTime startTime,
+                   LocalDateTime endTime, Integer maxSeats) {
+        this.room = room;
+        this.speaker = speaker;
+        this.name = name;
+        this.event = event;
+        this.isActive = isActive;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.maxSeats = maxSeats;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

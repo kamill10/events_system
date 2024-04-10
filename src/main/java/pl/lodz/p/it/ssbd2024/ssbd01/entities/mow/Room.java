@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Room extends ControlledEntity {
 
     @Column(nullable = false, updatable = false, unique = true)
@@ -33,6 +35,12 @@ public class Room extends ControlledEntity {
     @Min(0)
     @Max(1000)
     private Integer maxCapacity;
+
+    public Room(String name, Location location, Integer maxCapacity) {
+        this.name = name;
+        this.location = location;
+        this.maxCapacity = maxCapacity;
+    }
 
     /**
      * Business identifier of room is its name and location
