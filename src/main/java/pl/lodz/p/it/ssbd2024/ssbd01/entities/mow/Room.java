@@ -27,7 +27,7 @@ public class Room extends ControlledEntity {
     @ManyToOne(
             fetch = FetchType.LAZY
     )
-    @JoinColumn(nullable = false, updatable = false)
+    @JoinColumn(nullable = false, updatable = false, name = "location_id")
     private Location location;
 
     @Column(nullable = false, length = 4)

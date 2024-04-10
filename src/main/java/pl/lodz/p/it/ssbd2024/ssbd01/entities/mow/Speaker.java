@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -13,6 +15,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@Table(uniqueConstraints =
+        @UniqueConstraint(columnNames = {"firstName", "lastName"})
+)
 public class Speaker extends ControlledEntity {
 
     @Column(nullable = false, length = 32)
