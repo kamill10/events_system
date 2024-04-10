@@ -6,13 +6,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.security.PrivateKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +21,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "D3btUsyQ3pjdWoAZfS90hih34oj8GgTgx63yuVwfOXt+g2IhiEt2D7+LFIW1Wh1sH57lKWYsTniJ83PeRrzkKrmEbChXgY7B0vG6ySw5gPVvfZY8k6/ndk1FjPAjvtoFGc82T9Y3yOhFnZRuKdsveQNXzQ0P8csT7flck9Hk1E3OyiGj7j+6x5l7hdi+u4Ga0jtxHp0kssd7gYZQyAyRMk5oD57PhCe8NBY/rFYCGKib97Ex4MxcMQ8w7zJztU/bs4XdkpdiTwF57EigL/8HJz0KP9oivRuJp3E+M/ZoUkmZAPHCciX9Or2i9SetxEkpvNQLEYSYY4cRZj1TshlYJy+wilLPvVbN2eKJolS3SXg=";
+    private final String SECRET_KEY;
 
+    public JwtService(@Value("${jwt.secret}") String secret){
+        this.SECRET_KEY = secret;
+    }
     public String extractLogin(String token) {
         return extractClaim(token, Claims::getSubject);
     }
