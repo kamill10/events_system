@@ -2,12 +2,18 @@ version: '3'
 
 services:
   nginx:
+    depends_on:
+      - tomcat
     image: nginx:1.25.4
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     build:
         context: .
         dockerfile: Dockerfile
+    hostname: nginx
+    container_name: nginx
+    networks:
+          - ssbd01
     ports:
       - "80:80"
       - "443:443"
@@ -18,11 +24,11 @@ services:
         condition: service_healthy
     image: tomcat:10.1.19-jre21
     hostname: tomcat
+    container_name: tomcat
     networks:
       - ssbd01
     ports:
       - "8080:8080"
-    container_name: tomcat
     volumes:
       - '../target/ssbd01.war:/usr/local/tomcat/webapps/ssbd01.war'
 
@@ -36,6 +42,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     hostname: postgres
+    container_name: postgres
     networks:
       - ssbd01
     ports:
