@@ -133,13 +133,13 @@ public class EntitityTest {
         event.setDescription("description");
         event.setName("name");
         event.setIsNotCanceled(true);
-        event.setSessions(List.of(session));
+        event.setSession(session);
 
         event2 = new Event();
         event2.setDescription("description");
         event2.setName("name");
         event2.setIsNotCanceled(true);
-        event2.setSessions(List.of(session));
+        event2.setSession(session);
 
         event3 = new Event();
 
@@ -201,7 +201,6 @@ public class EntitityTest {
         Assertions.assertEquals("description", event.getDescription());
         Assertions.assertEquals("name", event.getName());
         Assertions.assertEquals(true, event.getIsNotCanceled());
-        Assertions.assertEquals(1, event.getSessions().size());
 
         Assertions.assertEquals(account, ticket.getAccount());
         Assertions.assertEquals(session, ticket.getSession());

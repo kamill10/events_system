@@ -8,7 +8,9 @@ import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,11 +31,8 @@ public class Session extends ControlledEntity {
     @Size(max = 32)
     private String name;
 
-    @ManyToOne(
-            fetch = FetchType.LAZY
-    )
-    @JoinColumn(nullable = false)
-    private Event event;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Event> events = new ArrayList<>();
 
     @Column(nullable = false)
     @NotNull
@@ -54,13 +53,13 @@ public class Session extends ControlledEntity {
     @Max(1024)
     private Integer maxSeats;
 
-    public Session(Room room, Speaker speaker, String name, Event event,
+    public Session(Room room, Speaker speaker, String name, List<Event> events,
                    Boolean isActive, String description, LocalDateTime startTime,
                    LocalDateTime endTime, Integer maxSeats) {
         this.room = room;
         this.speaker = speaker;
         this.name = name;
-        this.event = event;
+        this.events = events;
         this.isActive = isActive;
         this.description = description;
         this.startTime = startTime;
@@ -72,11 +71,11 @@ public class Session extends ControlledEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Session session)) return false;
-        return Objects.equals(name, session.name) && Objects.equals(event, session.event);
+        return Objects.equals(name, session.name) && Objects.equals(events, session.events);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, event);
+        return Objects.hash(name, events);
     }
 }

@@ -28,3 +28,7 @@ GRANT SELECT, INSERT, DELETE, UPDATE ON TABLE public.ticket TO ssbd01mow;
 INSERT INTO public.role (id, version, name) VALUES ('550e8400-e29b-41d4-a716-446655440000', 0, 'ADMIN');
 INSERT INTO public.role (id, version, name) VALUES ('4c90f86a-0d82-4c51-b72c-80e20949a3b9', 0, 'MANAGER');
 INSERT INTO public.role (id, version, name) VALUES ('cd8ab1c1-2431-4e28-88b5-fdd54de3d92a', 0, 'PARTICIPANT');
+
+CREATE INDEX session_speaker_idx ON "session" (speaker_id);
+CREATE INDEX room_location_idx ON "room" (location_id);
+CREATE INDEX event_session_idx ON "event" (session_id);

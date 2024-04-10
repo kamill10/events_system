@@ -1,9 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entities.mow;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -36,13 +31,16 @@ public class Event extends ControlledEntity {
     @NotNull
     private Boolean isNotCanceled = true;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Session> sessions = new ArrayList<>();
+    @ManyToOne(
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(nullable = false)
+    private Session session;
 
-    public Event(String name, String description, List<Session> sessions) {
+    public Event(String name, String description, Session session) {
         this.name = name;
         this.description = description;
-        this.sessions = sessions;
+        this.session = session;
     }
 
     /**
