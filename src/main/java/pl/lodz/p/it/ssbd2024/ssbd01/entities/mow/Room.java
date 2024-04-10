@@ -17,7 +17,7 @@ import java.util.Objects;
 @Entity
 public class Room extends ControlledEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false, unique = true)
     @NotBlank
     @Size(min = 3, max = 32)
     private String name;
@@ -25,7 +25,7 @@ public class Room extends ControlledEntity {
     @ManyToOne(
             fetch = FetchType.LAZY
     )
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, updatable = false)
     private Location location;
 
     @Column(nullable = false, length = 4)

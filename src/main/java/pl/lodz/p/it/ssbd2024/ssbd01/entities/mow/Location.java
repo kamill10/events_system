@@ -20,7 +20,7 @@ import java.util.Objects;
 @Entity
 public class Location extends ControlledEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     @NotBlank
     @Size(min = 3, max = 32)
     @NotNull

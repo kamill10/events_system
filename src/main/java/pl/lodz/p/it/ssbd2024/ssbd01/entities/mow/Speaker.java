@@ -4,11 +4,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
+import lombok.Getter;
+import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
 
-@Data
+import java.util.Objects;
+
+@Getter
+@Setter
 @Entity
 public class Speaker extends ControlledEntity {
 
@@ -21,4 +24,16 @@ public class Speaker extends ControlledEntity {
     @NotBlank
     @Size(max = 64)
     private String lastName;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Speaker speaker)) return false;
+        return Objects.equals(firstName, speaker.firstName) && Objects.equals(lastName, speaker.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName);
+    }
 }

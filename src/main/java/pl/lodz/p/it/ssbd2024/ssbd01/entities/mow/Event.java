@@ -22,7 +22,7 @@ import java.util.Objects;
 @Setter
 public class Event extends ControlledEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     @NotBlank
     @Size(max = 128)
     @NotNull
