@@ -25,9 +25,11 @@ public class Event extends ControlledEntity {
     @Column(nullable = false, unique = true)
     @NotBlank
     @Size(max = 128)
+    @NotNull
     private String name;
 
     @Size(max = 1024)
+    @NotNull
     private String description;
 
     @Column(nullable = false)
