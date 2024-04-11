@@ -50,6 +50,7 @@
         <!-- Spring -->
         <spring.version>6.1.5</spring.version>
         <spring-data.version>3.2.4</spring-data.version>
+        <spring-security.version>6.2.3</spring-security.version>
 
         <!-- Hibernate -->
         <hibernate.version>6.4.4.Final</hibernate.version>
@@ -60,6 +61,7 @@
         <servlet-api.version>6.0.0</servlet-api.version>
         <jakarta-validation.version>3.0.2</jakarta-validation.version>
         <jakarta-transaction.version>1.3</jakarta-transaction.version>
+        <jakarta-el.version>5.0.1</jakarta-el.version>
 
         <!-- JDBC Driver -->
         <postgresql-driver.version>42.7.3</postgresql-driver.version>
@@ -113,17 +115,17 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>6.2.3</version>
+            <version>${spring-security.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>6.2.3</version>
+            <version>${spring-security.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>6.2.3</version>
+            <version>${spring-security.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -158,7 +160,7 @@
         <dependency>
             <groupId>jakarta.el</groupId>
             <artifactId>jakarta.el-api</artifactId>
-            <version>5.0.1</version>
+            <version>${jakarta-el.version}</version>
         </dependency>
 
 
