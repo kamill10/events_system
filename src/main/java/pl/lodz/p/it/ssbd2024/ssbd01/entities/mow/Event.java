@@ -36,7 +36,7 @@ public class Event extends ControlledEntity {
     @NotNull
     private Boolean isNotCanceled = true;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event")
     private List<Session> sessions = new ArrayList<>();
 
     public Event(String name, String description, List<Session> sessions) {
