@@ -31,4 +31,4 @@ INSERT INTO public.role (id, version, name) VALUES ('cd8ab1c1-2431-4e28-88b5-fdd
 
 CREATE INDEX session_speaker_idx ON "session" (speaker_id);
 CREATE INDEX room_location_idx ON "room" (location_id);
-CREATE INDEX event_session_idx ON "event" (session_id);
+CREATE INDEX session_event_idx ON "session" (event_id);
