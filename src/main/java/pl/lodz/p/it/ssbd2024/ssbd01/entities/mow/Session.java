@@ -17,11 +17,13 @@ import java.util.Objects;
 public class Session extends ControlledEntity {
 
     @OneToOne
+    @NotNull
     @JoinColumn(nullable = false)
     private Room room;
 
     @ManyToOne
     @JoinColumn(nullable = false)
+    @NotNull
     private Speaker speaker;
 
     @Column(nullable = false)
