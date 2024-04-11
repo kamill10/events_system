@@ -26,7 +26,7 @@ public class Session extends ControlledEntity {
 
     @Column(nullable = false)
     @NotBlank
-    @Size(max = 32)
+    @Size(min = 3, max = 32)
     private String name;
 
     @ManyToOne(
@@ -39,7 +39,7 @@ public class Session extends ControlledEntity {
     @NotNull
     private Boolean isActive;
 
-    @Size(max = 1024)
+    @Size(min = 3, max = 1024)
     private String description;
 
     @NotNull
@@ -50,7 +50,7 @@ public class Session extends ControlledEntity {
 
     @Column(nullable = false, length = 4)
     @NotNull
-    @Min(0)
+    @Min(1)
     @Max(1024)
     private Integer maxSeats;
 

@@ -1,7 +1,3 @@
-create user ssbd01mok with password 'mok';
-create user ssbd01auth with password 'auth';
-create user ssbd01mow with password 'mow';
-
 GRANT SELECT, INSERT, UPDATE ON TABLE public.account TO ssbd01mok;
 GRANT SELECT ON TABLE public.role TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE public.account_role TO ssbd01mok;

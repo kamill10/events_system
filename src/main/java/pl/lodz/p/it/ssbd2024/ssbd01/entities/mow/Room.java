@@ -28,11 +28,12 @@ public class Room extends ControlledEntity {
             fetch = FetchType.LAZY
     )
     @JoinColumn(nullable = false, updatable = false, name = "location_id")
+    @NotNull
     private Location location;
 
     @Column(nullable = false, length = 4)
     @NotNull
-    @Min(0)
+    @Min(1)
     @Max(1000)
     private Integer maxCapacity;
 

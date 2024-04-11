@@ -61,12 +61,12 @@ public class Account extends AbstractEntity implements UserDetails {
 
     @Column(nullable = false, length = 32)
     @NotBlank
-    @Size(max = 32)
+    @Size(min = 2, max = 32)
     private String firstName;
 
     @Column(nullable = false, length = 64)
     @NotBlank
-    @Size(max = 64)
+    @Size(min = 2, max = 64)
     private String lastName;
 
 
@@ -125,7 +125,7 @@ public class Account extends AbstractEntity implements UserDetails {
         roles.add(role);
     }
 
-    public void removeRole(Role role){
+    public void removeRole(Role role) {
         roles.remove(role);
     }
 

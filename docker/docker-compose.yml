@@ -49,6 +49,7 @@ services:
       - "5432:5432"
     volumes:
       - pg:/var/lib/postgresql/data
+      - ./create-users.sql:/docker-entrypoint-initdb.d/create-users.sql
 
 volumes:
   pg:

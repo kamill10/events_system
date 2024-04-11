@@ -25,12 +25,12 @@ public class Event extends ControlledEntity {
 
     @Column(nullable = false, unique = true, updatable = false)
     @NotBlank
-    @Size(max = 128)
-    @NotNull
+    @Size(min = 3, max = 128)
     private String name;
 
-    @Size(max = 1024)
-    @NotNull
+    @Size(min = 3, max = 1024)
+    @NotBlank
+    @Column(columnDefinition = "varchar(1024)")
     private String description;
 
     @Column(nullable = false)

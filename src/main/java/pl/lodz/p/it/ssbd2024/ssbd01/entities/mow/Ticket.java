@@ -20,6 +20,7 @@ public class Ticket extends ControlledEntity {
 
     @OneToOne
     @JoinColumn(nullable = false)
+    @NotNull
     private Account account;
 
     @OneToOne
@@ -32,6 +33,7 @@ public class Ticket extends ControlledEntity {
     private Boolean isConfirmed;
 
     @PastOrPresent
+    @NotNull
     private LocalDateTime reservationTime;
 
     public Ticket(Account account, Session session) {
