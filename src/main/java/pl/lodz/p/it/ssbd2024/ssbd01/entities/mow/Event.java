@@ -47,7 +47,6 @@ public class Event extends ControlledEntity {
         this.name = name;
         this.description = description;
         this.sessions = sessions;
-        this.counter = 0;
     }
 
     /**

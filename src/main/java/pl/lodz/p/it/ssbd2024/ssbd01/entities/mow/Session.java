@@ -69,7 +69,6 @@ public class Session extends ControlledEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.maxSeats = maxSeats;
-        this.counter = 0;
     }
 
     @Override
