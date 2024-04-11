@@ -10,10 +10,10 @@ GRANT SELECT ON TABLE public.account TO ssbd01auth;
 GRANT SELECT ON TABLE public.role TO ssbd01auth;
 GRANT SELECT ON TABLE public.account_role TO ssbd01auth;
 
+
 GRANT SELECT ON TABLE public.account TO ssbd01mow;
 
 GRANT SELECT, INSERT, UPDATE ON TABLE public.event TO ssbd01mow;
-GRANT SELECT, INSERT ON TABLE public.event_session TO ssbd01mow;
 GRANT SELECT, INSERT, UPDATE ON TABLE public.session TO ssbd01mow;
 
 GRANT SELECT, INSERT, DELETE, UPDATE ON TABLE public.location TO ssbd01mow;

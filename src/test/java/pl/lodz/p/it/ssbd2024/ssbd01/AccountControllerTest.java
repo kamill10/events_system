@@ -158,11 +158,11 @@ public class AccountControllerTest {
                         .param("roleName", "PARTICIPANT"))
                 .andExpect(status().isOk());
 
-//        Assertions.assertThrows(Exception.class, () -> {
-//            mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
-//                            .param("roleName", "PARTICIPANT"))
-//                    .andExpect(status().isOk());
-//        });
+        Assertions.assertThrows(Exception.class, () -> {
+            mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .param("roleName", "PARTICIPANT"))
+                    .andExpect(status().isOk());
+        });
 
         Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
