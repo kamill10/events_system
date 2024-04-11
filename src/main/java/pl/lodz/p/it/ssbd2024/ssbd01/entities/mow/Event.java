@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,10 +40,14 @@ public class Event extends ControlledEntity {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Session> sessions = new ArrayList<>();
 
+    @PositiveOrZero
+    private long counter;
+
     public Event(String name, String description, List<Session> sessions) {
         this.name = name;
         this.description = description;
         this.sessions = sessions;
+        this.counter = 0;
     }
 
     /**
