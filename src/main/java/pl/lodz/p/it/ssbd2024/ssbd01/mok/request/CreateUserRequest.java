@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.request;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import lombok.*;
 
 @Getter

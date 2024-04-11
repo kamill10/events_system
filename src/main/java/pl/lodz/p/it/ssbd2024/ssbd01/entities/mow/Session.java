@@ -32,7 +32,7 @@ public class Session extends ControlledEntity {
     @ManyToOne(
             fetch = FetchType.LAZY
     )
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "event_id")
     private Event event;
 
     @Column(nullable = false)
