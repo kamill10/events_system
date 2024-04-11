@@ -94,10 +94,10 @@ public class AccountControllerTest {
 
         Account account = new Account("user5", passwordEncoder.encode("password"), "email5@email.com", 1, "firstName5", "lastName5");
         accountService.addUser(account);
-
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
+
 
         Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
