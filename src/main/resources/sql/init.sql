@@ -30,20 +30,22 @@ CREATE INDEX event_created_by_idx ON event USING btree (created_by);
 CREATE INDEX event_updated_by_idx ON event USING btree (updated_by);
 CREATE INDEX location_created_by_idx ON location USING btree (created_by);
 CREATE INDEX location_updated_by_idx ON location USING btree (updated_by);
-CREATE INDEX room_created_by_idx ON "room" USING btree (created_by);
-CREATE INDEX room_location_id_idx ON "room" USING btree (location_id);
-CREATE INDEX room_updated_by_idx ON "room" USING btree (updated_by);
-CREATE INDEX session_created_by_idx ON "session" USING btree (created_by);
-CREATE INDEX session_event_id_idx ON "session" USING btree (event_id);
-CREATE INDEX session_room_id_idx ON "session" USING btree (room_id);
-CREATE INDEX session_speaker_id_idx ON "session" USING btree (speaker_id);
-CREATE INDEX session_updated_by_idx ON "session" USING btree (updated_by);
+CREATE INDEX room_created_by_idx ON room USING btree (created_by);
+CREATE INDEX room_location_id_idx ON room USING btree (location_id);
+CREATE INDEX room_updated_by_idx ON room USING btree (updated_by);
+CREATE INDEX session_created_by_idx ON session USING btree (created_by);
+CREATE INDEX session_event_id_idx ON session USING btree (event_id);
+CREATE INDEX session_room_id_idx ON session USING btree (room_id);
+CREATE INDEX session_speaker_id_idx ON session USING btree (speaker_id);
+CREATE INDEX session_updated_by_idx ON session USING btree (updated_by);
 CREATE INDEX speaker_created_by_idx ON speaker USING btree (created_by);
 CREATE INDEX speaker_updated_by_idx ON speaker USING btree (updated_by);
 CREATE INDEX ticket_account_id_idx ON ticket USING btree (account_id);
 CREATE INDEX ticket_created_by_idx ON ticket USING btree (created_by);
 CREATE INDEX ticket_session_id_idx ON ticket USING btree (session_id);
 CREATE INDEX ticket_updated_by_idx ON ticket USING btree (updated_by);
+
+ALTER TABLE account_role ADD UNIQUE (account_id, roles_id);
 
 
 INSERT INTO public.role (id, version, name) VALUES ('550e8400-e29b-41d4-a716-446655440000', 0, 'ADMIN');
