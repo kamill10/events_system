@@ -16,18 +16,18 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(uniqueConstraints =
-        @UniqueConstraint(columnNames = {"firstName", "lastName"})
+@UniqueConstraint(columnNames = {"firstName", "lastName"})
 )
 public class Speaker extends ControlledEntity {
 
     @Column(nullable = false, length = 32)
     @NotBlank
-    @Size(max = 32)
+    @Size(min = 2, max = 32)
     private String firstName;
 
     @Column(nullable = false, length = 64)
     @NotBlank
-    @Size(max = 64)
+    @Size(min = 2, max = 64)
     private String lastName;
 
     @Override

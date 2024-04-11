@@ -12,8 +12,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
 
 @ToString
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Role extends AbstractEntity {
 

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import java.math.BigInteger;
 import java.util.UUID;
 
 @MappedSuperclass
@@ -18,5 +17,6 @@ public abstract class AbstractEntity {
     private UUID id;
 
     @Version
+    @Column(nullable = false)
     private Long version;
 }

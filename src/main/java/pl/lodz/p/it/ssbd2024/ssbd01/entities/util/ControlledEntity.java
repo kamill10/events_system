@@ -32,6 +32,7 @@ public abstract class ControlledEntity extends AbstractEntity {
     private Account updatedBy;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     @Column(name = "action_type", nullable = false)
     private ActionTypeEnum actionType;
 
