@@ -15,7 +15,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE public.session TO ssbd01mow;
 GRANT SELECT, INSERT, DELETE, UPDATE ON TABLE public.location TO ssbd01mow;
 GRANT SELECT, INSERT, DELETE ON TABLE public.room TO ssbd01mow;
 
-GRANT SELECT, INSERT ON TABLE public.speaker TO ssbd01mow;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.speaker TO ssbd01mow;
 
 GRANT SELECT, INSERT, DELETE, UPDATE ON TABLE public.ticket TO ssbd01mow;
 
