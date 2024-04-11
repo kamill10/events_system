@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "account")
-//@SecondaryTable(name = "personal_data", pkJoinColumns = @PrimaryKeyJoinColumn(name = "id", referencedColumnName = "id"))
 public class Account extends AbstractEntity implements UserDetails {
 
     @Setter(AccessLevel.NONE)
@@ -51,24 +50,20 @@ public class Account extends AbstractEntity implements UserDetails {
     @NotNull
     private Boolean verified;
 
-    //    @Column(name = "email", table = "personal_data")
     @Column(nullable = false, unique = true)
     @NotBlank
     @Email
     private String email;
 
-    //    @Column(table = "personal_data")
     @Column(nullable = false)
     @NotNull
     private Integer gender;
 
-    //    @Column(table = "personal_data")
     @Column(nullable = false, length = 32)
     @NotBlank
     @Size(max = 32)
     private String firstName;
 
-    //    @Column(table = "personal_data")
     @Column(nullable = false, length = 64)
     @NotBlank
     @Size(max = 64)

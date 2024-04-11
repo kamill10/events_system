@@ -32,7 +32,7 @@ public class Session extends ControlledEntity {
     @ManyToOne(
             fetch = FetchType.LAZY
     )
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "event_id")
     private Event event;
 
     @Column(nullable = false)
@@ -53,6 +53,9 @@ public class Session extends ControlledEntity {
     @Min(0)
     @Max(1024)
     private Integer maxSeats;
+
+    @PositiveOrZero
+    private long counter;
 
     public Session(Room room, Speaker speaker, String name, Event event,
                    Boolean isActive, String description, LocalDateTime startTime,

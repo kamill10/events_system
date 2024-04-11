@@ -28,26 +28,17 @@ public class AccountService {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
         List<Role> accountRoles = account.getRoles();
-        if(accountRoles.size() == 1) {
-            Role currentRole = accountRoles.getFirst();
-            if (currentRole.getName().equals("ADMIN")) {
-                if (roleName.equals("PARTICIPANT")) {
-                    throw new IllegalArgumentException("ADMIN cannot have the role PARTICIPANT");
-                } else if (roleName.equals("ADMIN")) {
-                    throw new IllegalArgumentException("This account already has the role ADMIN");
-                }
-            } else if (currentRole.getName().equals("MANAGER")) {
-                if (roleName.equals("PARTICIPANT")) {
-                    throw new IllegalArgumentException("MANAGER cannot have the role PARTICIPANT");
-                } else if (roleName.equals("MANAGER")) {
-                    throw new IllegalArgumentException("This account already has the role MANAGER");
-                }
-            } else if (currentRole.getName().equals("PARTICIPANT") &&
-                    (roleName.equals("ADMIN") || roleName.equals("MANAGER"))) {
-                throw new IllegalArgumentException("PARTICIPANT cannot have any other role");
-            }
-        } else if (accountRoles.size() == 2) {
-            throw new IllegalArgumentException("This account has the maximum number of roles");
+        if (accountRoles.contains(role)) {
+            throw new IllegalArgumentException("Role " + role.getName() + " is already assigned");
+        }
+        if (accountRoles.size() == 2) {
+            throw new IllegalArgumentException("Account can't have more than 2 roles");
+        }
+        if (accountRoles.contains(new Role("PARTICIPANT"))) {
+            throw new IllegalArgumentException("Participant can't have other roles");
+        }
+        if (!accountRoles.isEmpty() && role.equals(new Role("PARTICIPANT"))) {
+            throw new IllegalArgumentException("Participant can't have other roles");
         }
         account.addRole(role);
         return accountMokRepository.save(account);
