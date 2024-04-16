@@ -1,12 +1,10 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.auth.request.RegisterUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountToAccountDto;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.dto.AccountDto;
@@ -47,11 +45,11 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
-    @DeleteMapping("/{id}/takeRole")
-    public ResponseEntity<AccountDto> takeRoleOffAccount(@PathVariable UUID id,
-                                                         @RequestParam String roleName) {
+    @DeleteMapping("/{id}/removeRole")
+    public ResponseEntity<AccountDto> removeRole(@PathVariable UUID id,
+                                                 @RequestParam String roleName) {
         AccountDto updatedAccount = AccountToAccountDto
-                .toAccountDto(accountService.takeRole(id, roleName));
+                .toAccountDto(accountService.removeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
     @PatchMapping("/{id}/setActive")

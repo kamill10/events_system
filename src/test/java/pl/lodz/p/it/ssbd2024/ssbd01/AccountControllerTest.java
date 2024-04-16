@@ -132,13 +132,13 @@ public class AccountControllerTest {
         });
 
         Assertions.assertThrows(Exception.class, () -> {
-            mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/takeRole")
+            mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                             .param("roleName", "PARTICIPANT"))
                     .andExpect(status().isOk());
         });
 
         Assertions.assertThrows(Exception.class, () -> {
-            mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/takeRole")
+            mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                             .param("roleName", "MANAGER"))
                     .andExpect(status().isOk());
         });
@@ -153,7 +153,7 @@ public class AccountControllerTest {
                     .andExpect(status().isOk());
         });
 
-        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/takeRole")
+        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
 
@@ -170,7 +170,7 @@ public class AccountControllerTest {
                     .andExpect(status().isOk());
         });
 
-        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/takeRole")
+        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isOk());
 
@@ -197,13 +197,13 @@ public class AccountControllerTest {
         });
 
         Assertions.assertThrows(Exception.class, () -> {
-            mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/takeRole")
+            mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                             .param("roleName", "MANAGER"))
                     .andExpect(status().isOk());
         });
 
         Assertions.assertThrows(Exception.class, () -> {
-            mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/takeRole")
+            mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                             .param("roleName", "ADMIN"))
                     .andExpect(status().isOk());
         });

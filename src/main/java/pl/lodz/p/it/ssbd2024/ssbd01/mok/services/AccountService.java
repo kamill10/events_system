@@ -43,7 +43,7 @@ public class AccountService {
         account.addRole(role);
         return accountMokRepository.save(account);
     }
-    public Account takeRole(UUID id, String roleName){
+    public Account removeRole(UUID id, String roleName){
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
         Account account = accountMokRepository.findById(id)
