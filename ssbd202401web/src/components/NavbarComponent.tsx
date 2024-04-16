@@ -26,7 +26,7 @@ export default function NavbarComponent(props: NavbarPropType) {
             <Slide appear={false} direction={"down"} in={!scrollTrigger}>
                 <AppBar>
                     <Toolbar sx={{
-                        backgroundColor: "#ba0c00"
+                        backgroundColor: props.color
                     }}>
                         <Typography
                             variant="h6"
@@ -48,7 +48,7 @@ export default function NavbarComponent(props: NavbarPropType) {
                             }
                         }}>
                             {props.routes.map((route) => {
-                                return route.name !== "Home" && <MenuItem key={route.name}>
+                                return route.renderOnNavbar && <MenuItem key={route.name}>
                                     <Typography textAlign={"center"}>
                                         <LinkComponent href={route.pathname} name={route.name}></LinkComponent>
                                     </Typography>
@@ -75,14 +75,12 @@ export default function NavbarComponent(props: NavbarPropType) {
                                 onClose={handleDropDownClose}
                             >
                                 { props.routes.map((route) => {
-                                    return (route.name === "Log in" ||
-                                        route.name === "Sign in") && 
-                                        <MenuItem key={route.name} onClick={handleDropDownClose}>
+                                    return (route.renderOnDropdown && <MenuItem key={route.name} onClick={handleDropDownClose}>
                                             <Typography textAlign={"center"}>
                                                 <LinkComponent href={route.pathname} name={route.name}></LinkComponent>
                                             </Typography>
                                         </MenuItem>
-                                }) }
+                                )}) }
                             </Menu>
                         </Box>
                     </Toolbar>

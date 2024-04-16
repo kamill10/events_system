@@ -1,12 +1,12 @@
 import PublicLayoutPropType from "../types/PublicLayoutPropType.ts";
 import Navbar from "../components/NavbarComponent.tsx";
-import { PublicRoutes } from "../router/Routes.ts";
+import { ManagerRoutes } from "../router/Routes.ts";
 import { Box, Container } from "@mui/material";
 
-export default function PublicLayout(props: PublicLayoutPropType) {
+export default function ManagerLayout(props: PublicLayoutPropType) {
     return (
         <>
-            <Navbar routes={PublicRoutes} color="#5800c4"></Navbar>
+            <Navbar routes={ManagerRoutes} color="#001fa8"></Navbar>
             <Container maxWidth={"xl"}>
                 <Box sx={{ my: 10}}>
                     {props.page} 
