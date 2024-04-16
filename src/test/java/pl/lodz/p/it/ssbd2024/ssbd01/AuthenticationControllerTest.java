@@ -5,11 +5,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.controllers.AuthenticationController;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controllers.AccountController;
@@ -19,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Testcontainers
 @SpringJUnitWebConfig(classes = {WebConfig.class})
 public class AuthenticationControllerTest {
 
@@ -35,6 +41,21 @@ public class AuthenticationControllerTest {
 
     private MockMvc mockMvcAccount;
 
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
+            "postgres:16.2"
+    );
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("jdbc.url", postgres::getJdbcUrl);
+        registry.add("jdbc.admin.user", postgres::getUsername);
+        registry.add("jdbc.admin.password", postgres::getPassword);
+        registry.add("jdbc.mok.user", postgres::getUsername);
+        registry.add("jdbc.mok.password", postgres::getPassword);
+        registry.add("jdbc.auth.user", postgres::getUsername);
+        registry.add("jdbc.auth.password", postgres::getPassword);
+    }
 
     @BeforeEach
     void setup() {
