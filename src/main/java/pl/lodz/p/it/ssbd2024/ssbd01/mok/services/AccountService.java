@@ -69,5 +69,15 @@ public class AccountService {
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for username: " + username));
     }
 
+    public Account updateAccountUserData(UUID id, Account account) {
+        Account accountToUpdate = accountMokRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
+        accountToUpdate.setFirstName(account.getFirstName());
+        accountToUpdate.setLastName(account.getLastName());
+        accountToUpdate.setEmail(account.getEmail());
+        accountToUpdate.setGender(account.getGender());
+        return accountMokRepository.save(accountToUpdate);
+    }
+
 
 }

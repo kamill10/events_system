@@ -74,7 +74,8 @@ public class AccountController {
     @GetMapping("/username/{username}")
     public ResponseEntity<AccountDto> getAccountByUsername(@PathVariable String username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             if (userDetails.getUsername().equals(username)) {
                 AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.getAccountByUsername(username));
                 return ResponseEntity.status(HttpStatus.OK).body(accountDto);
@@ -82,4 +83,13 @@ public class AccountController {
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
+
+
+    @PutMapping("/userData/{id}")
+    public ResponseEntity<AccountDto> updateAccountUserData(@PathVariable UUID id, @RequestBody Account account) {
+        AccountDto updatedAccount = AccountToAccountDto
+                .toAccountDto(accountService.updateAccountUserData(id, account));
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
+
 }
