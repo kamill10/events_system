@@ -25,7 +25,7 @@ public class AuthenticationService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         Account account = new Account(request.getUsername(), encodedPassword, request.getEmail(), request.getGender(),
                 request.getFirstName(), request.getLastName());
-        accountService.addUser(account);
+        accountService.addAccount(account);
         return jwtService.generateToken(account);
     }
 

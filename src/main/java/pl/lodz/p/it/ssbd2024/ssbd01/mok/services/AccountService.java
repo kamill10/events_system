@@ -16,12 +16,12 @@ public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
 
-    public List<Account> getAllUsers() {
+    public List<Account> getAllAccounts() {
         return accountMokRepository.findAll();
     }
 
     @Transactional
-    public Account addUser(Account account) {
+    public Account addAccount(Account account) {
         return accountMokRepository.save(account);
     }
 

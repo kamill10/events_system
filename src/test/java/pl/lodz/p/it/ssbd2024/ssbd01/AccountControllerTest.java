@@ -68,7 +68,7 @@ public class AccountControllerTest {
     public void testGetAllAccountsEndpoint() throws Exception {
 
         Account account = new Account("user3", passwordEncoder.encode("password"), "email3@email.com", 0, "firstName3", "lastName3");
-        accountService.addUser(account);
+        accountService.addAccount(account);
 
         MvcResult result = mockMvcAccount.perform(get("/api/accounts"))
                 .andExpect(status().isOk())
@@ -102,7 +102,7 @@ public class AccountControllerTest {
     public void testAddRoleToAccountEndpoint() throws Exception {
 
         Account account = new Account("user4", passwordEncoder.encode("password"), "email4@email.com", 0, "firstName4", "lastName4");
-        accountService.addUser(account);
+        accountService.addAccount(account);
 
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                         .param("roleName", "ADMIN"))
@@ -113,7 +113,7 @@ public class AccountControllerTest {
     public void testRemoveRoleFromAccountEndpoint() throws Exception {
 
         Account account = new Account("user5", passwordEncoder.encode("password"), "email5@email.com", 1, "firstName5", "lastName5");
-        accountService.addUser(account);
+        accountService.addAccount(account);
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
@@ -215,7 +215,7 @@ public class AccountControllerTest {
     public void testSetActiveAccountEndpoint() throws Exception {
 
         Account account = new Account("user10", passwordEncoder.encode("password"), "email10@email.com", 0, "firstName10", "lastName10");
-        account = accountService.addUser(account);
+        account = accountService.addAccount(account);
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setActive"))
                 .andExpect(status().isOk());
         Assertions.assertThrows(AssertionError.class, () -> {
@@ -229,7 +229,7 @@ public class AccountControllerTest {
     public void testSetInactiveAccountEndpoint() throws Exception {
 
         Account account = new Account("user11", passwordEncoder.encode("password"), "email11@email.com", 0, "firstName11", "lastName11");
-        account = accountService.addUser(account);
+        account = accountService.addAccount(account);
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setInactive"))
                 .andExpect(status().isOk());
         Assertions.assertThrows(AssertionError.class, () -> {

@@ -25,7 +25,7 @@ public class AccountController {
 
     @GetMapping
     public List<AccountDto> getAllUsers() {
-        List<AccountDto> accountDtos = AccountToAccountDto.accountDtoList(accountService.getAllUsers());
+        List<AccountDto> accountDtos = AccountToAccountDto.accountDtoList(accountService.getAllAccounts());
         return ResponseEntity.status(HttpStatus.OK).body(accountDtos).getBody();
     }
 
@@ -33,7 +33,7 @@ public class AccountController {
     public ResponseEntity<AccountDto> createUser(@RequestBody CreateUserRequest request) {
         Account account = new Account(request.getUsername(),passwordEncoder.encode(request.getPassword()), request.getEmail()
                 , request.getGender(), request.getFirstName(), request.getLastName());
-        AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.addUser(account));
+        AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.addAccount(account));
         return ResponseEntity.status(HttpStatus.CREATED).body(accountDto);
     }
 
