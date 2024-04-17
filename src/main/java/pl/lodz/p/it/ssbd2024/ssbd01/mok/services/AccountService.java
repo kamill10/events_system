@@ -67,4 +67,49 @@ public class AccountService {
     }
 
 
+    public Account getAccountByUsername(String username) {
+        return accountMokRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for username: " + username));
+    }
+
+    public Account updateAccountUserData(UUID id, Account account) {
+        Account accountToUpdate = accountMokRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
+        accountToUpdate.setFirstName(account.getFirstName());
+        accountToUpdate.setLastName(account.getLastName());
+        accountToUpdate.setEmail(account.getEmail());
+        accountToUpdate.setGender(account.getGender());
+        return accountMokRepository.save(accountToUpdate);
+    }
+    public List<Account> getParticipants(){
+        List<Account> participants= getAllAccounts()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("PARTICIPANT")))
+                .toList();
+        if(participants.isEmpty()){
+            throw new IllegalArgumentException("No participants found");
+        }
+        return participants;
+    }
+    public List<Account> getMenagers(){
+        List<Account>moderators = getAllAccounts()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("MANAGER")))
+                .toList();
+        if(moderators.isEmpty()){
+            throw new IllegalArgumentException("No managers found");
+        }
+        return moderators;
+    }
+    public List<Account> getAdmins(){
+        List<Account>admins = getAllAccounts()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("ADMIN")))
+                .toList();
+        if (admins.isEmpty()){
+            throw new IllegalArgumentException("No admins found");
+        }
+        return admins;
+    }
+
 }
