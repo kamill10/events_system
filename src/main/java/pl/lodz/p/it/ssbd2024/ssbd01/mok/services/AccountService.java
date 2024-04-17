@@ -65,35 +65,6 @@ public class AccountService {
         account.setActive(status);
         return accountMokRepository.save(account);
     }
-    public List<Account> getParticipants(){
-        List<Account> participants= getAllAccounts()
-                .stream()
-                .filter(account -> account.getRoles().contains(new Role("PARTICIPANT")))
-                .toList();
-        if(participants.isEmpty()){
-            throw new IllegalArgumentException("No participants found");
-        }
-        return participants;
-    }
-    public List<Account> getMenagers(){
-        List<Account>moderators = getAllAccounts()
-                .stream()
-                .filter(account -> account.getRoles().contains(new Role("MANAGER")))
-                .toList();
-        if(moderators.isEmpty()){
-            throw new IllegalArgumentException("No managers found");
-        }
-        return moderators;
-    }
-    public List<Account> getAdmins(){
-        List<Account>admins = getAllAccounts()
-                .stream()
-                .filter(account -> account.getRoles().contains(new Role("ADMIN")))
-                .toList();
-        if (admins.isEmpty()){
-            throw new IllegalArgumentException("No admins found");
-        }
-        return admins;
-    }
+
 
 }
