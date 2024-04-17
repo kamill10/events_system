@@ -10,12 +10,14 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.RoleRepository;
 
 import java.util.*;
 
+
 @Service
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
-    public List<Account> getAllAccounts(){
+
+    public List<Account> getAllAccounts() {
         return accountMokRepository.findAll();
     }
     @Transactional
@@ -48,16 +50,16 @@ public class AccountService {
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
-        for(Role roles : account.getRoles()){
-            if(roles.getName().equals(roleName)){
+        for (Role roles : account.getRoles()) {
+            if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
                 return accountMokRepository.save(account);
             }
         }
-        throw new IllegalArgumentException("This account does not have role "+roleName);
+        throw new IllegalArgumentException("This account does not have role " + roleName);
     }
 
-    public Account setAccountStatus(UUID id, boolean status){
+    public Account setAccountStatus(UUID id, boolean status) {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
         account.setActive(status);
