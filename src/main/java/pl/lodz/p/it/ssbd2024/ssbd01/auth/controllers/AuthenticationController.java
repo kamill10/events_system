@@ -17,7 +17,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.services.AuthenticationService;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/user")
+    @PostMapping("/register")
     public ResponseEntity<String> registerUser(
             @RequestBody RegisterUserRequest request
     ) {

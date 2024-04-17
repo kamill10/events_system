@@ -19,13 +19,11 @@ public class AccountService {
     public List<Account> getAllAccounts() {
         return accountMokRepository.findAll();
     }
-
     @Transactional
     public Account addAccount(Account account) {
         return accountMokRepository.save(account);
     }
-
-    public Account addRoleToAccount(UUID id, String roleName) {
+    public Account addRoleToAccount(UUID id, String roleName){
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
         Account account = accountMokRepository.findById(id)
@@ -46,8 +44,7 @@ public class AccountService {
         account.addRole(role);
         return accountMokRepository.save(account);
     }
-
-    public Account removeRole(UUID id, String roleName) {
+    public Account removeRole(UUID id, String roleName){
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
         Account account = accountMokRepository.findById(id)
@@ -66,6 +63,36 @@ public class AccountService {
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for id: " + id));
         account.setActive(status);
         return accountMokRepository.save(account);
+    }
+    public List<Account> getParticipants(){
+        List<Account> participants= getAllAccounts()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("PARTICIPANT")))
+                .toList();
+        if(participants.isEmpty()){
+            throw new IllegalArgumentException("No participants found");
+        }
+        return participants;
+    }
+    public List<Account> getMenagers(){
+        List<Account>moderators = (List<Account>) getAllAccounts()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("MANAGER")))
+                .toList();
+        if(moderators.isEmpty()){
+            throw new IllegalArgumentException("No managers found");
+        }
+        return moderators;
+    }
+    public List<Account> getAdmins(){
+        List<Account>admins = (List<Account>) getAllAccounts()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("ADMIN")))
+                .toList();
+        if (admins.isEmpty()){
+            throw new IllegalArgumentException("No admins found");
+        }
+        return admins;
     }
 
 }

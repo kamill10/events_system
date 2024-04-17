@@ -64,4 +64,24 @@ public class AccountController {
                 .toAccountDto(accountService.setAccountStatus(id, false));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+    @GetMapping("/participants")
+    public ResponseEntity<List<AccountDto>> getParticipants() {
+        List<AccountDto> participants = AccountToAccountDto.
+                accountDtoList(accountService.
+                        getParticipants());
+        return ResponseEntity.status(HttpStatus.OK).body(participants);
+    }
+    @GetMapping("/administrators")
+    public ResponseEntity<List<AccountDto>> getAdministrators() {
+        List<AccountDto> admiministrators = AccountToAccountDto.
+                accountDtoList(accountService.getAdmins());
+        return ResponseEntity.status(HttpStatus.OK).body(admiministrators);
+    }
+    @GetMapping("/managers")
+    public ResponseEntity<List<AccountDto>> getManagers() {
+        List<AccountDto> managers = AccountToAccountDto.
+                accountDtoList(accountService.getMenagers() );
+        return ResponseEntity.status(HttpStatus.OK).body(managers);
+    }
+
 }

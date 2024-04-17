@@ -40,10 +40,13 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> {
                     requests
-                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/auth/**")).permitAll()
+                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/auth/**")).permitAll().
+                            requestMatchers(antMatcher(HttpMethod.GET,"/api/accounts/**")).hasAuthority("ADMIN")
+                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/accounts/**")).permitAll();
+                            /*.requestMatchers(antMatcher(HttpMethod.GET,"/api/accounts/**")).permitAll()
                             .requestMatchers(antMatcher(HttpMethod.GET,"/api/accounts")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/accounts/**")).permitAll()
-                             .requestMatchers(antMatcher(HttpMethod.DELETE,"/api/accounts/**")).permitAll();
+
+                             .requestMatchers(antMatcher(HttpMethod.DELETE,"/api/accounts/**")).permitAll();*/
 
 
                 });
