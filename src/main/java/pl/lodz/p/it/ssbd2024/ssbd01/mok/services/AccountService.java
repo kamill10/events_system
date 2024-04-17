@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.RoleRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +64,35 @@ public class AccountService {
         account.setActive(status);
         return accountMokRepository.save(account);
     }
-
+    public List<Account> getParticipants(){
+        List<Account> participants= getAllUsers()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("PARTICIPANT")))
+                .toList();
+        if(participants.isEmpty()){
+            throw new IllegalArgumentException("No participants found");
+        }
+        return participants;
+    }
+    public List<Account> getMenagers(){
+        List<Account>moderators = (List<Account>) getAllUsers()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("MANAGER")))
+                .toList();
+        if(moderators.isEmpty()){
+            throw new IllegalArgumentException("No managers found");
+        }
+        return moderators;
+    }
+    public List<Account> getAdmins(){
+        List<Account>admins = (List<Account>) getAllUsers()
+                .stream()
+                .filter(account -> account.getRoles().contains(new Role("ADMIN")))
+                .toList();
+        if (admins.isEmpty()){
+            throw new IllegalArgumentException("No admins found");
+        }
+        return admins;
+    }
 
 }

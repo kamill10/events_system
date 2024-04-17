@@ -1,11 +1,13 @@
 package pl.lodz.p.it.ssbd2024.ssbd01;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
@@ -18,10 +20,14 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controllers.AccountController;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Testcontainers
@@ -39,6 +45,14 @@ public class AccountControllerTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    Role admin = new Role("ADMIN");
+    Role manager = new Role("MANAGER");
+    Role participant = new Role("PARTICIPANT");
+
 
     private MockMvc mockMvcAccount;
 
@@ -62,8 +76,17 @@ public class AccountControllerTest {
                 .standaloneSetup(accountController)
                 .setHandlerExceptionResolvers(handlerExceptionResolver)
                 .build();
+        if (roleRepository.findByName("ADMIN").isEmpty()) {
+            roleRepository.save(new Role("ADMIN"));
+        }
+        if (roleRepository.findByName("MANAGER").isEmpty()) {
+            roleRepository.save(new Role("MANAGER"));
+        }
+        if (roleRepository.findByName("PARTICIPANT").isEmpty()) {
+            roleRepository.save(new Role("PARTICIPANT"));
+        }
+        assertEquals(3, roleRepository.findAll().size());
     }
-
     @Test
     public void testGetAllAccountsEndpoint() throws Exception {
 
@@ -101,7 +124,7 @@ public class AccountControllerTest {
     @Test
     public void testAddRoleToAccountEndpoint() throws Exception {
 
-        Account account = new Account("user4", passwordEncoder.encode("password"), "email4@email.com", 0, "firstName4", "lastName4");
+        Account account = new Account("user4", passwordEncoder.encode("password"), "email44@email.com", 0, "firstName4", "lastName4");
         accountService.addUser(account);
 
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
@@ -234,6 +257,55 @@ public class AccountControllerTest {
             mockMvcAccount.perform(patch("/api/accounts/" + "BAD_ID" + "/setInactive"))
                     .andExpect(status().isOk());
         });
-
     }
+    @Test
+    @WithMockUser(username = "user6", roles = {"ADMIN"})
+    public void testGetParticipants() throws Exception{
+        Account account = new Account("participant", passwordEncoder.encode("password"), "email12@email.com", 0, "firstName11", "lastName11");
+        account = accountService.addUser(account);
+        System.out.println(roleRepository.findAll());
+        assertEquals(3, roleRepository.findAll().size());
+        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        mockMvcAccount.perform(post("/api/accounts/participants"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("last.username").value(account.getUsername()))
+                .andExpect(jsonPath("last.email").value(account.getEmail()))
+                .andExpect(jsonPath("last.firstName").value(account.getFirstName()))
+                .andExpect(jsonPath("last.lastName").value(account.getLastName()))
+                .andExpect(jsonPath("last.email").value(account.getEmail()));
+    }
+    @Test
+    public void testGetParticipantsUnauthorized() throws Exception{
+        mockMvcAccount.perform(post("/api/accounts/participants"))
+                .andExpect(status().isUnauthorized());
+    }
+    @Test
+    @WithMockUser(username = "user6", roles = {"ADMIN"})
+    public void testGetAdministrators() throws Exception{
+        Account account = new Account("admin", passwordEncoder.encode("password"), "email13@email.com", 0, "firstName11", "lastName11");
+        account = accountService.addUser(account);
+        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        mockMvcAccount.perform(post("/api/accounts/administrators"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("last.username").value(account.getUsername()))
+                .andExpect(jsonPath("last.email").value(account.getEmail()))
+                .andExpect(jsonPath("last.firstName").value(account.getFirstName()))
+                .andExpect(jsonPath("last.lastName").value(account.getLastName()))
+                .andExpect(jsonPath("last.email").value(account.getEmail()));
+    }
+    @Test
+    @WithMockUser(username = "user6", roles = {"ADMIN"})
+    public void testGetManagers() throws Exception{
+        Account account = new Account("manager", passwordEncoder.encode("password"), "email4@email.com", 0, "firstName11", "lastName11");
+        account = accountService.addUser(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        mockMvcAccount.perform(post("/api/accounts/managers"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("last.username").value(account.getUsername()))
+                .andExpect(jsonPath("last.email").value(account.getEmail()))
+                .andExpect(jsonPath("last.firstName").value(account.getFirstName()))
+                .andExpect(jsonPath("last.lastName").value(account.getLastName()))
+                .andExpect(jsonPath("last.email").value(account.getEmail()));
+    }
+
 }
