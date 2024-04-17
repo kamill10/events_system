@@ -210,6 +210,7 @@ public class AccountControllerTest {
 
 
     }
+
     @Test
     public void testSetActiveAccountEndpoint() throws Exception {
 
@@ -223,6 +224,7 @@ public class AccountControllerTest {
 
         });
     }
+
     @Test
     public void testSetInactiveAccountEndpoint() throws Exception {
 
