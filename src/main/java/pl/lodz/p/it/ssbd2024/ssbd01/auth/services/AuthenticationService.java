@@ -22,9 +22,10 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
 
     public String registerUser(RegisterUserRequest request) {
-        Account account = new Account(request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail()
-                , request.getGender(), request.getFirstName(), request.getLastName());
-        accountService.addUser(account);
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        Account account = new Account(request.getUsername(), encodedPassword, request.getEmail(), request.getGender(),
+                request.getFirstName(), request.getLastName());
+        accountService.addAccount(account);
         return jwtService.generateToken(account);
     }
 
