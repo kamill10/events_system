@@ -24,7 +24,7 @@ public class AuthenticationService {
     public String registerUser(RegisterUserRequest request) {
         Account account = new Account(request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail()
                 , request.getGender(), request.getFirstName(), request.getLastName());
-        accountService.addUser(account);
+        accountService.addAccount(account);
         return jwtService.generateToken(account);
     }
 

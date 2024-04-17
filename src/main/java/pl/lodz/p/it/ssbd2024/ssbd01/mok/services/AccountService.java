@@ -9,18 +9,17 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.RoleRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
-    public List<Account> getAllUsers(){
+    public List<Account> getAllAccounts(){
         return accountMokRepository.findAll();
     }
     @Transactional
-    public Account addUser(Account account) {
+    public Account addAccount(Account account) {
         return accountMokRepository.save(account);
     }
     public Account addRoleToAccount(UUID id, String roleName){
@@ -65,7 +64,7 @@ public class AccountService {
         return accountMokRepository.save(account);
     }
     public List<Account> getParticipants(){
-        List<Account> participants= getAllUsers()
+        List<Account> participants= getAllAccounts()
                 .stream()
                 .filter(account -> account.getRoles().contains(new Role("PARTICIPANT")))
                 .toList();
@@ -75,7 +74,7 @@ public class AccountService {
         return participants;
     }
     public List<Account> getMenagers(){
-        List<Account>moderators = (List<Account>) getAllUsers()
+        List<Account>moderators = getAllAccounts()
                 .stream()
                 .filter(account -> account.getRoles().contains(new Role("MANAGER")))
                 .toList();
@@ -85,7 +84,7 @@ public class AccountService {
         return moderators;
     }
     public List<Account> getAdmins(){
-        List<Account>admins = (List<Account>) getAllUsers()
+        List<Account>admins = getAllAccounts()
                 .stream()
                 .filter(account -> account.getRoles().contains(new Role("ADMIN")))
                 .toList();
