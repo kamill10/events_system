@@ -64,5 +64,10 @@ public class AccountService {
         return accountMokRepository.save(account);
     }
 
+    public Account getAccountByUsername(String username) {
+        return accountMokRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found for username: " + username));
+    }
+
 
 }

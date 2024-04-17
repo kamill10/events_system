@@ -3,6 +3,10 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
@@ -21,7 +25,7 @@ public class AccountController {
 
 
     private final AccountService accountService;
-    private final  PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<AccountDto> getAllUsers() {
@@ -31,7 +35,7 @@ public class AccountController {
 
     @PostMapping
     public ResponseEntity<AccountDto> createUser(@RequestBody CreateUserRequest request) {
-        Account account = new Account(request.getUsername(),passwordEncoder.encode(request.getPassword()), request.getEmail()
+        Account account = new Account(request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail()
                 , request.getGender(), request.getFirstName(), request.getLastName());
         AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.addUser(account));
         return ResponseEntity.status(HttpStatus.CREATED).body(accountDto);
@@ -52,16 +56,30 @@ public class AccountController {
                 .toAccountDto(accountService.removeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+
     @PatchMapping("/{id}/setActive")
     public ResponseEntity<AccountDto> setActive(@PathVariable UUID id) {
         AccountDto updatedAccount = AccountToAccountDto
                 .toAccountDto(accountService.setAccountStatus(id, true));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+
     @PatchMapping("/{id}/setInactive")
     public ResponseEntity<AccountDto> setInactive(@PathVariable UUID id) {
         AccountDto updatedAccount = AccountToAccountDto
                 .toAccountDto(accountService.setAccountStatus(id, false));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<AccountDto> getAccountByUsername(@PathVariable String username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+            if (userDetails.getUsername().equals(username)) {
+                AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.getAccountByUsername(username));
+                return ResponseEntity.status(HttpStatus.OK).body(accountDto);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }

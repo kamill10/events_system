@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
@@ -210,6 +211,7 @@ public class AccountControllerTest {
 
 
     }
+
     @Test
     public void testSetActiveAccountEndpoint() throws Exception {
 
@@ -223,6 +225,7 @@ public class AccountControllerTest {
 
         });
     }
+
     @Test
     public void testSetInactiveAccountEndpoint() throws Exception {
 
@@ -236,4 +239,22 @@ public class AccountControllerTest {
         });
 
     }
+
+    @Test
+    @WithMockUser(username = "user12")
+    public void testGetAccountByUsernameEndpoint() throws Exception {
+
+        Account account = new Account("user12", passwordEncoder.encode("password"), "email12@email.com", 0, "firstName12", "lastName12");
+        account = accountService.addUser(account);
+
+        mockMvcAccount.perform(get("/api/accounts/username/" + account.getUsername()))
+                .andExpect(status().isOk());
+
+        Assertions.assertThrows(AssertionError.class, () -> {
+            mockMvcAccount.perform(get("/api/accounts/username/" + "BAD_USERNAME"))
+                    .andExpect(status().isOk());
+        });
+    }
+
 }
+
