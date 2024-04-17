@@ -10,6 +10,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
 @Service
@@ -20,17 +21,13 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final AccountDTOConverter accountDTOConverter;
 
     public String registerUser(CreateAccountDTO createAccountDTO) {
-        Account account = new Account(
-                createAccountDTO.username(),
-                passwordEncoder.encode(createAccountDTO.password()),
-                createAccountDTO.email(),
-                createAccountDTO.gender(),
-                createAccountDTO.firstName(),
-                createAccountDTO.lastName());
-        accountService.addAccount(account);
-        return jwtService.generateToken(account);
+        return jwtService.generateToken(
+                accountService.addAccount(
+                        accountDTOConverter.toAccount(
+                                createAccountDTO)));
     }
 
     public String authenticate(LoginDTO loginDTO) {
