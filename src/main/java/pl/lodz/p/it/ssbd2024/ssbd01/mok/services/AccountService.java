@@ -48,7 +48,7 @@ public class AccountService {
         account.addRole(role);
         return accountMokRepository.save(account);
     }
-    public Account removeRole(UUID id, String roleName) throws RoleNotFoundException, AccountNotFoundException {
+    public Account removeRole(UUID id, String roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() ->  new RoleNotFoundException( ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id)
@@ -59,7 +59,7 @@ public class AccountService {
                 return accountMokRepository.save(account);
             }
         }
-        throw new IllegalArgumentException("This account does not have role " + roleName);
+        throw new RoleCanNotBeRemoved(ExceptionMessages.ACCOUNT_NOT_HAVE_THIS_ROLE );
     }
 
     public Account setAccountStatus(UUID id, boolean status) throws AccountNotFoundException {

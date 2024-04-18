@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
+import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,9 +22,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controllers.AccountController;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
+
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,6 +43,9 @@ public class AccountControllerTest {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private AccountMokRepository accountMokRepository;
 
     @Autowired
     private HandlerExceptionResolver handlerExceptionResolver;
@@ -82,13 +90,18 @@ public class AccountControllerTest {
                 .build();
     }
 
-   /* @Test
+    @Test
     public void testGetAllAccountsEndpoint() throws Exception {
+        Account admin = new Account("admingeteall", passwordEncoder.encode("password"), "emaiadmingetall2b@email.com", 0, "firstName11", "lastName11");
+        admin = accountService.addAccount(admin);
+        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        String adminToken = jwtService.generateToken(admin);
 
         Account account = new Account("user3", passwordEncoder.encode("password"), "email3@email.com", 0, "firstName3", "lastName3");
         accountService.addAccount(account);
 
-        MvcResult result = mockMvcAccount.perform(get("/api/accounts"))
+        MvcResult result = mockMvcAccount.perform(get("/api/accounts")
+                .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -101,133 +114,119 @@ public class AccountControllerTest {
         Assertions.assertTrue(content.contains(String.valueOf(account.getGender())));
     }
 
-    @Test
-    public void testCreateAccountEndpoint() throws Exception {
-
-        MvcResult result = mockMvcAccount.perform(post("/api/accounts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"user2\",\"password\":\"password\",\"email\":\"email2@email.com\",\"gender\":\"0\"," +
-                                "\"firstName\":\"firstName2\",\"lastName\":\"lastName2\"}"))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        String content = result.getResponse().getContentAsString();
-
-        Assertions.assertTrue(content.contains("user2"));
-    }
 
     @Test
     public void testAddRoleToAccountEndpoint() throws Exception {
-
+        Account admin = new Account("adminaddrole", passwordEncoder.encode("password"), "emaiaadminarole2b@email.com", 0, "firstName11", "lastName11");
+        admin = accountService.addAccount(admin);
+        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        String adminToken = jwtService.generateToken(admin);
         Account account = new Account("user4", passwordEncoder.encode("password"), "email4test@email.com", 0, "firstName4", "lastName4");
         accountService.addAccount(account);
 
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                        .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void testRemoveRoleFromAccountEndpoint() throws Exception {
-
+        Account admin = new Account("adminremoverole", passwordEncoder.encode("password"), "emaiaremoverole2b@email.com", 0, "firstName11", "lastName11");
+        admin = accountService.addAccount(admin);
+        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        String adminToken = jwtService.generateToken(admin);
         Account account = new Account("user5", passwordEncoder.encode("password"), "email5@email.com", 1, "firstName5", "lastName5");
         accountService.addAccount(account);
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                        .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
 
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "PARTICIPANT"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "ADMIN"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "PARTICIPANT"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "MANAGER"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                        .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isOk());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "PARTICIPANT"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
         mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+                        .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "PARTICIPANT"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "MANAGER"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
         mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+                        .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isOk());
 
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                        .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "PARTICIPANT"))
                 .andExpect(status().isOk());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "PARTICIPANT"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "ADMIN"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "MANAGER"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "MANAGER"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
-        Assertions.assertThrows(Exception.class, () -> {
             mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+                            .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "ADMIN"))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isBadRequest());
 
 
-    } */
+    }
 
     @Test
     public void testSetActiveAccountEndpoint() throws Exception {
@@ -241,11 +240,11 @@ public class AccountControllerTest {
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setActive")
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk());
-        Assertions.assertThrows(AssertionError.class, () -> {
-            mockMvcAccount.perform(patch("/api/accounts/" + "BAD_ID" + "/setActive"))
-                    .andExpect(status().isOk());
+            mockMvcAccount.perform(patch("/api/accounts/" + UUID.randomUUID() + "/setActive")
+                    .header("Authorization", "Bearer " + adminToken))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string(containsString(ExceptionMessages.ACCOUNT_NOT_FOUND)));
 
-        });
     }
 
     @Test
@@ -260,10 +259,10 @@ public class AccountControllerTest {
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setInactive")
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk());
-        Assertions.assertThrows(AssertionError.class, () -> {
-            mockMvcAccount.perform(patch("/api/accounts/" + "BAD_ID" + "/setInactive"))
-                    .andExpect(status().isOk());
-        });
+            mockMvcAccount.perform(patch("/api/accounts/" + UUID.randomUUID() + "/setInactive")
+                            .header("Authorization", "Bearer " + adminToken))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string(containsString(ExceptionMessages.ACCOUNT_NOT_FOUND)));
 
     }
 
@@ -306,13 +305,12 @@ public class AccountControllerTest {
 
         Assertions.assertTrue(content.contains("newemail13"));
 
-        Assertions.assertThrows(AssertionError.class, () -> {
-            mockMvcAccount.perform(put("/api/accounts/userData/" + "BAD_ID")
+            mockMvcAccount.perform(put("/api/accounts/userData/" + UUID.randomUUID())
                             .header("Authorization", "Bearer " + adminToken)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(jsonAccount))
-                    .andExpect(status().isOk());
-        });
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string(containsString(ExceptionMessages.ACCOUNT_NOT_FOUND)));
     }
 
     @Test
@@ -335,6 +333,7 @@ public class AccountControllerTest {
     }
     @Test
     public void testGetParticipants() throws Exception{
+
         Account account = new Account("participant", passwordEncoder.encode("password"), "email123@email.com", 0, "firstName11", "lastName11");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
@@ -350,6 +349,20 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("$[-1].firstName").value(account.getFirstName()))
                 .andExpect(jsonPath("$[-1].lastName").value(account.getLastName()))
                 .andExpect(jsonPath("$[-1].email").value(account.getEmail()));
+    }
+    @Test
+    public void testGetParticipantsNotFound() throws Exception {
+        accountMokRepository.deleteAll();
+        Account admin = new Account("admintestnotfoud", passwordEncoder.encode("password"), "email11notfoundb@email.com", 0, "firstName11", "lastName11");
+        admin = accountService.addAccount(admin);
+        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        String adminToken = jwtService.generateToken(admin);
+            mockMvcAccount.perform(get("/api/accounts/participants")
+                            .header("Authorization", "Bearer " + adminToken))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string(containsString(ExceptionMessages.NO_PARTICIPANTS_FOUND)));
+
+
     }
     @Test
     public void testGetParticipantsUnauthorized() throws Exception{
@@ -392,5 +405,18 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("$[-1].firstName").value(account.getFirstName()))
                 .andExpect(jsonPath("$[-1].lastName").value(account.getLastName()))
                 .andExpect(jsonPath("$[-1].email").value(account.getEmail()));
+    }
+    @Test
+    public void testGetManagersNotFound() throws Exception{
+        accountMokRepository.deleteAll();
+        Account admin = new Account("adminManNotFound", passwordEncoder.encode("password"), "emaiadminNotFOunds2b@email.com", 0, "firstName11", "lastName11");
+        admin = accountService.addAccount(admin);
+        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        String adminToken = jwtService.generateToken(admin);
+        mockMvcAccount.perform(get("/api/accounts/managers")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString(ExceptionMessages.NO_MANAGERS_FOUND)));
+
     }
 }
