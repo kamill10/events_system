@@ -8,11 +8,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.AbstractException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.request.CreateUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
 import java.util.List;
@@ -35,10 +35,9 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<GetAccountDTO> createUser(@RequestBody CreateUserRequest request) {
-        Account account = new Account(request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail()
-                , request.getGender(), request.getFirstName(), request.getLastName());
-        GetAccountDTO getAccountDTO = AccountDTOConverter.toAccountDto(accountService.addAccount(account));
+    public ResponseEntity<GetAccountDTO> createUser(@RequestBody CreateAccountDTO createAccountDTO) {
+        GetAccountDTO getAccountDTO = AccountDTOConverter.toAccountDto
+                (accountService.addAccount(AccountDTOConverter.toAccount(createAccountDTO)));
         return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
     }
 
