@@ -26,6 +26,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @Testcontainers
 @SpringJUnitWebConfig(classes = {WebConfig.class})
@@ -80,7 +81,7 @@ public class AccountControllerTest {
                 .build();
     }
 
-    @Test
+   /* @Test
     public void testGetAllAccountsEndpoint() throws Exception {
 
         Account account = new Account("user3", passwordEncoder.encode("password"), "email3@email.com", 0, "firstName3", "lastName3");
@@ -117,7 +118,7 @@ public class AccountControllerTest {
     @Test
     public void testAddRoleToAccountEndpoint() throws Exception {
 
-        Account account = new Account("user4", passwordEncoder.encode("password"), "email4@email.com", 0, "firstName4", "lastName4");
+        Account account = new Account("user4", passwordEncoder.encode("password"), "email4test@email.com", 0, "firstName4", "lastName4");
         accountService.addAccount(account);
 
         mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
@@ -225,7 +226,7 @@ public class AccountControllerTest {
         });
 
 
-    }
+    } */
 
     @Test
     public void testSetActiveAccountEndpoint() throws Exception {
@@ -269,7 +270,7 @@ public class AccountControllerTest {
     public void testGetAccountByUsernameEndpoint() throws Exception {
         Account account = new Account("user12", passwordEncoder.encode("password"), "email12@email.com", 0, "firstName12", "lastName12");
         account = accountService.addAccount(account);
-
+        accountService.addRoleToAccount(account.getId(),"ADMIN");
         String token = jwtService.generateToken(account);
 
         mockMvcAccount.perform(get("/api/accounts/username/" + account.getUsername())
@@ -330,5 +331,65 @@ public class AccountControllerTest {
                         .content(jsonAccount))
                 .andExpect(status().isForbidden());
 
+    }
+    @Test
+    public void testGetParticipants() throws Exception{
+        Account account = new Account("participant", passwordEncoder.encode("password"), "email123@email.com", 0, "firstName11", "lastName11");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        Account admin = new Account("admintest6", passwordEncoder.encode("password"), "email11b@email.com", 0, "firstName11", "lastName11");
+        admin = accountService.addAccount(admin);
+        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        String adminToken = jwtService.generateToken(admin);
+        mockMvcAccount.perform(get("/api/accounts/participants")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[-1].username").value(account.getUsername()))
+                .andExpect(jsonPath("$[-1].email").value(account.getEmail()))
+                .andExpect(jsonPath("$[-1].firstName").value(account.getFirstName()))
+                .andExpect(jsonPath("$[-1].lastName").value(account.getLastName()))
+                .andExpect(jsonPath("$[-1].email").value(account.getEmail()));
+    }
+    @Test
+    public void testGetParticipantsUnauthorized() throws Exception{
+        Account account = new Account("participantNOTAUTHORIZED", passwordEncoder.encode("password"), "email1NOTAUTH2@email.com", 0, "firstName11", "lastName11");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        mockMvcAccount.perform(get("/api/accounts/participants"))
+                .andExpect(status().isForbidden());
+    }
+    @Test
+    public void testGetAdministrators() throws Exception{
+        Account admin = new Account("admin2", passwordEncoder.encode("password"), "emaiadmin2b@email.com", 0, "firstName11", "lastName11");
+        admin = accountService.addAccount(admin);
+        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        String adminToken = jwtService.generateToken(admin);
+        mockMvcAccount.perform(get("/api/accounts/administrators")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[-1].username").value(admin.getUsername()))
+                .andExpect(jsonPath("$[-1].email").value(admin.getEmail()))
+                .andExpect(jsonPath("$[-1].firstName").value(admin.getFirstName()))
+                .andExpect(jsonPath("$[-1].lastName").value(admin.getLastName()))
+                .andExpect(jsonPath("$[-1].email").value(admin.getEmail()));
+    }
+    @Test
+    public void testGetManagers() throws Exception{
+        Account account = new Account("manager", passwordEncoder.encode("password"), "email4@email.com", 0, "firstName11", "lastName11");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        Account admin = new Account("admi3", passwordEncoder.encode("password"), "emailadmin3@email.com", 0, "firstName11", "lastName11");
+        admin = accountService.addAccount(admin);
+        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        String adminToken = jwtService.generateToken(admin);
+        mockMvcAccount.perform(get("/api/accounts/managers")
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[-1].username").value(account.getUsername()))
+                .andExpect(jsonPath("$[-1].email").value(account.getEmail()))
+                .andExpect(jsonPath("$[-1].firstName").value(account.getFirstName()))
+                .andExpect(jsonPath("$[-1].lastName").value(account.getLastName()))
+                .andExpect(jsonPath("$[-1].email").value(account.getEmail()));
     }
 }

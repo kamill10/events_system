@@ -74,7 +74,7 @@ public class AuthenticationControllerTest {
     @Test
     public void testAuthenticationEndpoint() throws Exception {
 
-        MvcResult result = mockMvcAuth.perform(post("/api/auth/user")
+        MvcResult result = mockMvcAuth.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\",\"password\":\"password\",\"email\":\"email@email.com\",\"gender\":\"0\"," +
                                 "\"firstName\":\"firstName\",\"lastName\":\"lastName\"}"))

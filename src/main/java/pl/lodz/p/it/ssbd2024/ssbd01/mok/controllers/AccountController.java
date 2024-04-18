@@ -91,4 +91,26 @@ public class AccountController {
                 .toAccountDto(accountService.updateAccountUserData(id, account));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+    @GetMapping("/participants")
+    public ResponseEntity<List<GetAccountDTO>> getParticipants() {
+        List<GetAccountDTO> participants = AccountDTOConverter.
+                accountDtoList(accountService.
+                        getParticipants());
+        return ResponseEntity.status(HttpStatus.OK).body(participants);
+    }
+    @GetMapping("/administrators")
+    public ResponseEntity<List<GetAccountDTO>> getAdministrators() {
+        List<GetAccountDTO> admiministrators = AccountDTOConverter.
+                accountDtoList(accountService.getAdmins());
+        return ResponseEntity.status(HttpStatus.OK).body(admiministrators);
+    }
+    @GetMapping("/managers")
+    public ResponseEntity<List<GetAccountDTO>> getManagers() {
+        List<GetAccountDTO> managers = AccountDTOConverter.
+                accountDtoList(accountService.getMenagers() );
+        return ResponseEntity.status(HttpStatus.OK).body(managers);
+    }
+
+
+
 }
