@@ -5,8 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.AbstractEntity;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
