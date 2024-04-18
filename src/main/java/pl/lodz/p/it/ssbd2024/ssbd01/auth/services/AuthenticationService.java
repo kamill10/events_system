@@ -20,7 +20,6 @@ public class AuthenticationService {
     private final AccountAuthRepository accountAuthRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
     private final AccountDTOConverter accountDTOConverter;
 
     public String registerUser(CreateAccountDTO createAccountDTO) {

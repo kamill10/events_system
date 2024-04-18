@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> {
                     requests
                             .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/accounts//username/").hasAnyAuthority("ADMIN", "PARTICIPANT","MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/accounts/userData/{id}").hasAuthority("ADMIN")

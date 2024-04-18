@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.AbstractException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.request.CreateUserRequest;
@@ -44,7 +44,7 @@ public class AccountController {
 
     @PostMapping("/{id}/addRole")
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id,
-                                                          @RequestParam String roleName) {
+                                                          @RequestParam String roleName) throws AbstractException {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.addRoleToAccount(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
@@ -52,28 +52,28 @@ public class AccountController {
 
     @DeleteMapping("/{id}/removeRole")
     public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id,
-                                                    @RequestParam String roleName) {
+                                                    @RequestParam String roleName) throws AbstractException {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.removeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @PatchMapping("/{id}/setActive")
-    public ResponseEntity<GetAccountDTO> setActive(@PathVariable UUID id) {
+    public ResponseEntity<GetAccountDTO> setActive(@PathVariable UUID id) throws AbstractException  {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.setAccountStatus(id, true));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @PatchMapping("/{id}/setInactive")
-    public ResponseEntity<GetAccountDTO> setInactive(@PathVariable UUID id) {
+    public ResponseEntity<GetAccountDTO> setInactive(@PathVariable UUID id) throws AbstractException  {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.setAccountStatus(id, false));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<GetAccountDTO> getAccountByUsername(@PathVariable String username) {
+    public ResponseEntity<GetAccountDTO> getAccountByUsername(@PathVariable String username) throws AbstractException  {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
             if (userDetails.getUsername().equals(username)) {
@@ -86,28 +86,28 @@ public class AccountController {
 
 
     @PutMapping("/userData/{id}")
-    public ResponseEntity<GetAccountDTO> updateAccountUserData(@PathVariable UUID id, @RequestBody Account account) {
+    public ResponseEntity<GetAccountDTO> updateAccountUserData(@PathVariable UUID id, @RequestBody Account account) throws AbstractException  {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.updateAccountUserData(id, account));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
     @GetMapping("/participants")
-    public ResponseEntity<List<GetAccountDTO>> getParticipants() {
+    public ResponseEntity<List<GetAccountDTO>> getParticipants() throws AbstractException  {
         List<GetAccountDTO> participants = AccountDTOConverter.
                 accountDtoList(accountService.
                         getParticipants());
         return ResponseEntity.status(HttpStatus.OK).body(participants);
     }
     @GetMapping("/administrators")
-    public ResponseEntity<List<GetAccountDTO>> getAdministrators() {
+    public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws AbstractException  {
         List<GetAccountDTO> admiministrators = AccountDTOConverter.
                 accountDtoList(accountService.getAdmins());
         return ResponseEntity.status(HttpStatus.OK).body(admiministrators);
     }
     @GetMapping("/managers")
-    public ResponseEntity<List<GetAccountDTO>> getManagers() {
+    public ResponseEntity<List<GetAccountDTO>> getManagers() throws AbstractException  {
         List<GetAccountDTO> managers = AccountDTOConverter.
-                accountDtoList(accountService.getMenagers() );
+                accountDtoList(accountService.getManagers() );
         return ResponseEntity.status(HttpStatus.OK).body(managers);
     }
 
