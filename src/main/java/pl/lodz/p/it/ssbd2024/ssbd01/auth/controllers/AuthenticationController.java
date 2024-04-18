@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lodz.p.it.ssbd2024.ssbd01.auth.request.LoginRequest;
-import pl.lodz.p.it.ssbd2024.ssbd01.auth.request.RegisterUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.services.AuthenticationService;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 
 @RestController
 @RequestMapping("api/auth")
@@ -19,14 +19,14 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(
-            @RequestBody RegisterUserRequest request
+            @RequestBody CreateAccountDTO request
     ) {
         return ResponseEntity.ok(authenticationService.registerUser(request));
     }
 
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> authenticate(@RequestBody LoginDTO request) {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request));
     }
 }
