@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountToAccountDto;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.dto.AccountDto;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountDTOConverter;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.request.CreateUserRequest;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
 
@@ -26,58 +26,58 @@ public class AccountController {
 
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
+    private final AccountDTOConverter AccountDTOConverter;
 
     @GetMapping
-    public List<AccountDto> getAllUsers() {
-        List<AccountDto> accountDtos = AccountToAccountDto.accountDtoList(accountService.getAllAccounts());
-        return ResponseEntity.status(HttpStatus.OK).body(accountDtos).getBody();
+    public List<GetAccountDTO> getAllUsers() {
+        List<GetAccountDTO> getAccountDTOS = AccountDTOConverter.accountDtoList(accountService.getAllAccounts());
+        return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOS).getBody();
     }
 
     @PostMapping
-    public ResponseEntity<AccountDto> createUser(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<GetAccountDTO> createUser(@RequestBody CreateUserRequest request) {
         Account account = new Account(request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail()
                 , request.getGender(), request.getFirstName(), request.getLastName());
-        AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.addAccount(account));
-        return ResponseEntity.status(HttpStatus.CREATED).body(accountDto);
+        GetAccountDTO getAccountDTO = AccountDTOConverter.toAccountDto(accountService.addAccount(account));
+        return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
     }
 
     @PostMapping("/{id}/addRole")
-    public ResponseEntity<AccountDto> addRoleToAccount(@PathVariable UUID id,
-                                                       @RequestParam String roleName) {
-        AccountDto updatedAccount = AccountToAccountDto
+    public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id,
+                                                          @RequestParam String roleName) {
+        GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.addRoleToAccount(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @DeleteMapping("/{id}/removeRole")
-    public ResponseEntity<AccountDto> removeRole(@PathVariable UUID id,
-                                                 @RequestParam String roleName) {
-        AccountDto updatedAccount = AccountToAccountDto
+    public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id,
+                                                    @RequestParam String roleName) {
+        GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.removeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @PatchMapping("/{id}/setActive")
-    public ResponseEntity<AccountDto> setActive(@PathVariable UUID id) {
-        AccountDto updatedAccount = AccountToAccountDto
+    public ResponseEntity<GetAccountDTO> setActive(@PathVariable UUID id) {
+        GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.setAccountStatus(id, true));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @PatchMapping("/{id}/setInactive")
-    public ResponseEntity<AccountDto> setInactive(@PathVariable UUID id) {
-        AccountDto updatedAccount = AccountToAccountDto
+    public ResponseEntity<GetAccountDTO> setInactive(@PathVariable UUID id) {
+        GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.setAccountStatus(id, false));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<AccountDto> getAccountByUsername(@PathVariable String username) {
+    public ResponseEntity<GetAccountDTO> getAccountByUsername(@PathVariable String username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
             if (userDetails.getUsername().equals(username)) {
-                AccountDto accountDto = AccountToAccountDto.toAccountDto(accountService.getAccountByUsername(username));
+                GetAccountDTO accountDto = AccountDTOConverter.toAccountDto(accountService.getAccountByUsername(username));
                 return ResponseEntity.status(HttpStatus.OK).body(accountDto);
             }
         }
@@ -86,10 +86,9 @@ public class AccountController {
 
 
     @PutMapping("/userData/{id}")
-    public ResponseEntity<AccountDto> updateAccountUserData(@PathVariable UUID id, @RequestBody Account account) {
-        AccountDto updatedAccount = AccountToAccountDto
+    public ResponseEntity<GetAccountDTO> updateAccountUserData(@PathVariable UUID id, @RequestBody Account account) {
+        GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.updateAccountUserData(id, account));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
-
 }
