@@ -12,7 +12,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoriesconfig.MowEntit
 
 @Configuration
 @Import({AdminEntityManagerFactoryConfig.class, MokEntityManagerFactoryConfig.class, AuthEntityManagerFactoryConfig.class,
-        MowEntityManagerFactoryConfig.class, AtomikosConfig.class})
+        MowEntityManagerFactoryConfig.class, AtomikosConfig.class, MailConfig.class})
 public class RootConfig {
 
     @Bean

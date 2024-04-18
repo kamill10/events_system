@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.entities.util;
+package pl.lodz.p.it.ssbd2024.ssbd01.util;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
