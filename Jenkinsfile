@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        JAVA_HOME = '/opt/java/jdk-21.0.2'
+    }
+
     stages {
         stage('Compose down') {
             steps {
