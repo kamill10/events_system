@@ -49,7 +49,8 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/accounts//username/").hasAnyAuthority("ADMIN", "PARTICIPANT","MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/accounts/userData/{id}").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setActive").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setInactive").hasAuthority("ADMIN");
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setInactive").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/email/{id}").hasAuthority("ADMIN");
 
 
                 });
