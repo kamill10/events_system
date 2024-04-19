@@ -1,10 +1,12 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.util;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Mail {
 
     private final String mailFrom = "ssbd01@proton.me";

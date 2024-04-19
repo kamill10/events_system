@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.AbstractException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converters.AccountDTOConverter;
@@ -109,6 +110,13 @@ public class AccountController {
         List<GetAccountDTO> managers = AccountDTOConverter.
                 accountDtoList(accountService.getManagers() );
         return ResponseEntity.status(HttpStatus.OK).body(managers);
+    }
+
+    @PatchMapping("/email/{id}")
+    public ResponseEntity<GetAccountDTO> updateAccountEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email) throws AbstractException  {
+        GetAccountDTO updatedAccount = AccountDTOConverter
+                .toAccountDto(accountService.updateAccountEmail(id, email.email()));
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
 

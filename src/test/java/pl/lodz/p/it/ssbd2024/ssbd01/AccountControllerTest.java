@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -271,7 +272,7 @@ public class AccountControllerTest {
     public void testGetAccountByUsernameEndpoint() throws Exception {
         Account account = new Account("user12", passwordEncoder.encode("password"), "email12@email.com", 0, "firstName12", "lastName12");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(),"ADMIN");
+        accountService.addRoleToAccount(account.getId(), "ADMIN");
         String token = jwtService.generateToken(account);
 
         mockMvcAccount.perform(get("/api/accounts/username/" + account.getUsername())
@@ -292,7 +293,7 @@ public class AccountControllerTest {
         Account account = new Account("user13", passwordEncoder.encode("password"), "email13@email.com", 0, "firstName13", "lastName13");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "ADMIN");
-        account.setEmail("newemail13@email.com");
+        account.setFirstName("newfirstName13");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String adminToken = jwtService.generateToken(account);
         System.out.println(adminToken);
@@ -304,7 +305,7 @@ public class AccountControllerTest {
 
         String content = result.getResponse().getContentAsString();
 
-        Assertions.assertTrue(content.contains("newemail13"));
+        Assertions.assertTrue(content.contains("newfirstName13"));
 
         Assertions.assertThrows(AssertionError.class, () -> {
             mockMvcAccount.perform(put("/api/accounts/userData/" + "BAD_ID")
@@ -321,7 +322,7 @@ public class AccountControllerTest {
         Account account = new Account("user14", passwordEncoder.encode("password"), "email14@email.com", 0, "firstName14", "lastName14");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
-        account.setEmail("newemail14@email.com");
+        account.setFirstName("newfirstName14");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String token = jwtService.generateToken(account);
         Account finalAccount = account;
@@ -333,14 +334,15 @@ public class AccountControllerTest {
                 .andExpect(status().isForbidden());
 
     }
+
     @Test
-    public void testGetParticipants() throws Exception{
+    public void testGetParticipants() throws Exception {
         Account account = new Account("participant", passwordEncoder.encode("password"), "email123@email.com", 0, "firstName11", "lastName11");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
         Account admin = new Account("admintest6", passwordEncoder.encode("password"), "email11b@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        accountService.addRoleToAccount(admin.getId(), "ADMIN");
         String adminToken = jwtService.generateToken(admin);
         mockMvcAccount.perform(get("/api/accounts/participants")
                         .header("Authorization", "Bearer " + adminToken))
@@ -351,19 +353,21 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("$[-1].lastName").value(account.getLastName()))
                 .andExpect(jsonPath("$[-1].email").value(account.getEmail()));
     }
+
     @Test
-    public void testGetParticipantsUnauthorized() throws Exception{
+    public void testGetParticipantsUnauthorized() throws Exception {
         Account account = new Account("participantNOTAUTHORIZED", passwordEncoder.encode("password"), "email1NOTAUTH2@email.com", 0, "firstName11", "lastName11");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
         mockMvcAccount.perform(get("/api/accounts/participants"))
                 .andExpect(status().isForbidden());
     }
+
     @Test
-    public void testGetAdministrators() throws Exception{
+    public void testGetAdministrators() throws Exception {
         Account admin = new Account("admin2", passwordEncoder.encode("password"), "emaiadmin2b@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        accountService.addRoleToAccount(admin.getId(), "ADMIN");
         String adminToken = jwtService.generateToken(admin);
         mockMvcAccount.perform(get("/api/accounts/administrators")
                         .header("Authorization", "Bearer " + adminToken))
@@ -374,23 +378,59 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("$[-1].lastName").value(admin.getLastName()))
                 .andExpect(jsonPath("$[-1].email").value(admin.getEmail()));
     }
+
     @Test
-    public void testGetManagers() throws Exception{
+    public void testGetManagers() throws Exception {
         Account account = new Account("manager", passwordEncoder.encode("password"), "email4@email.com", 0, "firstName11", "lastName11");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "MANAGER");
         Account admin = new Account("admi3", passwordEncoder.encode("password"), "emailadmin3@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(),"ADMIN");
+        accountService.addRoleToAccount(admin.getId(), "ADMIN");
         String adminToken = jwtService.generateToken(admin);
         mockMvcAccount.perform(get("/api/accounts/managers")
                         .header("Authorization", "Bearer " + adminToken))
-                .andExpect(status().isOk())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[-1].username").value(account.getUsername()))
                 .andExpect(jsonPath("$[-1].email").value(account.getEmail()))
                 .andExpect(jsonPath("$[-1].firstName").value(account.getFirstName()))
                 .andExpect(jsonPath("$[-1].lastName").value(account.getLastName()))
                 .andExpect(jsonPath("$[-1].email").value(account.getEmail()));
+    }
+
+    @Test
+    public void testUpdateAccountEmail() throws Exception {
+        Account account = new Account("user15", passwordEncoder.encode("password"), "email5@email.com", 0, "firstName15", "lastName15");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail@email.com"));
+        String adminToken = jwtService.generateToken(account);
+        mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newEmail))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("newemail@email.com"));
+        Assertions.assertThrows(AssertionError.class, () -> {
+            mockMvcAccount.perform(patch("/api/accounts/email/" + "BAD_ID")
+                            .header("Authorization", "Bearer " + adminToken)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(newEmail))
+                    .andExpect(status().isOk());
+        });
+    }
+
+    @Test
+    public void testUpdateAccountEmailAsParticipant() throws Exception {
+        Account account = new Account("user16", passwordEncoder.encode("password"), "email16@email.com", 0, "firstName16", "lastName16");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail16@email.com"));
+        String token = jwtService.generateToken(account);
+        mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newEmail))
+                .andExpect(status().isForbidden());
     }
 }
