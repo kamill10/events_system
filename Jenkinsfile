@@ -13,7 +13,8 @@ pipeline {
                 }
             }
         }
-        stage('Test containers') {
+
+        stage('Maven tests') {
             steps {
                 dir("/home/jenkins/workspace/test") {
                     sh('mvn clean install')
@@ -25,7 +26,7 @@ pipeline {
             steps {
                 dir("/home/jenkins/workspace/test/docker") {
                     sh('cd ../ssbd202401web/ && npm install && npm run build')
-                    sh('rm -rf html/')
+                    sh('rm -rf ./html/')
                     sh('cp -r ../ssbd202401web/dist/ html/')
                     sh('docker compose up -d --build')
                 }
