@@ -152,7 +152,7 @@ public class AccountControllerTest {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                             .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "ADMIN"))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isConflict());
 
             mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                             .header("Authorization", "Bearer " + adminToken)
@@ -172,7 +172,7 @@ public class AccountControllerTest {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                             .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "PARTICIPANT"))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isUnprocessableEntity());
 
         mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                         .header("Authorization", "Bearer " + adminToken)
@@ -188,7 +188,7 @@ public class AccountControllerTest {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                             .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "MANAGER"))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isConflict());
 
         mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
                         .header("Authorization", "Bearer " + adminToken)
@@ -203,7 +203,7 @@ public class AccountControllerTest {
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                             .header("Authorization", "Bearer " + adminToken)
                             .param("roleName", "PARTICIPANT"))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isConflict());
 
             mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
                             .header("Authorization", "Bearer " + adminToken)
