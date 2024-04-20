@@ -15,11 +15,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +27,10 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-
+    @Bean(name = "mvcHandlerMappingIntrospector")
+    public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
+        return new HandlerMappingIntrospector();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,10 +42,15 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> {
                     requests
-                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/auth/**")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.GET,"/api/accounts")).permitAll()
-                            .requestMatchers(antMatcher(HttpMethod.POST,"/api/accounts/**")).permitAll()
-                             .requestMatchers(antMatcher(HttpMethod.DELETE,"/api/accounts/**")).permitAll();
+                            .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/accounts//username/").hasAnyAuthority("ADMIN", "PARTICIPANT","MANAGER")
+                            .requestMatchers(HttpMethod.PUT, "/api/accounts/userData/{id}").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setActive").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setInactive").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/email/{id}").hasAuthority("ADMIN");
 
 
                 });

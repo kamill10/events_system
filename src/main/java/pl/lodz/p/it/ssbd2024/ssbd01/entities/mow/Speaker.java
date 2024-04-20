@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.util.Objects;
 

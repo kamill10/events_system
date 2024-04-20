@@ -1,5 +1,5 @@
 import {Route, Routes} from "react-router-dom";
-import {PublicRoutes} from "./Routes.ts";
+import {PublicRoutes} from "../router/Routes.ts";
 import PublicLayout from "../layouts/PublicLayout.tsx";
 
 export default function RouterComponent() {
