@@ -115,11 +115,12 @@ public class AccountController {
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+
     @PatchMapping("myemail/{id}")
-    public ResponseEntity<GetAccountDTO>updateMyEmail(@PathVariable UUID id,@RequestBody UpdateEmailDTO email) throws AccountNotFoundException {
+    public ResponseEntity<GetAccountDTO> updateMyEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email) throws AccountNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            if(userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())){
+            if (userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
                 GetAccountDTO updatedAccount = AccountDTOConverter
                         .toAccountDto(accountService.updateAccountEmail(id, email.email()));
                 return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
