@@ -50,7 +50,8 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/api/accounts/userData/{id}").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setActive").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setInactive").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/email/{id}").hasAuthority("ADMIN");
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/email/{id}").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/myemail/{id}").hasAnyAuthority("ADMIN", "PARTICIPANT","MANAGER");
 
 
                 });

@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import jakarta.servlet.ServletException;
@@ -34,6 +35,8 @@ import java.util.UUID;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @Testcontainers
 @SpringJUnitWebConfig(classes = {WebConfig.class})
@@ -458,4 +461,37 @@ public class AccountControllerTest {
                         .content(newEmail))
                 .andExpect(status().isForbidden());
     }
+    @Test
+    public void testUpdateMyEmail() throws Exception {
+        Account account = new Account("user17", passwordEncoder.encode("password"), "email17@email.com", 0, "firstName15", "lastName15");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail17@email.com"));
+        String adminToken = jwtService.generateToken(account);
+        mockMvcAccount.perform(patch("/api/accounts/myemail/" + account.getId())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newEmail))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("newemail17@email.com"));
+        assertThat(accountService.getAccountById(account.getId()).getEmail())
+                .isEqualTo("newemail17@email.com");
+    }
+    @Test
+    public void testUpdateMyEmailUnauthorized() throws Exception {
+        Account account = new Account("user18", passwordEncoder.encode("password"), "email18@email.com", 0, "firstName15", "lastName15");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail18@email.com"));
+        Account accountAdmin = new Account("user19", passwordEncoder.encode("password"), "email19@email.com", 0, "firstName15", "lastName15");
+        accountAdmin = accountService.addAccount(accountAdmin);
+        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        String notMyToken = jwtService.generateToken(accountAdmin);
+        mockMvcAccount.perform(patch("/api/accounts/myemail/" +account.getId() )
+                        .header("Authorization", "Bearer " + notMyToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newEmail))
+                .andExpect(status().isForbidden());
+    }
+
 }
