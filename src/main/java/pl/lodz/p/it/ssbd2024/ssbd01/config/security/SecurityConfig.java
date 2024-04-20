@@ -27,6 +27,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+
     @Bean(name = "mvcHandlerMappingIntrospector")
     public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
         return new HandlerMappingIntrospector();
@@ -46,7 +47,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.GET, "/api/accounts//username/").hasAnyAuthority("ADMIN", "PARTICIPANT","MANAGER")
+                            .requestMatchers(HttpMethod.GET, "/api/accounts//username/").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/accounts/userData/{id}").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setActive").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setInactive").hasAuthority("ADMIN")
