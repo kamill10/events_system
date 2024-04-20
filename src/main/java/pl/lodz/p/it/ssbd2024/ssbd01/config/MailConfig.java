@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -20,8 +19,7 @@ public class MailConfig {
     private final Environment env;
 
     @Bean
-    public JavaMailSender getMailSender()
-    {
+    public JavaMailSender getMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost(env.getProperty("spring.mail.host"));
         javaMailSender.setPort(Integer.parseInt(Objects.requireNonNull(env.getProperty("spring.mail.port"))));

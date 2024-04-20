@@ -15,9 +15,9 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.lodz.p.it.ssbd2024.ssbd01.auth.controllers.AuthenticationController;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.controller.AuthenticationController;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.controllers.AccountController;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

@@ -23,9 +23,10 @@ public class JwtService {
 
     private final String SECRET_KEY;
 
-    public JwtService(@Value("${jwt.secret}") String secret){
+    public JwtService(@Value("${jwt.secret}") String secret) {
         this.SECRET_KEY = secret;
     }
+
     public String extractLogin(String token) {
         return extractClaim(token, Claims::getSubject);
     }
