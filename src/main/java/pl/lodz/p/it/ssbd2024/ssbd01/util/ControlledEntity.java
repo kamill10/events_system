@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.enums.ActionTypeEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ActionTypeEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 
 import java.time.LocalDateTime;
 
@@ -51,7 +51,7 @@ public abstract class ControlledEntity extends AbstractEntity {
         updatedAt = LocalDateTime.now();
         actionType = ActionTypeEnum.UPDATE;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Account){
+        if (authentication != null && authentication.getPrincipal() instanceof Account) {
             updatedBy = (Account) authentication.getPrincipal();
         }
     }

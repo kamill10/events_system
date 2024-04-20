@@ -3,9 +3,9 @@ package pl.lodz.p.it.ssbd2024.ssbd01;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Role;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mow.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

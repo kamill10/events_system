@@ -3,7 +3,6 @@ package pl.lodz.p.it.ssbd2024.ssbd01;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
-import jakarta.servlet.ServletException;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,12 +22,11 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
-import pl.lodz.p.it.ssbd2024.ssbd01.entities.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.controllers.AccountController;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repositories.AccountMokRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.services.AccountService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.util.UUID;
 
