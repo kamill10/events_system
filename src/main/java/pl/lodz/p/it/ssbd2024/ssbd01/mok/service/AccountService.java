@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
@@ -21,6 +22,7 @@ public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
     private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
 
     public List<Account> getAllAccounts() {
         return accountMokRepository.findAll();
@@ -142,4 +144,16 @@ public class AccountService {
         return accountMokRepository.save(accountToUpdate);
     }
 
+    public Account getAccountById(UUID id) throws AccountNotFoundException {
+        return accountMokRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void updatePassword(UUID id, String password) throws AccountNotFoundException {
+        Account accountToUpdate = accountMokRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        accountToUpdate.setPassword(passwordEncoder.encode(password));
+        accountMokRepository.saveAndFlush(accountToUpdate);
+    }
 }

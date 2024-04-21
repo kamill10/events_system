@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
@@ -30,7 +30,6 @@ public class AccountController {
 
 
     private final AccountService accountService;
-    private final PasswordEncoder passwordEncoder;
     private final AccountDTOConverter AccountDTOConverter;
 
     @GetMapping
@@ -114,5 +113,18 @@ public class AccountController {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
+
+    @PatchMapping("/mypassword/{id}")
+    public ResponseEntity<GetAccountDTO> updateAccountPassword(@PathVariable UUID id, @RequestBody UpdatePasswordDTO password)
+            throws AccountNotFoundException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (!userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        accountService.updatePassword(id, password.value());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
