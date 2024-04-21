@@ -12,7 +12,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEn
 @RestControllerAdvice
 public class ExceptionHandlingController {
     @ExceptionHandler
-    ResponseEntity<String> handleAccountNotFoundException(NotFoundException e) {
+    ResponseEntity<String> handleEntityNotFoundException(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 

@@ -128,7 +128,7 @@ public class AccountService {
         return admins;
     }
 
-    @Transactional
+    @Transactional()
     public Account updateAccountEmail(UUID id, String email) throws AccountNotFoundException {
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
