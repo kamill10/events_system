@@ -124,7 +124,7 @@ public class AccountController {
             throws AccountNotFoundException, EmailAlreadyExistsException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
+        if (!userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         GetAccountDTO updatedAccount = AccountDTOConverter
