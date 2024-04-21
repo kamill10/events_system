@@ -9,4 +9,6 @@ import java.util.UUID;
 
 public interface AccountMokRepository extends JpaRepository<Account, UUID> {
     Optional<Account> findByUsername(String username);
+
+    Optional<Account> findByEmail(String email);
 }

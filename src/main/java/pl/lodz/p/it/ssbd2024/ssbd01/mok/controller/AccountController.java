@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
@@ -17,6 +18,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictExcepti
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
@@ -85,8 +87,10 @@ public class AccountController {
 
 
     @PutMapping("/userData/{id}")
-    public ResponseEntity<GetAccountDTO> updateAccountUserData(@PathVariable UUID id, @RequestBody Account account) throws NotFoundException {
-        GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.updateAccountUserData(id, account));
+    public ResponseEntity<GetAccountDTO> updateAccountData(@PathVariable UUID id, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+            throws NotFoundException {
+        GetAccountDTO updatedAccount =
+                AccountDTOConverter.toAccountDto(accountService.updateAccountData(id, AccountDTOConverter.toAccount(updateAccountDataDTO)));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -110,7 +114,7 @@ public class AccountController {
 
     @PatchMapping("/email/{id}")
     public ResponseEntity<GetAccountDTO> updateAccountEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
-            throws AccountNotFoundException {
+            throws AccountNotFoundException, EmailAlreadyExistsException {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
