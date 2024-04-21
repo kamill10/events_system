@@ -1,8 +1,9 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.logger.LoggerProps;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -22,18 +23,22 @@ public class AccountService {
     private final RoleRepository roleRepository;
     private final MailService mailService;
 
+
     public List<Account> getAllAccounts() {
         return accountMokRepository.findAll();
     }
 
     @Transactional
     public Account addAccount(Account account) {
+        LoggerProps.addPropsToLogs();
         return accountMokRepository.save(account);
     }
 
+    @Transactional
     public Account addRoleToAccount(UUID id, String roleName)
             throws RoleAlreadyAssignedException, AccountRolesLimitExceedException, WrongRoleToAccountException, RoleNotFoundException,
             AccountNotFoundException {
+        LoggerProps.addPropsToLogs();
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id)
@@ -56,7 +61,9 @@ public class AccountService {
         return accountMokRepository.save(account);
     }
 
+    @Transactional
     public Account removeRole(UUID id, String roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
+        LoggerProps.addPropsToLogs();
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id)
@@ -70,7 +77,9 @@ public class AccountService {
         throw new RoleCanNotBeRemoved(ExceptionMessages.ACCOUNT_NOT_HAVE_THIS_ROLE);
     }
 
+    @Transactional
     public Account setAccountStatus(UUID id, boolean status) throws AccountNotFoundException {
+        LoggerProps.addPropsToLogs();
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setActive(status);
@@ -85,11 +94,11 @@ public class AccountService {
 
     @Transactional
     public Account updateAccountUserData(UUID id, Account account) throws AccountNotFoundException {
+        LoggerProps.addPropsToLogs();
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setFirstName(account.getFirstName());
         accountToUpdate.setLastName(account.getLastName());
-        accountToUpdate.setEmail(account.getEmail()); // TODO: jeżeli testy nie przejdą to usunąć
         accountToUpdate.setGender(account.getGender());
         return accountMokRepository.save(accountToUpdate);
     }
@@ -129,6 +138,7 @@ public class AccountService {
 
     @Transactional
     public Account updateAccountEmail(UUID id, String email) throws AccountNotFoundException {
+        LoggerProps.addPropsToLogs();
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setEmail(email);
