@@ -101,8 +101,8 @@ public class AccountController {
 
     @GetMapping("/administrators")
     public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws NotFoundException {
-        List<GetAccountDTO> admiministrators = AccountDTOConverter.accountDtoList(accountService.getAdmins());
-        return ResponseEntity.status(HttpStatus.OK).body(admiministrators);
+        List<GetAccountDTO> administrators = AccountDTOConverter.accountDtoList(accountService.getAdmins());
+        return ResponseEntity.status(HttpStatus.OK).body(administrators);
     }
 
     @GetMapping("/managers")
