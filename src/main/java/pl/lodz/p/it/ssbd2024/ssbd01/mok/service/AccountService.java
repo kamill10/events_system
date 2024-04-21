@@ -93,7 +93,7 @@ public class AccountService {
     }
 
     @Transactional
-    public Account updateAccountUserData(UUID id, Account account) throws AccountNotFoundException {
+    public Account updateAccountData(UUID id, Account account) throws AccountNotFoundException {
         LoggerProps.addPropsToLogs();
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
@@ -137,8 +137,11 @@ public class AccountService {
     }
 
     @Transactional
-    public Account updateAccountEmail(UUID id, String email) throws AccountNotFoundException {
+    public Account updateAccountEmail(UUID id, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
         LoggerProps.addPropsToLogs();
+        if (accountMokRepository.findByEmail(email).isPresent()) {
+            throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
+        }
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setEmail(email);
