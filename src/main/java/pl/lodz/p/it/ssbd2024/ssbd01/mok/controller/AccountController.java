@@ -115,4 +115,17 @@ public class AccountController {
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO email) {
+        accountService.resetPassword(email.email());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/resetPassword/token/{token}")
+    public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody String password)
+            throws AccountNotFoundException {
+        accountService.resetPasswordWithToken(token, passwordEncoder.encode(password));
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

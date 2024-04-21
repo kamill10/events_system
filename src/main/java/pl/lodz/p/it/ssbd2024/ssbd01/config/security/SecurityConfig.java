@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> {
                     requests
                             .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/accounts/resetPassword").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/accounts/resetPassword/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasAuthority("ADMIN")
@@ -52,7 +54,6 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setActive").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setInactive").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/email/{id}").hasAuthority("ADMIN");
-
 
                 });
         return http.build();

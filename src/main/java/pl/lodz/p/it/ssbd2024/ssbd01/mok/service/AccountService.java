@@ -4,14 +4,18 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -20,6 +24,7 @@ import java.util.UUID;
 public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
+    private final PasswordResetRepository passwordResetRepository;
     private final MailService mailService;
 
     public List<Account> getAllAccounts() {
@@ -142,4 +147,39 @@ public class AccountService {
         return accountMokRepository.save(accountToUpdate);
     }
 
+    @Transactional
+    public void resetPassword(String email) {
+        Optional<Account> accountToUpdate = accountMokRepository.findByEmail(email);
+        if (accountToUpdate.isEmpty()) {
+            return;
+        }
+        var randString = "123123"; // TODO: generate random string
+        var expirationDate = LocalDateTime.now().plusMinutes(30);
+        var newResetIssue = new PasswordReset(randString, email, expirationDate);
+        // TODO: Send mail to user with reset link
+
+        passwordResetRepository.save(newResetIssue);
+    }
+
+    @Transactional
+    public void resetPasswordWithToken(String token, String newPassword) throws AccountNotFoundException{
+        Optional<PasswordReset> passwordReset = passwordResetRepository.findByToken(token);
+        System.out.println(token);
+        if (passwordReset.isEmpty()) {
+            // TODO: change to other exception
+            throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+        }
+        if (passwordReset.get().getExpirationDate().isBefore(LocalDateTime.now())) {
+            // TODO: change to other exception
+            throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+        }
+        Optional<Account> accountToUpdate = accountMokRepository.findByEmail(passwordReset.get().getEmail());
+        if (accountToUpdate.isEmpty()) {
+            // TODO: change to other exception
+            throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+        }
+        Account account = accountToUpdate.get();
+        account.setPassword(newPassword);
+        accountMokRepository.save(account);
+    }
 }
