@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 
 import java.util.List;
@@ -33,6 +34,21 @@ public class AccountDTOConverter {
                 createAccountDTO.firstName(),
                 createAccountDTO.lastName());
     }
+
+    public Account toAccount(UpdateAccountDataDTO updateAccountDataDTO) {
+        return new Account(
+                updateAccountDataDTO.firstName(),
+                updateAccountDataDTO.lastName(),
+                updateAccountDataDTO.gender());
+    }
+
+    public UpdateAccountDataDTO toUpdateAccountDataDTO(Account account) {
+        return new UpdateAccountDataDTO(
+                account.getFirstName(),
+                account.getLastName(),
+                account.getGender());
+    }
+
 
     public List<GetAccountDTO> accountDtoList(List<Account> accounts) {
         return accounts.stream().map(this::toAccountDto).toList();

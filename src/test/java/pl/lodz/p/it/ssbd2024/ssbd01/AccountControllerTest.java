@@ -291,7 +291,7 @@ public class AccountControllerTest {
 
 
     @Test
-    public void testUpdateAccountUserDataEndpoint() throws Exception {
+    public void testUpdateAccountDataEndpoint() throws Exception {
 
         Account account = new Account("user13", passwordEncoder.encode("password"), "email13@email.com", 0, "firstName13", "lastName13");
         account = accountService.addAccount(account);
@@ -299,7 +299,6 @@ public class AccountControllerTest {
         account.setFirstName("newfirstName13");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String adminToken = jwtService.generateToken(account);
-        System.out.println(adminToken);
         MvcResult result = mockMvcAccount.perform(put("/api/accounts/userData/" + account.getId())
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -309,6 +308,9 @@ public class AccountControllerTest {
         String content = result.getResponse().getContentAsString();
 
         Assertions.assertTrue(content.contains("newfirstName13"));
+        Assertions.assertTrue(content.contains(account.getLastName()));
+        Assertions.assertTrue(content.contains(String.valueOf(account.getGender())));
+        Assertions.assertTrue(content.contains(account.getEmail()));
 
         mockMvcAccount.perform(put("/api/accounts/userData/" + UUID.randomUUID())
                         .header("Authorization", "Bearer " + adminToken)
@@ -319,7 +321,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testUpdateAccountUserDataEndpointAsParticipant() throws Exception {
+    public void testUpdateAccountDataEndpointAsParticipant() throws Exception {
 
         Account account = new Account("user14", passwordEncoder.encode("password"), "email14@email.com", 0, "firstName14", "lastName14");
         account = accountService.addAccount(account);
@@ -438,6 +440,7 @@ public class AccountControllerTest {
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "ADMIN");
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail@email.com"));
+        String emailNotExists = objectMapper.writeValueAsString(new JSONObject().appendField("email", "notexists@email.com"));
         String adminToken = jwtService.generateToken(account);
         mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
                         .header("Authorization", "Bearer " + adminToken)
@@ -445,13 +448,19 @@ public class AccountControllerTest {
                         .content(newEmail))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("newemail@email.com"));
-        Assertions.assertThrows(AssertionError.class, () -> {
-            mockMvcAccount.perform(patch("/api/accounts/email/" + "BAD_ID")
-                            .header("Authorization", "Bearer " + adminToken)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(newEmail))
-                    .andExpect(status().isOk());
-        });
+
+        mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newEmail))
+                .andExpect(status().isConflict());
+
+        mockMvcAccount.perform(patch("/api/accounts/email/" + UUID.randomUUID())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(emailNotExists))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString(ExceptionMessages.ACCOUNT_NOT_FOUND)));
     }
 
     @Test
