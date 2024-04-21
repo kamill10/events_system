@@ -62,7 +62,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedHeaders(Arrays.asList(
                 HttpHeaders.CONTENT_TYPE,
                 HttpHeaders.AUTHORIZATION,
@@ -70,7 +70,8 @@ public class SecurityConfig {
                 HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,
                 HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
                 HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,
-                HttpHeaders.IF_MATCH
+                HttpHeaders.IF_MATCH,
+                HttpHeaders.ORIGIN
         ));
         configuration.setExposedHeaders(Arrays.asList(
                 HttpHeaders.CONTENT_TYPE,

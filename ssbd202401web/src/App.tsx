@@ -1,11 +1,16 @@
 import {BrowserRouter} from "react-router-dom";
-import RouterComponent from "./components/RouterComponent.tsx";
+import RouterComponent from "./router/RouterComponent.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
         <RouterComponent></RouterComponent>
-    </BrowserRouter>
+      </BrowserRouter>
+    </QueryClientProvider>
   )
 }
 

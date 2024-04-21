@@ -1,44 +1,18 @@
 import axios from "axios";
 import {ApiResponseType} from "../types/ApiResponse.ts";
 import {Account, AccountLogin} from "../types/Account.ts";
-import {useEtag, useToken} from "../atoms/tokens.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
 
-const getEtag = (): string => {
-    // use hook from atoms/etags.ts
-    const [etag, _] = useEtag();
-    return etag ?? "";
-};
-
-const setEtag = (newEtag: string) => {
-    // use hook from atoms/etags.ts
-    const [_, setEtag] = useEtag();
-    setEtag(newEtag);
-}
-
-const getAuthToken = () : string => {
-    const [token, _] = useToken();
-    return "Bearer " + (token ?? "");
-};
-
-const setToken = (newToken: string) => {
-    const [_, setToken] = useToken();
-    setToken(newToken);
-}
-
 const DEFAULT_HEADERS = {
     Accept: "application/json",
-    "Content-Type": "application/json",
-    Authorization: getAuthToken(),
+    "Content-Type": "application/json"
 };
 
 const ETAG_HEADERS = {
     Accept: "application/json",
-    "Content-Type": "application/json",
-    Authorization: getAuthToken(),
-    "If-Match": getEtag(),
+    "Content-Type": "application/json"
 };
 
 export const LOGIN_HEADERS = {
@@ -67,7 +41,8 @@ const apiForLogin = axios.create({
 apiWithAuthToken.interceptors.request.use(
     (config) => {
         // Modify the request config to include the Authorization header
-        config.headers.Authorization = getAuthToken();
+        const token = localStorage.getItem("token");
+        if (token) config.headers.Authorization = "Bearer " + token;
         return config;
     },
     (error) => {
@@ -78,7 +53,7 @@ apiWithAuthToken.interceptors.request.use(
 
 apiWithAuthToken.interceptors.response.use(
     (response) => {
-        setToken(response.headers.authorization);
+        localStorage.setItem("token", response.headers.authorization);
         return response;
     },
     (error) => {
@@ -90,8 +65,10 @@ apiWithAuthToken.interceptors.response.use(
 apiWithEtag.interceptors.request.use(
     (config) => {
         // Modify the request config to include the Authorization header
-        config.headers.Authorization = getAuthToken();
-        config.headers['If-Match'] = getEtag();
+        const token = localStorage.getItem("token");
+        if (token) config.headers.Authorization = "Bearer " + token;
+        const etag = localStorage.getItem("etag");
+        if (etag) config.headers['If-Match'] = etag;
         return config;
     },
     (error) => {
@@ -102,7 +79,7 @@ apiWithEtag.interceptors.request.use(
 
 apiWithEtag.interceptors.response.use(
     (response) => {
-        setEtag(response.headers.etag);
+        localStorage.setItem("etag", response.headers.etag);
         return response;
     },
     (error) => {

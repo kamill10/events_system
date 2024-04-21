@@ -1,5 +1,5 @@
 export interface RouteType {
-    page: React.ReactNode
+    page: React.FunctionComponent
     pathname: string
     name: string
     renderOnNavbar: boolean

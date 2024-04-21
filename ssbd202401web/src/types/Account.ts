@@ -8,6 +8,6 @@ export interface Account {
 }
 
 export interface AccountLogin {
-    login: string;
+    username: string;
     password: string;
 }
