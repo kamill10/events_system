@@ -119,7 +119,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
-    @PatchMapping("myemail/{id}")
+    @PatchMapping("/myemail/{id}")
     public ResponseEntity<GetAccountDTO> updateMyEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
             throws AccountNotFoundException, EmailAlreadyExistsException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
