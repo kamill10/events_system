@@ -12,7 +12,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -102,8 +101,8 @@ public class AccountController {
 
     @GetMapping("/administrators")
     public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws NotFoundException {
-        List<GetAccountDTO> admiministrators = AccountDTOConverter.accountDtoList(accountService.getAdmins());
-        return ResponseEntity.status(HttpStatus.OK).body(admiministrators);
+        List<GetAccountDTO> administrators = AccountDTOConverter.accountDtoList(accountService.getAdmins());
+        return ResponseEntity.status(HttpStatus.OK).body(administrators);
     }
 
     @GetMapping("/managers")
@@ -119,4 +118,18 @@ public class AccountController {
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
+
+    @PatchMapping("/myemail/{id}")
+    public ResponseEntity<GetAccountDTO> updateMyEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
+            throws AccountNotFoundException, EmailAlreadyExistsException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (!userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        GetAccountDTO updatedAccount = AccountDTOConverter
+                .toAccountDto(accountService.updateAccountEmail(id, email.email()));
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
+
 }

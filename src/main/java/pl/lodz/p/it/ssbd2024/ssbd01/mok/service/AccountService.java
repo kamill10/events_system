@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.logger.LoggerProps;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -155,4 +156,8 @@ public class AccountService {
         return accountMokRepository.save(accountToUpdate);
     }
 
+    public Account getAccountById(UUID id) throws AccountNotFoundException {
+        return accountMokRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+    }
 }
