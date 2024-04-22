@@ -1,13 +1,16 @@
 import { AccountTypeEnum} from "./AccountType.ts";
 
-export interface Account {
+export interface AccountType {
     id: string;
     username: string;
     email: string;
     roles: Array<AccountTypeEnum>;
+    gender: number;
+    firstName: string;
+    lastName: string;
 }
 
-export interface AccountLogin {
+export interface AccountLoginType {
     username: string;
     password: string;
 }

@@ -1,13 +1,34 @@
 import {Route, Routes} from "react-router-dom";
-import {PublicRoutes} from "./Routes.ts";
+import {ParticipantRoutes, PublicRoutes} from "./Routes.ts";
 import PublicLayout from "../layouts/PublicLayout.tsx";
+import { ParticipantTheme, PublicTheme } from "../themes/themes.ts";
+import { ThemeProvider } from "@mui/material";
+import { useAccount } from "../hooks/useAccount.ts";
+import ParticipantLayout from "../layouts/ParticipantLayout.tsx";
 
 export default function RouterComponent() {
+    const { isAuthenticated } = useAccount();
     return (
         <Routes>
-            {PublicRoutes.map((route, key) => {
+            { !isAuthenticated && PublicRoutes.map((route, key) => {
                 return <Route key={key} path={route.pathname}
-                              element={<PublicLayout page={route.page}></PublicLayout>}></Route>
+                            element={
+                                <ThemeProvider theme={PublicTheme}>
+                                    <PublicLayout page={route.page}>
+                                    </PublicLayout>
+                                </ThemeProvider>}>
+                </Route>
+            })}
+            { isAuthenticated && ParticipantRoutes.map((route, key) => {
+                return <Route key={key} path={route.pathname}
+                            element={
+                                <ThemeProvider theme={ParticipantTheme}>
+                                    <ParticipantLayout page={route.page}>
+                                    </ParticipantLayout>
+                                </ThemeProvider>
+                            }>
+
+                </Route>
             })}
         </Routes>
     )

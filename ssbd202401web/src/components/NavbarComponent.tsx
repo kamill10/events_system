@@ -25,9 +25,7 @@ export default function NavbarComponent(props: NavbarPropType) {
         <div id={"navbar"}>
             <Slide appear={false} direction={"down"} in={!scrollTrigger}>
                 <AppBar>
-                    <Toolbar sx={{
-                        backgroundColor: props.color
-                    }}>
+                    <Toolbar>
                         <Typography
                             variant="h6"
                             noWrap
