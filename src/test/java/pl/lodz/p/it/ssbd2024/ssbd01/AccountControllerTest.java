@@ -323,14 +323,12 @@ public class AccountControllerTest {
 
     @Test
     public void testUpdateAccountDataEndpoint() throws Exception {
-
         Account account = new Account("user13", passwordEncoder.encode("password"), "email13@email.com", 0, "firstName13", "lastName13");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "ADMIN");
         account.setFirstName("newfirstName13");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String adminToken = jwtService.generateToken(account);
-        System.out.println(adminToken);
         MvcResult result = mockMvcAccount.perform(put("/api/accounts/userData/" + account.getId())
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
