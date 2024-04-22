@@ -10,13 +10,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.PasswordTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
@@ -86,8 +88,10 @@ public class AccountController {
 
 
     @PutMapping("/userData/{id}")
-    public ResponseEntity<GetAccountDTO> updateAccountUserData(@PathVariable UUID id, @RequestBody Account account) throws NotFoundException {
-        GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.updateAccountUserData(id, account));
+    public ResponseEntity<GetAccountDTO> updateAccountData(@PathVariable UUID id, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+            throws NotFoundException {
+        GetAccountDTO updatedAccount =
+                AccountDTOConverter.toAccountDto(accountService.updateAccountData(id, AccountDTOConverter.toAccount(updateAccountDataDTO)));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -99,8 +103,8 @@ public class AccountController {
 
     @GetMapping("/administrators")
     public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws NotFoundException {
-        List<GetAccountDTO> admiministrators = AccountDTOConverter.accountDtoList(accountService.getAdmins());
-        return ResponseEntity.status(HttpStatus.OK).body(admiministrators);
+        List<GetAccountDTO> administrators = AccountDTOConverter.accountDtoList(accountService.getAdmins());
+        return ResponseEntity.status(HttpStatus.OK).body(administrators);
     }
 
     @GetMapping("/managers")
@@ -111,7 +115,20 @@ public class AccountController {
 
     @PatchMapping("/email/{id}")
     public ResponseEntity<GetAccountDTO> updateAccountEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
-            throws AccountNotFoundException {
+            throws AccountNotFoundException, EmailAlreadyExistsException {
+        GetAccountDTO updatedAccount = AccountDTOConverter
+                .toAccountDto(accountService.updateAccountEmail(id, email.email()));
+        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
+
+    @PatchMapping("/myemail/{id}")
+    public ResponseEntity<GetAccountDTO> updateMyEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
+            throws AccountNotFoundException, EmailAlreadyExistsException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (!userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
@@ -129,4 +146,18 @@ public class AccountController {
         accountService.resetPasswordWithToken(token, passwordEncoder.encode(password));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @PatchMapping("/mypassword/{id}")
+    public ResponseEntity<GetAccountDTO> updateAccountPassword(@PathVariable UUID id, @RequestBody UpdatePasswordDTO password)
+            throws AccountNotFoundException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        if (!userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        accountService.updatePassword(id, password.value());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }

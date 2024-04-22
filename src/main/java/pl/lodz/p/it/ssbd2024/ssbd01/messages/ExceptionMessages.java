@@ -10,5 +10,6 @@ public class ExceptionMessages {
     public static final String NO_PARTICIPANTS_FOUND = "No participants found.";
     public static final String NO_MANAGERS_FOUND = "No managers found.";
     public static final String NO_ADMINS_FOUND = "No admins found.";
+    public static final String EMAIL_ALREADY_EXISTS = "Email already exists.";
     public static final String PASS_TOKEN_EXPIRED = "Token has expired.";
 }
