@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
@@ -18,6 +19,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundExcepti
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.PasswordTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
@@ -31,6 +33,7 @@ public class AccountController {
 
 
     private final AccountService accountService;
+    private final PasswordEncoder passwordEncoder;
     private final AccountDTOConverter AccountDTOConverter;
 
     @GetMapping
@@ -129,6 +132,19 @@ public class AccountController {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO email) {
+        accountService.resetPassword(email.email());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/resetPassword/token/{token}")
+    public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody String password)
+            throws PasswordTokenExpiredException, AccountNotFoundException {
+        accountService.resetPasswordWithToken(token, passwordEncoder.encode(password));
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/mypassword/{id}")

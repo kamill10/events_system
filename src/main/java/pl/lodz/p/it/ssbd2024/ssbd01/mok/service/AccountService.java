@@ -1,21 +1,26 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.logger.LoggerProps;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.logger.LoggerProps;
 
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -24,6 +29,7 @@ import java.util.UUID;
 public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
+    private final PasswordResetRepository passwordResetRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
 
@@ -174,5 +180,39 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setPassword(passwordEncoder.encode(password));
         accountMokRepository.saveAndFlush(accountToUpdate);
+    }
+
+    @Transactional
+    public void resetPassword(String email) {
+        Optional<Account> accountToUpdate = accountMokRepository.findByEmail(email);
+        if (accountToUpdate.isEmpty()) {
+            return;
+        }
+        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        System.out.println(randString);
+        var expirationDate = LocalDateTime.now().plusMinutes(30);
+        var newResetIssue = new PasswordReset(randString, email, expirationDate);
+        // TODO: Send mail to user with reset link
+
+        passwordResetRepository.save(newResetIssue);
+    }
+
+    @Transactional
+    public void resetPasswordWithToken(String token, String newPassword) throws PasswordTokenExpiredException, AccountNotFoundException {
+        Optional<PasswordReset> passwordReset = passwordResetRepository.findByToken(token);
+        System.out.println(token);
+        if (passwordReset.isEmpty()) {
+            throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+        }
+        if (passwordReset.get().getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new PasswordTokenExpiredException(ExceptionMessages.PASS_TOKEN_EXPIRED);
+        }
+        Optional<Account> accountToUpdate = accountMokRepository.findByEmail(passwordReset.get().getEmail());
+        if (accountToUpdate.isEmpty()) {
+            throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+        }
+        Account account = accountToUpdate.get();
+        account.setPassword(newPassword);
+        accountMokRepository.save(account);
     }
 }

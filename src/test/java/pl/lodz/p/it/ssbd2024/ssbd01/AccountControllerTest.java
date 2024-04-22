@@ -27,6 +27,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.util.UUID;
@@ -55,6 +56,9 @@ public class AccountControllerTest {
 
     @Autowired
     private HandlerExceptionResolver handlerExceptionResolver;
+
+    @Autowired
+    private PasswordResetRepository passwordResetRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -329,6 +333,7 @@ public class AccountControllerTest {
         account.setFirstName("newfirstName13");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String adminToken = jwtService.generateToken(account);
+        System.out.println(adminToken);
         MvcResult result = mockMvcAccount.perform(put("/api/accounts/userData/" + account.getId())
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -587,5 +592,26 @@ public class AccountControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newPassword))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testUpdateAccountEmailAsParticipantUnauthorized() throws Exception {
+        Account account = new Account("user17", passwordEncoder.encode("password"), "email17@email.com", 0, "firstName16", "lastName16");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        String email = objectMapper.writeValueAsString(new JSONObject().appendField("email", "email17@email.com"));
+        mockMvcAccount.perform(post("/api/accounts/resetPassword")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(email))
+                .andExpect(status().isOk());
+
+        int size = passwordResetRepository.findAll().size();
+        Assertions.assertEquals(1, size);
+
+        String newPassword = "newPassword";
+        mockMvcAccount.perform(post("/api/accounts/resetPassword/token/2137")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newPassword))
+                .andExpect(status().isNotFound());
     }
 }
