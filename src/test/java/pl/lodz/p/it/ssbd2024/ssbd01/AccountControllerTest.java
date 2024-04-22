@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2024.ssbd01;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.Filter;
 import net.minidev.json.JSONObject;
@@ -324,7 +323,6 @@ public class AccountControllerTest {
 
     @Test
     public void testUpdateAccountDataEndpoint() throws Exception {
-
         Account account = new Account("user13", passwordEncoder.encode("password"), "email13@email.com", 0, "firstName13", "lastName13");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "ADMIN");
@@ -543,4 +541,51 @@ public class AccountControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+
+    @Test
+    public void testUpdateAccountPassword() throws Exception {
+        Account account = new Account("user20", passwordEncoder.encode("password"), "email20@email.com", 0, "firstName15", "lastName15");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
+        String token = jwtService.generateToken(account);
+        mockMvcAccount.perform(patch("/api/accounts/mypassword/" + account.getId())
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newPassword))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testUpdateAccountPasswordUnauthorized() throws Exception {
+        Account account = new Account("user21", passwordEncoder.encode("password"), "email21@email.com", 0, "firstName15", "lastName15");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
+        mockMvcAccount.perform(patch("/api/accounts/mypassword/" + account.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newPassword))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testUpdateOtherAccountPassword() throws Exception {
+        Account account = new Account("user22", passwordEncoder.encode("password"), "email22@email.com", 0, "firstName15", "lastName15");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+
+        String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
+
+        Account accountParticipant = new Account("user23", passwordEncoder.encode("password"), "email23@email.com", 0, "firstName15", "lastName15");
+        accountParticipant = accountService.addAccount(accountParticipant);
+        accountService.addRoleToAccount(accountParticipant.getId(), "PARTICIPANT");
+
+        String token = jwtService.generateToken(accountParticipant);
+
+        mockMvcAccount.perform(patch("/api/accounts/mypassword/" + account.getId())
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newPassword))
+                .andExpect(status().isForbidden());
+    }
 }
