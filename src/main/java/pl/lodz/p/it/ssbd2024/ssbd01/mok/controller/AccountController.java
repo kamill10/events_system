@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictExcepti
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.PasswordTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
@@ -124,7 +125,7 @@ public class AccountController {
 
     @PostMapping("/resetPassword/token/{token}")
     public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody String password)
-            throws AccountNotFoundException {
+            throws PasswordTokenExpiredException, AccountNotFoundException {
         accountService.resetPasswordWithToken(token, passwordEncoder.encode(password));
         return ResponseEntity.status(HttpStatus.OK).build();
     }

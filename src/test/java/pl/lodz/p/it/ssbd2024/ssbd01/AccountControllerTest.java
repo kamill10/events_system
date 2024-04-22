@@ -25,6 +25,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.util.UUID;
@@ -48,6 +49,9 @@ public class AccountControllerTest {
 
     @Autowired
     private HandlerExceptionResolver handlerExceptionResolver;
+
+    @Autowired
+    private PasswordResetRepository passwordResetRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -470,12 +474,10 @@ public class AccountControllerTest {
                         .content(email))
                 .andExpect(status().isOk());
 
-        String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("password", "passwordNEW"));
-        mockMvcAccount.perform(post("/api/accounts/resetPassword/token/123123")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(newPassword))
-                .andExpect(status().isOk());
+        int size = passwordResetRepository.findAll().size();
+        Assertions.assertEquals(1, size);
 
+        String newPassword = "newPassword";
         mockMvcAccount.perform(post("/api/accounts/resetPassword/token/2137")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newPassword))

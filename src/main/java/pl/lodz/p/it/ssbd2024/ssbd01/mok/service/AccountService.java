@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
@@ -13,6 +14,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -153,7 +155,8 @@ public class AccountService {
         if (accountToUpdate.isEmpty()) {
             return;
         }
-        var randString = "123123"; // TODO: generate random string
+        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        System.out.println(randString);
         var expirationDate = LocalDateTime.now().plusMinutes(30);
         var newResetIssue = new PasswordReset(randString, email, expirationDate);
         // TODO: Send mail to user with reset link
@@ -162,20 +165,17 @@ public class AccountService {
     }
 
     @Transactional
-    public void resetPasswordWithToken(String token, String newPassword) throws AccountNotFoundException{
+    public void resetPasswordWithToken(String token, String newPassword) throws PasswordTokenExpiredException, AccountNotFoundException {
         Optional<PasswordReset> passwordReset = passwordResetRepository.findByToken(token);
         System.out.println(token);
         if (passwordReset.isEmpty()) {
-            // TODO: change to other exception
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
         }
         if (passwordReset.get().getExpirationDate().isBefore(LocalDateTime.now())) {
-            // TODO: change to other exception
-            throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+            throw new PasswordTokenExpiredException(ExceptionMessages.PASS_TOKEN_EXPIRED);
         }
         Optional<Account> accountToUpdate = accountMokRepository.findByEmail(passwordReset.get().getEmail());
         if (accountToUpdate.isEmpty()) {
-            // TODO: change to other exception
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
         }
         Account account = accountToUpdate.get();
