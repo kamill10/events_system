@@ -42,13 +42,6 @@ public class MowEntityManagerFactoryConfig {
 
     @Bean(name = "mowEntityManagerFactory")
     public EntityManagerFactory mowEntityManagerFactory() {
-//        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
-//        dataSource.setUrl(env.getProperty("jdbc.url"));
-//        dataSource.setUsername(env.getProperty("jdbc.mow.user"));
-//        dataSource.setPassword(env.getProperty("jdbc.mow.password"));
-//        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
-//
-//        dataSource.setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
         AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
         dataSource.setUniqueResourceName("mow");
         dataSource.setUrl(env.getProperty("jdbc.url"));

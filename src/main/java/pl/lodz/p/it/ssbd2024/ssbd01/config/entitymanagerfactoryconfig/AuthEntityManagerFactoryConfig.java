@@ -42,14 +42,6 @@ public class AuthEntityManagerFactoryConfig {
 
     @Bean(name = "authEntityManagerFactory")
     public EntityManagerFactory authEntityManagerFactory() {
-//        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
-//        dataSource.setUrl(env.getProperty("jdbc.url"));
-//        dataSource.setUsername(env.getProperty("jdbc.auth.user"));
-//        dataSource.setPassword(env.getProperty("jdbc.auth.password"));
-//        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
-//
-//        dataSource.setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-
         AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
         dataSource.setUniqueResourceName("auth");
         dataSource.setUrl(env.getProperty("jdbc.url"));

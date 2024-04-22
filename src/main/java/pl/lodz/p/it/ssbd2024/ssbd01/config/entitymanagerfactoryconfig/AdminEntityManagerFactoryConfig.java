@@ -36,18 +36,6 @@ public class AdminEntityManagerFactoryConfig {
 
     @Bean(name = "adminEntityManagerFactory")
     public EntityManagerFactory entityManagerFactory() {
-//        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
-//        dataSource.setUrl(env.getProperty("jdbc.url"));
-//        dataSource.setUsername(env.getProperty("jdbc.admin.user"));
-//        dataSource.setPassword(env.getProperty("jdbc.admin.password"));
-//        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
-//
-//        dataSource.setInitialSize(1);
-//        dataSource.setMinIdle(0);
-//        dataSource.setMaxIdle(0);
-//        dataSource.setMaxActive(1);
-//
-//        dataSource.setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
         AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
         dataSource.setUniqueResourceName("admin");
         dataSource.setUrl(env.getProperty("jdbc.url"));
