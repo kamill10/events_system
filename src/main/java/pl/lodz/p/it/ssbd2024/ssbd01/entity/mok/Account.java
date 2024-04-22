@@ -101,7 +101,7 @@ public class Account extends ControlledEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return active;
+        return verified;
     }
 
     @Override

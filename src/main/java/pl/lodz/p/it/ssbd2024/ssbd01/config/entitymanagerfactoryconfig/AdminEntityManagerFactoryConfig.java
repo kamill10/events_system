@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig;
 
+import com.atomikos.jdbc.AtomikosNonXADataSourceBean;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,18 +36,16 @@ public class AdminEntityManagerFactoryConfig {
 
     @Bean(name = "adminEntityManagerFactory")
     public EntityManagerFactory entityManagerFactory() {
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+        AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
+        dataSource.setUniqueResourceName("admin");
         dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.admin.user"));
+        dataSource.setUser(env.getProperty("jdbc.admin.user"));
         dataSource.setPassword(env.getProperty("jdbc.admin.password"));
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
-
-        dataSource.setInitialSize(1);
-        dataSource.setMinIdle(0);
-        dataSource.setMaxIdle(0);
-        dataSource.setMaxActive(1);
-
-        dataSource.setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+        dataSource.setLocalTransactionMode(true);
+        dataSource.setPoolSize(1);
+        dataSource.setMaxPoolSize(1);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("ssbd01admin");

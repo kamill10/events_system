@@ -20,6 +20,8 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.controller.AuthenticationController;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.RootConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -37,11 +39,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Testcontainers
-@SpringJUnitWebConfig(classes = {WebConfig.class})
+@SpringJUnitWebConfig(classes = {WebConfig.class, RootConfig.class})
 public class AccountControllerTest {
 
     @Autowired
     private AccountController accountController;
+
+    @Autowired
+    private AuthenticationController authenticationController;
 
     @Autowired
     private AccountService accountService;
@@ -62,6 +67,8 @@ public class AccountControllerTest {
     private JwtService jwtService;
 
     private MockMvc mockMvcAccount;
+
+    private MockMvc mockMvcAuth;
 
     @Autowired
     private Filter springSecurityFilterChain;
@@ -90,6 +97,31 @@ public class AccountControllerTest {
                 .addFilter(springSecurityFilterChain)
                 .setHandlerExceptionResolvers(handlerExceptionResolver)
                 .build();
+
+        this.mockMvcAuth = MockMvcBuilders
+                .standaloneSetup(authenticationController)
+                .setHandlerExceptionResolvers(handlerExceptionResolver)
+                .build();
+    }
+
+    @Test
+    public void testAuthenticationEndpoint() throws Exception {
+
+        MvcResult result = mockMvcAuth.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"user\",\"password\":\"password\",\"email\":\"email@email.com\",\"gender\":\"0\"," +
+                                "\"firstName\":\"firstName\",\"lastName\":\"lastName\"}"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        mockMvcAuth.perform(post("/api/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"user\",\"password\":\"password\"}"))
+                .andExpect(status().isForbidden());
+
+        Account account = accountService.getAccountByUsername("user");
+
+        Assertions.assertEquals("user", account.getUsername());
     }
 
     @Test

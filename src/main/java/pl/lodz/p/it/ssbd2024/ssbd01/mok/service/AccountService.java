@@ -88,6 +88,7 @@ public class AccountService {
     }
 
 
+    @Transactional
     public Account getAccountByUsername(String username) throws AccountNotFoundException {
         return accountMokRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
@@ -104,6 +105,7 @@ public class AccountService {
         return accountMokRepository.save(accountToUpdate);
     }
 
+    @Transactional
     public List<Account> getParticipants() throws ParticipantNotFoundException {
         List<Account> participants = getAllAccounts()
                 .stream()
@@ -115,6 +117,7 @@ public class AccountService {
         return participants;
     }
 
+    @Transactional
     public List<Account> getManagers() throws AccountNotFoundException {
         List<Account> moderators = getAllAccounts()
                 .stream()
@@ -126,6 +129,7 @@ public class AccountService {
         return moderators;
     }
 
+    @Transactional
     public List<Account> getAdmins() throws AdminNotFoundException {
         List<Account> admins = getAllAccounts()
                 .stream()

@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig;
 
+import com.atomikos.jdbc.AtomikosNonXADataSourceBean;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -42,13 +43,13 @@ public class MokEntityManagerFactoryConfig {
 
     @Bean(name = "mokEntityManagerFactory")
     public EntityManagerFactory mokEntityManagerFactory() {
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+        AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
+        dataSource.setUniqueResourceName("mok");
         dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.mok.user"));
+        dataSource.setUser(env.getProperty("jdbc.mok.user"));
         dataSource.setPassword(env.getProperty("jdbc.mok.password"));
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
-
-        dataSource.setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("ssbd01mok");
