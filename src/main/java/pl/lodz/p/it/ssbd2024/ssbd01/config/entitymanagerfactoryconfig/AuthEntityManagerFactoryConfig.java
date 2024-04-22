@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig;
 
 
+import com.atomikos.jdbc.AtomikosNonXADataSourceBean;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -41,13 +42,21 @@ public class AuthEntityManagerFactoryConfig {
 
     @Bean(name = "authEntityManagerFactory")
     public EntityManagerFactory authEntityManagerFactory() {
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+//        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+//        dataSource.setUrl(env.getProperty("jdbc.url"));
+//        dataSource.setUsername(env.getProperty("jdbc.auth.user"));
+//        dataSource.setPassword(env.getProperty("jdbc.auth.password"));
+//        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
+//
+//        dataSource.setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+        AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
+        dataSource.setUniqueResourceName("auth");
         dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUsername(env.getProperty("jdbc.auth.user"));
+        dataSource.setUser(env.getProperty("jdbc.auth.user"));
         dataSource.setPassword(env.getProperty("jdbc.auth.password"));
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
-
-        dataSource.setDefaultTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+        dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("ssbd01auth");

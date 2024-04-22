@@ -188,6 +188,12 @@
             <version>${atomikos.version}</version>
             <classifier>jakarta</classifier>
         </dependency>
+        <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-jdbc</artifactId>
+            <version>${atomikos.version}</version>
+            <classifier>jakarta</classifier>
+        </dependency>
 
         <!-- Logging -->
         <dependency>

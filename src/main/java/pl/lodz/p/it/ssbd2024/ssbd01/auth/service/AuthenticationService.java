@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ public class AuthenticationService {
                                 createAccountDTO)));
     }
 
+    @Transactional
     public String authenticate(LoginDTO loginDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

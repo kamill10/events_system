@@ -14,7 +14,8 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "pl.lodz.p.it.ssbd2024.ssbd01")
+@ComponentScan(basePackages = "pl.lodz.p.it.ssbd2024.ssbd01", excludeFilters = {
+        @ComponentScan.Filter(org.springframework.context.annotation.Configuration.class)})
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
