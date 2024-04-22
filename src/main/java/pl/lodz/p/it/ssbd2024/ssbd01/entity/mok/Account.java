@@ -81,6 +81,12 @@ public class Account extends ControlledEntity implements UserDetails {
         this.verified = false;
     }
 
+    public Account(String firstName, String lastName, Integer gender) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
@@ -95,7 +101,7 @@ public class Account extends ControlledEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return active;
+        return verified;
     }
 
     @Override

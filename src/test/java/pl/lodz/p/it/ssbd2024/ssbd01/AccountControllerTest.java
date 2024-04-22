@@ -19,6 +19,8 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.controller.AuthenticationController;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.RootConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -32,13 +34,18 @@ import java.util.UUID;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @Testcontainers
-@SpringJUnitWebConfig(classes = {WebConfig.class})
+@SpringJUnitWebConfig(classes = {WebConfig.class, RootConfig.class})
 public class AccountControllerTest {
 
     @Autowired
     private AccountController accountController;
+
+    @Autowired
+    private AuthenticationController authenticationController;
 
     @Autowired
     private AccountService accountService;
@@ -59,6 +66,8 @@ public class AccountControllerTest {
     private JwtService jwtService;
 
     private MockMvc mockMvcAccount;
+
+    private MockMvc mockMvcAuth;
 
     @Autowired
     private Filter springSecurityFilterChain;
@@ -87,6 +96,31 @@ public class AccountControllerTest {
                 .addFilter(springSecurityFilterChain)
                 .setHandlerExceptionResolvers(handlerExceptionResolver)
                 .build();
+
+        this.mockMvcAuth = MockMvcBuilders
+                .standaloneSetup(authenticationController)
+                .setHandlerExceptionResolvers(handlerExceptionResolver)
+                .build();
+    }
+
+    @Test
+    public void testAuthenticationEndpoint() throws Exception {
+
+        MvcResult result = mockMvcAuth.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"user\",\"password\":\"password\",\"email\":\"email@email.com\",\"gender\":\"0\"," +
+                                "\"firstName\":\"firstName\",\"lastName\":\"lastName\"}"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        mockMvcAuth.perform(post("/api/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"user\",\"password\":\"password\"}"))
+                .andExpect(status().isForbidden());
+
+        Account account = accountService.getAccountByUsername("user");
+
+        Assertions.assertEquals("user", account.getUsername());
     }
 
     @Test
@@ -288,7 +322,7 @@ public class AccountControllerTest {
 
 
     @Test
-    public void testUpdateAccountUserDataEndpoint() throws Exception {
+    public void testUpdateAccountDataEndpoint() throws Exception {
 
         Account account = new Account("user13", passwordEncoder.encode("password"), "email13@email.com", 0, "firstName13", "lastName13");
         account = accountService.addAccount(account);
@@ -306,6 +340,9 @@ public class AccountControllerTest {
         String content = result.getResponse().getContentAsString();
 
         Assertions.assertTrue(content.contains("newfirstName13"));
+        Assertions.assertTrue(content.contains(account.getLastName()));
+        Assertions.assertTrue(content.contains(String.valueOf(account.getGender())));
+        Assertions.assertTrue(content.contains(account.getEmail()));
 
         mockMvcAccount.perform(put("/api/accounts/userData/" + UUID.randomUUID())
                         .header("Authorization", "Bearer " + adminToken)
@@ -316,7 +353,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void testUpdateAccountUserDataEndpointAsParticipant() throws Exception {
+    public void testUpdateAccountDataEndpointAsParticipant() throws Exception {
 
         Account account = new Account("user14", passwordEncoder.encode("password"), "email14@email.com", 0, "firstName14", "lastName14");
         account = accountService.addAccount(account);
@@ -435,6 +472,7 @@ public class AccountControllerTest {
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "ADMIN");
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail@email.com"));
+        String emailNotExists = objectMapper.writeValueAsString(new JSONObject().appendField("email", "notexists@email.com"));
         String adminToken = jwtService.generateToken(account);
         mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
                         .header("Authorization", "Bearer " + adminToken)
@@ -442,13 +480,19 @@ public class AccountControllerTest {
                         .content(newEmail))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("newemail@email.com"));
-        Assertions.assertThrows(AssertionError.class, () -> {
-            mockMvcAccount.perform(patch("/api/accounts/email/" + "BAD_ID")
-                            .header("Authorization", "Bearer " + adminToken)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(newEmail))
-                    .andExpect(status().isOk());
-        });
+
+        mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newEmail))
+                .andExpect(status().isConflict());
+
+        mockMvcAccount.perform(patch("/api/accounts/email/" + UUID.randomUUID())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(emailNotExists))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString(ExceptionMessages.ACCOUNT_NOT_FOUND)));
     }
 
     @Test
@@ -464,6 +508,41 @@ public class AccountControllerTest {
                         .content(newEmail))
                 .andExpect(status().isForbidden());
     }
+
+    @Test
+    public void testUpdateMyEmail() throws Exception {
+        Account account = new Account("user17", passwordEncoder.encode("password"), "email17@email.com", 0, "firstName15", "lastName15");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail17@email.com"));
+        String adminToken = jwtService.generateToken(account);
+        mockMvcAccount.perform(patch("/api/accounts/myemail/" + account.getId())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newEmail))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("newemail17@email.com"));
+        assertThat(accountService.getAccountById(account.getId()).getEmail())
+                .isEqualTo("newemail17@email.com");
+    }
+
+    @Test
+    public void testUpdateMyEmailUnauthorized() throws Exception {
+        Account account = new Account("user18", passwordEncoder.encode("password"), "email18@email.com", 0, "firstName15", "lastName15");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail18@email.com"));
+        Account accountAdmin = new Account("user19", passwordEncoder.encode("password"), "email19@email.com", 0, "firstName15", "lastName15");
+        accountAdmin = accountService.addAccount(accountAdmin);
+        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        String notMyToken = jwtService.generateToken(accountAdmin);
+        mockMvcAccount.perform(patch("/api/accounts/myemail/" + account.getId())
+                        .header("Authorization", "Bearer " + notMyToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(newEmail))
+                .andExpect(status().isForbidden());
+    }
+
 
     @Test
     public void testUpdateAccountPassword() throws Exception {
