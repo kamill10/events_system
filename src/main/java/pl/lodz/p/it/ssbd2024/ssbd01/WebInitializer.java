@@ -6,10 +6,6 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.RootConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.security.ApplicationConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtAuthFilter;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.security.SecurityConfig;
 
 import java.nio.charset.StandardCharsets;
 
