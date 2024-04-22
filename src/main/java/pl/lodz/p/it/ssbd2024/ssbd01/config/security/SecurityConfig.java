@@ -44,18 +44,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> {
                     requests
                             .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/api/accounts/resetPassword").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/api/accounts/resetPassword/token/{token}").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/accounts/reset-password").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/api/accounts/reset-password/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.GET, "/api/accounts//username/").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")
-                            .requestMatchers(HttpMethod.PUT, "/api/accounts/userData/{id}").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setActive").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/setInactive").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/email/{id}").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/myemail/{id}").hasAnyAuthority("ADMIN", "PARTICIPANT","MANAGER")
-                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/mypassword/{id}").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER");
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/**").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.PUT, "/api/accounts/**").hasAuthority("ADMIN")
+//                            .requestMatchers(HttpMethod.GET, "/api/accounts/username").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")
+//                            .requestMatchers(HttpMethod.PUT, "/api/accounts/{id}/user-data").hasAuthority("ADMIN")
+//                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/set-active").hasAuthority("ADMIN")
+//                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/{id}/set-inactive").hasAuthority("ADMIN")
+//                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/email/{id}").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.PATCH, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER");
+//                            .requestMatchers(HttpMethod.PATCH, "/api/me/email/{id}").hasAnyAuthority("ADMIN", "PARTICIPANT","MANAGER")
+//                            .requestMatchers(HttpMethod.PATCH, "/api/me/password/{id}").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER");
 
 
                 });

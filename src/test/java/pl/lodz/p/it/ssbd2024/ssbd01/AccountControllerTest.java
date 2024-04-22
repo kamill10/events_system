@@ -26,6 +26,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.MeController;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
@@ -44,6 +45,8 @@ public class AccountControllerTest {
 
     @Autowired
     private AccountController accountController;
+    @Autowired
+    private MeController meController;
 
     @Autowired
     private AuthenticationController authenticationController;
@@ -72,6 +75,7 @@ public class AccountControllerTest {
     private MockMvc mockMvcAccount;
 
     private MockMvc mockMvcAuth;
+    private MockMvc mockMvcMe;
 
     @Autowired
     private Filter springSecurityFilterChain;
@@ -100,6 +104,11 @@ public class AccountControllerTest {
                 .addFilter(springSecurityFilterChain)
                 .setHandlerExceptionResolvers(handlerExceptionResolver)
                 .build();
+        this.mockMvcMe = MockMvcBuilders
+                .standaloneSetup(meController)
+                .addFilter(springSecurityFilterChain)
+                .setHandlerExceptionResolvers(handlerExceptionResolver)
+                .build();
 
         this.mockMvcAuth = MockMvcBuilders
                 .standaloneSetup(authenticationController)
@@ -112,8 +121,8 @@ public class AccountControllerTest {
 
         MvcResult result = mockMvcAuth.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\":\"user\",\"password\":\"password\",\"email\":\"email@email.com\",\"gender\":\"0\"," +
-                                "\"firstName\":\"firstName\",\"lastName\":\"lastName\"}"))
+                        .content("{\"username\":\"user\",\"password\":\"password\",\"email\":\"email@email.com\",\"gender\":\"0\","
+                                + "\"firstName\":\"firstName\",\"lastName\":\"lastName\"}"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -163,7 +172,7 @@ public class AccountControllerTest {
         Account account = new Account("user4", passwordEncoder.encode("password"), "email4test@email.com", 0, "firstName4", "lastName4");
         accountService.addAccount(account);
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
@@ -178,89 +187,89 @@ public class AccountControllerTest {
         String adminToken = jwtService.generateToken(admin);
         Account account = new Account("user5", passwordEncoder.encode("password"), "email5@email.com", 1, "firstName5", "lastName5");
         accountService.addAccount(account);
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
 
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "PARTICIPANT"))
                 .andExpect(status().isBadRequest());
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isConflict());
 
-        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/remove-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "PARTICIPANT"))
                 .andExpect(status().isBadRequest());
 
-        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/remove-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isBadRequest());
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isOk());
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "PARTICIPANT"))
                 .andExpect(status().isUnprocessableEntity());
 
-        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/remove-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isOk());
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "PARTICIPANT"))
                 .andExpect(status().isBadRequest());
 
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isConflict());
 
-        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/remove-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isOk());
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "PARTICIPANT"))
                 .andExpect(status().isOk());
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "PARTICIPANT"))
                 .andExpect(status().isConflict());
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isBadRequest());
 
-        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/addRole")
+        mockMvcAccount.perform(post("/api/accounts/" + account.getId() + "/add-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isBadRequest());
 
-        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/remove-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "MANAGER"))
                 .andExpect(status().isBadRequest());
 
-        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/removeRole")
+        mockMvcAccount.perform(delete("/api/accounts/" + account.getId() + "/remove-role")
                         .header("Authorization", "Bearer " + adminToken)
                         .param("roleName", "ADMIN"))
                 .andExpect(status().isBadRequest());
@@ -273,14 +282,14 @@ public class AccountControllerTest {
 
         Account account = new Account("user10", passwordEncoder.encode("password"), "email10@email.com", 0, "firstName10", "lastName10");
         account = accountService.addAccount(account);
-        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setActive"));
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/set-active"));
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "ADMIN");
         String adminToken = jwtService.generateToken(account);
-        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setActive")
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/set-active")
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk());
-        mockMvcAccount.perform(patch("/api/accounts/" + UUID.randomUUID() + "/setActive")
+        mockMvcAccount.perform(patch("/api/accounts/" + UUID.randomUUID() + "/set-active")
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString(ExceptionMessages.ACCOUNT_NOT_FOUND)));
@@ -292,14 +301,14 @@ public class AccountControllerTest {
 
         Account account = new Account("user11", passwordEncoder.encode("password"), "email11@email.com", 0, "firstName11", "lastName11");
         account = accountService.addAccount(account);
-        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setInactive"));
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/set-inactive"));
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "ADMIN");
         String adminToken = jwtService.generateToken(account);
-        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/setInactive")
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/set-inactive")
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk());
-        mockMvcAccount.perform(patch("/api/accounts/" + UUID.randomUUID() + "/setInactive")
+        mockMvcAccount.perform(patch("/api/accounts/" + UUID.randomUUID() + "/set-inactive")
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(containsString(ExceptionMessages.ACCOUNT_NOT_FOUND)));
@@ -334,7 +343,8 @@ public class AccountControllerTest {
         String jsonAccount = objectMapper.writeValueAsString(account);
         String adminToken = jwtService.generateToken(account);
         System.out.println(adminToken);
-        MvcResult result = mockMvcAccount.perform(put("/api/accounts/userData/" + account.getId())
+        System.out.println(account);
+        MvcResult result = mockMvcAccount.perform(put("/api/accounts/" + account.getId() + "/user-data")
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonAccount))
@@ -347,7 +357,7 @@ public class AccountControllerTest {
         Assertions.assertTrue(content.contains(String.valueOf(account.getGender())));
         Assertions.assertTrue(content.contains(account.getEmail()));
 
-        mockMvcAccount.perform(put("/api/accounts/userData/" + UUID.randomUUID())
+        mockMvcAccount.perform(put("/api/accounts/" + UUID.randomUUID() + "/user-data")
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonAccount))
@@ -477,20 +487,20 @@ public class AccountControllerTest {
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail@email.com"));
         String emailNotExists = objectMapper.writeValueAsString(new JSONObject().appendField("email", "notexists@email.com"));
         String adminToken = jwtService.generateToken(account);
-        mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/email")
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newEmail))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("newemail@email.com"));
 
-        mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/email")
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newEmail))
                 .andExpect(status().isConflict());
 
-        mockMvcAccount.perform(patch("/api/accounts/email/" + UUID.randomUUID())
+        mockMvcAccount.perform(patch("/api/accounts/" + UUID.randomUUID() + "/email")
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(emailNotExists))
@@ -505,7 +515,7 @@ public class AccountControllerTest {
         accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail16@email.com"));
         String token = jwtService.generateToken(account);
-        mockMvcAccount.perform(patch("/api/accounts/email/" + account.getId())
+        mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/email")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newEmail))
@@ -519,7 +529,7 @@ public class AccountControllerTest {
         accountService.addRoleToAccount(account.getId(), "MANAGER");
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail17@email.com"));
         String adminToken = jwtService.generateToken(account);
-        mockMvcAccount.perform(patch("/api/accounts/myemail/" + account.getId())
+        mockMvcMe.perform(patch("/api/me/email")
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newEmail))
@@ -539,7 +549,7 @@ public class AccountControllerTest {
         accountAdmin = accountService.addAccount(accountAdmin);
         accountService.addRoleToAccount(account.getId(), "ADMIN");
         String notMyToken = jwtService.generateToken(accountAdmin);
-        mockMvcAccount.perform(patch("/api/accounts/myemail/" + account.getId())
+        mockMvcMe.perform(patch("/api/me/email")
                         .header("Authorization", "Bearer " + notMyToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newEmail))
@@ -554,7 +564,7 @@ public class AccountControllerTest {
         accountService.addRoleToAccount(account.getId(), "MANAGER");
         String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
         String token = jwtService.generateToken(account);
-        mockMvcAccount.perform(patch("/api/accounts/mypassword/" + account.getId())
+        mockMvcMe.perform(patch("/api/me/password")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newPassword))
@@ -567,40 +577,19 @@ public class AccountControllerTest {
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "MANAGER");
         String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
-        mockMvcAccount.perform(patch("/api/accounts/mypassword/" + account.getId())
+        mockMvcMe.perform(patch("/api/me/password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newPassword))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    public void testUpdateOtherAccountPassword() throws Exception {
-        Account account = new Account("user22", passwordEncoder.encode("password"), "email22@email.com", 0, "firstName15", "lastName15");
-        account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
-
-        String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
-
-        Account accountParticipant = new Account("user23", passwordEncoder.encode("password"), "email23@email.com", 0, "firstName15", "lastName15");
-        accountParticipant = accountService.addAccount(accountParticipant);
-        accountService.addRoleToAccount(accountParticipant.getId(), "PARTICIPANT");
-
-        String token = jwtService.generateToken(accountParticipant);
-
-        mockMvcAccount.perform(patch("/api/accounts/mypassword/" + account.getId())
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(newPassword))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    public void testUpdateAccountEmailAsParticipantUnauthorized() throws Exception {
+    public void testResetAccountPasswordAsParticipantUnauthorized() throws Exception {
         Account account = new Account("user17", passwordEncoder.encode("password"), "email17@email.com", 0, "firstName16", "lastName16");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
         String email = objectMapper.writeValueAsString(new JSONObject().appendField("email", "email17@email.com"));
-        mockMvcAccount.perform(post("/api/accounts/resetPassword")
+        mockMvcAccount.perform(post("/api/accounts/reset-password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(email))
                 .andExpect(status().isOk());
@@ -609,7 +598,7 @@ public class AccountControllerTest {
         Assertions.assertEquals(1, size);
 
         String newPassword = "newPassword";
-        mockMvcAccount.perform(post("/api/accounts/resetPassword/token/2137")
+        mockMvcAccount.perform(post("/api/accounts/reset-password/token/2137")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newPassword))
                 .andExpect(status().isNotFound());
