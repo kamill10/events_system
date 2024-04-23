@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
@@ -21,11 +22,10 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final AccountDTOConverter accountDTOConverter;
 
-    public String registerUser(CreateAccountDTO createAccountDTO) {
+    public String registerUser(Account account) {
         return jwtService.generateToken(
                 accountService.addAccount(
-                        accountDTOConverter.toAccount(
-                                createAccountDTO)));
+                        account));
     }
 
     @Transactional
