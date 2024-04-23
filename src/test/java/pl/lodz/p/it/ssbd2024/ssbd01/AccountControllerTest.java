@@ -26,7 +26,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.MeController;
@@ -36,10 +35,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Testcontainers
@@ -121,7 +120,6 @@ public class AccountControllerTest {
 
     @Test
     public void testAuthenticationEndpoint() throws Exception {
-
         MvcResult result = mockMvcAuth.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"user\",\"password\":\"password\",\"email\":\"email@email.com\",\"gender\":\"0\","
@@ -623,7 +621,7 @@ public class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(updatePasswordDTO)))
                 .andExpect(status().isOk());
         Account accountSaved = accountService.getAccountById(account2.getId());
-        Assertions.assertTrue(passwordEncoder.matches("Newpassword",accountSaved.getPassword()));
+        Assertions.assertTrue(passwordEncoder.matches("Newpassword", accountSaved.getPassword()));
 
 
     }
@@ -642,8 +640,8 @@ public class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(updatePasswordDTO)))
                 .andExpect(status().isForbidden());
         Account accountSaved = accountService.getAccountById(account2.getId());
-        Assertions.assertTrue(passwordEncoder.matches("password",accountSaved.getPassword()));
-        Assertions.assertFalse(passwordEncoder.matches("Newpassword",accountSaved.getPassword()));
+        Assertions.assertTrue(passwordEncoder.matches("password", accountSaved.getPassword()));
+        Assertions.assertFalse(passwordEncoder.matches("Newpassword", accountSaved.getPassword()));
     }
 
     @Test
@@ -662,8 +660,8 @@ public class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(updatePasswordDTO)))
                 .andExpect(status().isForbidden());
         Account accountSaved = accountService.getAccountById(account2.getId());
-        Assertions.assertTrue(passwordEncoder.matches("password",accountSaved.getPassword()));
-        Assertions.assertFalse(passwordEncoder.matches("Newpassword",accountSaved.getPassword()));
+        Assertions.assertTrue(passwordEncoder.matches("password", accountSaved.getPassword()));
+        Assertions.assertFalse(passwordEncoder.matches("Newpassword", accountSaved.getPassword()));
 
     }
 
@@ -683,8 +681,8 @@ public class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(updatePasswordDTO)))
                 .andExpect(status().isForbidden());
         Account accountSaved = accountService.getAccountById(account.getId());
-        Assertions.assertTrue(passwordEncoder.matches("password",accountSaved.getPassword()));
-        Assertions.assertFalse(passwordEncoder.matches("Newpassword",accountSaved.getPassword()));
+        Assertions.assertTrue(passwordEncoder.matches("password", accountSaved.getPassword()));
+        Assertions.assertFalse(passwordEncoder.matches("Newpassword", accountSaved.getPassword()));
 
     }
 
