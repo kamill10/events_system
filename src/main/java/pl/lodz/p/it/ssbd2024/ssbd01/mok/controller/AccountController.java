@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -119,6 +120,13 @@ public class AccountController {
         GetAccountDTO updatedAccount = AccountDTOConverter
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
+    }
+
+    @PatchMapping("/{id}/password")
+    public ResponseEntity<?> updateAccountPassword(@PathVariable UUID id, @RequestBody UpdatePasswordDTO password)
+            throws AccountNotFoundException {
+        accountService.updatePassword(id, password.value());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/reset-password")
