@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -23,7 +24,9 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.controller.AuthenticationController;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.RootConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.MeController;
@@ -603,4 +606,102 @@ public class AccountControllerTest {
                         .content(newPassword))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void testResetOtherAccountPasswordAsAdmin() throws Exception {
+        Account account = new Account("user23", passwordEncoder.encode("password"), "email23@email.com", 0, "firstName23", "lastName23");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        Account account2 = new Account("user24", passwordEncoder.encode("password"), "email24@email.com", 0, "firstName24", "lastName24");
+        account2 = accountService.addAccount(account2);
+        accountService.addRoleToAccount(account2.getId(), "PARTICIPANT");
+        String token = jwtService.generateToken(account);
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
+        mockMvcAccount.perform(patch("/api/accounts/ " + account2.getId() + "/password")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatePasswordDTO)))
+                .andExpect(status().isOk());
+        Account accountSaved = accountService.getAccountById(account2.getId());
+        Assertions.assertTrue(passwordEncoder.matches("Newpassword",accountSaved.getPassword()));
+
+
+    }
+
+    @Test
+    public void testResetOtherAccountPasswordUnauthorized() throws Exception {
+        Account account = new Account("user25", passwordEncoder.encode("password"), "email25@email.com", 0, "firstName25", "lastName25");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
+        Account account2 = new Account("user28", passwordEncoder.encode("password"), "email28@email.com", 0, "firstName28", "lastName28");
+        account2 = accountService.addAccount(account2);
+        accountService.addRoleToAccount(account2.getId(), "PARTICIPANT");
+        mockMvcAccount.perform(patch("/api/accounts/ " + account.getId() + "/password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatePasswordDTO)))
+                .andExpect(status().isForbidden());
+        Account accountSaved = accountService.getAccountById(account2.getId());
+        Assertions.assertTrue(passwordEncoder.matches("password",accountSaved.getPassword()));
+        Assertions.assertFalse(passwordEncoder.matches("Newpassword",accountSaved.getPassword()));
+    }
+
+    @Test
+    public void testResetOtherAccountPasswordAsManager() throws Exception {
+        Account account = new Account("user26", passwordEncoder.encode("password"), "email26@email.com", 0, "firstName26", "lastName26");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        Account account2 = new Account("user27", passwordEncoder.encode("password"), "email27@email.com", 0, "firstName27", "lastName27");
+        account2 = accountService.addAccount(account2);
+        accountService.addRoleToAccount(account2.getId(), "PARTICIPANT");
+        String token = jwtService.generateToken(account);
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
+        mockMvcAccount.perform(patch("/api/accounts/ " + account2.getId() + "/password")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatePasswordDTO)))
+                .andExpect(status().isForbidden());
+        Account accountSaved = accountService.getAccountById(account2.getId());
+        Assertions.assertTrue(passwordEncoder.matches("password",accountSaved.getPassword()));
+        Assertions.assertFalse(passwordEncoder.matches("Newpassword",accountSaved.getPassword()));
+
+    }
+
+    @Test
+    public void testResetOtherAccountPasswordAsParticipant() throws Exception {
+        Account account = new Account("user29", passwordEncoder.encode("password"), "email29@email.com", 0, "firstName29", "lastName29");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        Account account2 = new Account("user30", passwordEncoder.encode("password"), "email30@email.com", 0, "firstName30", "lastName30");
+        account2 = accountService.addAccount(account2);
+        accountService.addRoleToAccount(account2.getId(), "PARTICIPANT");
+        String token = jwtService.generateToken(account2);
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
+        mockMvcAccount.perform(patch("/api/accounts/ " + account.getId() + "/password")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatePasswordDTO)))
+                .andExpect(status().isForbidden());
+        Account accountSaved = accountService.getAccountById(account.getId());
+        Assertions.assertTrue(passwordEncoder.matches("password",accountSaved.getPassword()));
+        Assertions.assertFalse(passwordEncoder.matches("Newpassword",accountSaved.getPassword()));
+
+    }
+
+    @Test
+    public void testResetOtherNonExistentAccountPassword()
+            throws Exception {
+        Account account = new Account("user31", passwordEncoder.encode("password"), "email31@email.com", 0, "firstName31", "lastName31");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        String token = jwtService.generateToken(account);
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
+        mockMvcAccount.perform(patch("/api/accounts/ " + UUID.randomUUID() + "/password")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatePasswordDTO)))
+                .andExpect(status().isNotFound());
+    }
+
+
 }
