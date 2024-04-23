@@ -48,27 +48,27 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
     }
 
-    @PostMapping("/{id}/addRole")
+    @PostMapping("/{id}/add-role")
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id, @RequestParam String roleName)
             throws BadRequestException, UnprocessableEntityException, NotFoundException, ConflictException {
         GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.addRoleToAccount(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
-    @DeleteMapping("/{id}/removeRole")
+    @DeleteMapping("/{id}/remove-role")
     public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id, @RequestParam String roleName)
             throws BadRequestException, NotFoundException {
         GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.removeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
-    @PatchMapping("/{id}/setActive")
+    @PatchMapping("/{id}/set-active")
     public ResponseEntity<GetAccountDTO> setActive(@PathVariable UUID id) throws NotFoundException {
         GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.setAccountStatus(id, true));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
-    @PatchMapping("/{id}/setInactive")
+    @PatchMapping("/{id}/set-inactive")
     public ResponseEntity<GetAccountDTO> setInactive(@PathVariable UUID id) throws NotFoundException {
         GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.setAccountStatus(id, false));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
@@ -87,7 +87,7 @@ public class AccountController {
     }
 
 
-    @PutMapping("/userData/{id}")
+    @PutMapping("/{id}/user-data")
     public ResponseEntity<GetAccountDTO> updateAccountData(@PathVariable UUID id, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws NotFoundException {
         GetAccountDTO updatedAccount =
@@ -113,7 +113,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(managers);
     }
 
-    @PatchMapping("/email/{id}")
+    @PatchMapping("/{id}/email")
     public ResponseEntity<GetAccountDTO> updateAccountEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
             throws AccountNotFoundException, EmailAlreadyExistsException {
         GetAccountDTO updatedAccount = AccountDTOConverter
@@ -121,42 +121,16 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
-    @PatchMapping("/myemail/{id}")
-    public ResponseEntity<GetAccountDTO> updateMyEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
-            throws AccountNotFoundException, EmailAlreadyExistsException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (!userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        GetAccountDTO updatedAccount = AccountDTOConverter
-                .toAccountDto(accountService.updateAccountEmail(id, email.email()));
-        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
-    }
-
-    @PostMapping("/resetPassword")
+    @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO email) {
         accountService.resetPassword(email.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/resetPassword/token/{token}")
+    @PostMapping("/reset-password/token/{token}")
     public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody String password)
             throws PasswordTokenExpiredException, AccountNotFoundException {
         accountService.resetPasswordWithToken(token, passwordEncoder.encode(password));
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PatchMapping("/mypassword/{id}")
-    public ResponseEntity<GetAccountDTO> updateAccountPassword(@PathVariable UUID id, @RequestBody UpdatePasswordDTO password)
-            throws AccountNotFoundException {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if (!userDetails.getUsername().equals(accountService.getAccountById(id).getUsername())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        accountService.updatePassword(id, password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
