@@ -699,5 +699,27 @@ public class AccountControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void updateMyAccountData() throws Exception {
+        Account account = new Account("user32", passwordEncoder.encode("password"), "email32@email.com", 0, "firstName32", "lastName32");
+        account = accountService.addAccount(account);
+        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        account.setFirstName("newfirstName32");
+        String jsonAccount = objectMapper.writeValueAsString(account);
+        String adminToken = jwtService.generateToken(account);
+        MvcResult result = mockMvcMe.perform(put("/api/me/user-data")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonAccount))
+                .andExpect(status().isOk()).andReturn();
+        String content = result.getResponse().getContentAsString();
+        account = accountService.getAccountById(account.getId());
+        Assertions.assertTrue(account.getFirstName().equals("newfirstName32"));
+        Assertions.assertTrue(content.contains("newfirstName32"));
+        Assertions.assertTrue(content.contains(account.getLastName()));
+        Assertions.assertTrue(content.contains(String.valueOf(account.getGender())));
+        Assertions.assertTrue(content.contains(account.getEmail()));
+    }
+
 
 }
