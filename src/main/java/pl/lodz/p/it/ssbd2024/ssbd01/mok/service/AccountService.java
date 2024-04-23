@@ -15,7 +15,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.logger.LoggerProps;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -40,7 +39,6 @@ public class AccountService {
 
     @Transactional
     public Account addAccount(Account account) {
-        LoggerProps.addPropsToLogs();
         return accountMokRepository.save(account);
     }
 
@@ -48,7 +46,6 @@ public class AccountService {
     public Account addRoleToAccount(UUID id, String roleName)
             throws RoleAlreadyAssignedException, AccountRolesLimitExceedException, WrongRoleToAccountException, RoleNotFoundException,
             AccountNotFoundException {
-        LoggerProps.addPropsToLogs();
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id)
@@ -73,7 +70,6 @@ public class AccountService {
 
     @Transactional
     public Account removeRole(UUID id, String roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
-        LoggerProps.addPropsToLogs();
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id)
@@ -89,7 +85,6 @@ public class AccountService {
 
     @Transactional
     public Account setAccountStatus(UUID id, boolean status) throws AccountNotFoundException {
-        LoggerProps.addPropsToLogs();
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setActive(status);
@@ -105,7 +100,6 @@ public class AccountService {
 
     @Transactional
     public Account updateAccountData(UUID id, Account account) throws AccountNotFoundException {
-        LoggerProps.addPropsToLogs();
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setFirstName(account.getFirstName());
@@ -152,7 +146,6 @@ public class AccountService {
 
     @Transactional
     public Account updateAccountEmail(UUID id, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
-        LoggerProps.addPropsToLogs();
         if (accountMokRepository.findByEmail(email).isPresent()) {
             throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
@@ -189,7 +182,6 @@ public class AccountService {
             return;
         }
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-        System.out.println(randString);
         var expirationDate = LocalDateTime.now().plusMinutes(30);
         var newResetIssue = new PasswordReset(randString, email, expirationDate);
         // TODO: Send mail to user with reset link
@@ -200,7 +192,6 @@ public class AccountService {
     @Transactional
     public void resetPasswordWithToken(String token, String newPassword) throws PasswordTokenExpiredException, AccountNotFoundException {
         Optional<PasswordReset> passwordReset = passwordResetRepository.findByToken(token);
-        System.out.println(token);
         if (passwordReset.isEmpty()) {
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
         }
