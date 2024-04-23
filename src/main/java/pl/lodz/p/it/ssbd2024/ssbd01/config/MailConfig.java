@@ -24,17 +24,19 @@ public class MailConfig {
         javaMailSender.setHost(env.getProperty("spring.mail.host"));
         javaMailSender.setPort(Integer.parseInt(Objects.requireNonNull(env.getProperty("spring.mail.port"))));
         javaMailSender.setUsername(env.getProperty("spring.mail.username"));
-        javaMailSender.setPassword(env.getProperty("spring.mail.password"));
+        String password = env.getProperty("spring.mail.password");
+        javaMailSender.setPassword(new String(java.util.Base64.getDecoder().decode(password)));
 
         Properties javaMailProperties = new Properties();
-        javaMailProperties.put("mail.smtp.starttls.enable", "true");
-        javaMailProperties.put("mail.smtp.auth", "true");
-        javaMailProperties.put("mail.transport.protocol", "smtp");
+        javaMailProperties.put("mail.smtp.ssl.enable", "true");
         javaMailProperties.put("mail.debug", "true");
         javaMailProperties.put("mail.smtp.ssl.trust", "*");
+        javaMailProperties.put("mail.smtp.auth", "true");
+        javaMailProperties.put("mail.transport.protocol", "smtp");
+        javaMailProperties.put("mail.smtp.connectiontimeout", "5000");
+        javaMailProperties.put("mail.smtp.timeout", "3000");
 
         javaMailSender.setJavaMailProperties(javaMailProperties);
         return javaMailSender;
     }
-
 }
