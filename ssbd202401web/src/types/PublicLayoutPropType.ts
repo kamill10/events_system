@@ -1,3 +1,3 @@
 export default interface PublicLayoutPropType {
-    page: React.ReactNode
+    page: React.FunctionComponent
 }

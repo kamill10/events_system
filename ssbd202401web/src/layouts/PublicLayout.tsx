@@ -4,12 +4,13 @@ import { PublicRoutes } from "../router/Routes.ts";
 import { Box, Container } from "@mui/material";
 
 export default function PublicLayout(props: PublicLayoutPropType) {
+    const Page = props.page;
     return (
         <>
-            <Navbar routes={PublicRoutes} color="#5800c4"></Navbar>
+            <Navbar routes={PublicRoutes}></Navbar>
             <Container maxWidth={"xl"}>
-                <Box sx={{ my: 10}}>
-                    {props.page} 
+                <Box sx={{ marginTop: 13}}>
+                    <Page></Page>
                 </Box>
             </Container>
         </>

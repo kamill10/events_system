@@ -17,28 +17,28 @@ import Logout from "../pages/Logout.tsx";
 export const PublicRoutes: RouteType[] = [
     {
         pathname: Pathnames.public.home,
-        page: HomePage(),
+        page: HomePage,
         name: "Home",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.public.events,
-        page: EventsPage(),
+        page: EventsPage,
         name: "Events",
         renderOnNavbar: true,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.public.login,
-        page: LoginPage(),
+        page: LoginPage,
         name: "Log in",
         renderOnNavbar: true,
         renderOnDropdown: true
     },
     {
         pathname: Pathnames.public.signIn,
-        page: SigninPage(),
+        page: SigninPage,
         name: "Sign in",
         renderOnNavbar: true,
         renderOnDropdown: true
@@ -48,42 +48,42 @@ export const PublicRoutes: RouteType[] = [
 export const ParticipantRoutes: RouteType[] = [
     {
         pathname: Pathnames.participant.home,
-        page: HomePage(),
+        page: HomePage,
         name: "Home",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.participant.events,
-        page: EventsPage(),
+        page: EventsPage,
         name: "Events",
         renderOnNavbar: true,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.participant.event,
-        page: EventPage(),
+        page: EventPage,
         name: "Event",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.participant.profile,
-        page: ProfilePage(),
+        page: ProfilePage,
         name: "Profile",
         renderOnNavbar: false,
         renderOnDropdown: true
     },
     {
         pathname: Pathnames.participant.myEvents,
-        page: MyEventsPage(),
+        page: MyEventsPage,
         name: "My events",
         renderOnNavbar: false,
         renderOnDropdown: true
     },
     {
         pathname: Pathnames.manager.logout,
-        page: Logout(),
+        page: Logout,
         name: "Logout",
         renderOnNavbar: false,
         renderOnDropdown: true
@@ -93,70 +93,70 @@ export const ParticipantRoutes: RouteType[] = [
 export const ManagerRoutes: RouteType[] = [
     {
         pathname: Pathnames.manager.home,
-        page: HomePage(),
+        page: HomePage,
         name: "Home",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.manager.events,
-        page: EventsPage(),
+        page: EventsPage,
         name: "Events",
         renderOnNavbar: true,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.manager.event,
-        page: EventPage(),
+        page: EventPage,
         name: "Event",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.manager.locations,
-        page: LocationsPage(),
+        page: LocationsPage,
         name: "Locations",
         renderOnNavbar: true,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.manager.location,
-        page: LocationPage(),
+        page: LocationPage,
         name: "Location",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.manager.speakers,
-        page: SpeakersPage(),
+        page: SpeakersPage,
         name: "Speakers",
         renderOnNavbar: true,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.manager.speaker,
-        page: SpeakerPage(),
+        page: SpeakerPage,
         name: "Speaker",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.manager.profile,
-        page: ProfilePage(),
+        page: ProfilePage,
         name: "Profile",
         renderOnNavbar: false,
         renderOnDropdown: true
     },
     {
         pathname: Pathnames.manager.myEvents,
-        page: MyEventsPage(),
+        page: MyEventsPage,
         name: "My events",
         renderOnNavbar: false,
         renderOnDropdown: true
     },
     {
         pathname: Pathnames.manager.logout,
-        page: Logout(),
+        page: Logout,
         name: "Logout",
         renderOnNavbar: false,
         renderOnDropdown: true
@@ -167,35 +167,35 @@ export const ManagerRoutes: RouteType[] = [
 export const AdminRoutes: RouteType[] = [
     {
         pathname: Pathnames.admin.home,
-        page: HomePage(),
+        page: HomePage,
         name: "Home",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.admin.profile,
-        page: ProfilePage(),
+        page: ProfilePage,
         name: "Profile",
         renderOnNavbar: false,
         renderOnDropdown: true
     },
     {
         pathname: Pathnames.admin.users,
-        page: UsersPage(),
+        page: UsersPage,
         name: "Users",
         renderOnNavbar: true,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.admin.user,
-        page: UserPage(),
+        page: UserPage,
         name: "User",
         renderOnNavbar: false,
         renderOnDropdown: false
     },
     {
         pathname: Pathnames.manager.logout,
-        page: Logout(),
+        page: Logout,
         name: "Logout",
         renderOnNavbar: false,
         renderOnDropdown: true

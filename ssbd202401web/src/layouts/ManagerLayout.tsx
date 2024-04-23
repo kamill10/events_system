@@ -4,12 +4,13 @@ import { ManagerRoutes } from "../router/Routes.ts";
 import { Box, Container } from "@mui/material";
 
 export default function ManagerLayout(props: PublicLayoutPropType) {
+    const Page = props.page;
     return (
         <>
-            <Navbar routes={ManagerRoutes} color="#001fa8"></Navbar>
+            <Navbar routes={ManagerRoutes}></Navbar>
             <Container maxWidth={"xl"}>
-                <Box sx={{ my: 10}}>
-                    {props.page} 
+                <Box sx={{ marginTop: 13}}>
+                     <Page></Page>
                 </Box>
             </Container>
         </>
