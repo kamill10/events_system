@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
+
 
 @Service
 public class JwtService {
@@ -29,6 +28,14 @@ public class JwtService {
 
     public String extractLogin(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractId(String token) {
+        return extractClaim(token, Claims::getId);
+    }
+
+    public UUID extractIdFromHeader(String token) {
+        return UUID.fromString(extractId(token.substring(7)));
     }
 
     public String extractLoginFromHeader(String token) {
@@ -55,27 +62,28 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secretKey);
     }
 
-    public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
-        var authorities = userDetails.getAuthorities();
+    public String generateToken(Map<String, Object> claims, Account account) {
+        var authorities = account.getAuthorities();
         List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
         return Jwts
                 .builder()
                 .setClaims(claims)
                 .claim("role", roles)
-                .setSubject(userDetails.getUsername())
+                .setId(account.getId().toString())
+                .setSubject(account.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(Account account) {
+        return generateToken(new HashMap<>(), account);
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, Account account) {
         final String login = extractLogin(token);
-        return (login.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (login.equals(account.getUsername())) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
