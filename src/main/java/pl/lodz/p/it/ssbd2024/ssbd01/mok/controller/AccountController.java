@@ -13,7 +13,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -35,43 +34,43 @@ public class AccountController {
 
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
-    private final AccountDTOConverter AccountDTOConverter;
+    private final AccountDTOConverter accountDTOConverter;
 
     @GetMapping
     public List<GetAccountDTO> getAllUsers() {
-        List<GetAccountDTO> getAccountDTOS = AccountDTOConverter.accountDtoList(accountService.getAllAccounts());
+        List<GetAccountDTO> getAccountDTOS = accountDTOConverter.accountDtoList(accountService.getAllAccounts());
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOS).getBody();
     }
 
     @PostMapping
     public ResponseEntity<GetAccountDTO> createUser(@RequestBody CreateAccountDTO createAccountDTO) {
-        GetAccountDTO getAccountDTO = AccountDTOConverter.toAccountDto(accountService.addAccount(AccountDTOConverter.toAccount(createAccountDTO)));
+        GetAccountDTO getAccountDTO = accountDTOConverter.toAccountDto(accountService.addAccount(accountDTOConverter.toAccount(createAccountDTO)));
         return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
     }
 
     @PostMapping("/{id}/add-role")
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id, @RequestParam String roleName)
             throws BadRequestException, UnprocessableEntityException, NotFoundException, ConflictException {
-        GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.addRoleToAccount(id, roleName));
+        GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.addRoleToAccount(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @DeleteMapping("/{id}/remove-role")
     public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id, @RequestParam String roleName)
             throws BadRequestException, NotFoundException {
-        GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.removeRole(id, roleName));
+        GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.removeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @PatchMapping("/{id}/set-active")
     public ResponseEntity<GetAccountDTO> setActive(@PathVariable UUID id) throws NotFoundException {
-        GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.setAccountStatus(id, true));
+        GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.setAccountStatus(id, true));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @PatchMapping("/{id}/set-inactive")
     public ResponseEntity<GetAccountDTO> setInactive(@PathVariable UUID id) throws NotFoundException {
-        GetAccountDTO updatedAccount = AccountDTOConverter.toAccountDto(accountService.setAccountStatus(id, false));
+        GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.setAccountStatus(id, false));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -80,7 +79,7 @@ public class AccountController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
             if (userDetails.getUsername().equals(username)) {
-                GetAccountDTO accountDto = AccountDTOConverter.toAccountDto(accountService.getAccountByUsername(username));
+                GetAccountDTO accountDto = accountDTOConverter.toAccountDto(accountService.getAccountByUsername(username));
                 return ResponseEntity.status(HttpStatus.OK).body(accountDto);
             }
         }
@@ -92,32 +91,32 @@ public class AccountController {
     public ResponseEntity<GetAccountDTO> updateAccountData(@PathVariable UUID id, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws NotFoundException {
         GetAccountDTO updatedAccount =
-                AccountDTOConverter.toAccountDto(accountService.updateAccountData(id, AccountDTOConverter.toAccount(updateAccountDataDTO)));
+                accountDTOConverter.toAccountDto(accountService.updateAccountData(id, accountDTOConverter.toAccount(updateAccountDataDTO)));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @GetMapping("/participants")
     public ResponseEntity<List<GetAccountDTO>> getParticipants() throws NotFoundException {
-        List<GetAccountDTO> participants = AccountDTOConverter.accountDtoList(accountService.getParticipants());
+        List<GetAccountDTO> participants = accountDTOConverter.accountDtoList(accountService.getParticipants());
         return ResponseEntity.status(HttpStatus.OK).body(participants);
     }
 
     @GetMapping("/administrators")
     public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws NotFoundException {
-        List<GetAccountDTO> administrators = AccountDTOConverter.accountDtoList(accountService.getAdmins());
+        List<GetAccountDTO> administrators = accountDTOConverter.accountDtoList(accountService.getAdmins());
         return ResponseEntity.status(HttpStatus.OK).body(administrators);
     }
 
     @GetMapping("/managers")
     public ResponseEntity<List<GetAccountDTO>> getManagers() throws NotFoundException {
-        List<GetAccountDTO> managers = AccountDTOConverter.accountDtoList(accountService.getManagers());
+        List<GetAccountDTO> managers = accountDTOConverter.accountDtoList(accountService.getManagers());
         return ResponseEntity.status(HttpStatus.OK).body(managers);
     }
 
     @PatchMapping("/{id}/email")
     public ResponseEntity<GetAccountDTO> updateAccountEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
             throws AccountNotFoundException, EmailAlreadyExistsException {
-        GetAccountDTO updatedAccount = AccountDTOConverter
+        GetAccountDTO updatedAccount = accountDTOConverter
                 .toAccountDto(accountService.updateAccountEmail(id, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }

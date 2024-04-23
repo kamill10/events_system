@@ -343,8 +343,6 @@ public class AccountControllerTest {
         account.setFirstName("newfirstName13");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String adminToken = jwtService.generateToken(account);
-        System.out.println(adminToken);
-        System.out.println(account);
         MvcResult result = mockMvcAccount.perform(put("/api/accounts/" + account.getId() + "/user-data")
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
