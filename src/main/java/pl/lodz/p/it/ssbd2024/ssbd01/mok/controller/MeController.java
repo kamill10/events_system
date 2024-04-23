@@ -7,15 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/me")
@@ -39,10 +38,21 @@ public class MeController {
 
 
     @PatchMapping("/password")
-    public ResponseEntity<GetAccountDTO> updateAccountPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                               @RequestBody UpdatePasswordDTO password)
+    public ResponseEntity<GetAccountDTO> updateMyAccountPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                                 @RequestBody UpdatePasswordDTO password)
             throws AccountNotFoundException {
         accountService.updatePassword(jwtService.extractIdFromHeader(token), password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PutMapping("/user-data")
+    public ResponseEntity<GetAccountDTO> updateMyData(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
+                                                      @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+            throws AccountNotFoundException {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountDTOConverter
+                        .toAccountDto(accountService
+                                .updateAccountData(jwtService.extractIdFromHeader(token), accountDTOConverter.toAccount(updateAccountDataDTO))));
     }
 }
