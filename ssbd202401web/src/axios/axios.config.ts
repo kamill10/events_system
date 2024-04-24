@@ -1,6 +1,6 @@
 import axios from "axios";
 import {ApiResponseType} from "../types/ApiResponse.ts";
-import {AccountType, AccountLoginType} from "../types/Account.ts";
+import {AccountType, AccountLoginType, AccountSingInType} from "../types/Account.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -32,7 +32,7 @@ const apiWithEtag = axios.create({
     headers: ETAG_HEADERS,
 })
 
-const apiForLogin = axios.create({
+const apiForAnon = axios.create({
     baseURL: API_URL,
     timeout: TIMEOUT_MS,
     headers: LOGIN_HEADERS,
@@ -89,5 +89,6 @@ apiWithEtag.interceptors.response.use(
 
 export const api = {
     getAccounts: (): ApiResponseType<Array<AccountType>> => apiWithAuthToken.get("/accounts"),
-    logIn: (formData: AccountLoginType): ApiResponseType<string> => apiForLogin.post("/auth/authenticate", formData),
+    logIn: (formData: AccountLoginType): ApiResponseType<string> => apiForAnon.post("/auth/authenticate", formData),
+    singIn: (formData: AccountSingInType): ApiResponseType<string> => apiForAnon.post("/auth/register", formData)
 }

@@ -14,3 +14,12 @@ export interface AccountLoginType {
     username: string;
     password: string;
 }
+
+export interface AccountSingInType {
+    username: string;
+    password: string;
+    email: string;
+    gender: number;
+    firstName: string;
+    lastName: string
+}

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useAccountState } from "../context/AccountContext";
-import { AccountLoginType } from "../types/Account";
+import { AccountLoginType, AccountSingInType } from "../types/Account";
 import { api } from "../axios/axios.config";
 import { Pathnames } from "../router/Pathnames";
 
@@ -37,12 +37,26 @@ export const useAccount = () => {
         }
     }
 
+    const signIn = async (formData: AccountSingInType) => {
+        try {
+            setIsFetching(true);
+            const { data } = await api.singIn(formData);
+            setToken(data);
+            navigate(Pathnames.public.home);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsFetching(false);
+        }
+    }
+
     return {
         account,
         isLogging,
         isFetching,
         isAuthenticated,
         logIn,
-        logOut
+        logOut,
+        signIn
     }
 }

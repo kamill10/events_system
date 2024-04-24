@@ -1,10 +1,10 @@
-import { Backdrop, Box, Button, CircularProgress, CssBaseline, Grid, Link, Paper, Snackbar, TextField, Typography } from "@mui/material";
+import { Backdrop, Box, Button, CircularProgress, CssBaseline, Grid, Link, Paper, TextField, Typography } from "@mui/material";
 import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { AccountLoginType } from "../types/Account";
 import { useAccount } from "../hooks/useAccount";
 
 export default function LoginPage() {
-  const { isLogging, logIn, isAuthenticated } = useAccount();
+  const { isLogging, logIn } = useAccount();
   const { handleSubmit, control } = useForm<AccountLoginType>({
     defaultValues: {
       username: "",
@@ -13,27 +13,13 @@ export default function LoginPage() {
   });
 
   const onSubmit: SubmitHandler<AccountLoginType> = (data) => {
-    logIn(data);
-    checkIfOk();
+    logIn(data).catch(error => alert(error));
   };
 
   const onError: SubmitErrorHandler<AccountLoginType> = (errors) => {
     console.error(errors);
+    alert(errors);
   };
-
-  const checkIfOk = () => {
-    if (isAuthenticated) {
-        return <Snackbar
-          autoHideDuration={2000}
-          message="Logging in completed!"
-      />
-    } else {
-      return <Snackbar
-          autoHideDuration={2000}
-          message="Logging in failed :("
-      />
-    }
-  } 
 
   return (
     <>
