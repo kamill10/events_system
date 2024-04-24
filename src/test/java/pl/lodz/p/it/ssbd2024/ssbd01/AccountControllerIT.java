@@ -1,27 +1,10 @@
 package pl.lodz.p.it.ssbd2024.ssbd01;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.servlet.Filter;
-import lombok.RequiredArgsConstructor;
-import net.minidev.json.JSONObject;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.HandlerExceptionResolver;
+import io.restassured.response.ValidatableResponse;
+import org.junit.jupiter.api.*;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -29,64 +12,65 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
-import pl.lodz.p.it.ssbd2024.ssbd01.auth.controller.AuthenticationController;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.RootConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.MeController;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 
 import java.io.IOException;
-import java.util.Properties;
-import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @Testcontainers
-//@SpringJUnitWebConfig(classes = {WebConfig.class, RootConfig.class})
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class AccountControllerIT {
-
-    static Properties properties = new Properties();
 
     static Network network = Network.newNetwork();
 
+    static ObjectMapper objectMapper;
+
+    static int port;
+
+    static String baseUrl;
+
+    static String adminToken;
+
+    static String participantToken;
+
+    static String managerToken;
+
     @BeforeAll
-    public static void setup() throws IOException {
+    public static void setup() {
         System.setProperty("spring.profiles.active", "test");
-        properties.load(AccountControllerIT.class.getClassLoader().getResourceAsStream("test.properties"));
     }
 
-    public ObjectMapper objectMapper() {
+    public static ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
     }
 
     @Container
-    PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2")
-            .withDatabaseName(properties.getProperty("jdbc.database"))
-            .withUsername(properties.getProperty("jdbc.admin.user"))
-            .withPassword(properties.getProperty("jdbc.admin.password"))
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2")
+            .withDatabaseName("ssbd01")
+            .withUsername("ssbd01admin")
+            .withPassword("admin")
             .withExposedPorts(5432)
             .withNetworkAliases("postgres")
             .withNetwork(network)
-            .withInitScript("create-users.sql")
-            .waitingFor(Wait.forSuccessfulCommand("pg_isready -U " + properties.getProperty("jdbc.admin.user")))
+            .withInitScript("sql/create-users.sql")
+            .withCopyFileToContainer(
+                    MountableFile.forClasspathResource("sql/init-test-data.sql"),
+                    "/tmp/init-data.sql"
+            )
+            .withCopyFileToContainer(
+                    MountableFile.forClasspathResource("sql/delete-data.sql"),
+                    "/tmp/delete-data.sql"
+            )
+            .waitingFor(Wait.forSuccessfulCommand("pg_isready -U ssbd01admin"))
             .withReuse(true);
 
     @Container
-    GenericContainer<?> tomcat = new GenericContainer<>("tomcat:10.1.19-jre21")
+    static GenericContainer<?> tomcat = new GenericContainer<>("tomcat:10.1.19-jre21")
             .withExposedPorts(8080)
             .withNetworkAliases("tomcat")
             .withNetwork(network)
@@ -95,92 +79,101 @@ public class AccountControllerIT {
                     MountableFile.forHostPath("target/ssbd01.war"),
                     "/usr/local/tomcat/webapps/ssbd01.war"
             )
+            .waitingFor(Wait.forHttp("/ssbd01/api/accounts").forStatusCode(403))
             .withReuse(true);
 
+
+    @BeforeEach
+    public void initData() throws IOException, InterruptedException {
+        port = tomcat.getMappedPort(8080);
+        baseUrl = "http://localhost:" + port + "/ssbd01/api";
+        objectMapper = objectMapper();
+        postgres.execInContainer("psql", "-U", "ssbd01admin", "ssbd01", "-f",
+                "/tmp/delete-data.sql");
+        postgres.execInContainer("psql", "-U", "ssbd01admin", "ssbd01", "-f",
+                "/tmp/init-data.sql");
+    }
+
     @Test
-    public void test() {
-        int port = tomcat.getMappedPort(8080);
-        given()
+    @Order(1)
+    public void authenticationTest() throws JsonProcessingException {
+        LoginDTO loginDTO = new LoginDTO("testAdmin", "P@ssw0rd");
+
+        ValidatableResponse response = given()
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(loginDTO))
                 .when()
-                .get("http://localhost:" + port + "/ssbd01/api/accounts")
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(200);
+
+        String jwtToken = response.extract().body().asString();
+        adminToken = jwtToken.substring(1, jwtToken.length() - 1);
+
+        loginDTO = new LoginDTO("testParticipant", "P@ssw0rd");
+        response = given()
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(loginDTO))
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(200);
+
+        jwtToken = response.extract().body().asString();
+        participantToken = jwtToken.substring(1, jwtToken.length() - 1);
+
+        loginDTO = new LoginDTO("testManager", "P@ssw0rd");
+        response = given()
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(loginDTO))
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(200);
+
+        jwtToken = response.extract().body().asString();
+        managerToken = jwtToken.substring(1, jwtToken.length() - 1);
+    }
+
+    @Test
+    public void testGetAllAccountsEndpoint() throws Exception {
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts")
+                .then()
+                .statusCode(200)
+                .body(
+                        containsString("testParticipant"),
+                        containsString("testManager"),
+                        containsString("testAdmin")
+                );
+
+        given()
+                .header("Authorization", "Bearer " + participantToken)
+                .when()
+                .get(baseUrl + "/accounts")
+                .then()
+                .statusCode(403);
+
+        given()
+                .header("Authorization", "Bearer " + managerToken)
+                .when()
+                .get(baseUrl + "/accounts")
                 .then()
                 .statusCode(403);
     }
 
-//    @DynamicPropertySource
-//    static void configureProperties(DynamicPropertyRegistry registry) {
-//        registry.add("jdbc.url", postgres::getJdbcUrl);
-//        registry.add("jdbc.admin.user", postgres::getUsername);
-//        registry.add("jdbc.admin.password", postgres::getPassword);
-//        registry.add("jdbc.mok.user", postgres::getUsername);
-//        registry.add("jdbc.mok.password", postgres::getPassword);
-//        registry.add("jdbc.auth.user", postgres::getUsername);
-//        registry.add("jdbc.auth.password", postgres::getPassword);
-//    }
-
-
-//    @BeforeEach
-//    void setup() {
-//        this.mockMvcAccount = MockMvcBuilders
-//                .standaloneSetup(accountController)
-//                .addFilter(springSecurityFilterChain)
-//                .setHandlerExceptionResolvers(handlerExceptionResolver)
-//                .build();
-//        this.mockMvcMe = MockMvcBuilders
-//                .standaloneSetup(meController)
-//                .addFilter(springSecurityFilterChain)
-//                .setHandlerExceptionResolvers(handlerExceptionResolver)
-//                .build();
-//
-//        this.mockMvcAuth = MockMvcBuilders
-//                .standaloneSetup(authenticationController)
-//                .setHandlerExceptionResolvers(handlerExceptionResolver)
-//                .build();
-//    }
-//
-//    @Test
-//    public void testAuthenticationEndpoint() throws Exception {
-//        MvcResult result = mockMvcAuth.perform(post("/api/auth/register")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"username\":\"user\",\"password\":\"password\",\"email\":\"email@email.com\",\"gender\":\"0\","
-//                                + "\"firstName\":\"firstName\",\"lastName\":\"lastName\"}"))
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        mockMvcAuth.perform(post("/api/auth/authenticate")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{\"username\":\"user\",\"password\":\"password\"}"))
-//                .andExpect(status().isForbidden());
-//
-//        Account account = accountService.getAccountByUsername("user");
-//
-//        Assertions.assertEquals("user", account.getUsername());
-//    }
-//
-//    @Test
-//    public void testGetAllAccountsEndpoint() throws Exception {
-//        Account admin =
-//                new Account("admingeteall", passwordEncoder.encode("password"), "emaiadmingetall2b@email.com", 0, "firstName11", "lastName11");
-//        admin = accountService.addAccount(admin);
-//        accountService.addRoleToAccount(admin.getId(), "ADMIN");
-//        String adminToken = jwtService.generateToken(admin);
-//
-//        Account account = new Account("user3", passwordEncoder.encode("password"), "email3@email.com", 0, "firstName3", "lastName3");
-//        accountService.addAccount(account);
-//
-//        MvcResult result = mockMvcAccount.perform(get("/api/accounts")
-//                        .header("Authorization", "Bearer " + adminToken))
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        String content = result.getResponse().getContentAsString();
-//
-//        Assertions.assertTrue(content.contains(account.getUsername()));
-//        Assertions.assertTrue(content.contains(account.getEmail()));
-//        Assertions.assertTrue(content.contains(account.getFirstName()));
-//        Assertions.assertTrue(content.contains(account.getLastName()));
-//        Assertions.assertTrue(content.contains(String.valueOf(account.getGender())));
-//    }
+    @Test
+    public void addRoleToAccountEndpoint() throws Exception {
+        ValidatableResponse response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .param("roleName", "MANAGER")
+                .when()
+                .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
+                .then()
+                .statusCode(200);
+    }
 //
 //
 //    @Test

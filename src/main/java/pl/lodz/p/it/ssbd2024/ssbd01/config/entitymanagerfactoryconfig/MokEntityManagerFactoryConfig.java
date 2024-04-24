@@ -1,8 +1,10 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig;
 
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.atomikos.jdbc.AtomikosNonXADataSourceBean;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
+import org.postgresql.xa.PGXADataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -43,12 +45,22 @@ public class MokEntityManagerFactoryConfig {
 
     @Bean(name = "mokEntityManagerFactory")
     public EntityManagerFactory mokEntityManagerFactory() {
-        AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
+//        AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
+//        dataSource.setUniqueResourceName("mok");
+//        dataSource.setUrl(env.getProperty("jdbc.url"));
+//        dataSource.setUser(env.getProperty("jdbc.mok.user"));
+//        dataSource.setPassword(env.getProperty("jdbc.mok.password"));
+//        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
+//        dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+
+        PGXADataSource pgxaDataSource = new PGXADataSource();
+        pgxaDataSource.setUrl(env.getProperty("jdbc.url"));
+        pgxaDataSource.setUser(env.getProperty("jdbc.mok.user"));
+        pgxaDataSource.setPassword(env.getProperty("jdbc.mok.password"));
+
+        AtomikosDataSourceBean dataSource = new AtomikosDataSourceBean();
+        dataSource.setXaDataSource(pgxaDataSource);
         dataSource.setUniqueResourceName("mok");
-        dataSource.setUrl(env.getProperty("jdbc.url"));
-        dataSource.setUser(env.getProperty("jdbc.mok.user"));
-        dataSource.setPassword(env.getProperty("jdbc.mok.password"));
-        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
         dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();

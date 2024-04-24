@@ -44,7 +44,7 @@ public class AccountService {
         return accountMokRepository.save(account);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Account addRoleToAccount(UUID id, String roleName)
             throws RoleAlreadyAssignedException, AccountRolesLimitExceedException, WrongRoleToAccountException, RoleNotFoundException,
             AccountNotFoundException {

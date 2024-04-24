@@ -44,7 +44,7 @@ public class AuthenticationControllerIT {
             .withExposedPorts(5432)
             .withNetworkAliases("postgres")
             .withNetwork(network)
-            .withInitScript("create-users.sql")
+            .withInitScript("sql/create-users.sql")
             .waitingFor(Wait.forSuccessfulCommand("pg_isready -U " + properties.getProperty("jdbc.admin.user")))
             .withReuse(true);
 
