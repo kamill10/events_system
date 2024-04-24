@@ -1,27 +1,14 @@
 <configuration>
 
-    <appender name="ATOMIKOS" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>transaction.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>transaction%i.log</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>1</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>10MB</maxFileSize>
-        </triggeringPolicy>
-
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>transactions.log</file>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-4relative [%thread] %-5level %logger{35} - User: %X{user} | TransactionId: %X{transactionId} | %msg%n</pattern>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="com.atomikos" level="DEBUG">
-        <appender-ref ref="ATOMIKOS" />
-    </logger>
-
-    <logger name="org.springframework.transaction.jta" level="DEBUG">
-        <appender-ref ref="ATOMIKOS" />
+    <logger name="pl.lodz.p.it.ssbd2024.ssbd01.util.logger.TxAspect" level="INFO">
+        <appender-ref ref="FILE"/>
     </logger>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
