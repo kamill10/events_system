@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01;
+package pl.lodz.p.it.ssbd2024.ssbd01.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -11,6 +11,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
+import pl.lodz.p.it.ssbd2024.ssbd01.integration.AccountControllerIT;
 
 import java.io.IOException;
 import java.util.Properties;

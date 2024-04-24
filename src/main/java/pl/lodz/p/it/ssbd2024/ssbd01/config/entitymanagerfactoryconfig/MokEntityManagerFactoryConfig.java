@@ -45,23 +45,23 @@ public class MokEntityManagerFactoryConfig {
 
     @Bean(name = "mokEntityManagerFactory")
     public EntityManagerFactory mokEntityManagerFactory() {
-//        AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
-//        dataSource.setUniqueResourceName("mok");
-//        dataSource.setUrl(env.getProperty("jdbc.url"));
-//        dataSource.setUser(env.getProperty("jdbc.mok.user"));
-//        dataSource.setPassword(env.getProperty("jdbc.mok.password"));
-//        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
-//        dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
-
-        PGXADataSource pgxaDataSource = new PGXADataSource();
-        pgxaDataSource.setUrl(env.getProperty("jdbc.url"));
-        pgxaDataSource.setUser(env.getProperty("jdbc.mok.user"));
-        pgxaDataSource.setPassword(env.getProperty("jdbc.mok.password"));
-
-        AtomikosDataSourceBean dataSource = new AtomikosDataSourceBean();
-        dataSource.setXaDataSource(pgxaDataSource);
+        AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
         dataSource.setUniqueResourceName("mok");
+        dataSource.setUrl(env.getProperty("jdbc.url"));
+        dataSource.setUser(env.getProperty("jdbc.mok.user"));
+        dataSource.setPassword(env.getProperty("jdbc.mok.password"));
+        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
         dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+
+//        PGXADataSource pgxaDataSource = new PGXADataSource();
+//        pgxaDataSource.setUrl(env.getProperty("jdbc.url"));
+//        pgxaDataSource.setUser(env.getProperty("jdbc.mok.user"));
+//        pgxaDataSource.setPassword(env.getProperty("jdbc.mok.password"));
+//
+//        AtomikosDataSourceBean dataSource = new AtomikosDataSourceBean();
+//        dataSource.setXaDataSource(pgxaDataSource);
+//        dataSource.setUniqueResourceName("mok");
+//        dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("ssbd01mok");
