@@ -13,27 +13,13 @@ export default function LoginPage() {
   });
 
   const onSubmit: SubmitHandler<AccountLoginType> = (data) => {
-    logIn(data);
-    checkIfOk();
+    logIn(data).catch(error => alert(error));
   };
 
   const onError: SubmitErrorHandler<AccountLoginType> = (errors) => {
     console.error(errors);
+    alert(errors);
   };
-
-  const checkIfOk = () => {
-    if (isAuthenticated) {
-        return <Snackbar
-          autoHideDuration={2000}
-          message="Logging in completed!"
-      />
-    } else {
-      return <Snackbar
-          autoHideDuration={2000}
-          message="Logging in failed :("
-      />
-    }
-  } 
 
   return (
     <>
