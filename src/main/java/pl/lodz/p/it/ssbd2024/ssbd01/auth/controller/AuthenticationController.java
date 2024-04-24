@@ -7,18 +7,21 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+    private final AccountDTOConverter accountDTOConverter;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(
             @RequestBody CreateAccountDTO request
     ) {
-        return ResponseEntity.ok(authenticationService.registerUser(request));
+        return ResponseEntity.ok(authenticationService.registerUser(
+                accountDTOConverter.toAccount(request)));
     }
 
     @PostMapping("/authenticate")
