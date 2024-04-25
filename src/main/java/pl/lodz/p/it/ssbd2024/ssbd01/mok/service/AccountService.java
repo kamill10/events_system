@@ -47,23 +47,39 @@ public class AccountService {
     public Account addRoleToAccount(UUID id, String roleName)
             throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException,
             AccountNotFoundException {
-        Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
-        Account account = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Account account = accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         List<Role> accountRoles = account.getRoles();
         if (accountRoles.contains(role)) {
             throw new RoleAlreadyAssignedException(ExceptionMessages.ROLE_ALREADY_ASSIGNED);
         }
-        if (accountRoles.contains(new Role("PARTICIPANT"))) {
-            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
-        }
-        if (!accountRoles.isEmpty() && role.equals(new Role("PARTICIPANT"))) {
-            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
-
+        switch (roleName) {
+            case PARTICIPANT:
+                canAddParticipantRole(account);
+                break;
+            case MANAGER, ADMIN:
+                canAddManagerOrAdminRole(account);
+                break;
+            default:
+                throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
         return accountMokRepository.save(account);
+    }
+    private boolean canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
+        List<Role> accountRoles = account.getRoles();
+        if (accountRoles.contains(new Role(AccountRoleEnum.PARTICIPANT))) {
+            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
+        }
+        return true;
+    }
+
+    private boolean canAddParticipantRole(Account account) throws WrongRoleToAccountException {
+        List<Role> accountRoles = account.getRoles();
+        if (!accountRoles.isEmpty()) {
+            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
+        }
+        return true;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
