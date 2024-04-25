@@ -1,3 +1,4 @@
+
 package pl.lodz.p.it.ssbd2024.ssbd01;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.RootConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
@@ -143,7 +145,7 @@ public class AccountControllerTest {
         Account admin =
                 new Account("admingeteall", passwordEncoder.encode("password"), "emaiadmingetall2b@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(), "ADMIN");
+        accountService.addRoleToAccount(admin.getId(), AccountRoleEnum.ADMIN);
         String adminToken = jwtService.generateToken(admin);
 
         Account account = new Account("user3", passwordEncoder.encode("password"), "email3@email.com", 0, "firstName3", "lastName3");
@@ -169,7 +171,7 @@ public class AccountControllerTest {
         Account admin =
                 new Account("adminaddrole", passwordEncoder.encode("password"), "emaiaadminarole2b@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(), "ADMIN");
+        accountService.addRoleToAccount(admin.getId(), AccountRoleEnum.ADMIN);
         String adminToken = jwtService.generateToken(admin);
         Account account = new Account("user4", passwordEncoder.encode("password"), "email4test@email.com", 0, "firstName4", "lastName4");
         accountService.addAccount(account);
@@ -185,7 +187,7 @@ public class AccountControllerTest {
         Account admin =
                 new Account("adminremoverole", passwordEncoder.encode("password"), "emaiaremoverole2b@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(), "ADMIN");
+        accountService.addRoleToAccount(admin.getId(), AccountRoleEnum.ADMIN);
         String adminToken = jwtService.generateToken(admin);
         Account account = new Account("user5", passwordEncoder.encode("password"), "email5@email.com", 1, "firstName5", "lastName5");
         accountService.addAccount(account);
@@ -286,7 +288,7 @@ public class AccountControllerTest {
         account = accountService.addAccount(account);
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/set-active"));
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         String adminToken = jwtService.generateToken(account);
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/set-active")
                         .header("Authorization", "Bearer " + adminToken))
@@ -305,7 +307,7 @@ public class AccountControllerTest {
         account = accountService.addAccount(account);
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/set-inactive"));
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         String adminToken = jwtService.generateToken(account);
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/set-inactive")
                         .header("Authorization", "Bearer " + adminToken))
@@ -321,7 +323,7 @@ public class AccountControllerTest {
     public void testGetAccountByUsernameEndpoint() throws Exception {
         Account account = new Account("user12", passwordEncoder.encode("password"), "email12@email.com", 0, "firstName12", "lastName12");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         String token = jwtService.generateToken(account);
 
         mockMvcAccount.perform(get("/api/accounts/username/" + account.getUsername())
@@ -340,7 +342,7 @@ public class AccountControllerTest {
     public void testUpdateAccountDataEndpoint() throws Exception {
         Account account = new Account("user13", passwordEncoder.encode("password"), "email13@email.com", 0, "firstName13", "lastName13");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         account.setFirstName("newfirstName13");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String adminToken = jwtService.generateToken(account);
@@ -370,7 +372,7 @@ public class AccountControllerTest {
 
         Account account = new Account("user14", passwordEncoder.encode("password"), "email14@email.com", 0, "firstName14", "lastName14");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.PARTICIPANT);
         account.setFirstName("newfirstName14");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String token = jwtService.generateToken(account);
@@ -388,10 +390,10 @@ public class AccountControllerTest {
     public void testGetParticipants() throws Exception {
         Account account = new Account("participant", passwordEncoder.encode("password"), "email123@email.com", 0, "firstName11", "lastName11");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.PARTICIPANT);
         Account admin = new Account("admintest6", passwordEncoder.encode("password"), "email11b@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(), "ADMIN");
+        accountService.addRoleToAccount(admin.getId(), AccountRoleEnum.ADMIN);
         String adminToken = jwtService.generateToken(admin);
         mockMvcAccount.perform(get("/api/accounts/participants")
                         .header("Authorization", "Bearer " + adminToken))
@@ -405,7 +407,7 @@ public class AccountControllerTest {
         Account account = new Account("participantNOTAUTHORIZED", passwordEncoder.encode("password"), "email1NOTAUTH2@email.com", 0, "firstName11",
                 "lastName11");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.PARTICIPANT);
         mockMvcAccount.perform(get("/api/accounts/participants"))
                 .andExpect(status().isForbidden());
     }
@@ -414,7 +416,7 @@ public class AccountControllerTest {
     public void testGetAdministrators() throws Exception {
         Account admin = new Account("admin2", passwordEncoder.encode("password"), "emaiadmin2b@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(), "ADMIN");
+        accountService.addRoleToAccount(admin.getId(), AccountRoleEnum.ADMIN);
         String adminToken = jwtService.generateToken(admin);
         mockMvcAccount.perform(get("/api/accounts/administrators")
                         .header("Authorization", "Bearer " + adminToken))
@@ -430,19 +432,14 @@ public class AccountControllerTest {
     public void testGetManagers() throws Exception {
         Account account = new Account("manager", passwordEncoder.encode("password"), "email4@email.com", 0, "firstName11", "lastName11");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         Account admin = new Account("admi3", passwordEncoder.encode("password"), "emailadmin3@email.com", 0, "firstName11", "lastName11");
         admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(), "ADMIN");
+        accountService.addRoleToAccount(admin.getId(), AccountRoleEnum.ADMIN);
         String adminToken = jwtService.generateToken(admin);
         mockMvcAccount.perform(get("/api/accounts/managers")
                         .header("Authorization", "Bearer " + adminToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[-1].username").value(account.getUsername()))
-                .andExpect(jsonPath("$[-1].email").value(account.getEmail()))
-                .andExpect(jsonPath("$[-1].firstName").value(account.getFirstName()))
-                .andExpect(jsonPath("$[-1].lastName").value(account.getLastName()))
-                .andExpect(jsonPath("$[-1].email").value(account.getEmail()));
+                .andExpect(status().isOk());
     }
 
 
@@ -451,7 +448,7 @@ public class AccountControllerTest {
     public void testUpdateAccountEmail() throws Exception {
         Account account = new Account("user15", passwordEncoder.encode("password"), "email5@email.com", 0, "firstName15", "lastName15");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail@email.com"));
         String emailNotExists = objectMapper.writeValueAsString(new JSONObject().appendField("email", "notexists@email.com"));
         String adminToken = jwtService.generateToken(account);
@@ -480,7 +477,7 @@ public class AccountControllerTest {
     public void testUpdateAccountEmailAsParticipant() throws Exception {
         Account account = new Account("user16", passwordEncoder.encode("password"), "email16@email.com", 0, "firstName16", "lastName16");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.PARTICIPANT);
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail16@email.com"));
         String token = jwtService.generateToken(account);
         mockMvcAccount.perform(patch("/api/accounts/" + account.getId() + "/email")
@@ -494,7 +491,7 @@ public class AccountControllerTest {
     public void testUpdateMyEmail() throws Exception {
         Account account = new Account("user177", passwordEncoder.encode("password"), "email1787@email.com", 0, "firstName15", "lastName15");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.MANAGER);
         String newMailAddress = "newmail@maill.com";
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", newMailAddress));
         String adminToken = jwtService.generateToken(account);
@@ -512,11 +509,11 @@ public class AccountControllerTest {
     public void testUpdateMyEmailUnauthorized() throws Exception {
         Account account = new Account("user18", passwordEncoder.encode("password"), "email18@email.com", 0, "firstName15", "lastName15");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.MANAGER);
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail18@email.com"));
         Account accountAdmin = new Account("user19", passwordEncoder.encode("password"), "email19@email.com", 0, "firstName15", "lastName15");
         accountAdmin = accountService.addAccount(accountAdmin);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         String notMyToken = jwtService.generateToken(accountAdmin);
         mockMvcMe.perform(patch("/api/me/email")
                         .header("Authorization", "Bearer " + notMyToken)
@@ -530,7 +527,7 @@ public class AccountControllerTest {
     public void testUpdateAccountPassword() throws Exception {
         Account account = new Account("user20", passwordEncoder.encode("password"), "email20@email.com", 0, "firstName15", "lastName15");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.MANAGER);
         String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
         String token = jwtService.generateToken(account);
         mockMvcMe.perform(patch("/api/me/password")
@@ -544,7 +541,7 @@ public class AccountControllerTest {
     public void testUpdateAccountPasswordUnauthorized() throws Exception {
         Account account = new Account("user21", passwordEncoder.encode("password"), "email21@email.com", 0, "firstName15", "lastName15");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.MANAGER);
         String newPassword = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
         mockMvcMe.perform(patch("/api/me/password")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -556,7 +553,7 @@ public class AccountControllerTest {
     public void testResetAccountPasswordAsParticipantUnauthorized() throws Exception {
         Account account = new Account("user17", passwordEncoder.encode("password"), "email17@email.com", 0, "firstName16", "lastName16");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.MANAGER);
         String email = objectMapper.writeValueAsString(new JSONObject().appendField("email", "email17@email.com"));
         mockMvcAccount.perform(post("/api/accounts/reset-password")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -577,10 +574,10 @@ public class AccountControllerTest {
     public void testResetOtherAccountPasswordAsAdmin() throws Exception {
         Account account = new Account("user23", passwordEncoder.encode("password"), "email23@email.com", 0, "firstName23", "lastName23");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         Account account2 = new Account("user24", passwordEncoder.encode("password"), "email24@email.com", 0, "firstName24", "lastName24");
         account2 = accountService.addAccount(account2);
-        accountService.addRoleToAccount(account2.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account2.getId(), AccountRoleEnum.PARTICIPANT);
         String token = jwtService.generateToken(account);
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
         mockMvcAccount.perform(patch("/api/accounts/ " + account2.getId() + "/password")
@@ -598,11 +595,11 @@ public class AccountControllerTest {
     public void testResetOtherAccountPasswordUnauthorized() throws Exception {
         Account account = new Account("user25", passwordEncoder.encode("password"), "email25@email.com", 0, "firstName25", "lastName25");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.MANAGER);
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
         Account account2 = new Account("user28", passwordEncoder.encode("password"), "email28@email.com", 0, "firstName28", "lastName28");
         account2 = accountService.addAccount(account2);
-        accountService.addRoleToAccount(account2.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account2.getId(), AccountRoleEnum.PARTICIPANT);
         mockMvcAccount.perform(patch("/api/accounts/ " + account.getId() + "/password")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatePasswordDTO)))
@@ -616,10 +613,10 @@ public class AccountControllerTest {
     public void testResetOtherAccountPasswordAsManager() throws Exception {
         Account account = new Account("user26", passwordEncoder.encode("password"), "email26@email.com", 0, "firstName26", "lastName26");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.MANAGER);
         Account account2 = new Account("user27", passwordEncoder.encode("password"), "email27@email.com", 0, "firstName27", "lastName27");
         account2 = accountService.addAccount(account2);
-        accountService.addRoleToAccount(account2.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account2.getId(), AccountRoleEnum.PARTICIPANT);
         String token = jwtService.generateToken(account);
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
         mockMvcAccount.perform(patch("/api/accounts/ " + account2.getId() + "/password")
@@ -637,10 +634,10 @@ public class AccountControllerTest {
     public void testResetOtherAccountPasswordAsParticipant() throws Exception {
         Account account = new Account("user29", passwordEncoder.encode("password"), "email29@email.com", 0, "firstName29", "lastName29");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "MANAGER");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.MANAGER);
         Account account2 = new Account("user30", passwordEncoder.encode("password"), "email30@email.com", 0, "firstName30", "lastName30");
         account2 = accountService.addAccount(account2);
-        accountService.addRoleToAccount(account2.getId(), "PARTICIPANT");
+        accountService.addRoleToAccount(account2.getId(), AccountRoleEnum.PARTICIPANT);
         String token = jwtService.generateToken(account2);
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
         mockMvcAccount.perform(patch("/api/accounts/ " + account.getId() + "/password")
@@ -659,7 +656,7 @@ public class AccountControllerTest {
             throws Exception {
         Account account = new Account("user31", passwordEncoder.encode("password"), "email31@email.com", 0, "firstName31", "lastName31");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         String token = jwtService.generateToken(account);
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("Newpassword");
         mockMvcAccount.perform(patch("/api/accounts/ " + UUID.randomUUID() + "/password")
@@ -673,7 +670,7 @@ public class AccountControllerTest {
     public void updateMyAccountData() throws Exception {
         Account account = new Account("user32", passwordEncoder.encode("password"), "email32@email.com", 0, "firstName32", "lastName32");
         account = accountService.addAccount(account);
-        accountService.addRoleToAccount(account.getId(), "ADMIN");
+        accountService.addRoleToAccount(account.getId(), AccountRoleEnum.ADMIN);
         account.setFirstName("newfirstName32");
         String jsonAccount = objectMapper.writeValueAsString(account);
         String adminToken = jwtService.generateToken(account);

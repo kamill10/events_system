@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
@@ -90,7 +91,7 @@ public class Account extends ControlledEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> (GrantedAuthority) role::getName)
+                .map(role ->  new SimpleGrantedAuthority(role.getName().toString()))
                 .toList();
     }
 

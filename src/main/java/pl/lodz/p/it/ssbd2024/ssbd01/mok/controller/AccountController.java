@@ -13,6 +13,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -36,7 +38,8 @@ public class AccountController {
     private final PasswordEncoder passwordEncoder;
     private final AccountDTOConverter accountDTOConverter;
 
-    @GetMapping
+
+      @GetMapping
     public List<GetAccountDTO> getAllUsers() {
         List<GetAccountDTO> getAccountDTOS = accountDTOConverter.accountDtoList(accountService.getAllAccounts());
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOS).getBody();
@@ -49,14 +52,14 @@ public class AccountController {
     }
 
     @PostMapping("/{id}/add-role")
-    public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id, @RequestParam String roleName)
+    public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
             throws BadRequestException, UnprocessableEntityException, NotFoundException, ConflictException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.addRoleToAccount(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @DeleteMapping("/{id}/remove-role")
-    public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id, @RequestParam String roleName)
+    public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
             throws BadRequestException, NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.removeRole(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);

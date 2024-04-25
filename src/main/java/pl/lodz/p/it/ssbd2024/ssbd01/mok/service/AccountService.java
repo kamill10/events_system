@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
@@ -43,7 +44,7 @@ public class AccountService {
     }
 
     @Transactional
-    public Account addRoleToAccount(UUID id, String roleName)
+    public Account addRoleToAccount(UUID id, AccountRoleEnum roleName)
             throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException,
             AccountNotFoundException {
         Role role = roleRepository.findByName(roleName)
@@ -54,19 +55,30 @@ public class AccountService {
         if (accountRoles.contains(role)) {
             throw new RoleAlreadyAssignedException(ExceptionMessages.ROLE_ALREADY_ASSIGNED);
         }
-        if (accountRoles.contains(new Role("PARTICIPANT"))) {
-            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
-        }
-        if (!accountRoles.isEmpty() && role.equals(new Role("PARTICIPANT"))) {
-            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
-
-        }
+        // Check if we can add manager/admin role to account, if account is participant we can not
+        canAddManagerOrAdminRole(account);
+        //Check if we can add participant role to account, if account is manager/admin we can not
+        canAddParticipantRole(account, role);
         account.addRole(role);
         return accountMokRepository.save(account);
     }
 
+    private void canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
+        List<Role> accountRoles = account.getRoles();
+        if (accountRoles.contains(new Role(AccountRoleEnum.PARTICIPANT))) {
+            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
+        }
+    }
+
+    private void canAddParticipantRole(Account account, Role role) throws WrongRoleToAccountException {
+        List<Role> accountRoles = account.getRoles();
+        if (!accountRoles.isEmpty() && role.equals(new Role(AccountRoleEnum.PARTICIPANT))) {
+            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
+        }
+    }
+
     @Transactional
-    public Account removeRole(UUID id, String roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
+    public Account removeRole(UUID id, AccountRoleEnum roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id)
@@ -108,21 +120,21 @@ public class AccountService {
 
     @Transactional
     public List<Account> getParticipants() throws RoleNotFoundException {
-        Role role = roleRepository.findByName("PARTICIPANT")
+        Role role = roleRepository.findByName(AccountRoleEnum.PARTICIPANT)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional
     public List<Account> getManagers() throws RoleNotFoundException {
-        Role role = roleRepository.findByName("MANAGER")
+        Role role = roleRepository.findByName(AccountRoleEnum.MANAGER)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional
     public List<Account> getAdmins() throws RoleNotFoundException {
-        Role role = roleRepository.findByName("ADMIN")
+        Role role = roleRepository.findByName(AccountRoleEnum.ADMIN)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
