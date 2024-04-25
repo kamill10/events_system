@@ -144,7 +144,7 @@ public class AuthenticationControllerIT {
                 .when()
                 .post(baseUrl + "/auth/register")
                 .then()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.CREATED.value());
     }
 
 }

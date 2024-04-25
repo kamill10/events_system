@@ -21,20 +21,20 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final AccountDTOConverter accountDTOConverter;
 
-    public String registerUser(Account account) {
-        return jwtService.generateToken(
-                accountService.addAccount(
-                        account));
+    public void registerUser(Account account) {
+        jwtService.generateToken(accountService.addAccount(account));
     }
 
     @Transactional
-    public void authenticate(LoginDTO loginDTO) {
+    public String authenticate(LoginDTO loginDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.username(),
                         loginDTO.password()
                 )
         );
+        var user = accountAuthRepository.findByUsername(loginDTO.username());
+        return jwtService.generateToken(user);
     }
 
 }
