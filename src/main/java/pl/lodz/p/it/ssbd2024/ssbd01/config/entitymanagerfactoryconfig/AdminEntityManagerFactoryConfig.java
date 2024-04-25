@@ -44,7 +44,6 @@ public class AdminEntityManagerFactoryConfig {
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
         dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
         dataSource.setLocalTransactionMode(true);
-        dataSource.setPoolSize(1);
         dataSource.setMaxPoolSize(1);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();

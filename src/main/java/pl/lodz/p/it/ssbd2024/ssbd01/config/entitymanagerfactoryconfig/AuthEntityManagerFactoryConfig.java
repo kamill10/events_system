@@ -44,15 +44,14 @@ public class AuthEntityManagerFactoryConfig {
 
     @Bean(name = "authEntityManagerFactory")
     public EntityManagerFactory authEntityManagerFactory() {
-        PGXADataSource pgxaDataSource = new PGXADataSource();
-        pgxaDataSource.setUrl(env.getProperty("jdbc.url"));
-        pgxaDataSource.setUser(env.getProperty("jdbc.auth.user"));
-        pgxaDataSource.setPassword(env.getProperty("jdbc.auth.password"));
-
-        AtomikosDataSourceBean dataSource = new AtomikosDataSourceBean();
-        dataSource.setXaDataSource(pgxaDataSource);
+        AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
         dataSource.setUniqueResourceName("auth");
+        dataSource.setUrl(env.getProperty("jdbc.url"));
+        dataSource.setUser(env.getProperty("jdbc.auth.user"));
+        dataSource.setPassword(env.getProperty("jdbc.auth.password"));
+        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
         dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+        dataSource.setMaxPoolSize(5);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("ssbd01auth");

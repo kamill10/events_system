@@ -200,7 +200,7 @@ public class MeControllerIT {
     public void testUpdateMyPassword() {
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword");
 
-        given()
+        ValidatableResponse response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
                 .body(updatePasswordDTO)
@@ -208,6 +208,8 @@ public class MeControllerIT {
                 .patch(baseUrl + "/me/password")
                 .then()
                 .statusCode(HttpStatus.OK.value());
+
+        System.out.println(response.extract().body().asString());
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 
 @Configuration
 @RequiredArgsConstructor

@@ -6,10 +6,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
@@ -23,12 +29,15 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    private final UserDetailsService userDetailsService;
+
     private final JWTWhitelistRepository jwtWhitelistRepository;
     @Value("${jwt.secret}")
     private final String SECRET_KEY;
 
-    public JwtService(@Value("${jwt.secret}") String secret,
+    public JwtService(UserDetailsService userDetailsService, @Value("${jwt.secret}") String secret,
                       JWTWhitelistRepository jwtWhitelistRepository) {
+        this.userDetailsService = userDetailsService;
         this.SECRET_KEY = secret;
         this.jwtWhitelistRepository = jwtWhitelistRepository;
     }
@@ -69,7 +78,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secretKey);
     }
 
-    @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+
     public String generateToken(Map<String, Object> claims, Account account) {
         var authorities = account.getAuthorities();
         List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
@@ -86,6 +95,7 @@ public class JwtService {
         jwtWhitelistRepository.save(new JWTWhitelistToken(token,extractExpiration(token)));
         return token;
     }
+
 
     public String generateToken(Account account) {
         return generateToken(new HashMap<>(), account);
@@ -104,5 +114,14 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public void authenticate(String login, String token, HttpServletRequest request) {
+        Account account = (Account) userDetailsService.loadUserByUsername(login);
+        if (jwtWhitelistRepository.existsByToken(token) && isTokenValid(token, account)) {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(account, null, account.getAuthorities());
+            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        }
+    }
 }

@@ -49,6 +49,7 @@ public class MowEntityManagerFactoryConfig {
         dataSource.setPassword(env.getProperty("jdbc.mow.password"));
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
         dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+        dataSource.setMaxPoolSize(5);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("ssbd01mow");

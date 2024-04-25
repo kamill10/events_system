@@ -6,14 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 
 import java.io.IOException;
 
@@ -21,9 +16,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
-    private final JWTWhitelistRepository jwtWhitelistRepository;
 
     @Override
     protected void doFilterInternal(
@@ -40,14 +33,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         token = authorizationHeader.substring(7);
         login = jwtService.extractLogin(token);
         if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            Account account = (Account) userDetailsService.loadUserByUsername(login);
-            if (jwtWhitelistRepository.existsByToken(token) && jwtService.isTokenValid(token, account)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                        new UsernamePasswordAuthenticationToken(account, null, account.getAuthorities());
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
+            jwtService.authenticate(login, token, request);
         }
         filterChain.doFilter(request, response);
     }
