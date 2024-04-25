@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01;
+package pl.lodz.p.it.ssbd2024.ssbd01.unit;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
