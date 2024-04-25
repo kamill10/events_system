@@ -8,12 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 
 import java.io.IOException;
 
@@ -23,6 +23,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final JWTWhitelistRepository jwtWhitelistRepository;
 
     @Override
     protected void doFilterInternal(
@@ -41,7 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             Account account = (Account) userDetailsService.loadUserByUsername(login);
-            if (jwtService.isTokenValid(token, account)) {
+            if (jwtWhitelistRepository.existsByToken(token) && jwtService.isTokenValid(token, account)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(account, null, account.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
