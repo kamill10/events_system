@@ -54,9 +54,6 @@ public class AccountService {
         if (accountRoles.contains(role)) {
             throw new RoleAlreadyAssignedException(ExceptionMessages.ROLE_ALREADY_ASSIGNED);
         }
-        if (accountRoles.size() == 2) {
-            throw new AccountRolesLimitExceedException(ExceptionMessages.ACCOUNT_ROLES_LIMIT_EXCEEDED);
-        }
         if (accountRoles.contains(new Role("PARTICIPANT"))) {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
         }
@@ -108,40 +105,26 @@ public class AccountService {
         return accountMokRepository.save(accountToUpdate);
     }
 
+
     @Transactional
-    public List<Account> getParticipants() throws ParticipantNotFoundException {
-        List<Account> participants = getAllAccounts()
-                .stream()
-                .filter(account -> account.getRoles().contains(new Role("PARTICIPANT")))
-                .toList();
-        if (participants.isEmpty()) {
-            throw new ParticipantNotFoundException(ExceptionMessages.NO_PARTICIPANTS_FOUND);
-        }
-        return participants;
+    public List<Account> getParticipants() throws RoleNotFoundException {
+        Role role = roleRepository.findByName("PARTICIPANT")
+                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional
-    public List<Account> getManagers() throws AccountNotFoundException {
-        List<Account> moderators = getAllAccounts()
-                .stream()
-                .filter(account -> account.getRoles().contains(new Role("MANAGER")))
-                .toList();
-        if (moderators.isEmpty()) {
-            throw new AccountNotFoundException(ExceptionMessages.NO_MANAGERS_FOUND);
-        }
-        return moderators;
+    public List<Account> getManagers() throws RoleNotFoundException {
+        Role role = roleRepository.findByName("MANAGER")
+                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional
-    public List<Account> getAdmins() throws AdminNotFoundException {
-        List<Account> admins = getAllAccounts()
-                .stream()
-                .filter(account -> account.getRoles().contains(new Role("ADMIN")))
-                .toList();
-        if (admins.isEmpty()) {
-            throw new AdminNotFoundException(ExceptionMessages.NO_ADMINS_FOUND);
-        }
-        return admins;
+    public List<Account> getAdmins() throws RoleNotFoundException {
+        Role role = roleRepository.findByName("ADMIN")
+                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional
