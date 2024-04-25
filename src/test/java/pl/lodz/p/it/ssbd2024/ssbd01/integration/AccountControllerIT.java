@@ -277,7 +277,7 @@ public class AccountControllerIT {
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -365,7 +365,7 @@ public class AccountControllerIT {
                 .when()
                 .delete(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/remove-role")
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test

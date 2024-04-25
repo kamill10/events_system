@@ -68,20 +68,18 @@ public class AccountService {
         return accountMokRepository.save(account);
     }
 
-    private boolean canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
+    private void canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
         List<Role> accountRoles = account.getRoles();
         if (accountRoles.contains(new Role(AccountRoleEnum.PARTICIPANT))) {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
         }
-        return true;
     }
 
-    private boolean canAddParticipantRole(Account account) throws WrongRoleToAccountException {
+    private void canAddParticipantRole(Account account) throws WrongRoleToAccountException {
         List<Role> accountRoles = account.getRoles();
         if (!accountRoles.isEmpty()) {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
         }
-        return true;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
