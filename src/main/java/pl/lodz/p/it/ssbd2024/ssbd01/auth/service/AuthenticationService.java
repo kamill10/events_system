@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
@@ -29,15 +28,13 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public String authenticate(LoginDTO loginDTO) {
+    public void authenticate(LoginDTO loginDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.username(),
                         loginDTO.password()
                 )
         );
-        var user = accountAuthRepository.findByUsername(loginDTO.username());
-        return jwtService.generateToken(user);
     }
 
 }
