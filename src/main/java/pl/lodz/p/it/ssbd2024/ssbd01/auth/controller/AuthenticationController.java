@@ -20,16 +20,13 @@ public class AuthenticationController {
     private final AccountDTOConverter accountDTOConverter;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(
-            @RequestBody CreateAccountDTO request
-    ) {
-        return ResponseEntity.ok(authenticationService.registerUser(
-                accountDTOConverter.toAccount(request)));
+    public ResponseEntity<?> registerUser(@RequestBody CreateAccountDTO request) {
+        authenticationService.registerUser(accountDTOConverter.toAccount(request));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody LoginDTO request) {
-        authenticationService.authenticate(request);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request));
     }
 }
