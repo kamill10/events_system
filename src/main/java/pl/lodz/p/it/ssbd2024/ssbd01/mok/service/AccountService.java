@@ -45,44 +45,47 @@ public class AccountService {
 
     @Transactional
     public Account addRoleToAccount(UUID id, AccountRoleEnum roleName)
-            throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException,
-            AccountNotFoundException {
-        Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
-        Account account = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+            throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException, AccountNotFoundException {
+        Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Account account = accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         List<Role> accountRoles = account.getRoles();
         if (accountRoles.contains(role)) {
             throw new RoleAlreadyAssignedException(ExceptionMessages.ROLE_ALREADY_ASSIGNED);
         }
-        // Check if we can add manager/admin role to account, if account is participant we can not
-        canAddManagerOrAdminRole(account);
-        //Check if we can add participant role to account, if account is manager/admin we can not
-        canAddParticipantRole(account, role);
+        switch (roleName) {
+            case PARTICIPANT:
+                canAddParticipantRole(account);
+                break;
+            case MANAGER, ADMIN:
+                canAddManagerOrAdminRole(account);
+                break;
+            default:
+                throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
+        }
         account.addRole(role);
         return accountMokRepository.save(account);
     }
 
-    private void canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
+    private boolean canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
         List<Role> accountRoles = account.getRoles();
         if (accountRoles.contains(new Role(AccountRoleEnum.PARTICIPANT))) {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
         }
+        return true;
     }
 
-    private void canAddParticipantRole(Account account, Role role) throws WrongRoleToAccountException {
+    private boolean canAddParticipantRole(Account account) throws WrongRoleToAccountException {
         List<Role> accountRoles = account.getRoles();
-        if (!accountRoles.isEmpty() && role.equals(new Role(AccountRoleEnum.PARTICIPANT))) {
+        if (!accountRoles.isEmpty()) {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
         }
+        return true;
     }
 
     @Transactional
     public Account removeRole(UUID id, AccountRoleEnum roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
-        Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
-        Account account = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Account account = accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
@@ -94,8 +97,7 @@ public class AccountService {
 
     @Transactional
     public Account setAccountStatus(UUID id, boolean status) throws AccountNotFoundException {
-        Account account = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        Account account = accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setActive(status);
         return accountMokRepository.save(account);
     }
@@ -103,14 +105,13 @@ public class AccountService {
 
     @Transactional
     public Account getAccountByUsername(String username) throws AccountNotFoundException {
-        return accountMokRepository.findByUsername(username)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        return accountMokRepository.findByUsername(username).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
 
     @Transactional
     public Account updateAccountData(UUID id, Account account) throws AccountNotFoundException {
-        Account accountToUpdate = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        Account accountToUpdate =
+                accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setFirstName(account.getFirstName());
         accountToUpdate.setLastName(account.getLastName());
         accountToUpdate.setGender(account.getGender());
@@ -120,22 +121,20 @@ public class AccountService {
 
     @Transactional
     public List<Account> getParticipants() throws RoleNotFoundException {
-        Role role = roleRepository.findByName(AccountRoleEnum.PARTICIPANT)
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Role role =
+                roleRepository.findByName(AccountRoleEnum.PARTICIPANT).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional
     public List<Account> getManagers() throws RoleNotFoundException {
-        Role role = roleRepository.findByName(AccountRoleEnum.MANAGER)
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Role role = roleRepository.findByName(AccountRoleEnum.MANAGER).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional
     public List<Account> getAdmins() throws RoleNotFoundException {
-        Role role = roleRepository.findByName(AccountRoleEnum.ADMIN)
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Role role = roleRepository.findByName(AccountRoleEnum.ADMIN).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
@@ -144,8 +143,8 @@ public class AccountService {
         if (accountMokRepository.findByEmail(email).isPresent()) {
             throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
-        Account accountToUpdate = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        Account accountToUpdate =
+                accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         // TODO: Uncomment this line when we will be sending real mails
         // TODO: Extract emailbody to properties file and use i18n
         accountToUpdate.setEmail(email);
@@ -155,14 +154,13 @@ public class AccountService {
     }
 
     public Account getAccountById(UUID id) throws AccountNotFoundException {
-        return accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        return accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updatePassword(UUID id, String password) throws AccountNotFoundException {
-        Account accountToUpdate = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        Account accountToUpdate =
+                accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setPassword(passwordEncoder.encode(password));
         accountMokRepository.saveAndFlush(accountToUpdate);
     }
