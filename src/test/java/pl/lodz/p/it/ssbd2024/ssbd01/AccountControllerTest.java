@@ -503,16 +503,17 @@ public class AccountControllerTest {
         Account account = new Account("user17", passwordEncoder.encode("password"), "email17@email.com", 0, "firstName15", "lastName15");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "MANAGER");
-        String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", "newemail17@email.com"));
+        String newMailAddress = "newmail@maill.com";
+        String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", newMailAddress));
         String adminToken = jwtService.generateToken(account);
         mockMvcMe.perform(patch("/api/me/email")
                         .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newEmail))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("newemail17@email.com"));
+                .andExpect(jsonPath("$.email").value(newMailAddress));
         assertThat(accountService.getAccountById(account.getId()).getEmail())
-                .isEqualTo("newemail17@email.com");
+                .isEqualTo(newMailAddress);
     }
 
     @Test

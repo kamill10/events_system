@@ -2,6 +2,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE public.account TO ssbd01mok;
 GRANT SELECT ON TABLE public.role TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE public.account_role TO ssbd01mok;
 GRANT SELECT, INSERT ON TABLE public.passreset TO ssbd01mok;
+GRANT SELECT, INSERT, DELETE ON TABLE public.jwt_whitelist_token TO ssbd01auth;
 
 GRANT SELECT ON TABLE public.account TO ssbd01auth;
 GRANT SELECT ON TABLE public.role TO ssbd01auth;
