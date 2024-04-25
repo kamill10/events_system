@@ -14,15 +14,18 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 
 import java.io.IOException;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthenticationControllerIT {
+public class MeControllerIT {
 
     static Network network = Network.newNetwork();
 
@@ -136,15 +139,88 @@ public class AuthenticationControllerIT {
     }
 
     @Test
-    public void testRegisterAccount() {
-        CreateAccountDTO createAccountDTO = new CreateAccountDTO("user", "password", "email@email.com", 1, "firstName", "lastName");
+    public void testUpdateMyEmail() throws JsonProcessingException {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("newemail@ssbd.pl");
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(updateEmailDTO))
+                .when()
+                .patch(baseUrl + "/me/email")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("newemail@ssbd.pl")
+                );
+    }
+
+    @Test
+    public void testUpdateMyEmailUnAuthorized() throws JsonProcessingException {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("newemail@ssbd.pl");
         given()
                 .contentType("application/json")
-                .body(createAccountDTO)
+                .body(objectMapper.writeValueAsString(updateEmailDTO))
                 .when()
-                .post(baseUrl + "/auth/register")
+                .patch(baseUrl + "/me/email")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    public void testUpdateMyAccountData() {
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1);
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .body(updateAccountDataDTO)
+                .when()
+                .put(baseUrl + "/me/user-data")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("newName"),
+                        containsString("newSurname"),
+                        containsString("1")
+                );
+    }
+
+    @Test
+    public void testUpdateMyAccountDataUnAuthorized() {
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1);
+        given()
+                .contentType("application/json")
+                .body(updateAccountDataDTO)
+                .when()
+                .put(baseUrl + "/me/user-data")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    public void testUpdateMyPassword() {
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword");
+
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .body(updatePasswordDTO)
+                .when()
+                .patch(baseUrl + "/me/password")
                 .then()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void testUpdateMyPasswordUnAuthorized() {
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword");
+
+        given()
+                .contentType("application/json")
+                .body(updatePasswordDTO)
+                .when()
+                .patch(baseUrl + "/me/password")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
 }

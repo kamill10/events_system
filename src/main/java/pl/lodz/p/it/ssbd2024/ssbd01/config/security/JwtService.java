@@ -8,9 +8,12 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -20,10 +23,14 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    private final JWTWhitelistRepository jwtWhitelistRepository;
+    @Value("${jwt.secret}")
     private final String SECRET_KEY;
 
-    public JwtService(@Value("${jwt.secret}") String secret) {
+    public JwtService(@Value("${jwt.secret}") String secret,
+                      JWTWhitelistRepository jwtWhitelistRepository) {
         this.SECRET_KEY = secret;
+        this.jwtWhitelistRepository = jwtWhitelistRepository;
     }
 
     public String extractLogin(String token) {
@@ -62,19 +69,22 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secretKey);
     }
 
+    @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
     public String generateToken(Map<String, Object> claims, Account account) {
         var authorities = account.getAuthorities();
         List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
-        return Jwts
-                .builder()
-                .setClaims(claims)
-                .claim("role", roles)
-                .setId(account.getId().toString())
-                .setSubject(account.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
-                .compact();
+        String token = Jwts
+                         .builder()
+                         .setClaims(claims)
+                         .claim("role", roles)
+                         .setId(account.getId().toString())
+                         .setSubject(account.getUsername())
+                         .setIssuedAt(new Date(System.currentTimeMillis()))
+                         .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
+                         .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                         .compact();
+        jwtWhitelistRepository.save(new JWTWhitelistToken(token,extractExpiration(token)));
+        return token;
     }
 
     public String generateToken(Account account) {

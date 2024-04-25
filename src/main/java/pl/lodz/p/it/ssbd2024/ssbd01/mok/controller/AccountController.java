@@ -135,9 +135,9 @@ public class AccountController {
     }
 
     @PostMapping("/reset-password/token/{token}")
-    public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody String password)
+    public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody UpdatePasswordDTO password)
             throws PasswordTokenExpiredException, AccountNotFoundException {
-        accountService.resetPasswordWithToken(token, passwordEncoder.encode(password));
+        accountService.resetPasswordWithToken(token, passwordEncoder.encode(password.value()));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
