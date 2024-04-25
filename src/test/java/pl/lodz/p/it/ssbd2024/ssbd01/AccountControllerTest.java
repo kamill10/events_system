@@ -526,7 +526,7 @@ public class AccountControllerTest {
         Account account = new Account("user17", passwordEncoder.encode("password"), "email17@email.com", 0, "firstName15", "lastName15");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "MANAGER");
-        String newMailAddress = "19jakubpazio99@gmail.com";
+        String newMailAddress = "newmail@maill.com";
         String newEmail = objectMapper.writeValueAsString(new JSONObject().appendField("email", newMailAddress));
         String adminToken = jwtService.generateToken(account);
         mockMvcMe.perform(patch("/api/me/email")
