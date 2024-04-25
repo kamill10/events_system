@@ -151,13 +151,10 @@ public class AccountService {
         }
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        // TODO: Uncomment this line when we will be sending real mails
+        // TODO: Extract emailbody to properties file and use i18n
         accountToUpdate.setEmail(email);
-//        TODO send email that informs user about email change
-//        Mail mail = new Mail();
-//        mail.setMailTo(email);
-//        mail.setMailSubject("Email change");
-//        mail.setMailContent("Your email has been changed to: " + email);
-//        mailService.sendEmail(mail);
+//        mailService.sendEmail(accountToUpdate, "Email change", "Your email has been changed to: " + email);
 
         return accountMokRepository.save(accountToUpdate);
     }
