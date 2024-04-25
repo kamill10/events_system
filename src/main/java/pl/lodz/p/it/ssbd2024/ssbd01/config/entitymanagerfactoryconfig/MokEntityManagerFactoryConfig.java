@@ -52,16 +52,7 @@ public class MokEntityManagerFactoryConfig {
         dataSource.setPassword(env.getProperty("jdbc.mok.password"));
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("jdbc.driverClassName")));
         dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
-
-//        PGXADataSource pgxaDataSource = new PGXADataSource();
-//        pgxaDataSource.setUrl(env.getProperty("jdbc.url"));
-//        pgxaDataSource.setUser(env.getProperty("jdbc.mok.user"));
-//        pgxaDataSource.setPassword(env.getProperty("jdbc.mok.password"));
-//
-//        AtomikosDataSourceBean dataSource = new AtomikosDataSourceBean();
-//        dataSource.setXaDataSource(pgxaDataSource);
-//        dataSource.setUniqueResourceName("mok");
-//        dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
+        dataSource.setMaxPoolSize(5);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("ssbd01mok");

@@ -208,6 +208,7 @@ public class MeControllerIT {
                 .patch(baseUrl + "/me/password")
                 .then()
                 .statusCode(HttpStatus.OK.value());
+
     }
 
     @Test
