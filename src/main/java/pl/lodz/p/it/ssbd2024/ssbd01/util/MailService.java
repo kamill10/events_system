@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 
 @Service
 @AllArgsConstructor
@@ -14,7 +15,7 @@ public class MailService {
 
     private JavaMailSender mailSender;
 
-    public void sendEmail(Mail mail) {
+    private void sendEmail(Mail mail) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -24,9 +25,17 @@ public class MailService {
             mimeMessageHelper.setText(mail.getMailContent(), true);
             mailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException e) {
+            //TODO: Add logging and remove stack trace
             e.printStackTrace();
         }
     }
 
+    public void sendEmail(Account mailTo, String mailSubject, String mailContent) {
+        // TODO: Add i18n support, dont hardcode any string but rather use map and user lang preference
+        String mailText = "<html> <body> <h2>Hello " + mailTo.getFirstName() + "</h2>" +  "<p> "  + mailContent + " </p> </body> </html>";
+        Mail mail = new Mail(mailTo.getEmail(), mailSubject, mailText);
+
+        sendEmail(mail);
+    }
 
 }
