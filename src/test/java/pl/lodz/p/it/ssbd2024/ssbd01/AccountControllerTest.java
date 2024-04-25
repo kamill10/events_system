@@ -445,15 +445,7 @@ public class AccountControllerTest {
                 .andExpect(jsonPath("$[-1].email").value(account.getEmail()));
     }
 
-    @Test
-    public void testGetManagersNotFound() throws Exception {
-        accountMokRepository.deleteAll();
-        Account admin =
-                new Account("adminManNotFound", passwordEncoder.encode("password"), "emaiadminNotFOunds2b@email.com", 0, "firstName11", "lastName11");
-        admin = accountService.addAccount(admin);
-        accountService.addRoleToAccount(admin.getId(), "ADMIN");
-        String adminToken = jwtService.generateToken(admin);
-    }
+
 
     @Test
     public void testUpdateAccountEmail() throws Exception {
@@ -500,7 +492,7 @@ public class AccountControllerTest {
 
     @Test
     public void testUpdateMyEmail() throws Exception {
-        Account account = new Account("user17", passwordEncoder.encode("password"), "email17@email.com", 0, "firstName15", "lastName15");
+        Account account = new Account("user177", passwordEncoder.encode("password"), "email1787@email.com", 0, "firstName15", "lastName15");
         account = accountService.addAccount(account);
         accountService.addRoleToAccount(account.getId(), "MANAGER");
         String newMailAddress = "newmail@maill.com";
