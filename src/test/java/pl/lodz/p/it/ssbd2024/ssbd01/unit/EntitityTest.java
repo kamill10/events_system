@@ -1,8 +1,8 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.unit;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.*;
@@ -52,9 +52,9 @@ public class EntitityTest {
 
     @BeforeAll
     public static void setup() {
-        role = new Role("ADMIN");
-        role2 = new Role("ADMIN");
-        role3 = new Role("MANAGER");
+        role = new Role(AccountRoleEnum.ADMIN);
+        role2 = new Role(AccountRoleEnum.ADMIN);
+        role3 = new Role(AccountRoleEnum.MANAGER);
         role4 = new Role();
         role5 = new Role(null);
 
@@ -161,7 +161,7 @@ public class EntitityTest {
 
     @Test
     public void settersTest() {
-        Assertions.assertEquals("ADMIN", role.getName());
+        Assertions.assertEquals("ADMIN", role.getName().toString());
 
         Assertions.assertEquals(true, account.getActive());
         Assertions.assertEquals("email@email.com", account.getEmail());
