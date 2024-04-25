@@ -26,6 +26,7 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<String> authenticate(@RequestBody LoginDTO request) {
-        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request));
+        authenticationService.authenticate(request);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

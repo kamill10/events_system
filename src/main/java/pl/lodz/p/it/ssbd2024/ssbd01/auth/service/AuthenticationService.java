@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
@@ -29,15 +30,13 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public String authenticate(LoginDTO loginDTO) {
+    public void authenticate(LoginDTO loginDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.username(),
                         loginDTO.password()
                 )
         );
-        var user = accountAuthRepository.findByUsername(loginDTO.username());
-        return jwtService.generateToken(user);
     }
 
 }
