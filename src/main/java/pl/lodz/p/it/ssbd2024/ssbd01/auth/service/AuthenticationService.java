@@ -10,7 +10,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 @Service
@@ -20,13 +19,10 @@ public class AuthenticationService {
     private final AccountAuthRepository accountAuthRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final AccountDTOConverter accountDTOConverter;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public String registerUser(Account account) {
-        return jwtService.generateToken(
-                accountService.addAccount(
-                        account));
+    public void registerUser(Account account) {
+        jwtService.generateToken(accountService.addAccount(account));
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
