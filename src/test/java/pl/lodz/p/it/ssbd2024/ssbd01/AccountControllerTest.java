@@ -596,10 +596,10 @@ public class AccountControllerTest {
         int size = passwordResetRepository.findAll().size();
         Assertions.assertEquals(1, size);
 
-        String newPassword = "newPassword";
-        mockMvcAccount.perform(post("/api/accounts/reset-password/token/2137")
+        String passwordDTO = objectMapper.writeValueAsString(new JSONObject().appendField("value", "newpassword"));
+        mockMvcAccount.perform(post("/api/accounts/reset-password/token/2115")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(newPassword))
+                        .content(passwordDTO))
                 .andExpect(status().isNotFound());
     }
 
