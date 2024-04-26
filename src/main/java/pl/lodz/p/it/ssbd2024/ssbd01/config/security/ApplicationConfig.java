@@ -18,6 +18,7 @@ public class ApplicationConfig {
 
     private final AccountAuthRepository accountAuthRepository;
 
+
     @Bean
     public UserDetailsService userDetailsService() {
         return accountAuthRepository::findByUsername;
@@ -40,5 +41,7 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 
 }

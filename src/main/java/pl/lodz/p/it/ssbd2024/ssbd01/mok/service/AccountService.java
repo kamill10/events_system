@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -33,6 +34,7 @@ public class AccountService {
     private final PasswordResetRepository passwordResetRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
+
     private final PasswordHistoryRepository passwordHistoryRepository;
 
 
@@ -173,6 +175,7 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(password));
+        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate, passwordEncoder.encode(password)));
         accountMokRepository.saveAndFlush(accountToUpdate);
     }
 
@@ -205,12 +208,18 @@ public class AccountService {
         if (isPasswordInHistory(accountToUpdate, newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
-        accountToUpdate.setPassword(newPassword);
+        accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
+        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate, passwordEncoder.encode(newPassword)));
         accountMokRepository.save(accountToUpdate);
     }
 
     private boolean isPasswordInHistory(Account account, String password) {
-        return passwordHistoryRepository.findPasswordHistoryByAccountAndPassword(account, password).isPresent();
+        for (PasswordHistory passwordHistory : passwordHistoryRepository.findPasswordHistoryByAccount(account)) {
+            if (passwordEncoder.matches(password, passwordHistory.getPassword())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

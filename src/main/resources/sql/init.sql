@@ -2,6 +2,7 @@ GRANT SELECT, INSERT, UPDATE ON TABLE public.account TO ssbd01mok;
 GRANT SELECT ON TABLE public.role TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE public.account_role TO ssbd01mok;
 GRANT SELECT, INSERT ON TABLE public.passreset TO ssbd01mok;
+GRANT SELECT, INSERT, DELETE ON TABLE public.password_history TO ssbd01mok;
 
 GRANT SELECT, INSERT, DELETE ON TABLE public.jwt_whitelist_token TO ssbd01auth;
 GRANT SELECT ON TABLE public.account TO ssbd01auth;
@@ -50,3 +51,4 @@ INSERT INTO public.role (id, version, name) VALUES ('550e8400-e29b-41d4-a716-446
 INSERT INTO public.role (id, version, name) VALUES ('4c90f86a-0d82-4c51-b72c-80e20949a3b9', 0, 'MANAGER');
 INSERT INTO public.role (id, version, name) VALUES ('cd8ab1c1-2431-4e28-88b5-fdd54de3d92a', 0, 'PARTICIPANT');
 INSERT INTO public.account_role (account_id,roles_id) VALUES ('550e8400-e29b-41d4-a716-446655440011','550e8400-e29b-41d4-a716-446655440000');
+INSERT INTO public.password_history(version,account_id,id,password) VALUES (0,'550e8400-e29b-41d4-a716-446655440011','9a36797f-08e6-4e8b-b0c3-88b8d279a8c1','$2a$12$OC0PK1zigdyWLLOmQfSVkOYHOi4QemNnFJbqG1ibzRLvlFyQbzpna');

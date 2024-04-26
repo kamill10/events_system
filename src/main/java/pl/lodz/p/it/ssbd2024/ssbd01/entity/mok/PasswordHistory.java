@@ -3,16 +3,19 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entity.mok;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "password_history")
 public class PasswordHistory extends AbstractEntity {
 
    /* @Column(name = "userId", columnDefinition = "UUID", updatable = false)
@@ -24,6 +27,7 @@ public class PasswordHistory extends AbstractEntity {
             fetch = FetchType.LAZY
     )
     @JoinColumn(nullable = false, name = "account_id")
+
     private Account account;
     @ToString.Exclude
     @Column(nullable = false, length = 72)

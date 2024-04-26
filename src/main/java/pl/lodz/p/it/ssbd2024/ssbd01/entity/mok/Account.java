@@ -70,7 +70,7 @@ public class Account extends ControlledEntity implements UserDetails {
     @Size(min = 2, max = 64)
     private String lastName;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "account")
+    @OneToMany(cascade = { CascadeType.REMOVE,CascadeType.PERSIST}, mappedBy = "account")
     private List<PasswordHistory> passwordHistory = new ArrayList<>();
 
 
