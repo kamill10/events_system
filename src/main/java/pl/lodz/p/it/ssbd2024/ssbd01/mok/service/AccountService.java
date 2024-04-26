@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
@@ -32,6 +33,7 @@ public class AccountService {
     private final PasswordResetRepository passwordResetRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordHistoryRepository passwordHistoryRepository;
 
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -51,7 +53,7 @@ public class AccountService {
         Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         List<Role> accountRoles = account.getRoles();
-        if (accountRoles.contains(role)) {
+        if (accountRoles.contains(new Role(roleName))) {
             throw new RoleAlreadyAssignedException(ExceptionMessages.ROLE_ALREADY_ASSIGNED);
         }
         switch (roleName) {
@@ -164,9 +166,12 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updatePassword(UUID id, String password) throws AccountNotFoundException {
-        Account accountToUpdate =
-                accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+    public void updatePassword(UUID id, String password) throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
+        Account accountToUpdate = accountMokRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        if (isPasswordInHistory(accountToUpdate, password)) {
+            throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
+        }
         accountToUpdate.setPassword(passwordEncoder.encode(password));
         accountMokRepository.saveAndFlush(accountToUpdate);
     }
@@ -186,7 +191,8 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void resetPasswordWithToken(String token, String newPassword) throws PasswordTokenExpiredException, AccountNotFoundException {
+    public void resetPasswordWithToken(String token, String newPassword)
+            throws AccountNotFoundException, PasswordTokenExpiredException, ThisPasswordAlreadyWasSetInHistory {
         Optional<PasswordReset> passwordReset = passwordResetRepository.findByToken(token);
         if (passwordReset.isEmpty()) {
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
@@ -194,12 +200,19 @@ public class AccountService {
         if (passwordReset.get().getExpirationDate().isBefore(LocalDateTime.now())) {
             throw new PasswordTokenExpiredException(ExceptionMessages.PASS_TOKEN_EXPIRED);
         }
-        Optional<Account> accountToUpdate = accountMokRepository.findByEmail(passwordReset.get().getEmail());
-        if (accountToUpdate.isEmpty()) {
-            throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+        Account accountToUpdate = accountMokRepository.findByEmail(passwordReset.get().getEmail())
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        if (isPasswordInHistory(accountToUpdate, newPassword)) {
+            throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
-        Account account = accountToUpdate.get();
-        account.setPassword(newPassword);
-        accountMokRepository.save(account);
+        accountToUpdate.setPassword(newPassword);
+        accountMokRepository.save(accountToUpdate);
+    }
+
+    private boolean isPasswordInHistory(Account account, String password) {
+        return passwordHistoryRepository.findPasswordHistoryByAccountAndPassword(account, password).isPresent();
     }
 }
+
+
+
