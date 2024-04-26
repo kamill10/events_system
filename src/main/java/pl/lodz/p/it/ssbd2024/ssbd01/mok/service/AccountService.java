@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
@@ -44,30 +45,45 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account addRoleToAccount(UUID id, String roleName)
+    public Account addRoleToAccount(UUID id, AccountRoleEnum roleName)
             throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException,
             AccountNotFoundException {
-        Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
-        Account account = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Account account = accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         List<Role> accountRoles = account.getRoles();
         if (accountRoles.contains(role)) {
             throw new RoleAlreadyAssignedException(ExceptionMessages.ROLE_ALREADY_ASSIGNED);
         }
-        if (accountRoles.contains(new Role("PARTICIPANT"))) {
-            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
-        }
-        if (!accountRoles.isEmpty() && role.equals(new Role("PARTICIPANT"))) {
-            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
-
+        switch (roleName) {
+            case PARTICIPANT:
+                canAddParticipantRole(account);
+                break;
+            case MANAGER, ADMIN:
+                canAddManagerOrAdminRole(account);
+                break;
+            default:
+                throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
         return accountMokRepository.save(account);
     }
 
+    private void canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
+        List<Role> accountRoles = account.getRoles();
+        if (accountRoles.contains(new Role(AccountRoleEnum.PARTICIPANT))) {
+            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
+        }
+    }
+
+    private void canAddParticipantRole(Account account) throws WrongRoleToAccountException {
+        List<Role> accountRoles = account.getRoles();
+        if (!accountRoles.isEmpty()) {
+            throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
+        }
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account removeRole(UUID id, String roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
+    public Account removeRole(UUID id, AccountRoleEnum roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id)
@@ -109,22 +125,20 @@ public class AccountService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getParticipants() throws RoleNotFoundException {
-        Role role = roleRepository.findByName("PARTICIPANT")
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Role role =
+                roleRepository.findByName(AccountRoleEnum.PARTICIPANT).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getManagers() throws RoleNotFoundException {
-        Role role = roleRepository.findByName("MANAGER")
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Role role = roleRepository.findByName(AccountRoleEnum.MANAGER).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getAdmins() throws RoleNotFoundException {
-        Role role = roleRepository.findByName("ADMIN")
-                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Role role = roleRepository.findByName(AccountRoleEnum.ADMIN).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
@@ -151,8 +165,8 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void updatePassword(UUID id, String password) throws AccountNotFoundException {
-        Account accountToUpdate = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        Account accountToUpdate =
+                accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setPassword(passwordEncoder.encode(password));
         accountMokRepository.saveAndFlush(accountToUpdate);
     }
