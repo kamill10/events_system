@@ -17,7 +17,8 @@ export const useAccount = () => {
             setToken(data);
             navigate(Pathnames.public.home);
         } catch (e) {
-            console.error(e)
+            console.error(e);
+            return e;
         } finally {
             setIsLogging(false);
         }
@@ -28,6 +29,7 @@ export const useAccount = () => {
             setIsFetching(true);
         } catch (e) {
             console.error(e);
+            return e;
         } finally {
             localStorage.removeItem("token");
             setAccount(null);
@@ -45,6 +47,20 @@ export const useAccount = () => {
             navigate(Pathnames.public.home);
         } catch (e) {
             console.error(e);
+            return e;
+        } finally {
+            setIsFetching(false);
+        }
+    }
+
+    const confirmSignIn = async (key: string) => {
+        try {
+            setIsFetching(true);
+            await api.confirmSignIn(key);
+        } catch (e) {
+            console.log("amogusadasdasd")
+            console.error(e);
+            return e;
         } finally {
             setIsFetching(false);
         }
@@ -57,6 +73,7 @@ export const useAccount = () => {
         isAuthenticated,
         logIn,
         logOut,
-        signIn
+        signIn,
+        confirmSignIn
     }
 }

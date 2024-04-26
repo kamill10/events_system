@@ -5,6 +5,8 @@ import { ParticipantTheme, PublicTheme } from "../themes/themes.ts";
 import { ThemeProvider } from "@mui/material";
 import { useAccount } from "../hooks/useAccount.ts";
 import ParticipantLayout from "../layouts/ParticipantLayout.tsx";
+import { Pathnames } from "./Pathnames.ts";
+import ConfirmSignInPage from "../pages/ConfirmSignInPage.tsx";
 
 export default function RouterComponent() {
     const { isAuthenticated } = useAccount();
@@ -30,6 +32,11 @@ export default function RouterComponent() {
 
                 </Route>
             })}
+            <Route path={Pathnames.public.confirmSignIn} element={
+                <ThemeProvider theme={PublicTheme}>
+                    <ConfirmSignInPage></ConfirmSignInPage>
+                </ThemeProvider>
+            }></Route>
         </Routes>
     )
 }

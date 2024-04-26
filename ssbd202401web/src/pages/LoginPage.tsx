@@ -102,28 +102,25 @@ export default function LoginPage() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="/login/forgot-password">
                   I forgot my password :(
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/signin" variant="body2">
-                  {"You don't have an account yet? Sign in!"}
+                <Link href="/signin">
+                  "You don't have an account yet? Sign in!"
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
       </Grid>
-      {
-        isLogging && 
-        <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={true}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      }
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLogging}
+      >
+        <CircularProgress color="primary" />
+      </Backdrop>
     </Grid>
     </>
   );
