@@ -147,4 +147,14 @@ public class AuthenticationControllerIT {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
+    @Test
+    public void testVerifyAccountWithInvalidToken() {
+        given()
+                .contentType("application/json")
+                .when()
+                .post(baseUrl + "/auth/verify_account/invalidToken")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
 }

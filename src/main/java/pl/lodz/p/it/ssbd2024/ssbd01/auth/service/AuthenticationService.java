@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFo
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountConfirmationRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void registerUser(Account account) {
-        jwtService.generateToken(accountMokRepository.save(account));
+        accountMokRepository.save(account);
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expirationDate = LocalDateTime.now().plusHours(24);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
