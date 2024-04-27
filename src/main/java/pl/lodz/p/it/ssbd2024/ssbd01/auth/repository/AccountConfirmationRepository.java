@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.mok.repository;
+package pl.lodz.p.it.ssbd2024.ssbd01.auth.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Propagation;
