@@ -45,7 +45,9 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
-        return accountMokRepository.save(account);
+        Account returnedAccount = accountMokRepository.save(account);
+        passwordHistoryRepository.save(new PasswordHistory(account.getId(), account.getPassword()));
+        return returnedAccount;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -175,7 +177,7 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(password));
-        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate, passwordEncoder.encode(password)));
+        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate.getId(), passwordEncoder.encode(password)));
         accountMokRepository.saveAndFlush(accountToUpdate);
     }
 
@@ -209,12 +211,12 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
-        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate, passwordEncoder.encode(newPassword)));
+        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate.getId(), passwordEncoder.encode(newPassword)));
         accountMokRepository.save(accountToUpdate);
     }
 
     private boolean isPasswordInHistory(Account account, String password) {
-        for (PasswordHistory passwordHistory : passwordHistoryRepository.findPasswordHistoryByAccount(account)) {
+        for (PasswordHistory passwordHistory : passwordHistoryRepository.findPasswordHistoryByAccountId(account.getId())) {
             if (passwordEncoder.matches(password, passwordHistory.getPassword())) {
                 return true;
             }

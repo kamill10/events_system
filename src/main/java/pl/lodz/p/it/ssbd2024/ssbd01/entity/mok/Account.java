@@ -70,8 +70,7 @@ public class Account extends ControlledEntity implements UserDetails {
     @Size(min = 2, max = 64)
     private String lastName;
 
-    @OneToMany(cascade = { CascadeType.REMOVE,CascadeType.PERSIST}, mappedBy = "account")
-    private List<PasswordHistory> passwordHistory = new ArrayList<>();
+
 
 
     public Account(String username, String password, String email, Integer gender, String firstName, String lastName) {
@@ -83,7 +82,6 @@ public class Account extends ControlledEntity implements UserDetails {
         this.lastName = lastName;
         this.active = true;
         this.verified = false;
-        addPasswordToHistory();
     }
 
     public Account(String firstName, String lastName, Integer gender) {
@@ -140,10 +138,6 @@ public class Account extends ControlledEntity implements UserDetails {
 
     public void addRole(Role role) {
         roles.add(role);
-    }
-
-    public void addPasswordToHistory() {
-        passwordHistory.add(new PasswordHistory(this, this.password));
     }
 
     public void removeRole(Role role) {

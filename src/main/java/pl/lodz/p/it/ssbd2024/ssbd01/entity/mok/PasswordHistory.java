@@ -3,13 +3,11 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entity.mok;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,25 +16,20 @@ import java.util.Objects;
 @Table(name = "password_history")
 public class PasswordHistory extends AbstractEntity {
 
-   /* @Column(name = "userId", columnDefinition = "UUID", updatable = false)
+    @Column(name = "account_id", columnDefinition = "UUID", updatable = false)
     @NotNull
     @Setter(AccessLevel.NONE)
-    UUID userId;*/
+    UUID accountId;
 
-    @ManyToOne(
-            fetch = FetchType.LAZY
-    )
-    @JoinColumn(nullable = false, name = "account_id")
 
-    private Account account;
     @ToString.Exclude
     @Column(nullable = false, length = 72)
     @Size(min = 8, max = 72)
     @NotNull
     String password;
 
-    public PasswordHistory(Account account, String password) {
-        this.account = account;
+    public PasswordHistory(UUID userId, String password) {
+        this.accountId = userId;
         this.password = password;
     }
 

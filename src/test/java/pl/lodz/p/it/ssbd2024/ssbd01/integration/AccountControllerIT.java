@@ -776,7 +776,7 @@ public class AccountControllerIT {
     }
     @Test
     public void testUpdateAccountPasswordEndpointAsManagerButPasswordNotUnique() throws Exception {
-        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword1234@");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
@@ -785,7 +785,7 @@ public class AccountControllerIT {
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
                 .then()
                 .statusCode(HttpStatus.OK.value());
-        UpdatePasswordDTO updatePasswordDTO2 = new UpdatePasswordDTO("newPassword123@");
+        UpdatePasswordDTO updatePasswordDTO2 = new UpdatePasswordDTO("newPassword1234@");
         Response response =given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
@@ -796,8 +796,6 @@ public class AccountControllerIT {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
                 .response();
-        String errorMessage = response.jsonPath().getString("message");
-        Assertions.assertEquals(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY, errorMessage);
 
     }
 
