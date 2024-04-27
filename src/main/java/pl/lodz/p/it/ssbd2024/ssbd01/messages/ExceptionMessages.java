@@ -12,4 +12,6 @@ public class ExceptionMessages {
     public static final String NO_ADMINS_FOUND = "No admins found.";
     public static final String EMAIL_ALREADY_EXISTS = "Email already exists.";
     public static final String PASS_TOKEN_EXPIRED = "Token has expired.";
+    public static final String CONFIRMATION_TOKEN_EXPIRED = "Confirmation token has expired.";
+    public static final String CONFIRMATION_TOKEN_NOT_FOUND = "Confirmation token not found.";
 }
