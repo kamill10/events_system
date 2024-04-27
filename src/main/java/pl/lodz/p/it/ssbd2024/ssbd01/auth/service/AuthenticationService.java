@@ -2,6 +2,10 @@ package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -17,25 +21,32 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFo
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountConfirmationRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@PropertySource("classpath:expiration.properties")
 public class AuthenticationService {
     private final AccountMokRepository accountMokRepository;
     private final AccountAuthRepository accountAuthRepository;
     private final AccountConfirmationRepository accountConfirmationRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final Environment env;
+
+    private LocalDateTime calculateExpirationDate(int expirationHours) {
+        return LocalDateTime.now().plusHours(expirationHours);
+    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void registerUser(Account account) {
         accountMokRepository.save(account);
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-        var expirationDate = LocalDateTime.now().plusHours(24);
+        var expirationHours = Integer.parseInt(Objects.requireNonNull(env.getProperty("confirmation.token.expiration.hours")));
+        var expirationDate = calculateExpirationDate(expirationHours);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
         // TODO: Send mail to user with confirmation link
 
@@ -63,6 +74,12 @@ public class AuthenticationService {
         }
         accountConfirmation.getAccount().setVerified(true);
         accountConfirmationRepository.delete(accountConfirmation);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Scheduled(fixedRate = 120000)
+    public void deleteExpiredTokens() {
+        accountConfirmationRepository.deleteByExpirationDateBefore(LocalDateTime.now());
     }
 
 }

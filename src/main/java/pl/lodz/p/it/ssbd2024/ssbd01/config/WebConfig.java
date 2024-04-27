@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -18,6 +19,7 @@ import java.util.List;
 @ComponentScan(basePackages = "pl.lodz.p.it.ssbd2024.ssbd01", excludeFilters = {
         @ComponentScan.Filter(org.springframework.context.annotation.Configuration.class)})
 @EnableAspectJAutoProxy
+@EnableScheduling
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
