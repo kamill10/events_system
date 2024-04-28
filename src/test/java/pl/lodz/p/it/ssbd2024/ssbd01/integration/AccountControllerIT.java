@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.integration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -771,6 +773,30 @@ public class AccountControllerIT {
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+    @Test
+    public void testUpdateAccountPasswordEndpointAsManagerButPasswordNotUnique() throws Exception {
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword1234@");
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(updatePasswordDTO))
+                .when()
+                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        UpdatePasswordDTO updatePasswordDTO2 = new UpdatePasswordDTO("newPassword1234@");
+        Response response =given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(updatePasswordDTO2))
+                .when()
+                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .response();
+
     }
 
     @Test

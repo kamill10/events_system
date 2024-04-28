@@ -4,7 +4,8 @@ export const Pathnames = {
         login: "/login",
         signIn: "/signin",
         events: "/events",
-        forgotPassword: "/login/forgot-password"
+        forgotPassword: "/login/forgot-password",
+        confirmSignIn: "/confirm-signin"
     },
     participant: {
         home: "/",

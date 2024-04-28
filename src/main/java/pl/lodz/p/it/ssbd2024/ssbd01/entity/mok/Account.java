@@ -71,6 +71,8 @@ public class Account extends ControlledEntity implements UserDetails {
     private String lastName;
 
 
+
+
     public Account(String username, String password, String email, Integer gender, String firstName, String lastName) {
         this.username = username;
         this.password = password;
@@ -91,7 +93,7 @@ public class Account extends ControlledEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role ->  new SimpleGrantedAuthority(role.getName().toString()))
+                .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
                 .toList();
     }
 
