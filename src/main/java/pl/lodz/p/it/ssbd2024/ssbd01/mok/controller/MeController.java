@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.ThisPasswordAlreadyWasSetInHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
@@ -40,7 +41,7 @@ public class MeController {
     @PatchMapping("/password")
     public ResponseEntity<GetAccountDTO> updateMyAccountPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                                  @RequestBody UpdatePasswordDTO password)
-            throws AccountNotFoundException {
+            throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
         accountService.updatePassword(jwtService.extractIdFromHeader(token), password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }

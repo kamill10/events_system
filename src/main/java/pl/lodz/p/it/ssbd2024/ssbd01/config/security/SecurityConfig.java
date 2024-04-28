@@ -62,6 +62,7 @@ public class SecurityConfig {
 //                            .requestMatchers(HttpMethod.PATCH, "/api/me/password/{id}").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER");
 
 
+
                 });
         return http.build();
     }

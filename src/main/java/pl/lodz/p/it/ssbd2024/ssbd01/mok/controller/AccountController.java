@@ -22,6 +22,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEn
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.PasswordTokenExpiredException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.ThisPasswordAlreadyWasSetInHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
@@ -126,7 +127,7 @@ public class AccountController {
 
     @PatchMapping("/{id}/password")
     public ResponseEntity<?> updateAccountPassword(@PathVariable UUID id, @RequestBody UpdatePasswordDTO password)
-            throws AccountNotFoundException {
+            throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
         accountService.updatePassword(id, password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -139,8 +140,8 @@ public class AccountController {
 
     @PostMapping("/reset-password/token/{token}")
     public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody UpdatePasswordDTO password)
-            throws PasswordTokenExpiredException, AccountNotFoundException {
-        accountService.resetPasswordWithToken(token, passwordEncoder.encode(password.value()));
+            throws PasswordTokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
+        accountService.resetPasswordWithToken(token, password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
