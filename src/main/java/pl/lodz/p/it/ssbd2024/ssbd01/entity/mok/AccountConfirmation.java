@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +32,6 @@ public class AccountConfirmation extends AbstractEntity {
 
     @Column(nullable = false)
     @NotNull
-    @Future
     private LocalDateTime expirationDate;
 
     public AccountConfirmation(String token, Account account, LocalDateTime expirationDate) {

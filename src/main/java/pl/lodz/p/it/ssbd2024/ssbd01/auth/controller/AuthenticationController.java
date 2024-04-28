@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 
 @RestController
@@ -29,9 +30,9 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request));
     }
 
-    @PostMapping("verify_account/{token}")
+    @PostMapping("verify-account/{token}")
     public ResponseEntity<?> verifyAccount(@PathVariable String token)
-            throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException {
+            throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException {
         authenticationService.verifyAccount(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

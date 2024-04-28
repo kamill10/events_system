@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountConfirmation;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,6 +15,6 @@ public interface AccountConfirmationRepository extends JpaRepository<AccountConf
 
     Optional<AccountConfirmation> findByToken(String token);
 
-    void deleteByExpirationDateBefore(LocalDateTime now);
+    List<AccountConfirmation> findByExpirationDateBefore(LocalDateTime now);
 
 }
