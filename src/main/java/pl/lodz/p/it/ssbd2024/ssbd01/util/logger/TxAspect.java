@@ -28,19 +28,20 @@ public class TxAspect {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (authentication != null) ? authentication.getName() : "anonymous";
         String methodName = joinPoint.getSignature().getName();
+        String className = joinPoint.getTarget().getClass().getName();
         String transactionId = generateTransactionId();
-        log.info("Transaction " + transactionId + " started: " + methodName + " by user: " + username);
-        log.info("Transaction " + transactionId + " description:" + "\n1. Propagation: " + transactional.propagation() + "\n2. Isolation: "
-                + transactional.isolation() + "\n3. Timeout: " + transactional.timeout() + "\n4. ReadOnly: " + transactional.readOnly());
+        log.info("Transaction {} started: {} from class: {} by user: {}", transactionId, methodName, className, username);
+        log.info("Transaction {} description:\n1. Propagation: {}\n2. Isolation: {}\n3. Timeout: {}\n4. ReadOnly: {}", transactionId,
+                transactional.propagation(), transactional.isolation(), transactional.timeout(), transactional.readOnly());
         Object proceed;
         try {
             proceed = joinPoint.proceed();
-            log.info("Transaction " + transactionId + " result: approved");
+            log.info("Transaction {} result: approved", transactionId);
         } catch (Exception e) {
-            log.info("Transaction " + transactionId + " result: rejected with message: " + e.getMessage());
+            log.info("Transaction {} result: rejected with message: {}", transactionId, e.getMessage());
             throw e;
         } finally {
-            log.info("Transaction " + transactionId + " ended: " + methodName);
+            log.info("Transaction {} ended: {}", transactionId, methodName);
         }
 
         return proceed;
