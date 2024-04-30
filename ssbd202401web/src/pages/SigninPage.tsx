@@ -5,9 +5,12 @@ import { AccountSingInType } from "../types/Account";
 import { GenderEnum } from "../types/enums/Gender.enum";
 import { signInValidationSchema } from "../validation/schemas";
 import { yupResolver } from "@hookform/resolvers/yup"
+import useNotification from "../hooks/useNotification";
+import { useNavigate } from "react-router-dom";
 
 export default function SigninPage() {
     const { isFetching, signIn } = useAccount();
+    const navigate = useNavigate();
     const { handleSubmit, control, formState: { errors }, trigger } = useForm<AccountSingInType>({
         defaultValues: {
             username: "",
@@ -19,10 +22,23 @@ export default function SigninPage() {
         },
         resolver: yupResolver(signInValidationSchema)
     });
+    const sendNotification = useNotification();
 
-    const onSubmit: SubmitHandler<AccountSingInType> = (data) => {
+    const onSubmit: SubmitHandler<AccountSingInType> = async (data) => {
         console.log(data);
-        signIn(data);
+        const err = await signIn(data);
+        if (err) {
+            sendNotification({
+                description: "Signing in failed :(",
+                type: "error"
+            });
+        } else {
+            sendNotification({
+                description: "Siging in successful!",
+                type: "info"
+            });
+            navigate("/login")
+        }
     }
 
     const onError: SubmitErrorHandler<AccountSingInType> = (errors) => {
