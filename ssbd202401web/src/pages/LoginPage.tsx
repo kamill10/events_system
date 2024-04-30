@@ -2,9 +2,11 @@ import { Backdrop, Box, Button, CircularProgress, CssBaseline, Grid, Link, Paper
 import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { AccountLoginType } from "../types/Account";
 import { useAccount } from "../hooks/useAccount";
+import useNotification from "../hooks/useNotification";
 
 export default function LoginPage() {
   const { isLogging, logIn } = useAccount();
+  const sendNotification = useNotification();
   const { handleSubmit, control } = useForm<AccountLoginType>({
     defaultValues: {
       username: "",
@@ -12,8 +14,20 @@ export default function LoginPage() {
     }
   });
 
-  const onSubmit: SubmitHandler<AccountLoginType> = (data) => {
-    logIn(data).catch(error => alert(error));
+  const onSubmit: SubmitHandler<AccountLoginType> = async (data) => {
+    const err = await logIn(data);
+    if (err) {
+      console.log("gragas")
+      sendNotification({
+        type: "error",
+        description: "Failed to log in :("
+      });
+    } else {
+      sendNotification({
+        type: "info",
+        description: "Log in successful!"
+      });
+    }
   };
 
   const onError: SubmitErrorHandler<AccountLoginType> = (errors) => {
