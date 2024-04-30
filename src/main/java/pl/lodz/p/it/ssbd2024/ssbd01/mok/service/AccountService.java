@@ -71,6 +71,7 @@ public class AccountService {
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
+        mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
         return accountMokRepository.save(account);
     }
 
@@ -97,6 +98,7 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
+                //mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
                 return accountMokRepository.save(account);
             }
         }
