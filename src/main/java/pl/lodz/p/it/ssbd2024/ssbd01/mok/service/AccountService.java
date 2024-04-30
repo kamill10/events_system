@@ -158,7 +158,7 @@ public class AccountService {
         // TODO: Uncomment this line when we will be sending real mails
         // TODO: Extract emailbody to properties file and use i18n
         accountToUpdate.setEmail(email);
-//        mailService.sendEmail(accountToUpdate, "Email change", "Your email has been changed to: " + email);
+        mailService.sendEmail(accountToUpdate, "Email change", "Your email has been changed to: " + email);
 
         return accountMokRepository.save(accountToUpdate);
     }
