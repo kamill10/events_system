@@ -98,7 +98,7 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                //mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
+                mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
                 return accountMokRepository.save(account);
             }
         }

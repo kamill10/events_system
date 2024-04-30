@@ -36,7 +36,6 @@ public class AccountController {
 
 
     private final AccountService accountService;
-    private final PasswordEncoder passwordEncoder;
     private final AccountDTOConverter accountDTOConverter;
 
 
