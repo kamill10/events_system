@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,5 +18,7 @@ public interface AccountMokRepository extends JpaRepository<Account, UUID> {
     Optional<Account> findByEmail(String email);
 
     List<Account> findAccountByRolesContains(Role role);
+
+    List<Account> findByNonLockedFalseAndLockedUntilBefore(LocalDateTime dateTime);
 
 }

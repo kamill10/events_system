@@ -2,10 +2,12 @@ package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -39,6 +41,12 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final Environment env;
 
+    @Value("${auth.attempts:3}")
+    private int maxFailedLoginAttempts;
+
+    @Value("${auth.lock-time:86400}")
+    private int lockTimeout;
+
     private LocalDateTime calculateExpirationDate(int expirationHours) {
         return LocalDateTime.now().plusHours(expirationHours);
     }
@@ -55,15 +63,23 @@ public class AuthenticationService {
         accountConfirmationRepository.saveAndFlush(newAccountConfirmation);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
     public String authenticate(LoginDTO loginDTO) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.username(),
-                        loginDTO.password()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.username(),
+                            loginDTO.password()
+                    )
+            );
+        } catch (BadCredentialsException e) {
+            updateFailedLoginAttempts(loginDTO.username());
+            throw e;
+        }
+
         var user = accountAuthRepository.findByUsername(loginDTO.username());
+        user.setFailedLoginAttempts(0);
+        accountAuthRepository.save(user);
         return jwtService.generateToken(user);
     }
 
@@ -98,6 +114,31 @@ public class AuthenticationService {
                 accountMokRepository.delete(account);
             }
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Scheduled(fixedRate = 120000)
+    public void unlockAccounts() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Account> lockedAccounts = accountMokRepository.findByNonLockedFalseAndLockedUntilBefore(now);
+
+        for (Account account : lockedAccounts) {
+            account.setNonLocked(true);
+            account.setFailedLoginAttempts(0);
+            account.setLockedUntil(null);
+            accountMokRepository.save(account);
+        }
+    }
+
+    public void updateFailedLoginAttempts(String username) {
+        Account account = accountAuthRepository.findByUsername(username);
+        account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);
+        if (account.getFailedLoginAttempts() >= maxFailedLoginAttempts) {
+            account.setNonLocked(false);
+            account.setLockedUntil(LocalDateTime.now().plusSeconds(lockTimeout));
+        }
+        accountAuthRepository.save(account);
     }
 
 }

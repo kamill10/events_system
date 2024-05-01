@@ -51,6 +51,17 @@ public class Account extends ControlledEntity implements UserDetails {
     @NotNull
     private Boolean verified;
 
+    @Column(nullable = false)
+    @NotNull
+    private Boolean nonLocked;
+
+    @Column(nullable = false)
+    @NotNull
+    private Integer failedLoginAttempts;
+
+    @FutureOrPresent
+    private LocalDateTime lockedUntil;
+
     @Column(nullable = false, unique = true)
     @NotBlank
     @Email
@@ -71,8 +82,6 @@ public class Account extends ControlledEntity implements UserDetails {
     private String lastName;
 
 
-
-
     public Account(String username, String password, String email, Integer gender, String firstName, String lastName) {
         this.username = username;
         this.password = password;
@@ -82,6 +91,8 @@ public class Account extends ControlledEntity implements UserDetails {
         this.lastName = lastName;
         this.active = true;
         this.verified = false;
+        this.nonLocked = true;
+        this.failedLoginAttempts = 0;
     }
 
     public Account(String firstName, String lastName, Integer gender) {
@@ -99,12 +110,12 @@ public class Account extends ControlledEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return active;
+        return verified;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return verified;
+        return nonLocked;
     }
 
     @Override
