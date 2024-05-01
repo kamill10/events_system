@@ -27,6 +27,8 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @Testcontainers
@@ -148,6 +150,7 @@ public class AccountControllerIT {
 
     @Test
     public void testGetAllAccountsEndpoint() throws Exception {
+        assertNotNull(adminToken);
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()

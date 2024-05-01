@@ -6,22 +6,23 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.ejb.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
-import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 
 import javax.crypto.SecretKey;
+import java.security.Key;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Function;
 
@@ -32,15 +33,15 @@ public class JwtService {
     private final UserDetailsService userDetailsService;
 
     private final JWTWhitelistRepository jwtWhitelistRepository;
-    @Value("${jwt.secret}")
     private final String SECRET_KEY;
 
-    public JwtService(UserDetailsService userDetailsService, @Value("${jwt.secret}") String secret,
+    public JwtService(UserDetailsService userDetailsService,
                       JWTWhitelistRepository jwtWhitelistRepository) {
         this.userDetailsService = userDetailsService;
-        this.SECRET_KEY = secret;
+        this.SECRET_KEY = KeyGenerator.getSecretKey();
         this.jwtWhitelistRepository = jwtWhitelistRepository;
     }
+
 
     public String extractLogin(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -83,16 +84,16 @@ public class JwtService {
         var authorities = account.getAuthorities();
         List<String> roles = authorities.stream().map(GrantedAuthority::getAuthority).toList();
         String token = Jwts
-                         .builder()
-                         .setClaims(claims)
-                         .claim("role", roles)
-                         .setId(account.getId().toString())
-                         .setSubject(account.getUsername())
-                         .setIssuedAt(new Date(System.currentTimeMillis()))
-                         .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
-                         .signWith(getSecretKey(), SignatureAlgorithm.HS256)
-                         .compact();
-        jwtWhitelistRepository.save(new JWTWhitelistToken(token,extractExpiration(token)));
+                .builder()
+                .setClaims(claims)
+                .claim("role", roles)
+                .setId(account.getId().toString())
+                .setSubject(account.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
+                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                .compact();
+        jwtWhitelistRepository.save(new JWTWhitelistToken(token, extractExpiration(token)));
         return token;
     }
 
