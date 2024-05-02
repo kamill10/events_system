@@ -20,6 +20,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import java.io.IOException;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -158,6 +160,48 @@ public class AuthenticationControllerIT {
                 .post(baseUrl + "/auth/verify_account/invalidToken")
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    public void failedLoginAttemptsTest() {
+        LoginDTO loginDTO = new LoginDTO("testAdmin", "invalidPassword");
+
+        given()
+                .contentType("application/json")
+                .body(loginDTO)
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        given()
+                .contentType("application/json")
+                .body(loginDTO)
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        given()
+                .contentType("application/json")
+                .body(loginDTO)
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        LoginDTO newLoginDto = new LoginDTO("testAdmin", "P@ssw0rd");
+
+        ValidatableResponse response = given()
+                .contentType("application/json")
+                .body(newLoginDto)
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body(
+                        containsString("User account is locked")
+                );
     }
 
 }

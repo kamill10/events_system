@@ -71,7 +71,7 @@ public class AccountService {
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
-        mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
+        //mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
         return accountMokRepository.saveAndFlush(account);
     }
 
@@ -98,7 +98,7 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
+                //mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
                 return accountMokRepository.saveAndFlush(account);
             }
         }
@@ -160,7 +160,7 @@ public class AccountService {
         // TODO: Uncomment this line when we will be sending real mails
         // TODO: Extract emailbody to properties file and use i18n
         accountToUpdate.setEmail(email);
-        mailService.sendEmail(accountToUpdate, "Email change", "Your email has been changed to: " + email);
+        //mailService.sendEmail(accountToUpdate, "Email change", "Your email has been changed to: " + email);
 
         return accountMokRepository.saveAndFlush(accountToUpdate);
     }
