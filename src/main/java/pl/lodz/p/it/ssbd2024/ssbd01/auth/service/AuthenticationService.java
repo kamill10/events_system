@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -38,6 +39,7 @@ public class AuthenticationService {
     private final AccountAuthRepository accountAuthRepository;
     private final AccountConfirmationRepository accountConfirmationRepository;
     private final JwtService jwtService;
+    private final JWTWhitelistRepository jwtWhitelistRepository;
     private final AuthenticationManager authenticationManager;
     private final Environment env;
 
@@ -129,6 +131,17 @@ public class AuthenticationService {
             account.setLockedUntil(null);
             accountMokRepository.save(account);
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Scheduled(fixedRate = 120000)
+    public void deleteExpiredJWTTokensFromWhitelist() {
+        jwtWhitelistRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public void logout(String token) {
+        jwtWhitelistRepository.deleteByToken(token);
     }
 
     public void updateFailedLoginAttempts(String username) {

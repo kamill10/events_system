@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
@@ -202,6 +203,17 @@ public class AuthenticationControllerIT {
                 .body(
                         containsString("User account is locked")
                 );
+    }
+
+    @Test
+    public void logoutTest() {
+        given()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                .when()
+                .post(baseUrl + "/auth/logout")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
     }
 
 }
