@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
+import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -26,6 +27,8 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @Testcontainers
@@ -88,7 +91,9 @@ public class AccountControllerIT {
                     "/usr/local/tomcat/webapps/ssbd01.war"
             )
             .waitingFor(Wait.forHttp("/ssbd01/api/accounts").forStatusCode(403))
-            .withReuse(true);
+            .withReuse(true)
+            .withFileSystemBind("transactions.log", "/usr/local/tomcat/transactions.log", BindMode.READ_WRITE)
+            .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE);
 
 
     @BeforeEach
@@ -145,6 +150,7 @@ public class AccountControllerIT {
 
     @Test
     public void testGetAllAccountsEndpoint() throws Exception {
+        assertNotNull(adminToken);
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
@@ -657,7 +663,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("newemail@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
@@ -667,13 +673,13 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body(
-                        containsString("newemail@ssbd.pl")
+                        containsString("ssbd01@proton.me")
                 );
     }
 
     @Test
     public void testUpdateAccountEmailToExistingEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("participant@ssbd.pl");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
@@ -686,7 +692,7 @@ public class AccountControllerIT {
 
     @Test
     public void testNonExistentAccountEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("newemail@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
@@ -699,7 +705,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountEmailEndpointAsParticipant() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("newemail@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
         given()
                 .header("Authorization", "Bearer " + participantToken)
                 .contentType("application/json")
@@ -712,7 +718,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountEmailEndpointAsManager() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("newemail@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
         given()
                 .header("Authorization", "Bearer " + managerToken)
                 .contentType("application/json")

@@ -45,7 +45,7 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
-        Account returnedAccount = accountMokRepository.save(account);
+        Account returnedAccount = accountMokRepository.saveAndFlush(account);
         passwordHistoryRepository.save(new PasswordHistory(account.getId(), account.getPassword()));
         return returnedAccount;
     }
@@ -71,7 +71,8 @@ public class AccountService {
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
-        return accountMokRepository.save(account);
+        //mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
+        return accountMokRepository.saveAndFlush(account);
     }
 
     private void canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
@@ -97,7 +98,8 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                return accountMokRepository.save(account);
+                //mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
+                return accountMokRepository.saveAndFlush(account);
             }
         }
         throw new RoleCanNotBeRemoved(ExceptionMessages.ACCOUNT_NOT_HAVE_THIS_ROLE);
@@ -108,7 +110,7 @@ public class AccountService {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setActive(status);
-        return accountMokRepository.save(account);
+        return accountMokRepository.saveAndFlush(account);
     }
 
 
@@ -158,9 +160,9 @@ public class AccountService {
         // TODO: Uncomment this line when we will be sending real mails
         // TODO: Extract emailbody to properties file and use i18n
         accountToUpdate.setEmail(email);
-//        mailService.sendEmail(accountToUpdate, "Email change", "Your email has been changed to: " + email);
+        //mailService.sendEmail(accountToUpdate, "Email change", "Your email has been changed to: " + email);
 
-        return accountMokRepository.save(accountToUpdate);
+        return accountMokRepository.saveAndFlush(accountToUpdate);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -178,7 +180,7 @@ public class AccountService {
         }
         accountToUpdate.setPassword(passwordEncoder.encode(password));
         passwordHistoryRepository.save(new PasswordHistory(accountToUpdate.getId(), passwordEncoder.encode(password)));
-        accountMokRepository.saveAndFlush(accountToUpdate);
+        accountMokRepository.save(accountToUpdate);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})

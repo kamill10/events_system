@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
+import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -82,7 +83,9 @@ public class AuthenticationControllerIT {
                     "/usr/local/tomcat/webapps/ssbd01.war"
             )
             .waitingFor(Wait.forHttp("/ssbd01/api/accounts").forStatusCode(403))
-            .withReuse(true);
+            .withReuse(true)
+            .withFileSystemBind("transactions.log", "/usr/local/tomcat/transactions.log", BindMode.READ_WRITE)
+            .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE);
 
 
     @BeforeEach

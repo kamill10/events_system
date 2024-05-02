@@ -95,7 +95,7 @@ public class AuthenticationService {
         var account = accountMokRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setVerified(true);
-        accountMokRepository.save(account);
+        accountMokRepository.saveAndFlush(account);
         accountConfirmationRepository.delete(accountConfirmation);
     }
 
