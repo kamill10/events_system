@@ -13,7 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.security.*;
 
 @Configuration
 @Import({AdminEntityManagerFactoryConfig.class, MokEntityManagerFactoryConfig.class, AuthEntityManagerFactoryConfig.class,
-        MowEntityManagerFactoryConfig.class, AtomikosConfig.class, MailConfig.class, ApplicationConfig.class, JwtAuthFilter.class, JwtConfig.class,
+        MowEntityManagerFactoryConfig.class, AtomikosConfig.class, MailConfig.class, ApplicationConfig.class, JwtAuthFilter.class,
         JwtService.class, SecurityConfig.class})
 public class RootConfig {
 
