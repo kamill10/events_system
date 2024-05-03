@@ -3,8 +3,10 @@ import { useAccountState } from "../context/AccountContext";
 import { AccountLoginType, AccountSingInType } from "../types/Account";
 import { api } from "../axios/axios.config";
 import { Pathnames } from "../router/Pathnames";
+import useNotification from "./useNotification";
 
 export const useAccount = () => {
+    const sendNotification = useNotification();
     const navigate = useNavigate();
     const { account, setAccount, token, setToken, isLogging, setIsLogging, isFetching, setIsFetching } = useAccountState();
 
@@ -16,8 +18,16 @@ export const useAccount = () => {
             const { data } = await api.logIn(formData);
             setToken(data);
             navigate(Pathnames.public.home);
+            sendNotification({
+                type: "success",
+                description: "Successfully logged in!"
+            });
         } catch (e) {
             console.error(e);
+            sendNotification({
+                type: "error",
+                description: "Failed to log in :("
+            });
             return e;
         } finally {
             setIsLogging(false);
@@ -27,8 +37,16 @@ export const useAccount = () => {
     const logOut = async () => {
         try {
             setIsFetching(true);
+            sendNotification({
+                type: "success",
+                description: "Successfully logged out!"
+            });
         } catch (e) {
             console.error(e);
+            sendNotification({
+                type: "error",
+                description: "Failed to log out :("
+            });
             return e;
         } finally {
             localStorage.removeItem("token");
@@ -45,21 +63,36 @@ export const useAccount = () => {
             const { data } = await api.singIn(formData);
             setToken(data);
             navigate(Pathnames.public.home);
+            sendNotification({
+                type: "success",
+                description: "Successfully signed in!"
+            });
         } catch (e) {
             console.error(e);
+            sendNotification({
+                description: "Signing in failed :(",    
+                type: "error"
+            });
             return e;
         } finally {
             setIsFetching(false);
-        }
+        } 
     }
 
     const confirmSignIn = async (key: string) => {
         try {
             setIsFetching(true);
             await api.confirmSignIn(key);
+            sendNotification({
+                type: "success",
+                description: "Account has been confirmed!!"
+            });
         } catch (e) {
-            console.log("amogusadasdasd")
             console.error(e);
+            sendNotification({
+                description: "Failed to confirm an account :(",    
+                type: "error"
+            });
             return e;
         } finally {
             setIsFetching(false);

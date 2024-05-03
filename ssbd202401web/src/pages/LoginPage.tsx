@@ -1,12 +1,10 @@
-import { Backdrop, Box, Button, CircularProgress, CssBaseline, Grid, Link, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, CssBaseline, Grid, Link, Paper, TextField, Typography } from "@mui/material";
 import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { AccountLoginType } from "../types/Account";
 import { useAccount } from "../hooks/useAccount";
-import useNotification from "../hooks/useNotification";
 
 export default function LoginPage() {
-  const { isLogging, logIn } = useAccount();
-  const sendNotification = useNotification();
+  const { logIn } = useAccount();
   const { handleSubmit, control } = useForm<AccountLoginType>({
     defaultValues: {
       username: "",
@@ -14,20 +12,8 @@ export default function LoginPage() {
     }
   });
 
-  const onSubmit: SubmitHandler<AccountLoginType> = async (data) => {
-    const err = await logIn(data);
-    if (err) {
-      console.log("gragas")
-      sendNotification({
-        type: "error",
-        description: "Failed to log in :("
-      });
-    } else {
-      sendNotification({
-        type: "info",
-        description: "Log in successful!"
-      });
-    }
+  const onSubmit: SubmitHandler<AccountLoginType> = (data) => {
+    logIn(data);
   };
 
   const onError: SubmitErrorHandler<AccountLoginType> = (errors) => {
@@ -129,12 +115,6 @@ export default function LoginPage() {
           </Box>
         </Box>
       </Grid>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isLogging}
-      >
-        <CircularProgress color="primary" />
-      </Backdrop>
     </Grid>
     </>
   );
