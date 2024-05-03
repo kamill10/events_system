@@ -18,12 +18,14 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountConfirmation;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ConfirmationReminder;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountConfirmationRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.ConfirmationReminderRepository;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -38,6 +40,7 @@ public class AuthenticationService {
     private final AccountMokRepository accountMokRepository;
     private final AccountAuthRepository accountAuthRepository;
     private final AccountConfirmationRepository accountConfirmationRepository;
+    private final ConfirmationReminderRepository confirmationReminderRepository;
     private final JwtService jwtService;
     private final JWTWhitelistRepository jwtWhitelistRepository;
     private final AuthenticationManager authenticationManager;
@@ -55,14 +58,16 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void registerUser(Account account) {
-        accountMokRepository.saveAndFlush(account);
+        var savedAccount =  accountMokRepository.saveAndFlush(account);
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expirationHours = Integer.parseInt(Objects.requireNonNull(env.getProperty("confirmation.token.expiration.hours")));
         var expirationDate = calculateExpirationDate(expirationHours);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
         // TODO: Send mail to user with confirmation link
-
+        var confirmationReminder = new ConfirmationReminder(savedAccount,savedAccount.getCreatedAt()
+                .plusHours(expirationHours / 2).plusMinutes(expirationHours % 2 * 30));
         accountConfirmationRepository.saveAndFlush(newAccountConfirmation);
+        confirmationReminderRepository.saveAndFlush(confirmationReminder);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
@@ -99,6 +104,7 @@ public class AuthenticationService {
         account.setVerified(true);
         accountMokRepository.saveAndFlush(account);
         accountConfirmationRepository.delete(accountConfirmation);
+        confirmationReminderRepository.deleteByAccount(account);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -137,6 +143,15 @@ public class AuthenticationService {
     @Scheduled(fixedRate = 120000)
     public void deleteExpiredJWTTokensFromWhitelist() {
         jwtWhitelistRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Scheduled(fixedRate = 120000)
+    public void sendAccountConfirmationReminder() {
+        confirmationReminderRepository.findByReminderDateBefore(LocalDateTime.now()).forEach(confirmationReminder -> {
+            // TODO: Send mail to user with confirmation link
+           confirmationReminderRepository.deleteById(confirmationReminder.getId());
+        });
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
