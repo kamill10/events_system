@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.auth.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +31,16 @@ public class AuthenticationController {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request));
     }
 
-    @PostMapping("verify-account/{token}")
+    @PostMapping("/verify-account/{token}")
     public ResponseEntity<?> verifyAccount(@PathVariable String token)
             throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException {
         authenticationService.verifyAccount(token);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        authenticationService.logout(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
