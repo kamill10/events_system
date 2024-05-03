@@ -16,10 +16,6 @@ export const useAccount = () => {
         try {
             setIsLogging(true);
             const { data } = await api.logIn(formData);
-            sendNotification({
-                type: "success",
-                description: "Successfully logged in!"
-            });
             setToken(data);
             navigate(Pathnames.public.home);
             sendNotification({
@@ -41,8 +37,16 @@ export const useAccount = () => {
     const logOut = async () => {
         try {
             setIsFetching(true);
+            sendNotification({
+                type: "success",
+                description: "Successfully logged out!"
+            });
         } catch (e) {
             console.error(e);
+            sendNotification({
+                type: "error",
+                description: "Failed to log out :("
+            });
             return e;
         } finally {
             localStorage.removeItem("token");
@@ -59,6 +63,10 @@ export const useAccount = () => {
             const { data } = await api.singIn(formData);
             setToken(data);
             navigate(Pathnames.public.home);
+            sendNotification({
+                type: "success",
+                description: "Successfully signed in!"
+            });
         } catch (e) {
             console.error(e);
             sendNotification({
@@ -75,9 +83,16 @@ export const useAccount = () => {
         try {
             setIsFetching(true);
             await api.confirmSignIn(key);
+            sendNotification({
+                type: "success",
+                description: "Account has been confirmed!!"
+            });
         } catch (e) {
-            console.log("amogusadasdasd")
             console.error(e);
+            sendNotification({
+                description: "Failed to confirm an account :(",    
+                type: "error"
+            });
             return e;
         } finally {
             setIsFetching(false);
