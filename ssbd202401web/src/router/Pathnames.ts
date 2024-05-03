@@ -13,7 +13,7 @@ export const Pathnames = {
         event: "/events/:id",
         profile: "/profile",
         myEvents: "/profile/events",
-        logout: "/logout"
+        logout: "/logout",
     },
     manager: {
         home: "/",

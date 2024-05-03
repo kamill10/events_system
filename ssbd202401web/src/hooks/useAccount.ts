@@ -3,8 +3,10 @@ import { useAccountState } from "../context/AccountContext";
 import { AccountLoginType, AccountSingInType } from "../types/Account";
 import { api } from "../axios/axios.config";
 import { Pathnames } from "../router/Pathnames";
+import useNotification from "./useNotification";
 
 export const useAccount = () => {
+    const sendNotification = useNotification();
     const navigate = useNavigate();
     const { account, setAccount, token, setToken, isLogging, setIsLogging, isFetching, setIsFetching } = useAccountState();
 
@@ -14,10 +16,22 @@ export const useAccount = () => {
         try {
             setIsLogging(true);
             const { data } = await api.logIn(formData);
+            sendNotification({
+                type: "success",
+                description: "Successfully logged in!"
+            });
             setToken(data);
             navigate(Pathnames.public.home);
+            sendNotification({
+                type: "success",
+                description: "Successfully logged in!"
+            });
         } catch (e) {
             console.error(e);
+            sendNotification({
+                type: "error",
+                description: "Failed to log in :("
+            });
             return e;
         } finally {
             setIsLogging(false);
@@ -47,10 +61,14 @@ export const useAccount = () => {
             navigate(Pathnames.public.home);
         } catch (e) {
             console.error(e);
+            sendNotification({
+                description: "Signing in failed :(",    
+                type: "error"
+            });
             return e;
         } finally {
             setIsFetching(false);
-        }
+        } 
     }
 
     const confirmSignIn = async (key: string) => {

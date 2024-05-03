@@ -16,6 +16,8 @@ const useNotification = () => {
         </Fragment>
     );
     useEffect(()=>{
+        console.log(notification);
+        console.log("gragas");
         if(notification){
             enqueueSnackbar(notification.description, {
                 variant: notification.type,

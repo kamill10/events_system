@@ -1,11 +1,11 @@
-import { Backdrop, Box, CircularProgress, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount";
 
 export default function ConfirmSignInPage() {
     const [searchParams] = useSearchParams();
-    const { isFetching, confirmSignIn } = useAccount();
+    const { confirmSignIn } = useAccount();
     const [failed, setFailed] = useState(false);
 
     useEffect(() => {
@@ -27,17 +27,6 @@ export default function ConfirmSignInPage() {
 
         foo();
     }, []);
-
-    if (isFetching && !failed) {
-        return (
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={true}
-            >
-                    <CircularProgress color="primary" />
-            </Backdrop>
-        )
-    }
 
     if (failed) {
         return (

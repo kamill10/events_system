@@ -1,16 +1,13 @@
-import { Backdrop, Box, Button, CircularProgress, MenuItem, TextField, Typography } from "@mui/material";
+import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { AccountSingInType } from "../types/Account";
 import { GenderEnum } from "../types/enums/Gender.enum";
 import { signInValidationSchema } from "../validation/schemas";
-import { yupResolver } from "@hookform/resolvers/yup"
-import useNotification from "../hooks/useNotification";
-import { useNavigate } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export default function SigninPage() {
-    const { isFetching, signIn } = useAccount();
-    const navigate = useNavigate();
+    const { signIn } = useAccount();
     const { handleSubmit, control, formState: { errors }, trigger } = useForm<AccountSingInType>({
         defaultValues: {
             username: "",
@@ -22,23 +19,9 @@ export default function SigninPage() {
         },
         resolver: yupResolver(signInValidationSchema)
     });
-    const sendNotification = useNotification();
 
     const onSubmit: SubmitHandler<AccountSingInType> = async (data) => {
-        console.log(data);
-        const err = await signIn(data);
-        if (err) {
-            sendNotification({
-                description: "Signing in failed :(",
-                type: "error"
-            });
-        } else {
-            sendNotification({
-                description: "Siging in successful!",
-                type: "info"
-            });
-            navigate("/login")
-        }
+        await signIn(data);
     }
 
     const onError: SubmitErrorHandler<AccountSingInType> = (errors) => {
@@ -249,12 +232,6 @@ export default function SigninPage() {
             >
               Sign in
             </Button>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={isFetching}
-            >
-                    <CircularProgress color="primary" />
-            </Backdrop>
         </Box>
     );
 }

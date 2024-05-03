@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom"
 import { useAccount } from "../hooks/useAccount"
-import { Backdrop, CircularProgress } from "@mui/material";
 import { useEffect } from "react";
 import useNotification from "../hooks/useNotification";
 
@@ -28,12 +27,6 @@ export default function Logout() {
         logout();
     }, []);
 
-    return (
-        <Backdrop
-            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={true}
-        >
-            <CircularProgress color="inherit" />
-        </Backdrop> 
-    )
+    return <>
+    </>
 }
