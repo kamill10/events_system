@@ -13,10 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.security.SecureRandom;
@@ -32,6 +29,7 @@ public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
     private final PasswordResetRepository passwordResetRepository;
+    private final ConfirmationReminderRepository confirmationReminderRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
 
