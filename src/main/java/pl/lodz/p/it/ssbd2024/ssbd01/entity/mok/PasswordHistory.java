@@ -16,10 +16,10 @@ import java.util.UUID;
 @Table(name = "password_history")
 public class PasswordHistory extends AbstractEntity {
 
-    @Column(name = "account_id", columnDefinition = "UUID", updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false,updatable = false)
     @NotNull
-    @Setter(AccessLevel.NONE)
-    UUID accountId;
+    Account account;
 
 
     @ToString.Exclude
@@ -28,9 +28,9 @@ public class PasswordHistory extends AbstractEntity {
     @NotNull
     String password;
 
-    public PasswordHistory(UUID userId, String password) {
-        this.accountId = userId;
-        this.password = password;
+    public PasswordHistory(Account account) {
+        this.account = account;
+        this.password = account.getPassword();
     }
 
     @Override

@@ -12,5 +12,7 @@ import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
 public interface PasswordHistoryRepository extends JpaRepository<PasswordHistory, UUID> {
-     List<PasswordHistory> findPasswordHistoryByAccountId(UUID accountId);
+     List<PasswordHistory> findPasswordHistoryByAccount(Account account);
+
+     void deletePasswordHistoriesByAccount(Account account);
 }
