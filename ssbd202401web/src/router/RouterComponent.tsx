@@ -6,7 +6,7 @@ import { ThemeProvider } from "@mui/material";
 import { useAccount } from "../hooks/useAccount.ts";
 import ParticipantLayout from "../layouts/ParticipantLayout.tsx";
 import { Pathnames } from "./Pathnames.ts";
-import ConfirmSignInPage from "../pages/ConfirmSignInPage.tsx";
+import ConfirmSignInPage from "../pages/VerifyAccount.tsx";
 
 export default function RouterComponent() {
     const { isAuthenticated } = useAccount();
@@ -20,7 +20,7 @@ export default function RouterComponent() {
                                     </PublicLayout>
                                 </ThemeProvider>}>
                 </Route>
-            })}
+            })} 
             { isAuthenticated && ParticipantRoutes.map((route, key) => {
                 return <Route key={key} path={route.pathname}
                             element={
@@ -32,7 +32,7 @@ export default function RouterComponent() {
 
                 </Route>
             })}
-            <Route path={Pathnames.public.confirmSignIn} element={
+            <Route path={Pathnames.public.verifyAccount} element={
                 <ThemeProvider theme={PublicTheme}>
                     <ConfirmSignInPage></ConfirmSignInPage>
                 </ThemeProvider>

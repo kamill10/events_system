@@ -91,5 +91,5 @@ export const api = {
     getAccounts: (): ApiResponseType<Array<AccountType>> => apiWithAuthToken.get("/accounts"),
     logIn: (formData: AccountLoginType): ApiResponseType<string> => apiForAnon.post("/auth/authenticate", formData),
     singIn: (formData: AccountSingInType): ApiResponseType<string> => apiForAnon.post("/auth/register", formData),
-    confirmSignIn: (key: string): ApiResponseType<void> => apiForAnon.post(`/auth/confirm-sign-in/${key}`)
+    verifyAccount: (key: string): ApiResponseType<void> => apiForAnon.post(`/auth/verify-account/${key}`)
 }

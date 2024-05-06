@@ -65,7 +65,7 @@ export const useAccount = () => {
             navigate(Pathnames.public.home);
             sendNotification({
                 type: "success",
-                description: "Successfully signed in!"
+                description: "Successfully signed in! Check your e-mail box and verify your account!"
             });
         } catch (e) {
             console.error(e);
@@ -79,10 +79,10 @@ export const useAccount = () => {
         } 
     }
 
-    const confirmSignIn = async (key: string) => {
+    const verifyAccount = async (key: string) => {
         try {
             setIsFetching(true);
-            await api.confirmSignIn(key);
+            await api.verifyAccount(key);
             sendNotification({
                 type: "success",
                 description: "Account has been confirmed!!"
@@ -107,6 +107,6 @@ export const useAccount = () => {
         logIn,
         logOut,
         signIn,
-        confirmSignIn
+        verifyAccount
     }
 }
