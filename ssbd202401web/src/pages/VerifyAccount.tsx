@@ -3,29 +3,25 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount";
 
-export default function ConfirmSignInPage() {
+export default function VerifyAccount() {
     const [searchParams] = useSearchParams();
-    const { confirmSignIn } = useAccount();
+    const { verifyAccount } = useAccount();
     const [failed, setFailed] = useState(false);
 
     useEffect(() => {
-        console.log(searchParams.get("key"));
-    }, [searchParams]);
-
-    useEffect(() => {
-        async function foo() {
-            const key = searchParams.get("key");
+        async function verify() {
+            const key = searchParams.get("token");
             if (!key) {
-                alert("No parameter of name key!"); 
+                setFailed(true);
             } else {
-                const err = await confirmSignIn(key);
+                const err = await verifyAccount(key);
                 if (err) {
                     setFailed(true);
                 }
             }
         }
 
-        foo();
+        verify();
     }, []);
 
     if (failed) {
@@ -50,7 +46,7 @@ export default function ConfirmSignInPage() {
                         Something happened :((
                     </Typography>
                     <Typography variant="h6" textAlign={"center"}>
-                        There was an error while activating your account. If you think this is a mistake, contact support.
+                        There was an error while verifying your account. If you think this is a mistake, contact support.
                     </Typography>
                     <Typography variant="h6" textAlign={"center"}>
                         <Link to={"/"}>Go to home page</Link>
