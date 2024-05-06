@@ -71,7 +71,7 @@ public class AuthenticationService {
                 .plusHours(expirationHours / 2).plusMinutes(expirationHours % 2 * 30));
         accountConfirmationRepository.saveAndFlush(newAccountConfirmation);
         confirmationReminderRepository.saveAndFlush(confirmationReminder);
-        passwordHistoryRepository.save(new PasswordHistory(savedAccount));
+        passwordHistoryRepository.saveAndFlush(new PasswordHistory(savedAccount));
 
     }
 

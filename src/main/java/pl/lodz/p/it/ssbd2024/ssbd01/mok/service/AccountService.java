@@ -43,7 +43,7 @@ public class AccountService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
         Account returnedAccount = accountMokRepository.saveAndFlush(account);
-        passwordHistoryRepository.save(new PasswordHistory(returnedAccount));
+        passwordHistoryRepository.saveAndFlush(new PasswordHistory(returnedAccount));
         return returnedAccount;
     }
 
