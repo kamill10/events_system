@@ -29,7 +29,6 @@ public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
     private final PasswordResetRepository passwordResetRepository;
-    private final ConfirmationReminderRepository confirmationReminderRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
 
@@ -44,7 +43,7 @@ public class AccountService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
         Account returnedAccount = accountMokRepository.saveAndFlush(account);
-        passwordHistoryRepository.save(new PasswordHistory(account.getId(), account.getPassword()));
+        passwordHistoryRepository.saveAndFlush(new PasswordHistory(returnedAccount));
         return returnedAccount;
     }
 
@@ -177,7 +176,7 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(password));
-        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate.getId(), passwordEncoder.encode(password)));
+        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate));
         accountMokRepository.save(accountToUpdate);
     }
 
@@ -211,17 +210,13 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
-        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate.getId(), passwordEncoder.encode(newPassword)));
+        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate));
         accountMokRepository.save(accountToUpdate);
     }
 
     private boolean isPasswordInHistory(Account account, String password) {
-        for (PasswordHistory passwordHistory : passwordHistoryRepository.findPasswordHistoryByAccountId(account.getId())) {
-            if (passwordEncoder.matches(password, passwordHistory.getPassword())) {
-                return true;
-            }
-        }
-        return false;
+        return passwordHistoryRepository.findPasswordHistoryByAccount(account)
+                .stream().anyMatch(passwordHistory -> passwordEncoder.matches(password, passwordHistory.getPassword()));
     }
 }
 

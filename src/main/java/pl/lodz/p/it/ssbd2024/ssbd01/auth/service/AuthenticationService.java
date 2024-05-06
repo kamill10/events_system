@@ -19,6 +19,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountConfirmation;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ConfirmationReminder;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
@@ -26,6 +27,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountConfirmationRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.ConfirmationReminderRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -45,6 +47,7 @@ public class AuthenticationService {
     private final JWTWhitelistRepository jwtWhitelistRepository;
     private final AuthenticationManager authenticationManager;
     private final Environment env;
+    private final PasswordHistoryRepository passwordHistoryRepository;
 
     @Value("${auth.attempts:3}")
     private int maxFailedLoginAttempts;
@@ -68,6 +71,8 @@ public class AuthenticationService {
                 .plusHours(expirationHours / 2).plusMinutes(expirationHours % 2 * 30));
         accountConfirmationRepository.saveAndFlush(newAccountConfirmation);
         confirmationReminderRepository.saveAndFlush(confirmationReminder);
+        passwordHistoryRepository.saveAndFlush(new PasswordHistory(savedAccount));
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
@@ -120,6 +125,7 @@ public class AuthenticationService {
             if (optionalAccount.isPresent()) {
                 Account account = optionalAccount.get();
                 accountMokRepository.delete(account);
+                passwordHistoryRepository.deletePasswordHistoriesByAccount(account);
             }
         }
     }
