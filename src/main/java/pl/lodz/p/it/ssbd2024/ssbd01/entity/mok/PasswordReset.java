@@ -1,8 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entity.mok;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -27,19 +25,24 @@ public class PasswordReset extends AbstractEntity {
     @NotNull
     private String token;
 
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false,updatable = false)
+    @NotNull
+    Account account;
+
     @Column(nullable = false)
     @NotNull
-    @Email
-    private String email;
+    private Boolean used;
 
     @Column(nullable = false)
     @NotNull
     @Future
     private LocalDateTime expirationDate;
 
-    public PasswordReset(String token, String email, LocalDateTime expirationDate) {
+    public PasswordReset(String token, Account account, LocalDateTime expirationDate) {
         this.token = token;
-        this.email = email;
+        this.account = account;
+        this.used = false;
         this.expirationDate = expirationDate;
     }
 

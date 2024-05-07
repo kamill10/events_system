@@ -13,7 +13,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.security.SecureRandom;
@@ -183,33 +186,40 @@ public class AccountService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void resetPassword(String email) {
         Optional<Account> accountToUpdate = accountMokRepository.findByEmail(email);
-        if (accountToUpdate.isEmpty()) {
-            return;
-        }
-        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-        var expirationDate = LocalDateTime.now().plusMinutes(30);
-        var newResetIssue = new PasswordReset(randString, email, expirationDate);
-        // TODO: Send mail to user with reset link
+        if (accountToUpdate.isPresent()) {
+            var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+            var expirationDate = LocalDateTime.now().plusMinutes(30);
+            var newResetIssue = new PasswordReset(randString, accountToUpdate.get(), expirationDate);
+            // TODO: Send mail to user with reset link
 
-        passwordResetRepository.save(newResetIssue);
+            passwordResetRepository.save(newResetIssue);
+        }
     }
+
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void resetPasswordWithToken(String token, String newPassword)
-            throws AccountNotFoundException, PasswordTokenExpiredException, ThisPasswordAlreadyWasSetInHistory {
+            throws AccountNotFoundException, PasswordTokenExpiredException, ThisPasswordAlreadyWasSetInHistory, PasswordResetTokenUsedException {
         Optional<PasswordReset> passwordReset = passwordResetRepository.findByToken(token);
+
         if (passwordReset.isEmpty()) {
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+        }
+        if (passwordReset.get().getUsed()) {
+            throw new PasswordResetTokenUsedException(ExceptionMessages.PASS_TOKEN_USED);
         }
         if (passwordReset.get().getExpirationDate().isBefore(LocalDateTime.now())) {
             throw new PasswordTokenExpiredException(ExceptionMessages.PASS_TOKEN_EXPIRED);
         }
-        Account accountToUpdate = accountMokRepository.findByEmail(passwordReset.get().getEmail())
+
+        Account accountToUpdate = accountMokRepository.findByEmail(passwordReset.get().getAccount().getEmail())
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (isPasswordInHistory(accountToUpdate, newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
+        passwordResetRepository.save(passwordReset.get());
+        passwordReset.get().setUsed(true);
         passwordHistoryRepository.save(new PasswordHistory(accountToUpdate));
         accountMokRepository.save(accountToUpdate);
     }
