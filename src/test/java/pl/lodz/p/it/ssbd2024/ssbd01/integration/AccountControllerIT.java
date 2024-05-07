@@ -19,7 +19,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -28,7 +27,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @Testcontainers
@@ -679,7 +677,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountEmailToExistingEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("participant@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("participant202401@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")

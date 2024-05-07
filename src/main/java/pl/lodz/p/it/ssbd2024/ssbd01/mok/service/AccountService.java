@@ -42,6 +42,8 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
+        String mailContent = "Your account has been created. Your username is: " + account.getUsername();
+        mailService.sendEmail(account, "Account created", mailContent);
         Account returnedAccount = accountMokRepository.saveAndFlush(account);
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(returnedAccount));
         return returnedAccount;
@@ -68,7 +70,7 @@ public class AccountService {
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
-        //mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
+//        mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
         return accountMokRepository.saveAndFlush(account);
     }
 
@@ -95,7 +97,7 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                //mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
+                mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
                 return accountMokRepository.saveAndFlush(account);
             }
         }
