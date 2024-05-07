@@ -13,7 +13,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.security.SecureRandom;
@@ -42,8 +45,6 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
-        String mailContent = "Your account has been created. Your username is: " + account.getUsername();
-        mailService.sendEmail(account, "Account created", mailContent);
         Account returnedAccount = accountMokRepository.saveAndFlush(account);
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(returnedAccount));
         return returnedAccount;
@@ -97,7 +98,7 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
+                mailService.sendEmail(account, "mail.role.removed.subject", "mail.role.removed.body", new Object[]{roleName.name()});
                 return accountMokRepository.saveAndFlush(account);
             }
         }

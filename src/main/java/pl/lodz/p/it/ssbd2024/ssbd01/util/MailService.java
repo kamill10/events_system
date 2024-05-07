@@ -34,11 +34,13 @@ public class MailService {
         }
     }
 
-    public void sendEmail(Account mailTo, String mailSubject, String mailContent) {
+    public void sendEmail(Account mailTo, String mailSubject, String mailContent, Object[] contentArgs) {
         Locale locale = Locale.forLanguageTag(mailTo.getLanguage());
+        String subject = messageSource.getMessage(mailSubject, null, locale);
+        String mailBody = messageSource.getMessage(mailContent, contentArgs, locale);
         String name = messageSource.getMessage("mail.hello", new Object[]{mailTo.getFirstName()}, locale);
-        String mailText = "<html> <body> <h2> " + name + "</h2>" +  "<p> "  + mailContent + " </p> </body> </html>";
-        Mail mail = new Mail(mailTo.getEmail(), mailSubject, mailText);
+        String mailText = "<html> <body> <h2> " + name + "</h2>" +  "<p> "  + mailBody + " </p> </body> </html>";
+        Mail mail = new Mail(mailTo.getEmail(), subject, mailText);
 
         sendEmail(mail);
     }

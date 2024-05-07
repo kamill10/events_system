@@ -6,7 +6,7 @@ INSERT INTO public.account (id,username,password,active,verified, nonlocked,fail
 INSERT INTO public.account_role (account_id,roles_id) VALUES ('8b25c94f-f10f-4285-8eb2-39ee1c4002f1','550e8400-e29b-41d4-a716-446655440000');
 INSERT INTO public.password_history(version,account_id,id,password) VALUES (0,'8b25c94f-f10f-4285-8eb2-39ee1c4002f1','2f3e920d-8c7a-4a15-a4d7-1ae28e5930b6','9a36797f-08e6-4e8b-b0c3-88b8d279a8c1','$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y');
 
-INSERT INTO public.account (id,username,password,active,verified,nonlocked,failedloginattempts,email,gender,firstname,lastname,version,created_at,action_type,language) VALUES ('a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6','testParticipant','$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y',true,true,true,0,'participant202401@proton.me',1,'Test','Participant',0,'2021-01-01 00:00:00','CREATE','pl-PL');
+INSERT INTO public.account (id,username,password,active,verified,nonlocked,failedloginattempts,email,gender,firstname,lastname,version,created_at,action_type,language) VALUES ('a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6','testParticipant','$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y',true,true,true,0,'participant202401@proton.me',1,'Test','Participant',0,'2021-01-01 00:00:00','CREATE','en-US');
 INSERT INTO public.account_role (account_id,roles_id) VALUES ('a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6','cd8ab1c1-2431-4e28-88b5-fdd54de3d92a');
 INSERT INTO public.password_history(version,account_id,id,password) VALUES (0,'a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6','67f7f35b-03d9-45df-b2d6-81cb6d63113f','$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y');
 
