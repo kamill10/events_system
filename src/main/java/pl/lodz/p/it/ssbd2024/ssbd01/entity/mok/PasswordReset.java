@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entity.mok;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
