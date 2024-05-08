@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.ThisPasswordAlreadyWasSetInHistory;
@@ -27,22 +30,21 @@ public class MeController {
 
 
     @PatchMapping("/email")
-    public ResponseEntity<GetAccountDTO> updateMyEmail(@RequestHeader(HttpHeaders.AUTHORIZATION) String token, @RequestBody UpdateEmailDTO email)
+    public ResponseEntity<GetAccountDTO> updateMyEmail(@RequestBody UpdateEmailDTO email)
             throws AccountNotFoundException, EmailAlreadyExistsException {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(accountDTOConverter
-                        .toAccountDto(accountService
-                                .updateAccountEmail(jwtService.extractIdFromHeader(token),
-                                        email.email())));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = (Account) authentication.getPrincipal();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(accountDTOConverter.toAccountDto(accountService.updateAccountEmail(account.getId(), email.email())));
     }
 
 
     @PatchMapping("/password")
-    public ResponseEntity<GetAccountDTO> updateMyAccountPassword(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                                 @RequestBody UpdatePasswordDTO password)
+    public ResponseEntity<GetAccountDTO> updateMyAccountPassword(@RequestBody UpdatePasswordDTO password)
             throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
-        accountService.updatePassword(jwtService.extractIdFromHeader(token), password.value());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = (Account) authentication.getPrincipal();
+        accountService.updatePassword(account.getId(), password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -50,10 +52,9 @@ public class MeController {
     public ResponseEntity<GetAccountDTO> updateMyData(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
                                                       @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws AccountNotFoundException {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(accountDTOConverter
-                        .toAccountDto(accountService
-                                .updateAccountData(jwtService.extractIdFromHeader(token), accountDTOConverter.toAccount(updateAccountDataDTO))));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = (Account) authentication.getPrincipal();
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountDto(
+                accountService.updateAccountData(account.getId(), accountDTOConverter.toAccount(updateAccountDataDTO))));
     }
 }
