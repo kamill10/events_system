@@ -121,8 +121,8 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account updateAccountData(UUID id, Account account) throws AccountNotFoundException {
-        Account accountToUpdate = accountMokRepository.findById(id)
+    public Account updateAccountData(String username, Account account) throws AccountNotFoundException {
+        Account accountToUpdate = accountMokRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setFirstName(account.getFirstName());
         accountToUpdate.setLastName(account.getLastName());
@@ -151,11 +151,11 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account updateAccountEmail(UUID id, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
+    public Account updateAccountEmail(String username, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
         if (accountMokRepository.findByEmail(email).isPresent()) {
             throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
-        Account accountToUpdate = accountMokRepository.findById(id)
+        Account accountToUpdate = accountMokRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setEmail(email);
         mailService.sendEmail(accountToUpdate, "mail.email.changed.by.admin.subject", "mail.email.changed.by.admin.body",
@@ -171,8 +171,8 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updatePassword(UUID id, String password) throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
-        Account accountToUpdate = accountMokRepository.findById(id)
+    public void updatePassword(String username, String password) throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
+        Account accountToUpdate = accountMokRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (isPasswordInHistory(accountToUpdate, password)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);

@@ -90,11 +90,11 @@ public class AccountController {
     }
 
 
-    @PutMapping("/{id}/user-data")
-    public ResponseEntity<GetAccountDTO> updateAccountData(@PathVariable UUID id, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+    @PutMapping("/{username}/user-data")
+    public ResponseEntity<GetAccountDTO> updateAccountData(@PathVariable String username, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws NotFoundException {
         GetAccountDTO updatedAccount =
-                accountDTOConverter.toAccountDto(accountService.updateAccountData(id, accountDTOConverter.toAccount(updateAccountDataDTO)));
+                accountDTOConverter.toAccountDto(accountService.updateAccountData(username, accountDTOConverter.toAccount(updateAccountDataDTO)));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -116,18 +116,18 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(managers);
     }
 
-    @PatchMapping("/{id}/email")
-    public ResponseEntity<GetAccountDTO> updateAccountEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
+    @PatchMapping("/{username}/email")
+    public ResponseEntity<GetAccountDTO> updateAccountEmail(@PathVariable String username, @RequestBody UpdateEmailDTO email)
             throws AccountNotFoundException, EmailAlreadyExistsException {
         GetAccountDTO updatedAccount = accountDTOConverter
-                .toAccountDto(accountService.updateAccountEmail(id, email.email()));
+                .toAccountDto(accountService.updateAccountEmail(username, email.email()));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
-    @PatchMapping("/{id}/password")
-    public ResponseEntity<?> updateAccountPassword(@PathVariable UUID id, @RequestBody UpdatePasswordDTO password)
+    @PatchMapping("/{username}/password")
+    public ResponseEntity<?> updateAccountPassword(@PathVariable String username, @RequestBody UpdatePasswordDTO password)
             throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
-        accountService.updatePassword(id, password.value());
+        accountService.updatePassword(username, password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
