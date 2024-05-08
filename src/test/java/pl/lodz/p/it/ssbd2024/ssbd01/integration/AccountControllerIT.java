@@ -635,6 +635,7 @@ public class AccountControllerIT {
                 .body(
                         not(containsString("testAdmin")),
                         containsString("testManager"),
+                        containsString("ENGLISH"),
                         not(containsString("testParticipant"))
                 );
     }
@@ -661,7 +662,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("242560@edu.p.lodz.pl");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
@@ -671,7 +672,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body(
-                        containsString("ssbd01@proton.me")
+                        containsString("242560@edu.p.lodz.pl")
                 );
     }
 
@@ -805,7 +806,7 @@ public class AccountControllerIT {
 
     @Test
     public void testResetAccountPasswordEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("manager@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
