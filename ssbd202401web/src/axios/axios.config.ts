@@ -94,5 +94,5 @@ export const api = {
     singIn: (formData: AccountSingInType): ApiResponseType<string> => apiForAnon.post("/auth/register", formData),
     verifyAccount: (key: string): ApiResponseType<void> => apiForAnon.post(`/auth/verify-account/${key}`),
     updateMyPersonalData: (data: PersonalDataType): ApiResponseType<void> => apiWithEtag.put("/me/user-data", data),
-    getMyAccount: (): ApiResponseType<AccountType> => apiWithAuthToken.get("/me")
+    getMyAccount: (): ApiResponseType<AccountType> => apiWithEtag.get("/me")
 }
