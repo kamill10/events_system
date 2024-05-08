@@ -500,9 +500,19 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountDataEndpoint() throws Exception {
+        ValidatableResponse response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
+
         UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .contentType("application/json")
                 .body(objectMapper.writeValueAsString(updateAccountDataDTO))
                 .when()
@@ -520,6 +530,7 @@ public class AccountControllerIT {
         UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", UUID.randomUUID().toString())
                 .contentType("application/json")
                 .body(objectMapper.writeValueAsString(updateAccountDataDTO))
                 .when()
@@ -817,18 +828,18 @@ public class AccountControllerIT {
                 .statusCode(HttpStatus.OK.value());
     }
 
-//    @Test
-//    public void testResetAccountPasswordTokenEndpoint() throws Exception {
-//        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
-//        given()
-//                .header("Authorization", "Bearer " + adminToken)
-//                .contentType("application/json")
-//                .body(updatePasswordDTO)
-//                .when()
-//                .post(baseUrl + "/accounts/reset-password/token/2137")
-//                .then()
-//                .statusCode(HttpStatus.NOT_FOUND.value());
-//    }
+    @Test
+    public void testResetAccountPasswordTokenEndpoint() throws Exception {
+        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .body(updatePasswordDTO)
+                .when()
+                .post(baseUrl + "/accounts/reset-password/token/2137")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
 
 
 }

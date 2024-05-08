@@ -6,7 +6,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.ejb.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,8 +20,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Function;
 

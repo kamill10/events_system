@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 
 @Configuration
@@ -41,7 +42,5 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-
 
 }

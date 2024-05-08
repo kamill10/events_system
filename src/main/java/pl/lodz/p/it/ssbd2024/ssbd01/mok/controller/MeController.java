@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.ThisPasswordAlreadyWasSetInHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 
 @RestController
@@ -31,8 +32,10 @@ public class MeController {
     public ResponseEntity<GetAccountDTO> getMyAccount() throws NotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        GetAccountDTO accountDto = accountDTOConverter.toAccountDto(accountService.getAccountById(account.getId()));
-        return ResponseEntity.status(HttpStatus.OK).body(accountDto);
+        Account accountToReturn = accountService.getAccountById(account.getId());
+        String eTag = ETagBuilder.buildETag(accountToReturn.getVersion().toString());
+        GetAccountDTO accountDto = accountDTOConverter.toAccountDto(accountToReturn);
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
     }
 
 
@@ -56,12 +59,11 @@ public class MeController {
     }
 
     @PutMapping("/user-data")
-    public ResponseEntity<GetAccountDTO> updateMyData(@RequestHeader(HttpHeaders.AUTHORIZATION) String token,
-                                                      @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+    public ResponseEntity<GetAccountDTO> updateMyData(@RequestHeader("If-Match") String eTag, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws AccountNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountDto(
-                accountService.updateAccountData(account.getId(), accountDTOConverter.toAccount(updateAccountDataDTO))));
+                accountService.updateAccountData(account.getId(), accountDTOConverter.toAccount(updateAccountDataDTO), eTag)));
     }
 }

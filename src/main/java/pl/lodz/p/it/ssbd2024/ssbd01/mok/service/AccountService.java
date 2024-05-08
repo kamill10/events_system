@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.security.SecureRandom;
@@ -98,7 +100,7 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                mailService.sendEmail(account, "mail.role.removed.subject", "mail.role.removed.body", new Object[]{roleName.name()});
+                mailService.sendEmail(account, "mail.role.removed.subject", "mail.role.removed.body", new Object[] {roleName.name()});
                 return accountMokRepository.saveAndFlush(account);
             }
         }
@@ -121,9 +123,12 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account updateAccountData(UUID id, Account account) throws AccountNotFoundException {
+    public Account updateAccountData(UUID id, Account account, String eTag) throws AccountNotFoundException {
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        if (!ETagBuilder.isETagValid(eTag, String.valueOf(accountToUpdate.getVersion()))) {
+            throw new OptimisticLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
         accountToUpdate.setFirstName(account.getFirstName());
         accountToUpdate.setLastName(account.getLastName());
         accountToUpdate.setGender(account.getGender());
@@ -159,7 +164,7 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setEmail(email);
         mailService.sendEmail(accountToUpdate, "mail.email.changed.by.admin.subject", "mail.email.changed.by.admin.body",
-                new Object[]{email, "tu bedzie link do potwierdzenia"});
+                new Object[] {email, "tu bedzie link do potwierdzenia"});
 
         return accountMokRepository.saveAndFlush(accountToUpdate);
     }
@@ -181,20 +186,21 @@ public class AccountService {
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
         mailService.sendEmail(accountToUpdate, "mail.password.changed.by.admin.subject",
-                "mail.password.changed.by.admin.body", new Object[]{password, "tu_bedzie_link_do_potwierdzenia"});
+                "mail.password.changed.by.admin.body", new Object[] {password, "tu_bedzie_link_do_potwierdzenia"});
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void resetPassword(String email) throws AccountNotFoundException {
         var accountToUpdate = accountMokRepository.findByEmail(email)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));;
-            var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-            var expirationDate = LocalDateTime.now().plusMinutes(30);
-            var newResetIssue = new PasswordReset(randString, accountToUpdate, expirationDate);
-            mailService.sendEmail(accountToUpdate, "mail.password.reset.subject",
-                    "mail.password.reset.body", new Object[] {"tu bedzie link do resetu"});
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        ;
+        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        var expirationDate = LocalDateTime.now().plusMinutes(30);
+        var newResetIssue = new PasswordReset(randString, accountToUpdate, expirationDate);
+        mailService.sendEmail(accountToUpdate, "mail.password.reset.subject",
+                "mail.password.reset.body", new Object[] {"tu bedzie link do resetu"});
 
-            passwordResetRepository.saveAndFlush(newResetIssue);
+        passwordResetRepository.saveAndFlush(newResetIssue);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})

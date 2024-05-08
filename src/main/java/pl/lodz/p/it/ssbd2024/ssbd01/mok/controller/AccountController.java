@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -17,6 +19,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEn
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -71,16 +74,18 @@ public class AccountController {
 
     @GetMapping("/username/{username}")
     public ResponseEntity<GetAccountDTO> getAccountByUsername(@PathVariable String username) throws NotFoundException {
-        GetAccountDTO accountDto = accountDTOConverter.toAccountDto(accountService.getAccountByUsername(username));
-        return ResponseEntity.status(HttpStatus.OK).body(accountDto);
+        Account account = accountService.getAccountByUsername(username);
+        GetAccountDTO accountDto = accountDTOConverter.toAccountDto(account);
+        String eTag = ETagBuilder.buildETag(account.getVersion().toString());
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
     }
 
 
     @PutMapping("/{id}/user-data")
-    public ResponseEntity<GetAccountDTO> updateAccountData(@PathVariable UUID id, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
-            throws NotFoundException {
+    public ResponseEntity<GetAccountDTO> updateAccountData(@RequestHeader("If-Match") String eTag, @PathVariable UUID id,
+                                                           @RequestBody UpdateAccountDataDTO updateAccountDataDTO) throws NotFoundException {
         GetAccountDTO updatedAccount =
-                accountDTOConverter.toAccountDto(accountService.updateAccountData(id, accountDTOConverter.toAccount(updateAccountDataDTO)));
+                accountDTOConverter.toAccountDto(accountService.updateAccountData(id, accountDTOConverter.toAccount(updateAccountDataDTO), eTag));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
