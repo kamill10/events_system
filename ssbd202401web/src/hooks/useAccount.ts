@@ -21,10 +21,10 @@ export const useAccount = () => {
             localStorage.setItem("token", data);
             navigate(Pathnames.public.home);
             await getMyAccount();
-            sendNotification({
+            setTimeout(() => sendNotification({
                 type: "success",
                 description: "Successfully logged in! Welcome, " + parsedToken?.sub
-            });
+            }), 10);
         } catch (e) {
             console.error(e);
             sendNotification({
