@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestExcep
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 
 @RestControllerAdvice
 public class ExceptionHandlingController {
@@ -37,5 +38,9 @@ public class ExceptionHandlingController {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
+    @ExceptionHandler
+    ResponseEntity<String> handleOptLockException(OptLockException e) {
+        return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getMessage());
+    }
 
 }

@@ -526,6 +526,20 @@ public class AccountControllerIT {
     }
 
     @Test
+    public void testUpdateAccountDataEndpointWithInvalidEtag() throws Exception {
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", UUID.randomUUID().toString())
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(updateAccountDataDTO))
+                .when()
+                .put(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/user-data")
+                .then()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value());
+    }
+
+    @Test
     public void testUpdateNonExistentAccountDataEndpoint() throws Exception {
         UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
         given()
@@ -790,6 +804,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
+
     @Test
     public void testUpdateAccountPasswordEndpointAsManagerButPasswordNotUnique() throws Exception {
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword1234@");
@@ -802,7 +817,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
         UpdatePasswordDTO updatePasswordDTO2 = new UpdatePasswordDTO("newPassword1234@");
-        Response response =given()
+        Response response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
                 .body(objectMapper.writeValueAsString(updatePasswordDTO2))

@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.ThisPasswordAlreadyWasSetInHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
@@ -60,7 +61,7 @@ public class MeController {
 
     @PutMapping("/user-data")
     public ResponseEntity<GetAccountDTO> updateMyData(@RequestHeader("If-Match") String eTag, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
-            throws AccountNotFoundException {
+            throws AccountNotFoundException, OptLockException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountDto(

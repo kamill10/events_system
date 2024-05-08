@@ -123,11 +123,11 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account updateAccountData(UUID id, Account account, String eTag) throws AccountNotFoundException {
+    public Account updateAccountData(UUID id, Account account, String eTag) throws AccountNotFoundException, OptLockException {
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(accountToUpdate.getVersion()))) {
-            throw new OptimisticLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
         accountToUpdate.setFirstName(account.getFirstName());
         accountToUpdate.setLastName(account.getLastName());
