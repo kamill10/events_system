@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.*;
@@ -58,7 +59,7 @@ public class EntitityTest {
         role4 = new Role();
         role5 = new Role(null);
 
-        account = new Account("user", "password", "email@email.com", 0, "firstName", "lastName");
+        account = new Account("user", "password", "email@email.com", 0, "firstName", "lastName", LanguageEnum.POLISH);
         account.setActive(true);
         account.setEmail("email@email.com");
         account.setGender(0);
@@ -72,10 +73,10 @@ public class EntitityTest {
         account.setLastSuccessfulLogin(LocalDateTime.of(2021, 1, 1, 1, 1));
         account.setVerified(true);
 
-        account2 = new Account("user", "password", "email@email.com", 0, "firstName", "lastName");
-        account3 = new Account("user2", "password", "email@email.com", 0, "firstName", "lastName");
+        account2 = new Account("user", "password", "email@email.com", 0, "firstName", "lastName",LanguageEnum.POLISH);
+        account3 = new Account("user2", "password", "email@email.com", 0, "firstName", "lastName",LanguageEnum.POLISH);
         account4 = new Account();
-        account5 = new Account(null, null, null, 0, null, null);
+        account5 = new Account(null, null, null, 0, null, null,null);
 
         room = new Room();
         room.setName("Aula");

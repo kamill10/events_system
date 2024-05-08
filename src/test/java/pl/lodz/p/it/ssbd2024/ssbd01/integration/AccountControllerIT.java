@@ -635,6 +635,7 @@ public class AccountControllerIT {
                 .body(
                         not(containsString("testAdmin")),
                         containsString("testManager"),
+                        containsString("ENGLISH"),
                         not(containsString("testParticipant"))
                 );
     }

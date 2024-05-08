@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @RequiredArgsConstructor
@@ -22,7 +23,8 @@ public class AccountDTOConverter {
                 account.getEmail(),
                 account.getGender(),
                 account.getFirstName(),
-                account.getLastName());
+                account.getLastName(),
+                account.getLanguage());
     }
 
     public Account toAccount(CreateAccountDTO createAccountDTO) {
@@ -32,7 +34,8 @@ public class AccountDTOConverter {
                 createAccountDTO.email(),
                 createAccountDTO.gender(),
                 createAccountDTO.firstName(),
-                createAccountDTO.lastName());
+                createAccountDTO.lastName(),
+                createAccountDTO.language());
     }
 
     public Account toAccount(UpdateAccountDataDTO updateAccountDataDTO) {

@@ -35,7 +35,7 @@ public class MailService {
     }
 
     public void sendEmail(Account mailTo, String mailSubject, String mailContent, Object[] contentArgs) {
-        Locale locale = Locale.forLanguageTag(mailTo.getLanguage());
+        Locale locale = Locale.forLanguageTag(mailTo.getLanguage().getLanguageCode());
         String subject = messageSource.getMessage(mailSubject, null, locale);
         String mailBody = messageSource.getMessage(mailContent, contentArgs, locale);
         String name = messageSource.getMessage("mail.hello", new Object[]{mailTo.getFirstName()}, locale);
