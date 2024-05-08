@@ -42,6 +42,7 @@ public class MeControllerIT {
 
     static String managerToken;
 
+
     @BeforeAll
     public static void setup() {
         System.setProperty("spring.profiles.active", "test");
@@ -143,7 +144,7 @@ public class MeControllerIT {
 
     @Test
     public void testGetMyAccount(){
-        given()
+        ValidatableResponse response = given()
                 .header("Authorization", "Bearer " + participantToken)
                 .contentType("application/json")
                 .when()
@@ -185,9 +186,22 @@ public class MeControllerIT {
 
     @Test
     public void testUpdateMyAccountData() {
+        ValidatableResponse response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .when()
+                .get(baseUrl + "/me")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("testAdmin")
+                );
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
+
         UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .contentType("application/json")
                 .body(updateAccountDataDTO)
                 .when()
