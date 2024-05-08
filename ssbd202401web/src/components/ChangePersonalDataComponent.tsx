@@ -4,6 +4,8 @@ import { PersonalDataType } from "../types/PersonalData";
 import { useAccount } from "../hooks/useAccount";
 import { GenderEnum } from "../types/enums/Gender.enum";
 import { useEffect } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { changePersonalDataSchema } from "../validation/schemas";
 
 export default function ChangePersonalDataComponent() {
     const { account, updateMyPersonalData, getMyAccount } = useAccount();
@@ -12,7 +14,8 @@ export default function ChangePersonalDataComponent() {
             firstName: account ? account.firstName : "",
             lastName: account ? account.lastName : "",
             gender: account ? account.gender : 0
-        }
+        },
+        resolver: yupResolver(changePersonalDataSchema)
     });
 
     useEffect(() => {
@@ -51,20 +54,28 @@ export default function ChangePersonalDataComponent() {
                     value={field.value}
                     onChange={(e) => {
                         field.onChange(e);
+                        setTimeout(() => trigger(e.target.name as keyof PersonalDataType), 500);
                     }}
                     id={field.name}
                     label="First name"
                     name={field.name}
                     error={errors.firstName ? true : false}
-                    sx={{
-                        marginBottom: "1rem"
-                    }}
                 >
 
                 </TextField>
             }}
         >
         </Controller>
+        <Typography
+                color={"red"}
+                fontSize={14}
+                width={"inherit"}
+                sx={{
+                    marginBottom: "1rem"
+                }}
+            >
+                {errors.firstName?.message}
+            </Typography>
         <Controller
             name="lastName"
             control={control}
@@ -73,20 +84,28 @@ export default function ChangePersonalDataComponent() {
                     value={field.value}
                     onChange={(e) => {
                         field.onChange(e);
+                        setTimeout(() => trigger(e.target.name as keyof PersonalDataType), 500);
                     }}
                     id={field.name}
                     label="Last name"
                     name={field.name}
                     error={errors.firstName ? true : false}
-                    sx={{
-                        marginBottom: "1rem"
-                    }}
                 >
                 </TextField>
             }}
         >
         </Controller>
-        <Controller
+        <Typography
+                color={"red"}
+                fontSize={14}
+                width={"inherit"}
+                sx={{
+                    marginBottom: "1rem"
+                }}
+            >
+                {errors.lastName?.message}
+            </Typography>
+             <Controller
                 name="gender"
                 control={control}
                 render={({field}) => {
@@ -112,6 +131,16 @@ export default function ChangePersonalDataComponent() {
                 }}
             >
             </Controller>
+            <Typography
+                color={"red"}
+                fontSize={14}
+                width={"inherit"}
+                sx={{
+                    marginBottom: "1rem"
+                }}
+            >
+                {errors.gender?.message}
+            </Typography>
             <Button
               type="submit"
               variant="contained"
