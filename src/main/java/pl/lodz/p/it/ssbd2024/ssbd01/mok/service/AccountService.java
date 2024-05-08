@@ -127,7 +127,7 @@ public class AccountService {
         accountToUpdate.setFirstName(account.getFirstName());
         accountToUpdate.setLastName(account.getLastName());
         accountToUpdate.setGender(account.getGender());
-        return accountMokRepository.save(accountToUpdate);
+        return accountMokRepository.saveAndFlush(accountToUpdate);
     }
 
 
@@ -179,8 +179,8 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(password));
-        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate));
-        accountMokRepository.save(accountToUpdate);
+        passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
+        accountMokRepository.saveAndFlush(accountToUpdate);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -192,7 +192,7 @@ public class AccountService {
             var newResetIssue = new PasswordReset(randString, accountToUpdate.get(), expirationDate);
             // TODO: Send mail to user with reset link
 
-            passwordResetRepository.save(newResetIssue);
+            passwordResetRepository.saveAndFlush(newResetIssue);
         }
     }
 
@@ -218,10 +218,10 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
-        passwordResetRepository.save(passwordReset.get());
+        passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         passwordReset.get().setUsed(true);
-        passwordHistoryRepository.save(new PasswordHistory(accountToUpdate));
-        accountMokRepository.save(accountToUpdate);
+        passwordResetRepository.saveAndFlush(passwordReset.get());
+        accountMokRepository.saveAndFlush(accountToUpdate);
     }
 
     private boolean isPasswordInHistory(Account account, String password) {
