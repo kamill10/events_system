@@ -495,7 +495,7 @@ public class AccountControllerIT {
                 .when()
                 .get(baseUrl + "/accounts/username/BAD_USERNAME")
                 .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
