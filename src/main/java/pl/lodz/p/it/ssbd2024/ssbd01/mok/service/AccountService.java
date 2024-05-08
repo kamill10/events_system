@@ -71,7 +71,7 @@ public class AccountService {
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
-        //mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
+//        mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
         return accountMokRepository.saveAndFlush(account);
     }
 
@@ -98,7 +98,7 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                //mailService.sendEmail(account, "Role removed", "The administrator has cancelled your role: " + roleName.name());
+                mailService.sendEmail(account, "mail.role.removed.subject", "mail.role.removed.body", new Object[]{roleName.name()});
                 return accountMokRepository.saveAndFlush(account);
             }
         }
@@ -157,10 +157,9 @@ public class AccountService {
         }
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        // TODO: Uncomment this line when we will be sending real mails
-        // TODO: Extract emailbody to properties file and use i18n
         accountToUpdate.setEmail(email);
-        //mailService.sendEmail(accountToUpdate, "Email change", "Your email has been changed to: " + email);
+        mailService.sendEmail(accountToUpdate, "mail.email.changed.by.admin.subject", "mail.email.changed.by.admin.body",
+                new Object[]{email, "tu bedzie link do potwierdzenia"});
 
         return accountMokRepository.saveAndFlush(accountToUpdate);
     }
@@ -181,27 +180,27 @@ public class AccountService {
         accountToUpdate.setPassword(passwordEncoder.encode(password));
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
+        mailService.sendEmail(accountToUpdate, "mail.password.changed.by.admin.subject",
+                "mail.password.changed.by.admin.body", new Object[]{password, "tu_bedzie_link_do_potwierdzenia"});
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void resetPassword(String email) {
-        Optional<Account> accountToUpdate = accountMokRepository.findByEmail(email);
-        if (accountToUpdate.isPresent()) {
+    public void resetPassword(String email) throws AccountNotFoundException {
+        var accountToUpdate = accountMokRepository.findByEmail(email)
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));;
             var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
             var expirationDate = LocalDateTime.now().plusMinutes(30);
-            var newResetIssue = new PasswordReset(randString, accountToUpdate.get(), expirationDate);
-            // TODO: Send mail to user with reset link
+            var newResetIssue = new PasswordReset(randString, accountToUpdate, expirationDate);
+            mailService.sendEmail(accountToUpdate, "mail.password.reset.subject",
+                    "mail.password.reset.body", new Object[] {"tu bedzie link do resetu"});
 
             passwordResetRepository.saveAndFlush(newResetIssue);
-        }
     }
-
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void resetPasswordWithToken(String token, String newPassword)
             throws AccountNotFoundException, PasswordTokenExpiredException, ThisPasswordAlreadyWasSetInHistory, PasswordResetTokenUsedException {
         Optional<PasswordReset> passwordReset = passwordResetRepository.findByToken(token);
-
         if (passwordReset.isEmpty()) {
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
         }

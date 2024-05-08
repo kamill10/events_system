@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.time.LocalDateTime;
@@ -82,7 +83,11 @@ public class Account extends ControlledEntity implements UserDetails {
     private String lastName;
 
 
-    public Account(String username, String password, String email, Integer gender, String firstName, String lastName) {
+    @Enumerated(EnumType.STRING)
+    private LanguageEnum language;
+
+
+    public Account(String username, String password, String email, Integer gender, String firstName, String lastName,LanguageEnum language) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -93,6 +98,7 @@ public class Account extends ControlledEntity implements UserDetails {
         this.verified = false;
         this.nonLocked = true;
         this.failedLoginAttempts = 0;
+        this.language = language;
     }
 
     public Account(String firstName, String lastName, Integer gender) {

@@ -17,6 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 
 import java.io.IOException;
 
@@ -143,7 +144,7 @@ public class AuthenticationControllerIT {
 
     @Test
     public void testRegisterAccount() {
-        CreateAccountDTO createAccountDTO = new CreateAccountDTO("user", "password", "email@email.com", 1, "firstName", "lastName");
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("user", "password", "email@email.com", 1, "firstName", "lastName", LanguageEnum.POLISH);
         given()
                 .contentType("application/json")
                 .body(createAccountDTO)

@@ -48,7 +48,7 @@ CREATE INDEX ticket_updated_by_idx ON ticket USING btree (updated_by);
 
 ALTER TABLE account_role ADD UNIQUE (account_id, roles_id);
 
-INSERT INTO public.account (id, username, password, active, verified, nonlocked, failedloginattempts, email, gender, firstname, lastname, version, created_at, action_type) VALUES ('550e8400-e29b-41d4-a716-446655440011', 'MainAdmin', '$2a$12$OC0PK1zigdyWLLOmQfSVkOYHOi4QemNnFJbqG1ibzRLvlFyQbzpna', true, true, true, 0, 'admin@ssbd.pl', 1, 'Main', 'Admin', 0, '2021-01-01 00:00:00', 'CREATE');
+INSERT INTO public.account (id, username, password, active, verified, nonlocked, failedloginattempts, email, gender, firstname, lastname, version, created_at, action_type,language) VALUES ('550e8400-e29b-41d4-a716-446655440011', 'MainAdmin', '$2a$12$OC0PK1zigdyWLLOmQfSVkOYHOi4QemNnFJbqG1ibzRLvlFyQbzpna', true, true, true, 0, 'admin@ssbd.pl', 1, 'Main', 'Admin', 0, '2021-01-01 00:00:00', 'CREATE','POLISH');
 INSERT INTO public.role (id, version, name) VALUES ('550e8400-e29b-41d4-a716-446655440000', 0, 'ADMIN');
 INSERT INTO public.role (id, version, name) VALUES ('4c90f86a-0d82-4c51-b72c-80e20949a3b9', 0, 'MANAGER');
 INSERT INTO public.role (id, version, name) VALUES ('cd8ab1c1-2431-4e28-88b5-fdd54de3d92a', 0, 'PARTICIPANT');

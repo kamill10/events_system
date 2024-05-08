@@ -19,7 +19,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -28,7 +27,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @Testcontainers
@@ -637,6 +635,7 @@ public class AccountControllerIT {
                 .body(
                         not(containsString("testAdmin")),
                         containsString("testManager"),
+                        containsString("ENGLISH"),
                         not(containsString("testParticipant"))
                 );
     }
@@ -663,7 +662,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("242560@edu.p.lodz.pl");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
@@ -673,13 +672,13 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body(
-                        containsString("ssbd01@proton.me")
+                        containsString("242560@edu.p.lodz.pl")
                 );
     }
 
     @Test
     public void testUpdateAccountEmailToExistingEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("participant@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("participant202401@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
@@ -807,7 +806,7 @@ public class AccountControllerIT {
 
     @Test
     public void testResetAccountPasswordEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("manager@ssbd.pl");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")

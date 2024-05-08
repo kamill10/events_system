@@ -127,7 +127,7 @@ public class AccountController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO email) {
+    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO email) throws AccountNotFoundException {
         accountService.resetPassword(email.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
