@@ -4,11 +4,12 @@ import { AccountLoginType, AccountSingInType } from "../types/Account";
 import { api } from "../axios/axios.config";
 import { Pathnames } from "../router/Pathnames";
 import useNotification from "./useNotification";
+import { PersonalDataType } from "../types/PersonalData";
 
 export const useAccount = () => {
     const sendNotification = useNotification();
     const navigate = useNavigate();
-    const { account, setAccount, token, setToken, isLogging, setIsLogging, isFetching, setIsFetching } = useAccountState();
+    const { account, parsedToken, setAccount, token, setToken, isLogging, setIsLogging, isFetching, setIsFetching } = useAccountState();
 
     const isAuthenticated = !!token;
 
@@ -17,10 +18,12 @@ export const useAccount = () => {
             setIsLogging(true);
             const { data } = await api.logIn(formData);
             setToken(data);
+            localStorage.setItem("token", data);
             navigate(Pathnames.public.home);
+            await getMyAccount();
             sendNotification({
                 type: "success",
-                description: "Successfully logged in!"
+                description: "Successfully logged in! Welcome, " + parsedToken?.sub
             });
         } catch (e) {
             console.error(e);
@@ -99,14 +102,53 @@ export const useAccount = () => {
         }
     }
 
+    const getMyAccount = async () => {
+        try {
+            setIsFetching(true);
+            const { data } = await api.getMyAccount();
+            setAccount(data);
+        } catch (e) {
+            console.error(e);
+            sendNotification({
+                description: "Failed to fetch an account :(",    
+                type: "error"
+            });
+        } finally {
+            setIsFetching(false);
+        }
+    }
+
+    const updateMyPersonalData = async(data: PersonalDataType) => {
+        try {
+            setIsFetching(true);
+            await api.updateMyPersonalData(data);
+            getMyAccount();
+            sendNotification({
+                type: "success",
+                description: "Account has been updated!!"
+            });
+        } catch (e) {
+            console.error(e);
+            sendNotification({
+                type: "error",
+                description: "Account update failed :("
+            });
+        } finally {
+            setIsFetching(false);
+        }
+    }
+
     return {
         account,
+        parsedToken,
         isLogging,
         isFetching,
         isAuthenticated,
         logIn,
         logOut,
         signIn,
-        verifyAccount
+        verifyAccount,
+        getMyAccount,
+        updateMyPersonalData
     }
 }

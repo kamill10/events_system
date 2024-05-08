@@ -1,6 +1,7 @@
 import axios from "axios";
 import {ApiResponseType} from "../types/ApiResponse.ts";
 import {AccountType, AccountLoginType, AccountSingInType} from "../types/Account.ts";
+import { PersonalDataType } from "../types/PersonalData.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -91,5 +92,7 @@ export const api = {
     getAccounts: (): ApiResponseType<Array<AccountType>> => apiWithAuthToken.get("/accounts"),
     logIn: (formData: AccountLoginType): ApiResponseType<string> => apiForAnon.post("/auth/authenticate", formData),
     singIn: (formData: AccountSingInType): ApiResponseType<string> => apiForAnon.post("/auth/register", formData),
-    verifyAccount: (key: string): ApiResponseType<void> => apiForAnon.post(`/auth/verify-account/${key}`)
+    verifyAccount: (key: string): ApiResponseType<void> => apiForAnon.post(`/auth/verify-account/${key}`),
+    updateMyPersonalData: (data: PersonalDataType): ApiResponseType<void> => apiWithAuthToken.put("/me/user-data", data),
+    getMyAccount: (): ApiResponseType<AccountType> => apiWithAuthToken.get("/me")
 }
