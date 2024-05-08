@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @ComponentScan(basePackages = {"pl.lodz.p.it.ssbd2024.ssbd01.util"})
-@Import({MailConfig.class})
+@Import({MailConfig.class, I18nConfig.class})
 @EnableAspectJAutoProxy
 @EnableScheduling
 public class ToolsConfig {

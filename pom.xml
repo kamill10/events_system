@@ -375,6 +375,7 @@
                 <configuration>
                     <warName>${war.name}</warName>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <propertiesEncoding>UTF-8</propertiesEncoding>
                 </configuration>
             </plugin>
 

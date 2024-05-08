@@ -81,6 +81,8 @@ public class Account extends ControlledEntity implements UserDetails {
     @Size(min = 2, max = 64)
     private String lastName;
 
+    private String language;
+
 
     public Account(String username, String password, String email, Integer gender, String firstName, String lastName) {
         this.username = username;
