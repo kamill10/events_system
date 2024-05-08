@@ -79,7 +79,7 @@ apiWithEtag.interceptors.request.use(
 
 apiWithEtag.interceptors.response.use(
     (response) => {
-        localStorage.setItem("etag", response.headers.etag);
+        localStorage.setItem("etag", response.headers.etag.substring(1, response.headers.etag.length - 1));
         return response;
     },
     (error) => {
