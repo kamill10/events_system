@@ -82,9 +82,7 @@ public class Account extends ControlledEntity implements UserDetails {
     @Size(min = 2, max = 64)
     private String lastName;
 
-    /*@Column(nullable = false, unique = true, updatable = false, length = 10)
-    @NotNull
-    @Size(max = 10)*/
+
     @Enumerated(EnumType.STRING)
     private LanguageEnum language;
 
