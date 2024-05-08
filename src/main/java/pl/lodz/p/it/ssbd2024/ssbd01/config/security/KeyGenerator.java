@@ -1,8 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.security;
 
 
-import jakarta.ejb.Singleton;
-import lombok.Getter;
 import org.springframework.context.annotation.Configuration;
 
 import java.security.SecureRandom;
@@ -15,7 +13,7 @@ public class KeyGenerator {
 
     private static final String ETAG_SECRET_KEY;
 
-    static  {
+    static {
         SECRET_KEY = generateSecretKey();
         ETAG_SECRET_KEY = generateSecretKey();
     }
