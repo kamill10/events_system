@@ -3,9 +3,6 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
@@ -74,14 +71,8 @@ public class AccountController {
 
     @GetMapping("/username/{username}")
     public ResponseEntity<GetAccountDTO> getAccountByUsername(@PathVariable String username) throws NotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            if (userDetails.getUsername().equals(username)) {
-                GetAccountDTO accountDto = accountDTOConverter.toAccountDto(accountService.getAccountByUsername(username));
-                return ResponseEntity.status(HttpStatus.OK).body(accountDto);
-            }
-        }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        GetAccountDTO accountDto = accountDTOConverter.toAccountDto(accountService.getAccountByUsername(username));
+        return ResponseEntity.status(HttpStatus.OK).body(accountDto);
     }
 
 

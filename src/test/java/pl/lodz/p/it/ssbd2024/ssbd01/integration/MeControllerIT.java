@@ -142,6 +142,20 @@ public class MeControllerIT {
     }
 
     @Test
+    public void testGetMyAccount(){
+        given()
+                .header("Authorization", "Bearer " + participantToken)
+                .contentType("application/json")
+                .when()
+                .get(baseUrl + "/me")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("testParticipant")
+                );
+    }
+
+    @Test
     public void testUpdateMyEmail() throws JsonProcessingException {
         UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
         given()
