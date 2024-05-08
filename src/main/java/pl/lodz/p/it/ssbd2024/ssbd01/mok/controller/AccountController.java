@@ -83,7 +83,8 @@ public class AccountController {
 
     @PutMapping("/{id}/user-data")
     public ResponseEntity<GetAccountDTO> updateAccountData(@RequestHeader("If-Match") String eTag, @PathVariable UUID id,
-                                                           @RequestBody UpdateAccountDataDTO updateAccountDataDTO) throws NotFoundException {
+                                                           @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+            throws NotFoundException, OptLockException {
         GetAccountDTO updatedAccount =
                 accountDTOConverter.toAccountDto(accountService.updateAccountData(id, accountDTOConverter.toAccount(updateAccountDataDTO), eTag));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);

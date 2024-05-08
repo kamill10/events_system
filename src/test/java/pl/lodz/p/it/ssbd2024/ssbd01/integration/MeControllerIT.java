@@ -20,6 +20,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
@@ -143,7 +144,7 @@ public class MeControllerIT {
     }
 
     @Test
-    public void testGetMyAccount(){
+    public void testGetMyAccount() {
         ValidatableResponse response = given()
                 .header("Authorization", "Bearer " + participantToken)
                 .contentType("application/json")
@@ -213,6 +214,20 @@ public class MeControllerIT {
                         containsString("newSurname"),
                         containsString("1")
                 );
+    }
+
+    @Test
+    public void testUpdateMyAccountDataWithInvalidETag() {
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1);
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", UUID.randomUUID().toString())
+                .contentType("application/json")
+                .body(updateAccountDataDTO)
+                .when()
+                .put(baseUrl + "/me/user-data")
+                .then()
+                .statusCode(HttpStatus.PRECONDITION_FAILED.value());
     }
 
     @Test
