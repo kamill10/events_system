@@ -200,6 +200,7 @@ public class AuthenticationService {
             LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(this.lockTimeout);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             account.setLockedUntil(lockTimeout);
+            jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
             mailService.sendEmail(account, "mail.locked.until.subject", "mail.locked.until.body", new Object[] {lockTimeout.format(formatter)});
         }
         accountAuthRepository.save(account);
