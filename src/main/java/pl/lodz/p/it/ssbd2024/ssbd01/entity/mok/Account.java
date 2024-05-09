@@ -20,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "account")
+@SecondaryTable(name = "personal_data", pkJoinColumns = @PrimaryKeyJoinColumn(name = "account_id"))
 public class Account extends ControlledEntity implements UserDetails {
 
     @Setter(AccessLevel.NONE)
@@ -63,31 +64,31 @@ public class Account extends ControlledEntity implements UserDetails {
     @FutureOrPresent
     private LocalDateTime lockedUntil;
 
-    @Column(nullable = false, unique = true)
+    @Column(table = "personal_data", nullable = false, unique = true)
     @NotBlank
     @Email
     private String email;
 
-    @Column(nullable = false)
+    @Column(table = "personal_data", nullable = false)
     @NotNull
     private Integer gender;
 
-    @Column(nullable = false, length = 32)
+    @Column(table = "personal_data", nullable = false, length = 32)
     @NotBlank
     @Size(min = 2, max = 32)
     private String firstName;
 
-    @Column(nullable = false, length = 64)
+    @Column(table = "personal_data", nullable = false, length = 64)
     @NotBlank
     @Size(min = 2, max = 64)
     private String lastName;
 
-
     @Enumerated(EnumType.STRING)
+    @Column(table = "personal_data")
     private LanguageEnum language;
 
 
-    public Account(String username, String password, String email, Integer gender, String firstName, String lastName,LanguageEnum language) {
+    public Account(String username, String password, String email, Integer gender, String firstName, String lastName, LanguageEnum language) {
         this.username = username;
         this.password = password;
         this.email = email;
