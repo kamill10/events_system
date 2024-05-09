@@ -1,7 +1,9 @@
-import { Box, Button, CssBaseline, Grid, Link, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, CssBaseline, Grid, Paper, TextField, Typography } from "@mui/material";
 import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { AccountLoginType } from "../types/Account";
 import { useAccount } from "../hooks/useAccount";
+import { Link } from "react-router-dom";
+import { Pathnames } from "../router/Pathnames";
 
 export default function LoginPage() {
   const { logIn } = useAccount();
@@ -102,12 +104,12 @@ export default function LoginPage() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="/login/forgot-password">
+                <Link to={Pathnames.public.forgotPassword}>
                   I forgot my password :(
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/signin">
+                <Link to={Pathnames.public.signIn}>
                   "You don't have an account yet? Sign in!"
                 </Link>
               </Grid>

@@ -2,6 +2,8 @@ import axios from "axios";
 import {ApiResponseType} from "../types/ApiResponse.ts";
 import {AccountType, AccountLoginType, AccountSingInType} from "../types/Account.ts";
 import { PersonalDataType } from "../types/PersonalData.ts";
+import { ForgotPasswordType } from "../types/ForgotPassword.ts";
+import { ResetPasswordType } from "../types/ResetPasswordType.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -97,5 +99,7 @@ export const api = {
     singIn: (formData: AccountSingInType): ApiResponseType<string> => apiForAnon.post("/auth/register", formData),
     verifyAccount: (key: string): ApiResponseType<void> => apiForAnon.post(`/auth/verify-account/${key}`),
     updateMyPersonalData: (data: PersonalDataType): ApiResponseType<void> => apiWithEtag.put("/me/user-data", data),
-    getMyAccount: (): ApiResponseType<AccountType> => apiWithEtag.get("/me")
+    getMyAccount: (): ApiResponseType<AccountType> => apiWithEtag.get("/me"),
+    forgotMyPassword: (data: ForgotPasswordType) => apiForAnon.post("/accounts/reset-password", data),
+    resetMyPassword: (data: ResetPasswordType) => apiForAnon.post("/accounts/reset-password/token/" + data.token, { password: data.password })
 }
