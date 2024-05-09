@@ -17,4 +17,6 @@ public interface AccountConfirmationRepository extends JpaRepository<AccountConf
 
     List<AccountConfirmation> findByExpirationDateBefore(LocalDateTime now);
 
+    Optional<AccountConfirmation> findByAccount_Id(UUID id);
+
 }
