@@ -61,6 +61,10 @@ public class Account extends ControlledEntity implements UserDetails {
     @NotNull
     private Integer failedLoginAttempts;
 
+    @Column(length = 15)
+    @Size(max = 15)
+    private String lastFailedLoginIp;
+
     @FutureOrPresent
     private LocalDateTime lockedUntil;
 
