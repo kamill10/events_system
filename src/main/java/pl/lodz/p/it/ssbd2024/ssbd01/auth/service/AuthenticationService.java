@@ -28,9 +28,11 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountConfirmationRepository
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.ConfirmationReminderRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,6 +50,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final Environment env;
     private final PasswordHistoryRepository passwordHistoryRepository;
+    private final MailService mailService;
 
     @Value("${auth.attempts:3}")
     private int maxFailedLoginAttempts;
@@ -61,13 +64,18 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void registerUser(Account account) {
-        var savedAccount =  accountMokRepository.saveAndFlush(account);
+        var savedAccount = accountMokRepository.saveAndFlush(account);
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expirationHours = Integer.parseInt(Objects.requireNonNull(env.getProperty("confirmation.token.expiration.hours")));
         var expirationDate = calculateExpirationDate(expirationHours);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
-        // TODO: Send mail to user with confirmation link
-        var confirmationReminder = new ConfirmationReminder(savedAccount,savedAccount.getCreatedAt()
+        StringBuilder sb = new StringBuilder();
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
+        sb.append(randString);
+        sb.append("'>Link</a>");
+        mailService.sendEmail(account, "mail.verify.account.subject",
+                "mail.verify.account.body", new Object[] {sb});
+        var confirmationReminder = new ConfirmationReminder(savedAccount, savedAccount.getCreatedAt()
                 .plusHours(expirationHours / 2).plusMinutes(expirationHours % 2 * 30));
         accountConfirmationRepository.saveAndFlush(newAccountConfirmation);
         confirmationReminderRepository.saveAndFlush(confirmationReminder);
@@ -125,6 +133,7 @@ public class AuthenticationService {
             if (optionalAccount.isPresent()) {
                 Account account = optionalAccount.get();
                 accountMokRepository.delete(account);
+                mailService.sendEmail(account, "mail.delete.account.subject", "mail.delete.account.body", null);
                 passwordHistoryRepository.deletePasswordHistoriesByAccount(account);
             }
         }
@@ -155,8 +164,15 @@ public class AuthenticationService {
     @Scheduled(fixedRate = 120000)
     public void sendAccountConfirmationReminder() {
         confirmationReminderRepository.findByReminderDateBefore(LocalDateTime.now()).forEach(confirmationReminder -> {
-            // TODO: Send mail to user with confirmation link
-           confirmationReminderRepository.deleteById(confirmationReminder.getId());
+            AccountConfirmation confirmation =
+                    accountConfirmationRepository.findByAccount_Id(confirmationReminder.getAccount().getId()).orElseThrow();
+            StringBuilder sb = new StringBuilder();
+            sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
+            sb.append(confirmation.getToken());
+            sb.append("'>Link</a>");
+            mailService.sendEmail(confirmation.getAccount(), "mail.verify.account.subject",
+                    "mail.verify.account.body", new Object[] {sb});
+            confirmationReminderRepository.deleteById(confirmationReminder.getId());
         });
     }
 
@@ -170,7 +186,10 @@ public class AuthenticationService {
         account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);
         if (account.getFailedLoginAttempts() >= maxFailedLoginAttempts) {
             account.setNonLocked(false);
-            account.setLockedUntil(LocalDateTime.now().plusSeconds(lockTimeout));
+            LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(this.lockTimeout);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            account.setLockedUntil(lockTimeout);
+            mailService.sendEmail(account, "mail.locked.until.subject", "mail.locked.until.body", new Object[] {lockTimeout.format(formatter)});
         }
         accountAuthRepository.save(account);
     }
