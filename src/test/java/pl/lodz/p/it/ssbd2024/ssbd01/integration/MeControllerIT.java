@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.response.ValidatableResponse;
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.BindMode;
@@ -18,12 +19,15 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 
 import java.io.IOException;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -255,6 +259,7 @@ public class MeControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
+
     }
 
     @Test
@@ -268,6 +273,28 @@ public class MeControllerIT {
                 .patch(baseUrl + "/me/password")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+    @Test
+    public void switchRoleAndLog() {
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .param("role", "ADMIN")
+                .when()
+                .post(baseUrl + "/me/switch-role")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void switchRoleWhichAccountDoesNotHave(){
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .param("role", "MANAGER")
+                .when()
+                .post(baseUrl + "/me/switch-role")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
     }
 
 }

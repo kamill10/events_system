@@ -53,7 +53,8 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/me").authenticated()
                             .requestMatchers(HttpMethod.PATCH, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")
-                            .requestMatchers(HttpMethod.PUT, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER");
+                            .requestMatchers(HttpMethod.PUT, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")
+                            .requestMatchers(HttpMethod.POST, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER");
                 });
         return http.build();
     }

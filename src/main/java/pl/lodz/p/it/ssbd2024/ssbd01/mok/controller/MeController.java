@@ -11,12 +11,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.EmailAlreadyExistsException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.ThisPasswordAlreadyWasSetInHistory;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
@@ -67,4 +65,12 @@ public class MeController {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountDto(
                 accountService.updateAccountData(account.getId(), accountDTOConverter.toAccount(updateAccountDataDTO), eTag)));
     }
+
+    @PostMapping("/switch-role")
+        public ResponseEntity<?> logSwitchRole(@RequestParam AccountRoleEnum role) throws AccountNotFoundException, RoleNotAssignedToAccount {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Account account = (Account) authentication.getPrincipal();
+            accountService.logSwitchRole(account.getId(), role);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
 }
