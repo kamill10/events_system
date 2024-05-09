@@ -816,18 +816,16 @@ public class AccountControllerIT {
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
                 .then()
                 .statusCode(HttpStatus.OK.value());
+
         UpdatePasswordDTO updatePasswordDTO2 = new UpdatePasswordDTO("newPassword1234@");
-        Response response = given()
+        given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
                 .body(objectMapper.writeValueAsString(updatePasswordDTO2))
                 .when()
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract()
-                .response();
-
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
