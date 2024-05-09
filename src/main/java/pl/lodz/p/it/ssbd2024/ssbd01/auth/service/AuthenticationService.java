@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
@@ -51,6 +54,7 @@ public class AuthenticationService {
     private final Environment env;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final MailService mailService;
+
 
     @Value("${auth.attempts:3}")
     private int maxFailedLoginAttempts;
@@ -99,6 +103,7 @@ public class AuthenticationService {
 
         var user = accountAuthRepository.findByUsername(loginDTO.username());
         user.setFailedLoginAttempts(0);
+        user.setLastSuccessfulLogin(LocalDateTime.now());
         accountAuthRepository.save(user);
         return jwtService.generateToken(user);
     }
@@ -184,6 +189,12 @@ public class AuthenticationService {
     public void updateFailedLoginAttempts(String username) {
         Account account = accountAuthRepository.findByUsername(username);
         account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);
+        account.setLastFailedLogin(LocalDateTime.now());
+        HttpServletRequest curRequest =
+                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                        .getRequest();
+        account.setLastFailedLoginIp(
+                curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
         if (account.getFailedLoginAttempts() >= maxFailedLoginAttempts) {
             account.setNonLocked(false);
             LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(this.lockTimeout);
