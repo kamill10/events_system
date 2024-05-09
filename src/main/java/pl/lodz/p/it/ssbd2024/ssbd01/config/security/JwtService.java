@@ -90,7 +90,7 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
-        jwtWhitelistRepository.save(new JWTWhitelistToken(token, extractExpiration(token)));
+        jwtWhitelistRepository.save(new JWTWhitelistToken(token, extractExpiration(token), account));
         return token;
     }
 
