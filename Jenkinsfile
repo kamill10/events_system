@@ -8,8 +8,6 @@ pipeline {
     stages {
         stage('Compose down') {
             steps {
-                sh 'printenv'
-                echo WORKSPACE
                 dir("${WORKSPACE}/docker") {
                     sh('docker compose down')
                 }
@@ -46,7 +44,7 @@ pipeline {
 
         stage('Infrastructure down') {
             steps {
-                dir("${WORKSPACE}docker") {
+                dir("${WORKSPACE}/docker") {
                      sh('docker compose down')
                 }
             }
