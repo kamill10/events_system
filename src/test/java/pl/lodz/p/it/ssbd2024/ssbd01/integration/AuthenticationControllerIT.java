@@ -144,7 +144,7 @@ public class AuthenticationControllerIT {
 
     @Test
     public void testRegisterAccount() {
-        CreateAccountDTO createAccountDTO = new CreateAccountDTO("user", "password", "email@email.com", 1, "firstName", "lastName", LanguageEnum.POLISH);
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("user", "password", "isrpgrupa1@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
         given()
                 .contentType("application/json")
                 .body(createAccountDTO)

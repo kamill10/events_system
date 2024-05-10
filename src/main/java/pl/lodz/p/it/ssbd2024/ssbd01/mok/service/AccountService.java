@@ -73,7 +73,7 @@ public class AccountService {
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
-//        mailService.sendEmail(account, "Role added", "You have received a role: " + roleName.name());
+//        mailService.sendEmail(account, "mail.role.added.subject", "mail.role.added.body", new Object[] {roleName.name()});
         return accountMokRepository.saveAndFlush(account);
     }
 
@@ -100,7 +100,7 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                mailService.sendEmail(account, "mail.role.removed.subject", "mail.role.removed.body", new Object[] {roleName.name()});
+//                mailService.sendEmail(account, "mail.role.removed.subject", "mail.role.removed.body", new Object[] {roleName.name()});
                 return accountMokRepository.saveAndFlush(account);
             }
         }
@@ -112,6 +112,11 @@ public class AccountService {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setActive(status);
+        if (status) {
+//            mailService.sendEmail(account, "mail.unblocked.subject", "mail.unblocked.body", new Object[] {});
+        } else {
+//            mailService.sendEmail(account, "mail.blocked.subject", "mail.blocked.body", new Object[] {});
+        }
         return accountMokRepository.saveAndFlush(account);
     }
 
@@ -163,8 +168,8 @@ public class AccountService {
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         accountToUpdate.setEmail(email);
-        mailService.sendEmail(accountToUpdate, "mail.email.changed.by.admin.subject", "mail.email.changed.by.admin.body",
-                new Object[] {email, "tu bedzie link do potwierdzenia"});
+//        mailService.sendEmail(accountToUpdate, "mail.email.changed.by.admin.subject", "mail.email.changed.by.admin.body",
+//                new Object[] {email, "tu bedzie link do potwierdzenia"});
 
         return accountMokRepository.saveAndFlush(accountToUpdate);
     }
@@ -185,8 +190,8 @@ public class AccountService {
         accountToUpdate.setPassword(passwordEncoder.encode(password));
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
-        mailService.sendEmail(accountToUpdate, "mail.password.changed.by.admin.subject",
-                "mail.password.changed.by.admin.body", new Object[] {password, "tu_bedzie_link_do_potwierdzenia"});
+//        mailService.sendEmail(accountToUpdate, "mail.password.changed.by.admin.subject",
+//                "mail.password.changed.by.admin.body", new Object[] {password, "tu_bedzie_link_do_potwierdzenia"});
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -197,8 +202,12 @@ public class AccountService {
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expirationDate = LocalDateTime.now().plusMinutes(30);
         var newResetIssue = new PasswordReset(randString, accountToUpdate, expirationDate);
-        mailService.sendEmail(accountToUpdate, "mail.password.reset.subject",
-                "mail.password.reset.body", new Object[] {"tu bedzie link do resetu"});
+        StringBuilder sb = new StringBuilder();
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
+        sb.append(randString);
+        sb.append("'>Link</a>");
+//        mailService.sendEmail(accountToUpdate, "mail.password.reset.subject",
+//                "mail.password.reset.body", new Object[] {sb});
 
         passwordResetRepository.saveAndFlush(newResetIssue);
     }
