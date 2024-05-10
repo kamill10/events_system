@@ -77,8 +77,8 @@ public class AuthenticationService {
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
         sb.append(randString);
         sb.append("'>Link</a>");
-        mailService.sendEmail(account, "mail.verify.account.subject",
-                "mail.verify.account.body", new Object[] {sb});
+//        mailService.sendEmail(account, "mail.verify.account.subject",
+//                "mail.verify.account.body", new Object[] {sb});
         var confirmationReminder = new ConfirmationReminder(savedAccount, savedAccount.getCreatedAt()
                 .plusHours(expirationHours / 2).plusMinutes(expirationHours % 2 * 30));
         accountConfirmationRepository.saveAndFlush(newAccountConfirmation);
@@ -138,7 +138,7 @@ public class AuthenticationService {
             if (optionalAccount.isPresent()) {
                 Account account = optionalAccount.get();
                 accountMokRepository.delete(account);
-                mailService.sendEmail(account, "mail.delete.account.subject", "mail.delete.account.body", null);
+//                mailService.sendEmail(account, "mail.delete.account.subject", "mail.delete.account.body", null);
                 passwordHistoryRepository.deletePasswordHistoriesByAccount(account);
             }
         }
@@ -175,8 +175,8 @@ public class AuthenticationService {
             sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
             sb.append(confirmation.getToken());
             sb.append("'>Link</a>");
-            mailService.sendEmail(confirmation.getAccount(), "mail.verify.account.subject",
-                    "mail.verify.account.body", new Object[] {sb});
+//            mailService.sendEmail(confirmation.getAccount(), "mail.verify.account.subject",
+//                    "mail.verify.account.body", new Object[] {sb});
             confirmationReminderRepository.deleteById(confirmationReminder.getId());
         });
     }
@@ -201,7 +201,7 @@ public class AuthenticationService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             account.setLockedUntil(lockTimeout);
             jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
-            mailService.sendEmail(account, "mail.locked.until.subject", "mail.locked.until.body", new Object[] {lockTimeout.format(formatter)});
+//            mailService.sendEmail(account, "mail.locked.until.subject", "mail.locked.until.body", new Object[] {lockTimeout.format(formatter)});
         }
         accountAuthRepository.save(account);
     }
