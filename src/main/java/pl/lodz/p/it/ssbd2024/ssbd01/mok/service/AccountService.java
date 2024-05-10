@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -253,6 +254,5 @@ public class AccountService {
                 .stream().anyMatch(passwordHistory -> passwordEncoder.matches(password, passwordHistory.getPassword()));
     }
 }
-
 
 

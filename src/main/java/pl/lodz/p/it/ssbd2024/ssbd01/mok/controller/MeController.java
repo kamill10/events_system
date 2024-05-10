@@ -67,10 +67,10 @@ public class MeController {
     }
 
     @PostMapping("/switch-role")
-        public ResponseEntity<?> logSwitchRole(@RequestParam AccountRoleEnum role) throws AccountNotFoundException, RoleNotAssignedToAccount {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Account account = (Account) authentication.getPrincipal();
-            accountService.logSwitchRole(account.getId(), role);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
+    public ResponseEntity<?> logSwitchRole(@RequestParam AccountRoleEnum role) throws AccountNotFoundException, RoleNotAssignedToAccount {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = (Account) authentication.getPrincipal();
+        accountService.logSwitchRole(account.getId(), role);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 }

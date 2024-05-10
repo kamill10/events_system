@@ -3,17 +3,8 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.personal_data TO ssbd01mok;
 GRANT SELECT ON TABLE public.role TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE public.account_role TO ssbd01mok;
 GRANT SELECT, INSERT ON TABLE public.passreset TO ssbd01mok;
-
-
-
-
-
-
-
-
-
-
-
+GRANT SELECT, INSERT, DELETE ON TABLE public.password_history TO ssbd01mok;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.accountconfirmation TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE public.confirmation_reminder TO ssbd01mok;
 
 
