@@ -195,13 +195,14 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void resetPassword(String email) throws AccountNotFoundException {
-        var accountToUpdate = accountMokRepository.findByEmail(email)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        ;
+    public void resetPassword(String email) {
+        var accountToUpdate = accountMokRepository.findByEmail(email);
+        if (accountToUpdate.isEmpty()) {
+            return;
+        }
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expirationDate = LocalDateTime.now().plusMinutes(30);
-        var newResetIssue = new PasswordReset(randString, accountToUpdate, expirationDate);
+        var newResetIssue = new PasswordReset(randString, accountToUpdate.get(), expirationDate);
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
         sb.append(randString);
