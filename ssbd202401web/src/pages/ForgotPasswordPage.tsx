@@ -4,6 +4,8 @@ import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-ho
 import { ForgotPasswordSchema } from "../validation/schemas";
 import { ForgotPasswordType } from "../types/ForgotPassword";
 import { useAccount } from "../hooks/useAccount";
+import { Pathnames } from "../router/Pathnames";
+import { Link } from "react-router-dom";
 
 export default function ForgotPasswordPage() {
     const { requestPasswordReset } = useAccount();
@@ -66,6 +68,7 @@ export default function ForgotPasswordPage() {
                         control={control}
                         render={({field}) => {
                             return <TextField
+                                fullWidth
                                 value={field.value}
                                 onChange={(e) => {
                                     field.onChange(e);
@@ -101,6 +104,9 @@ export default function ForgotPasswordPage() {
                         Reset password
                     </Button>
                     </Box>
+                    <Link to={Pathnames.public.login}>
+                        Remember the password? Log in!
+                    </Link>
                 </Box>
             </Grid>
         </Grid>

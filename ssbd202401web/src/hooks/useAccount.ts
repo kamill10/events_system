@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { useAccountState } from "../context/AccountContext";
+import { TokenType, useAccountState } from "../context/AccountContext";
 import { AccountLoginType, AccountSingInType } from "../types/Account";
 import { api } from "../axios/axios.config";
 import { Pathnames } from "../router/Pathnames";
@@ -7,6 +7,7 @@ import useNotification from "./useNotification";
 import { PersonalDataType } from "../types/PersonalData";
 import { ForgotPasswordType } from "../types/ForgotPassword";
 import { ResetPasswordType } from "../types/ResetPasswordType";
+import { jwtDecode } from "jwt-decode";
 
 export const useAccount = () => {
     const sendNotification = useNotification();
@@ -23,7 +24,7 @@ export const useAccount = () => {
             localStorage.setItem("token", data);
             setTimeout(() => sendNotification({
                 type: "success",
-                description: "Successfully logged in! Welcome, " + parsedToken?.sub
+                description: "Successfully logged in! Welcome, " + jwtDecode(data).sub
             }), 10);
             navigate(Pathnames.public.home);
             getMyAccount();

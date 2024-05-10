@@ -9,7 +9,8 @@ export const signInValidationSchema = yup.object<AccountSingInType>().shape({
     email: yup.string().email().required(),
     gender: yup.number().required(),
     firstName: yup.string().min(2).max(32).required(),
-    lastName: yup.string().min(2).max(64).required()
+    lastName: yup.string().min(2).max(64).required(),
+    language: yup.string().required()
 });
 
 export const changePersonalDataSchema = yup.object<PersonalDataType>().shape({

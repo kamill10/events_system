@@ -110,7 +110,7 @@ export default function LoginPage() {
               </Grid>
               <Grid item>
                 <Link to={Pathnames.public.signIn}>
-                  "You don't have an account yet? Sign in!"
+                  You don't have an account yet? Sign in!
                 </Link>
               </Grid>
             </Grid>
