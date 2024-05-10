@@ -25,7 +25,7 @@ public class SwitchRoleAspect {
         this.request = request;
     }
 
-    @Pointcut("execution(* pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.MeController.logSwitchRole(..))")
+    @Pointcut("execution(* pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService.logSwitchRole(..))")
 
     private void switchRoleMethod() {
     }
@@ -35,7 +35,7 @@ public class SwitchRoleAspect {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         Object[] args = joinPoint.getArgs();
-        AccountRoleEnum role = (AccountRoleEnum) args[0];
+        AccountRoleEnum role = (AccountRoleEnum) args[1];
         String ipAddress = getUserIpAddress();
         log.info("User: {} switch to role : {} logged in from IP: {}", account.getUsername(),role.toString(), ipAddress);
     }
