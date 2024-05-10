@@ -239,11 +239,20 @@ public class AccountService {
         accountMokRepository.saveAndFlush(accountToUpdate);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public void logSwitchRole(UUID accountId, AccountRoleEnum roleEnum) throws AccountNotFoundException, RoleNotAssignedToAccount {
+        Account account = accountMokRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        List<Role> accountRoles = account.getRoles();
+        if (!accountRoles.contains(new Role(roleEnum))) {
+            throw new RoleNotAssignedToAccount(ExceptionMessages.ACCOUNT_NOT_HAVE_THIS_ROLE);
+        }
+    }
+
     private boolean isPasswordInHistory(Account account, String password) {
         return passwordHistoryRepository.findPasswordHistoryByAccount(account)
                 .stream().anyMatch(passwordHistory -> passwordEncoder.matches(password, passwordHistory.getPassword()));
     }
 }
-
 
 

@@ -270,4 +270,27 @@ public class MeControllerIT {
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
+    @Test
+    public void switchRoleAndLog() {
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .param("role", "ADMIN")
+                .when()
+                .post(baseUrl + "/me/switch-role")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void switchRoleWhichAccountDoesNotHave(){
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .param("role", "MANAGER")
+                .when()
+                .post(baseUrl + "/me/switch-role")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
+
 }
