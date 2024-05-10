@@ -9,7 +9,7 @@ pipeline {
         stage('Compose down') {
             steps {
                 sh 'printenv'
-                dir("/home/jenkins/workspace/test/docker") {
+                dir("${PWD}/docker") {
                     sh('docker compose down')
                 }
             }
@@ -17,7 +17,7 @@ pipeline {
 
         stage('Maven tests') {
             steps {
-                dir("/home/jenkins/workspace/test") {
+                dir("${PWD}") {
                     sh('mvn clean install')
                 }
             }
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Infrastructure setup') {
             steps {
-                dir("/home/jenkins/workspace/test/docker") {
+                dir("${PWD}/docker") {
                     sh('cd ../ssbd202401web/ && npm install && npm run build')
                     sh('rm -rf ./html/')
                     sh('cp -r ../ssbd202401web/dist/ html/')
@@ -36,7 +36,7 @@ pipeline {
 
         stage('End-to-end tests') {
             steps {
-              dir("/home/jenkins/workspace/test") {
+              dir("${PWD}") {
                     echo 'Doing end to end test'
                     echo 'Finished end to end test'
                 }
@@ -45,7 +45,7 @@ pipeline {
 
         stage('Infrastructure down') {
             steps {
-                dir("/home/jenkins/workspace/test/docker") {
+                dir("${PWD}docker") {
                      sh('docker compose down')
                 }
             }
