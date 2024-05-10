@@ -8,6 +8,7 @@ pipeline {
     stages {
         stage('Compose down') {
             steps {
+                sh 'printenv'
                 dir("/home/jenkins/workspace/test/docker") {
                     sh('docker compose down')
                 }
