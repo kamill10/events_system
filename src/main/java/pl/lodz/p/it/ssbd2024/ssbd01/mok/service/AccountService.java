@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
-import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -195,13 +194,14 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void resetPassword(String email) throws AccountNotFoundException {
-        var accountToUpdate = accountMokRepository.findByEmail(email)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        ;
+    public void resetPassword(String email) {
+        var accountToUpdate = accountMokRepository.findByEmail(email);
+        if (accountToUpdate.isEmpty()) {
+            return;
+        }
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expirationDate = LocalDateTime.now().plusMinutes(30);
-        var newResetIssue = new PasswordReset(randString, accountToUpdate, expirationDate);
+        var newResetIssue = new PasswordReset(randString, accountToUpdate.get(), expirationDate);
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
         sb.append(randString);
@@ -239,7 +239,7 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void logSwitchRole(UUID accountId,AccountRoleEnum roleEnum) throws AccountNotFoundException, RoleNotAssignedToAccount {
+    public void logSwitchRole(UUID accountId, AccountRoleEnum roleEnum) throws AccountNotFoundException, RoleNotAssignedToAccount {
         Account account = accountMokRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         List<Role> accountRoles = account.getRoles();
