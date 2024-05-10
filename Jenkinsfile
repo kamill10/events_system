@@ -9,7 +9,7 @@ pipeline {
         stage('Compose down') {
             steps {
                 sh 'printenv'
-                echo PWD
+                echo WORKSPACE
                 dir("${PWD}/docker") {
                     sh('docker compose down')
                 }
