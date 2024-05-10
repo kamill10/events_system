@@ -224,9 +224,19 @@
             <artifactId>spring-context-support</artifactId>
             <version>${spring.version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.sun.mail</groupId>-->
+<!--            <artifactId>jakarta.mail</artifactId>-->
+<!--            <version>2.0.1</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>com.sun.mail</groupId>
+            <groupId>org.eclipse.angus</groupId>
             <artifactId>jakarta.mail</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
             <version>2.0.1</version>
         </dependency>
 
@@ -345,11 +355,11 @@
             <version>${jsonwebtoken.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>10.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>jakarta.platform</groupId>-->
+<!--            <artifactId>jakarta.jakartaee-api</artifactId>-->
+<!--            <version>10.0.0</version>-->
+<!--        </dependency>-->
 
 
     </dependencies>
