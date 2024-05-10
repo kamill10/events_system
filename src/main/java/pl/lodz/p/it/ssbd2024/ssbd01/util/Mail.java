@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Mail {
 
-    private final String mailFrom = "research.week@info.p.lodz.pl";
+    private final String mailFrom = "eventsymphony202401@gmail.com";
     private String mailTo;
     private String mailSubject;
     private String mailContent;
