@@ -23,11 +23,11 @@ public abstract class ControlledEntity extends AbstractEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "created_by", updatable = false)
     private Account createdBy;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "updated_by")
     private Account updatedBy;
 
