@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialChangeByAdmin;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialResetByAdmin;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -176,12 +176,12 @@ public class AccountService {
         if (account.isEmpty()) {
             return;
         }
-        CredentialChangeByAdmin credentialChangeByAdmin = saveTokenToChangeCredential(account.get());
+        CredentialResetByAdmin credentialResetByAdmin = saveTokenToChangeCredential(account.get());
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
-        sb.append(credentialChangeByAdmin.getToken());
+        sb.append(credentialResetByAdmin.getToken());
         sb.append("'>Link</a>");
-        mailService.sendEmail(credentialChangeByAdmin.getAccount(), "mail.password.reset.subject",
+        mailService.sendEmail(credentialResetByAdmin.getAccount(), "mail.password.reset.subject",
                 "mail.password.reset.body", new Object[] {sb});
     }
 
@@ -189,28 +189,28 @@ public class AccountService {
     public String changePasswordAndSendEmail(String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        CredentialChangeByAdmin credentialChangeByAdmin = saveTokenToChangeCredential(account);
+        CredentialResetByAdmin credentialResetByAdmin = saveTokenToChangeCredential(account);
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
-        sb.append(credentialChangeByAdmin.getToken());
+        sb.append(credentialResetByAdmin.getToken());
         sb.append("'>Link</a>");
-        mailService.sendEmail(credentialChangeByAdmin.getAccount(), "mail.password.changed.by.admin.subject",
+        mailService.sendEmail(credentialResetByAdmin.getAccount(), "mail.password.changed.by.admin.subject",
                 "mail.password.changed.by.admin.body", new Object[] {sb});
-        return credentialChangeByAdmin.getToken();
+        return credentialResetByAdmin.getToken();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public String sendMailWhenEmailChange(UUID id, String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        CredentialChangeByAdmin credentialChangeByAdmin = saveTokenToChangeCredential(account);
+        CredentialResetByAdmin credentialResetByAdmin = saveTokenToChangeCredential(account);
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/change-email?token=");
-        sb.append(credentialChangeByAdmin.getToken());
+        sb.append(credentialResetByAdmin.getToken());
         sb.append("'>Link</a>");
-        mailService.sendEmail(credentialChangeByAdmin.getAccount(), "mail.email.changed.by.admin.subject",
+        mailService.sendEmail(credentialResetByAdmin.getAccount(), "mail.email.changed.by.admin.subject",
                 "mail.email.changed.by.admin.body", new Object[] {sb}, email);
-        return credentialChangeByAdmin.getToken();
+        return credentialResetByAdmin.getToken();
 
     }
 
@@ -241,7 +241,7 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account verifyCredentialReset(String token) throws AccountNotFoundException, PasswordTokenExpiredException {
-        Optional<CredentialChangeByAdmin> credentialReset = credentialResetAdminRepository.findByToken(token);
+        Optional<CredentialResetByAdmin> credentialReset = credentialResetAdminRepository.findByToken(token);
         if (credentialReset.isEmpty()) {
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
         }
@@ -268,11 +268,11 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public CredentialChangeByAdmin saveTokenToChangeCredential(Account account) {
+    public CredentialResetByAdmin saveTokenToChangeCredential(Account account) {
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expiration = Integer.parseInt(Objects.requireNonNull(env.getProperty("credential_change.token.expiration.minutes")));
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new CredentialChangeByAdmin(randString, account, expirationDate);
+        var newResetIssue = new CredentialResetByAdmin(randString, account, expirationDate);
         credentialResetAdminRepository.saveAndFlush(newResetIssue);
         return newResetIssue;
     }
