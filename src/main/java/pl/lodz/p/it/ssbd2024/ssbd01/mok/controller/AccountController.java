@@ -108,31 +108,37 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(managers);
     }
 
-    @PatchMapping("/{id}/email")
-    public ResponseEntity<GetAccountDTO> updateAccountEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO email)
-            throws AccountNotFoundException, EmailAlreadyExistsException {
-        GetAccountDTO updatedAccount = accountDTOConverter
-                .toAccountDto(accountService.updateAccountEmail(id, email.email()));
-        return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
-    }
-
-    @PatchMapping("/{id}/password")
-    public ResponseEntity<?> updateAccountPassword(@PathVariable UUID id, @RequestBody UpdatePasswordDTO password)
-            throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
-        accountService.updatePassword(id, password.value());
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO email) throws AccountNotFoundException {
-        accountService.resetPassword(email.email());
+    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
+        accountService.resetPasswordAndSendEmail(emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/reset-password/token/{token}")
+    @PatchMapping("/reset-password/token/{token}")
     public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody UpdatePasswordDTO password)
-            throws PasswordTokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, PasswordResetTokenUsedException {
+            throws PasswordTokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
         accountService.resetPasswordWithToken(token, password.value());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                accountService.changePasswordAndSendEmail(emailDTO.email())
+        );
+    }
+
+    @PostMapping("/change-email/{id}")
+    public ResponseEntity<String> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                accountService.sendMailWhenEmailChange(id, emailDTO.email())
+        );
+    }
+
+    @PatchMapping("/change-email/token/{token}")
+    public ResponseEntity<?> changeEmailWithToken(@PathVariable String token, @RequestBody UpdateEmailDTO email)
+            throws PasswordTokenExpiredException, AccountNotFoundException, EmailAlreadyExistsException {
+        accountService.changeEmailWithToken(token, email.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

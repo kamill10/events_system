@@ -45,7 +45,7 @@ public class SecurityConfig {
                     requests
                             .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/accounts/reset-password").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/api/accounts/reset-password/token/{token}").permitAll()
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/reset-password/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasAuthority("ADMIN")
