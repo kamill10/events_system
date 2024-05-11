@@ -26,7 +26,6 @@ public class MailConfig {
         javaMailSender.setUsername(env.getProperty("spring.mail.username"));
         String password = env.getProperty("spring.mail.password");
         javaMailSender.setPassword(new String(java.util.Base64.getDecoder().decode(password)));
-
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.ssl.enable", "true");
         javaMailProperties.put("mail.debug", "true");
