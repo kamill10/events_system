@@ -8,6 +8,7 @@ import { PersonalDataType } from "../types/PersonalData";
 import { ForgotPasswordType } from "../types/ForgotPassword";
 import { ResetPasswordType } from "../types/ResetPasswordType";
 import { jwtDecode } from "jwt-decode";
+import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 
 export const useAccount = () => {
   const sendNotification = useNotification();
@@ -22,9 +23,14 @@ export const useAccount = () => {
     setIsLogging,
     isFetching,
     setIsFetching,
+    adminLayout,
+    setAdminLayout,
   } = useAccountState();
 
   const isAuthenticated = !!token;
+  const isManager = parsedToken?.role.includes(AccountTypeEnum.MANAGER);
+  const isAdmin = parsedToken?.role.includes(AccountTypeEnum.ADMIN);
+  const isParticipant = parsedToken?.role.includes(AccountTypeEnum.PARTICIPANT);
 
   const logIn = async (formData: AccountLoginType) => {
     try {
@@ -78,12 +84,12 @@ export const useAccount = () => {
       setIsFetching(true);
       const { data } = await api.singIn(formData);
       setToken(data);
-      navigate(Pathnames.public.home);
       sendNotification({
         type: "success",
         description:
           "Successfully signed in! Check your e-mail box and verify your account!",
       });
+      navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
       sendNotification({
@@ -102,12 +108,12 @@ export const useAccount = () => {
       await api.verifyAccount(key);
       sendNotification({
         type: "success",
-        description: "Account has been confirmed!!",
+        description: "Account has been verified!!",
       });
     } catch (e) {
       console.error(e);
       sendNotification({
-        description: "Failed to confirm an account :(",
+        description: "Failed to verify an account :(",
         type: "error",
       });
       return e;
@@ -183,6 +189,7 @@ export const useAccount = () => {
         type: "success",
         description: "Password has been reset successfully!",
       });
+      navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
       sendNotification({
@@ -201,6 +208,9 @@ export const useAccount = () => {
     isLogging,
     isFetching,
     isAuthenticated,
+    isAdmin,
+    isParticipant,
+    isManager,
     logIn,
     logOut,
     signIn,
@@ -209,5 +219,7 @@ export const useAccount = () => {
     updateMyPersonalData,
     requestPasswordReset,
     resetMyPassword,
+    adminLayout,
+    setAdminLayout,
   };
 };

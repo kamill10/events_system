@@ -1,4 +1,4 @@
-import { AccountTypeEnum } from "./AccountType.ts";
+import { AccountTypeEnum } from "./enums/AccountType.enum.ts";
 
 export interface AccountType {
   id: string;
@@ -18,6 +18,7 @@ export interface AccountLoginType {
 export interface AccountSingInType {
   username: string;
   password: string;
+  confirmPassword: string;
   email: string;
   gender: number;
   firstName: string;

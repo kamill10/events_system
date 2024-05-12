@@ -19,6 +19,8 @@ interface AccountState {
   setIsLogging: (state: boolean) => void;
   isFetching: boolean;
   setIsFetching: (state: boolean) => void;
+  adminLayout: boolean;
+  setAdminLayout: (state: boolean) => void;
 }
 
 export interface TokenType {
@@ -43,6 +45,7 @@ export const AccountStateContextProvider = ({
   const [account, setAccount] = useState<AccountType | null>(null);
   const [isLogging, setIsLogging] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [adminLayout, setAdminLayout] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -64,6 +67,8 @@ export const AccountStateContextProvider = ({
         setIsLogging,
         isFetching,
         setIsFetching,
+        adminLayout,
+        setAdminLayout,
       }}
     >
       {children}

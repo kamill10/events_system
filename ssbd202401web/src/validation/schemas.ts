@@ -7,6 +7,10 @@ import { ResetPasswordType } from "../types/ResetPasswordType";
 export const signInValidationSchema = yup.object<AccountSingInType>().shape({
   username: yup.string().min(3).max(32).required(),
   password: yup.string().min(8).max(72).required(),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")], "Passwords don't match")
+    .required(),
   email: yup.string().email().required(),
   gender: yup.number().required(),
   firstName: yup.string().min(2).max(32).required(),

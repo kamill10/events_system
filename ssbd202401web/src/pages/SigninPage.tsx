@@ -38,6 +38,7 @@ export default function SigninPage() {
       firstName: "",
       lastName: "",
       language: navigator.language == "pl" ? "POLISH" : "ENGLISH",
+      confirmPassword: "",
     },
     resolver: yupResolver(signInValidationSchema),
   });
@@ -245,6 +246,40 @@ export default function SigninPage() {
             margin={"none"}
           >
             {errors.password?.message}
+          </Typography>
+          <Controller
+            name="confirmPassword"
+            control={control}
+            render={({ field }) => {
+              return (
+                <TextField
+                  sx={{ marginTop: "1rem" }}
+                  type="password"
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    setTimeout(
+                      () => trigger(e.target.name as keyof AccountSingInType),
+                      500,
+                    );
+                  }}
+                  id={field.name}
+                  label="Confirm password"
+                  name={field.name}
+                  autoComplete="confirm-password"
+                  fullWidth
+                  error={errors.confirmPassword ? true : false}
+                ></TextField>
+              );
+            }}
+          ></Controller>
+          <Typography
+            color={"red"}
+            fontSize={14}
+            width={"inherit"}
+            margin={"none"}
+          >
+            {errors.confirmPassword?.message}
           </Typography>
           <Controller
             name="gender"
