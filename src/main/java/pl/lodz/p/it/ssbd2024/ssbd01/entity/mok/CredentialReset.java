@@ -18,7 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "passreset")
-public class CredentialResetByAdmin extends AbstractEntity {
+public class CredentialReset extends AbstractEntity {
 
     @Column(nullable = false, unique = true)
     @NotNull
@@ -34,7 +34,7 @@ public class CredentialResetByAdmin extends AbstractEntity {
     @Future
     private LocalDateTime expirationDate;
 
-    public CredentialResetByAdmin(String token, Account account, LocalDateTime expirationDate) {
+    public CredentialReset(String token, Account account, LocalDateTime expirationDate) {
         this.token = token;
         this.account = account;
         this.expirationDate = expirationDate;
@@ -45,7 +45,7 @@ public class CredentialResetByAdmin extends AbstractEntity {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof CredentialResetByAdmin that)) {
+        if (!(o instanceof CredentialReset that)) {
             return false;
         }
         return Objects.equals(token, that.token);
