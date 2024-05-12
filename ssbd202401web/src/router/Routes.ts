@@ -14,6 +14,8 @@ import SpeakerPage from "../pages/SpeakerPage.tsx";
 import UserPage from "../pages/UserPage.tsx";
 import UsersPage from "../pages/UsersPage.tsx";
 import Logout from "../pages/Logout.tsx";
+import ForgotPasswordPage from "../pages/ForgotPasswordPage.tsx";
+import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
 export const PublicRoutes: RouteType[] = [
     {
         pathname: Pathnames.public.home,
@@ -42,7 +44,14 @@ export const PublicRoutes: RouteType[] = [
         name: "Sign in",
         renderOnNavbar: true,
         renderOnDropdown: true
-    }
+    },
+    {
+        pathname: Pathnames.public.forgotPassword,
+        page: ForgotPasswordPage,
+        name: "Forgot password",
+        renderOnNavbar: false,
+        renderOnDropdown: false
+    },
 ];
 
 export const ParticipantRoutes: RouteType[] = [
@@ -161,7 +170,6 @@ export const ManagerRoutes: RouteType[] = [
         renderOnNavbar: false,
         renderOnDropdown: true
     },
-
 ];
 
 export const AdminRoutes: RouteType[] = [
@@ -200,4 +208,11 @@ export const AdminRoutes: RouteType[] = [
         renderOnNavbar: false,
         renderOnDropdown: true
     },
+    {
+        pathname: Pathnames.public.resetPassword,
+        page: ResetPasswordPage,
+        name: "Reset password",
+        renderOnNavbar: false,
+        renderOnDropdown: false
+    }
 ]

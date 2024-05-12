@@ -8,6 +8,7 @@ interface AccountState {
     token: string | null
     setToken: (token: string | null) => void
     parsedToken: TokenType | null
+    setParsedToken: (token: TokenType) => void
     isLogging: boolean
     setIsLogging: (state: boolean) => void
     isFetching: boolean
@@ -40,7 +41,7 @@ export const AccountStateContextProvider = ({ children }: { children: ReactNode}
 
     return (
         <AccountStateContext.Provider
-            value={{account, setAccount, token, setToken, parsedToken, isLogging, setIsLogging, isFetching, setIsFetching}}
+            value={{account, setAccount, token, setToken, parsedToken, setParsedToken, isLogging, setIsLogging, isFetching, setIsFetching}}
         >
             {children}    
         </AccountStateContext.Provider>

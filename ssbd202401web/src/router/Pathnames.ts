@@ -5,7 +5,8 @@ export const Pathnames = {
         signIn: "/signin",
         events: "/events",
         forgotPassword: "/login/forgot-password",
-        verifyAccount: "/verify-account"
+        verifyAccount: "/verify-account",
+        resetPassword: "/login/reset-password"
     },
     participant: {
         home: "/",

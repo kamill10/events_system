@@ -7,6 +7,7 @@ import { useAccount } from "../hooks/useAccount.ts";
 import ParticipantLayout from "../layouts/ParticipantLayout.tsx";
 import { Pathnames } from "./Pathnames.ts";
 import ConfirmSignInPage from "../pages/VerifyAccount.tsx";
+import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
 
 export default function RouterComponent() {
     const { isAuthenticated } = useAccount();
@@ -35,6 +36,11 @@ export default function RouterComponent() {
             <Route path={Pathnames.public.verifyAccount} element={
                 <ThemeProvider theme={PublicTheme}>
                     <ConfirmSignInPage></ConfirmSignInPage>
+                </ThemeProvider>
+            }></Route>
+            <Route path={Pathnames.public.resetPassword} element={
+                <ThemeProvider theme={PublicTheme}>
+                    <ResetPasswordPage></ResetPasswordPage>
                 </ThemeProvider>
             }></Route>
         </Routes>

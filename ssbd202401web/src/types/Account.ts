@@ -21,5 +21,6 @@ export interface AccountSingInType {
     email: string;
     gender: number;
     firstName: string;
-    lastName: string
+    lastName: string;
+    language: string;
 }

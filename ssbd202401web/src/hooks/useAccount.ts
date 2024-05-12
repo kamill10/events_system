@@ -5,6 +5,9 @@ import { api } from "../axios/axios.config";
 import { Pathnames } from "../router/Pathnames";
 import useNotification from "./useNotification";
 import { PersonalDataType } from "../types/PersonalData";
+import { ForgotPasswordType } from "../types/ForgotPassword";
+import { ResetPasswordType } from "../types/ResetPasswordType";
+import { jwtDecode } from "jwt-decode";
 
 export const useAccount = () => {
     const sendNotification = useNotification();
@@ -19,12 +22,12 @@ export const useAccount = () => {
             const { data } = await api.logIn(formData);
             setToken(data);
             localStorage.setItem("token", data);
-            navigate(Pathnames.public.home);
-            await getMyAccount();
-            setTimeout(() => sendNotification({
+            sendNotification({
                 type: "success",
-                description: "Successfully logged in! Welcome, " + parsedToken?.sub
-            }), 10);
+                description: "Successfully logged in! Welcome, " + jwtDecode(data).sub
+            });
+            navigate(Pathnames.public.home);
+            getMyAccount();
         } catch (e) {
             console.error(e);
             sendNotification({
@@ -113,6 +116,7 @@ export const useAccount = () => {
                 description: "Failed to fetch an account :(",    
                 type: "error"
             });
+            return e;
         } finally {
             setIsFetching(false);
         }
@@ -133,6 +137,48 @@ export const useAccount = () => {
                 type: "error",
                 description: "Account update failed :("
             });
+            return e;
+        } finally {
+            setIsFetching(false);
+        }
+    }
+
+    const requestPasswordReset = async(data: ForgotPasswordType) => {
+        try {
+            setIsFetching(true);
+            await api.forgotMyPassword(data);
+            sendNotification({
+                type: "success",
+                description: "Request sent successfully! Check your mailbox!"
+            });
+            navigate(Pathnames.public.login);
+        } catch (e) {
+            console.error(e);
+            sendNotification({
+                type: "error",
+                description: "Request failed :("
+            });
+            return e;
+        } finally {
+            setIsFetching(false);
+        }
+    }
+
+    const resetMyPassword = async(data: ResetPasswordType) => {
+        try {
+            setIsFetching(true);
+            await api.resetMyPassword(data);
+            sendNotification({
+                type: "success",
+                description: "Password has been reset successfully!"
+            });
+        } catch (e) {
+            console.error(e);
+            sendNotification({
+                type: "error",
+                description: "Password reset failed :("
+            });
+            return e;
         } finally {
             setIsFetching(false);
         }
@@ -149,6 +195,8 @@ export const useAccount = () => {
         signIn,
         verifyAccount,
         getMyAccount,
-        updateMyPersonalData
+        updateMyPersonalData,
+        requestPasswordReset,
+        resetMyPassword
     }
 }
