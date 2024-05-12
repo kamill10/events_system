@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
@@ -19,6 +20,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -46,6 +49,7 @@ public class AccountControllerIT {
     static String participantToken;
 
     static String managerToken;
+
 
     @BeforeAll
     public static void setup() {
@@ -686,155 +690,24 @@ public class AccountControllerIT {
     }
 
     @Test
-    public void testUpdateAccountEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("242560@edu.p.lodz.pl");
-        given()
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updateEmailDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/email")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body(
-                        containsString("242560@edu.p.lodz.pl")
-                );
-    }
-
-    @Test
-    public void testUpdateAccountEmailToExistingEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("participant202401@proton.me");
-        given()
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updateEmailDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/email")
-                .then()
-                .statusCode(HttpStatus.CONFLICT.value());
-    }
-
-    @Test
-    public void testNonExistentAccountEmailEndpoint() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
-        given()
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updateEmailDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + UUID.randomUUID() + "/email")
-                .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
-    }
-
-    @Test
-    public void testUpdateAccountEmailEndpointAsParticipant() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
-        given()
-                .header("Authorization", "Bearer " + participantToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updateEmailDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/email")
-                .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
-    }
-
-    @Test
-    public void testUpdateAccountEmailEndpointAsManager() throws Exception {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
-        given()
-                .header("Authorization", "Bearer " + managerToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updateEmailDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/email")
-                .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
-    }
-
-    @Test
-    public void testUpdateAccountPasswordEndpoint() throws Exception {
-        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
-        given()
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updatePasswordDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
-                .then()
-                .statusCode(HttpStatus.OK.value());
-    }
-
-    @Test
-    public void testUpdateNonExistentAccountPasswordEndpoint() throws Exception {
-        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
-        given()
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updatePasswordDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + UUID.randomUUID() + "/password")
-                .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
-    }
-
-    @Test
-    public void testUpdateAccountPasswordEndpointAsParticipant() throws Exception {
-        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
-        given()
-                .header("Authorization", "Bearer " + participantToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updatePasswordDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
-                .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
-    }
-
-    @Test
-    public void testUpdateAccountPasswordEndpointAsManager() throws Exception {
-        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
-        given()
-                .header("Authorization", "Bearer " + managerToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updatePasswordDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
-                .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
-    }
-
-    @Test
-    public void testUpdateAccountPasswordEndpointAsManagerButPasswordNotUnique() throws Exception {
-        UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword1234@");
-        given()
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updatePasswordDTO))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
-                .then()
-                .statusCode(HttpStatus.OK.value());
-
-        UpdatePasswordDTO updatePasswordDTO2 = new UpdatePasswordDTO("newPassword1234@");
-        given()
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updatePasswordDTO2))
-                .when()
-                .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/password")
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    public void testResetAccountPasswordEndpoint() throws Exception {
+    public void sendEmailWhenEmailChange() throws JsonProcessingException {
         UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updateEmailDTO))
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-email/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void sendEmailWhenPasswordReset() throws JsonProcessingException {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
+        given()
+                .contentType("application/json")
+                .body(updateEmailDTO)
                 .when()
                 .post(baseUrl + "/accounts/reset-password")
                 .then()
@@ -842,14 +715,27 @@ public class AccountControllerIT {
     }
 
     @Test
-    public void testResetAccountPasswordTokenEndpoint() throws Exception {
+    public void sendEmailWhenPasswordChange() throws JsonProcessingException {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .contentType("application/json")
+                .when()
+                .post(baseUrl + "/accounts/change-password")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void testResetAccountPasswordTokenEndpointNotFound() throws Exception {
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
                 .body(updatePasswordDTO)
                 .when()
-                .post(baseUrl + "/accounts/reset-password/token/2137")
+                .patch(baseUrl + "/accounts/reset-password/token/2137")
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }

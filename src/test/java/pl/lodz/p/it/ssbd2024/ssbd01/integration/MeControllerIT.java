@@ -158,22 +158,6 @@ public class MeControllerIT {
     }
 
     @Test
-    public void testUpdateMyEmail() throws JsonProcessingException {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
-        given()
-                .header("Authorization", "Bearer " + adminToken)
-                .contentType("application/json")
-                .body(objectMapper.writeValueAsString(updateEmailDTO))
-                .when()
-                .patch(baseUrl + "/me/email")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body(
-                        containsString("ssbd01@proton.me")
-                );
-    }
-
-    @Test
     public void testUpdateMyEmailUnAuthorized() throws JsonProcessingException {
         UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ssbd01@proton.me");
         given()

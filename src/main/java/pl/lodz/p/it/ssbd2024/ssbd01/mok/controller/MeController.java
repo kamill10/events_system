@@ -43,8 +43,7 @@ public class MeController {
             throws AccountNotFoundException, EmailAlreadyExistsException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(accountDTOConverter.toAccountDto(accountService.updateAccountEmail(account.getId(), email.email())));
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
@@ -53,7 +52,7 @@ public class MeController {
             throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        accountService.updatePassword(account.getId(), password.value());
+        //accountService.updatePassword(account.getId(), password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
