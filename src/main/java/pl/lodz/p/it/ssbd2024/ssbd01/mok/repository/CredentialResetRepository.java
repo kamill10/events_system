@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
-public interface CredentialResetAdminRepository extends JpaRepository<CredentialReset, UUID> {
+public interface CredentialResetRepository extends JpaRepository<CredentialReset, UUID> {
     Optional<CredentialReset> findByToken(String token);
 
     void deleteAllByExpirationDateBefore(LocalDateTime expirationDate);
