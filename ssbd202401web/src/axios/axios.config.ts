@@ -101,5 +101,5 @@ export const api = {
     updateMyPersonalData: (data: PersonalDataType): ApiResponseType<void> => apiWithEtag.put("/me/user-data", data),
     getMyAccount: (): ApiResponseType<AccountType> => apiWithEtag.get("/me"),
     forgotMyPassword: (data: ForgotPasswordType) => apiForAnon.post("/accounts/reset-password", data),
-    resetMyPassword: (data: ResetPasswordType) => apiForAnon.post("/accounts/reset-password/token/" + data.token, { password: data.password })
+    resetMyPassword: (data: ResetPasswordType) => apiForAnon.patch("/accounts/reset-password/token/" + data.token, { value: data.newPassword })
 }

@@ -1,4 +1,5 @@
 export interface ResetPasswordType {
-    token: string,
-    password: string
+    token?: string | null
+    newPassword: string
+    confirmNewPassword: string
 }

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { TokenType, useAccountState } from "../context/AccountContext";
+import { useAccountState } from "../context/AccountContext";
 import { AccountLoginType, AccountSingInType } from "../types/Account";
 import { api } from "../axios/axios.config";
 import { Pathnames } from "../router/Pathnames";
@@ -22,10 +22,10 @@ export const useAccount = () => {
             const { data } = await api.logIn(formData);
             setToken(data);
             localStorage.setItem("token", data);
-            setTimeout(() => sendNotification({
+            sendNotification({
                 type: "success",
                 description: "Successfully logged in! Welcome, " + jwtDecode(data).sub
-            }), 10);
+            });
             navigate(Pathnames.public.home);
             getMyAccount();
         } catch (e) {

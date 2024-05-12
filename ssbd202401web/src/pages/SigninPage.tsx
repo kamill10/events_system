@@ -24,7 +24,6 @@ export default function SigninPage() {
     });
 
     const onSubmit: SubmitHandler<AccountSingInType> = async (data) => {
-        console.log(data);
         await signIn(data);
     }
 

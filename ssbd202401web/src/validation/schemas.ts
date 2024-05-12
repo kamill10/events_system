@@ -2,6 +2,7 @@ import * as yup from "yup";
 import { AccountSingInType } from "../types/Account";
 import { PersonalDataType } from "../types/PersonalData";
 import { ForgotPasswordType } from "../types/ForgotPassword";
+import { ResetPasswordType } from "../types/ResetPasswordType";
 
 export const signInValidationSchema = yup.object<AccountSingInType>().shape({
     username: yup.string().min(3).max(32).required(),
@@ -21,4 +22,9 @@ export const changePersonalDataSchema = yup.object<PersonalDataType>().shape({
 
 export const ForgotPasswordSchema = yup.object<ForgotPasswordType>().shape({
     email: yup.string().email().required()
+});
+
+export const ResetPasswordSchema = yup.object<ResetPasswordType>().shape({
+    newPassword: yup.string().min(8).max(72).required(),
+    confirmNewPassword: yup.string().min(8).max(72).required()
 });

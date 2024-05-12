@@ -52,13 +52,6 @@ export const PublicRoutes: RouteType[] = [
         renderOnNavbar: false,
         renderOnDropdown: false
     },
-    {
-        pathname: Pathnames.public.resetPassword,
-        page: ResetPasswordPage,
-        name: "Reset password",
-        renderOnDropdown: false,
-        renderOnNavbar: false
-    }
 ];
 
 export const ParticipantRoutes: RouteType[] = [
@@ -177,7 +170,6 @@ export const ManagerRoutes: RouteType[] = [
         renderOnNavbar: false,
         renderOnDropdown: true
     },
-
 ];
 
 export const AdminRoutes: RouteType[] = [
@@ -216,4 +208,11 @@ export const AdminRoutes: RouteType[] = [
         renderOnNavbar: false,
         renderOnDropdown: true
     },
+    {
+        pathname: Pathnames.public.resetPassword,
+        page: ResetPasswordPage,
+        name: "Reset password",
+        renderOnNavbar: false,
+        renderOnDropdown: false
+    }
 ]
