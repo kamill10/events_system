@@ -16,7 +16,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.CredentialResetAdminRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.CredentialResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
@@ -35,7 +35,7 @@ import java.util.UUID;
 public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
-    private final CredentialResetAdminRepository credentialResetAdminRepository;
+    private final CredentialResetRepository credentialResetRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final Environment env;
@@ -224,7 +224,7 @@ public class AccountService {
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
-        credentialResetAdminRepository.deleteByToken(token);
+        credentialResetRepository.deleteByToken(token);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -236,12 +236,12 @@ public class AccountService {
         Account accountToUpdate = verifyCredentialReset(token);
         accountToUpdate.setEmail(newEmail);
         accountMokRepository.saveAndFlush(accountToUpdate);
-        credentialResetAdminRepository.deleteByToken(token);
+        credentialResetRepository.deleteByToken(token);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account verifyCredentialReset(String token) throws AccountNotFoundException, PasswordTokenExpiredException {
-        Optional<CredentialReset> credentialReset = credentialResetAdminRepository.findByToken(token);
+        Optional<CredentialReset> credentialReset = credentialResetRepository.findByToken(token);
         if (credentialReset.isEmpty()) {
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
         }
@@ -273,14 +273,14 @@ public class AccountService {
         var expiration = Integer.parseInt(Objects.requireNonNull(env.getProperty("credential_change.token.expiration.minutes")));
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
         var newResetIssue = new CredentialReset(randString, account, expirationDate);
-        credentialResetAdminRepository.saveAndFlush(newResetIssue);
+        credentialResetRepository.saveAndFlush(newResetIssue);
         return newResetIssue;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @Scheduled(fixedRate = 120000)
     public void deleteExiredTokens() {
-        credentialResetAdminRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
+        credentialResetRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
 
