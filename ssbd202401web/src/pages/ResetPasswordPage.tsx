@@ -22,7 +22,7 @@ import { useAccount } from "../hooks/useAccount";
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
-  const { handleSubmit, control, trigger } = useForm<ResetPasswordType>({
+  const { handleSubmit, control, trigger, formState: {errors} } = useForm<ResetPasswordType>({
     defaultValues: {
       token: searchParams.get("token"),
       newPassword: "",
@@ -121,12 +121,21 @@ export default function ResetPasswordPage() {
                         id={field.name}
                         label="New password"
                         name={field.name}
+                        error={errors.newPassword ? true : false}
                         autoComplete="new-password"
                         autoFocus
                       />
                     );
                   }}
                 />
+                <Typography
+                  color={"red"}
+                  fontSize={14}
+                  width={"inherit"}
+                  margin={"none"}
+                >
+                  {errors.newPassword?.message}
+                </Typography>
                 <Controller
                   name="confirmNewPassword"
                   control={control}
@@ -149,11 +158,20 @@ export default function ResetPasswordPage() {
                         id={field.name}
                         label="Confirm new password"
                         name={field.name}
+                        error={errors.confirmNewPassword ? true : false}
                         autoComplete="confirm-new-password"
                       />
                     );
                   }}
                 />
+                <Typography
+                  color={"red"}
+                  fontSize={14}
+                  width={"inherit"}
+                  margin={"none"}
+                >
+                  {errors.confirmNewPassword?.message}
+                </Typography>
                 <Button
                   type="submit"
                   variant="contained"
