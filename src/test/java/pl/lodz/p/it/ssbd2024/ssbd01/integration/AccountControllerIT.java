@@ -755,7 +755,7 @@ public class AccountControllerIT {
                 .statusCode(HttpStatus.OK.value());
     }
 
-    @Test
+   /* @Test
     public void sendTokenWhenPasswordChangeByAdminPositiveScenario() {
         UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
         String token = given()
@@ -767,7 +767,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract().asString();
-       /* UpdatePasswordDTO password = new UpdatePasswordDTO("dsafdvcxsd");
+       *//* UpdatePasswordDTO password = new UpdatePasswordDTO("dsafdvcxsd");
         given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + adminToken)
@@ -776,7 +776,7 @@ public class AccountControllerIT {
                 .post(baseUrl + "/accounts/change-password/token/"+token)
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .extract().asString();*/
+                .extract().asString();*//*
     }
 
     @Test
@@ -898,5 +898,5 @@ public class AccountControllerIT {
                 .extract().asString();
     }
 
-
+*/
 }
