@@ -1,5 +1,5 @@
 export interface ResetPasswordType {
-    token?: string | null
-    newPassword: string
-    confirmNewPassword: string
+  token?: string | null;
+  newPassword: string;
+  confirmNewPassword: string;
 }

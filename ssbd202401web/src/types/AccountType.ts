@@ -1,5 +1,5 @@
 export enum AccountTypeEnum {
-    ADMIN = 'ADMIN',
-    PARTICIPANT = 'PARTICIPANT',
-    MANAGER = 'MANAGER',
+  ADMIN = "ADMIN",
+  PARTICIPANT = "PARTICIPANT",
+  MANAGER = "MANAGER",
 }
