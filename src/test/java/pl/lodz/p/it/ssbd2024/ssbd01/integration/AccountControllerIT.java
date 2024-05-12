@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -740,5 +742,161 @@ public class AccountControllerIT {
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
+    @Test
+    public void sendEmailWhenPasswordResetAndEmailNotExisist() {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("niematakiego@proton.me");
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/reset-password")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
 
+   /* @Test
+    public void sendTokenWhenPasswordChangeByAdminPositiveScenario() {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
+        String token = given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-password")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+       *//* UpdatePasswordDTO password = new UpdatePasswordDTO("dsafdvcxsd");
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(password)
+                .when()
+                .post(baseUrl + "/accounts/change-password/token/"+token)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();*//*
+    }
+
+    @Test
+    public void sendTokenWhenPasswordChangeByAdminButPassowrdNotUnique() {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
+        String token = given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-password")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+        UpdatePasswordDTO password = new UpdatePasswordDTO("P@ssw0rd");
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(password)
+                .when()
+                .post(baseUrl + "/accounts/change-password/token/"+token)
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract().asString();
+    }
+
+    @Test
+    public void sendTokenWhenPasswordChangeByAdminButTokenNotExist() {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-password")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+        UpdatePasswordDTO password = new UpdatePasswordDTO("dsafdvcxsd");
+        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(password)
+                .when()
+                .post(baseUrl + "/accounts/change-password/token/"+randString)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .extract().asString();
+    }
+
+    @Test
+    public void sendTokenWhenEmailChangeByAdminPositiveScenario() {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("nowy202401@proton.me");
+        String token = given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-email/8b25c94f-f10f-4285-8eb2-39ee1c4002f1")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-email/token/"+token)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+    }
+
+    @Test
+    public void sendTokenWhenEmailChangeByAdminButTokenNotExist() {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("nowy202401@proton.me");
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-email/8b25c94f-f10f-4285-8eb2-39ee1c4002f1")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-email/token/"+randString)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .extract().asString();
+    }
+
+    @Test
+    public void sendTokenWhenEmailChangeByAdminButEmailAlreadyExists() {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("participant202401@proton.me");
+        String token = given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-email/8b25c94f-f10f-4285-8eb2-39ee1c4002f1")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-email/token/"+token)
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value())
+                .extract().asString();
+    }
+
+*/
 }

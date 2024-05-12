@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UpdatePasswordDTO(
-        @NotNull
+
         @Size(min = 8, max = 64)
         String value
 ) {
