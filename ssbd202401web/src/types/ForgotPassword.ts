@@ -1,3 +1,3 @@
 export type ForgotPasswordType = {
-    email: string
+  email: string;
 };

@@ -1,5 +1,5 @@
 export interface PersonalDataType {
-    firstName: string;
-    lastName: string;
-    gender: number;
+  firstName: string;
+  lastName: string;
+  gender: number;
 }

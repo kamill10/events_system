@@ -1,3 +1,3 @@
 export interface LoginPagePropType {
-    color: string
+  color: string;
 }
