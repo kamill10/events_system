@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 
 @RestController
@@ -33,7 +34,8 @@ public class AuthenticationController {
 
     @PostMapping("/verify-account/{token}")
     public ResponseEntity<?> verifyAccount(@PathVariable String token)
-            throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException {
+            throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
+            RoleNotFoundException {
         authenticationService.verifyAccount(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

@@ -19,6 +19,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountConfirmation;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ConfirmationReminder;
@@ -26,11 +27,9 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountConfirmationRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.ConfirmationReminderRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.security.SecureRandom;
@@ -48,6 +47,7 @@ public class AuthenticationService {
     private final AccountAuthRepository accountAuthRepository;
     private final AccountConfirmationRepository accountConfirmationRepository;
     private final ConfirmationReminderRepository confirmationReminderRepository;
+    private final RoleRepository roleRepository;
     private final JwtService jwtService;
     private final JWTWhitelistRepository jwtWhitelistRepository;
     private final AuthenticationManager authenticationManager;
@@ -110,7 +110,8 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void verifyAccount(String token)
-            throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException {
+            throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
+            RoleNotFoundException {
         var accountConfirmation = accountConfirmationRepository.findByToken(token)
                 .orElseThrow(() -> new AccountConfirmationTokenNotFoundException(ExceptionMessages.CONFIRMATION_TOKEN_NOT_FOUND));
         if (accountConfirmation.getExpirationDate().isBefore(LocalDateTime.now())) {
@@ -120,6 +121,8 @@ public class AuthenticationService {
         var account = accountMokRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setVerified(true);
+        account.addRole(roleRepository.findByName(AccountRoleEnum.PARTICIPANT)
+                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND)));
         accountMokRepository.saveAndFlush(account);
         accountConfirmationRepository.delete(accountConfirmation);
         confirmationReminderRepository.deleteByAccount(account);
