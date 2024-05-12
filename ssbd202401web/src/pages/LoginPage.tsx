@@ -17,14 +17,17 @@ import { AccountLoginType } from "../types/Account";
 import { useAccount } from "../hooks/useAccount";
 import { Link } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { LogInSchema } from "../validation/schemas";
 
 export default function LoginPage() {
   const { logIn } = useAccount();
-  const { handleSubmit, control } = useForm<AccountLoginType>({
+  const { handleSubmit, control, formState: {errors}, trigger } = useForm<AccountLoginType>({
     defaultValues: {
       username: "",
       password: "",
     },
+    resolver: yupResolver(LogInSchema)
   });
 
   const onSubmit: SubmitHandler<AccountLoginType> = (data) => {
@@ -79,16 +82,30 @@ export default function LoginPage() {
                       required
                       fullWidth
                       value={field.value}
-                      onChange={field.onChange}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setTimeout(
+                          () => trigger(e.target.name as keyof AccountLoginType),
+                          500,
+                        )}}
                       id={field.name}
                       label="Username"
                       name={field.name}
                       autoComplete="Username"
                       autoFocus
+                      error={errors.username ? true : false}
                     />
                   );
                 }}
               />
+              <Typography
+                color={"red"}
+                fontSize={14}
+                width={"inherit"}
+                margin={"none"}
+              >
+                {errors.username?.message}
+              </Typography>
               <Controller
                 name="password"
                 control={control}
@@ -99,16 +116,30 @@ export default function LoginPage() {
                       required
                       fullWidth
                       value={field.value}
-                      onChange={field.onChange}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setTimeout(
+                          () => trigger(e.target.name as keyof AccountLoginType),
+                          500,
+                        )}}
                       type="password"
                       id={field.name}
                       label="Password"
                       name={field.name}
+                      error={errors.password ? true : false }
                       autoComplete="current-password"
                     />
                   );
                 }}
               />
+              <Typography
+                color={"red"}
+                fontSize={14}
+                width={"inherit"}
+                margin={"none"}
+              >
+                {errors.password?.message}
+              </Typography>
               <Button
                 type="submit"
                 fullWidth
