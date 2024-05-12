@@ -6,6 +6,7 @@ import {
   Menu,
   MenuItem,
   Slide,
+  Switch,
   Toolbar,
   Typography,
   useScrollTrigger,
@@ -14,9 +15,16 @@ import NavbarPropType from "../types/NavbarPropType";
 import LinkComponent from "./LinkComponent";
 import HeadingComponent from "./HeadingComponent";
 import { MouseEvent, useState } from "react";
+import { useAccount } from "../hooks/useAccount";
 
 export default function NavbarComponent(props: NavbarPropType) {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const { adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
+
+  const handleSwitchClick = () => {
+    setAdminLayout(!adminLayout);
+    console.log(adminLayout);
+  };
 
   function handleDropDownOpen(event: MouseEvent<HTMLElement>) {
     setAnchorElUser(event.currentTarget);
@@ -72,6 +80,13 @@ export default function NavbarComponent(props: NavbarPropType) {
               })}
             </Box>
             <Box sx={{ flexGrow: 0 }}>
+              {isAdmin && isManager && (
+                <Switch
+                  color="secondary"
+                  onChange={handleSwitchClick}
+                  checked={adminLayout}
+                ></Switch>
+              )}
               <IconButton onClick={handleDropDownOpen}>
                 <Avatar></Avatar>
               </IconButton>

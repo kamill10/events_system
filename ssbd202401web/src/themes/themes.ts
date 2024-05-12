@@ -1,16 +1,31 @@
 import { createTheme } from "@mui/material";
 
 const colors = {
-  public: "#5800c4",
-  manager: "#001fa8",
-  admin: "#000000",
-  participant: "#ba0c00",
+  public: {
+    primary: "#1C1678",
+    secondary: "#8576FF",
+  },
+  manager: {
+    primary: "#4D869C",
+    secondary: "#7AB2B2",
+  },
+  admin: {
+    primary: "#153448",
+    secondary: "#3C5B6F",
+  },
+  participant: {
+    primary: "#A34343",
+    secondary: "#E9C874",
+  },
 };
 
 export const ParticipantTheme = createTheme({
   palette: {
     primary: {
-      main: colors.participant,
+      main: colors.participant.primary,
+    },
+    secondary: {
+      main: colors.participant.secondary,
     },
   },
 });
@@ -18,7 +33,10 @@ export const ParticipantTheme = createTheme({
 export const AdminTheme = createTheme({
   palette: {
     primary: {
-      main: colors.admin,
+      main: colors.admin.primary,
+    },
+    secondary: {
+      main: colors.admin.secondary,
     },
   },
 });
@@ -26,7 +44,10 @@ export const AdminTheme = createTheme({
 export const ManagerTheme = createTheme({
   palette: {
     primary: {
-      main: colors.manager,
+      main: colors.manager.primary,
+    },
+    secondary: {
+      main: colors.manager.secondary,
     },
   },
 });
@@ -34,7 +55,10 @@ export const ManagerTheme = createTheme({
 export const PublicTheme = createTheme({
   palette: {
     primary: {
-      main: colors.public,
+      main: colors.public.primary,
+    },
+    secondary: {
+      main: colors.public.secondary,
     },
   },
 });

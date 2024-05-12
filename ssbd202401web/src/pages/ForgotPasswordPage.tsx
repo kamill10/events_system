@@ -67,7 +67,7 @@ export default function ForgotPasswordPage() {
             alignItems: "center",
           }}
         >
-          <Typography variant="h3" marginBottom={15}>
+          <Typography variant="h3" marginBottom={15} textAlign={"center"}>
             Reset your password
           </Typography>
           <Box
