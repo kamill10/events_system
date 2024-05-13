@@ -116,7 +116,7 @@ public class AccountController {
 
     @PatchMapping("/reset-password/token/{token}")
     public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody UpdatePasswordDTO password)
-            throws PasswordTokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
+            throws TokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException {
         accountService.resetPasswordWithToken(token, password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -137,7 +137,7 @@ public class AccountController {
 
     @PatchMapping("/change-email/token/{token}")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token, @RequestBody UpdateEmailDTO email)
-            throws PasswordTokenExpiredException, AccountNotFoundException, EmailAlreadyExistsException {
+            throws TokenExpiredException, AccountNotFoundException, EmailAlreadyExistsException, TokenNotFoundException {
         accountService.changeEmailWithToken(token, email.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }

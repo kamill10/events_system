@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -57,10 +58,27 @@ public class MeController {
         );
     }
 
+    @PostMapping("/change-email")
+    public ResponseEntity<String> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
+            throws AccountNotFoundException, WrongOldPasswordException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Account account = (Account) authentication.getPrincipal();
+        return ResponseEntity.status(HttpStatus.OK).body(
+                accountService.changeMyEmailSendMail(account.getId(), updateMyEmailDTO.password(), updateMyEmailDTO.newEmail())
+        );
+    }
+
     @PatchMapping("/change-password/token/{token}")
     public ResponseEntity<?> changePasswordWithToken(@PathVariable String token)
-            throws PasswordTokenExpiredException, AccountNotFoundException {
+            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
         accountService.changeMyPasswordWithToken(token);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping("/change-email/token/{token}")
+    public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
+            throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
+        accountService.changeMyEmailWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
