@@ -11,10 +11,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
-@Entity
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Table(name = "credential_change_token")
+@MappedSuperclass
 public abstract class AbstractCredentialChange extends AbstractEntity {
     @Column(nullable = false, unique = true)
     @NotNull

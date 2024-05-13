@@ -8,6 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.function.ThrowingSupplier;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.CredentialUpdateArgumentDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.MailResetIssuePropertiesDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
 
 @Service
@@ -34,8 +38,9 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final Environment env;
     private final PasswordHistoryRepository passwordHistoryRepository;
-    private final GenericChangeCredentialTokenRepository<ChangeMyPassword> changeMyPasswordRepository;
-    private final GenericChangeCredentialTokenRepository<CredentialReset> resetMyCredentialRepository;
+    private final ChangeMyPasswordRepository changeMyPasswordRepository;
+    private final ChangeMyEmailRepository changeMyEmailRepository;
+    private final CredentialResetRepository resetMyCredentialRepository;
 
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -212,9 +217,9 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void resetPasswordWithToken(String token, String newPassword)
-            throws AccountNotFoundException, PasswordTokenExpiredException, ThisPasswordAlreadyWasSetInHistory {
+            throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException {
         Account accountToUpdate = verifyCredentialReset(token,resetMyCredentialRepository);
-        if (isPasswordInHistory(accountToUpdate, newPassword)) {
+        if (isPasswordInHistory(accountToUpdate.getId(), newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
@@ -225,7 +230,7 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void changeEmailWithToken(String token, String newEmail)
-            throws PasswordTokenExpiredException, AccountNotFoundException, EmailAlreadyExistsException {
+            throws TokenExpiredException, AccountNotFoundException, EmailAlreadyExistsException, TokenNotFoundException {
         if (accountMokRepository.findByEmail(newEmail).isPresent()) {
             throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
@@ -236,34 +241,106 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public String changeMyPasswordSendMail(UUID id, String oldPassword, String newPassword)
-            throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, WrongOldPasswordException {
-        Account account = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        if (isPasswordInHistory(account, newPassword)) {
-            throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
-        }
-        if (!passwordEncoder.matches(oldPassword, account.getPassword())) {
-            throw new WrongOldPasswordException(ExceptionMessages.WRONG_OLD_PASSWORD);
-        }
-        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-        var expiration = Integer.parseInt(Objects.requireNonNull(env.getProperty("credential_change.token.expiration.minutes")));
-        var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        String password = passwordEncoder.encode(newPassword);
-        var newResetIssue = new ChangeMyPassword(randString, account, expirationDate, password);
-        changeMyPasswordRepository.saveAndFlush(newResetIssue);
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/change-my-password?token=");
-        sb.append(newResetIssue.getToken());
-        sb.append("'>Link</a>");
-        mailService.sendEmail(newResetIssue.getAccount(), "mail.password.changed.by.you.subject",
-                "mail.password.changed.by.you.body", new Object[] {sb});
-        return newResetIssue.getToken();
+    public void changeMyEmailWithToken(String token)
+            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException {
+
+        Account accountToUpdate = verifyCredentialReset(token,changeMyEmailRepository);
+        var changeMyEmail = changeMyEmailRepository.findByToken(token)
+                .orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.EMAIL_RESET_TOKEN_NOT_FOUND));
+        accountToUpdate.setEmail(changeMyEmail.getEmail());
+        accountMokRepository.saveAndFlush(accountToUpdate);
+        changeMyEmailRepository.deleteByToken(token);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public String changeMyPasswordSendMail(UUID id, String currentPassword, String newPassword)
+            throws AccountNotFoundException, WrongOldPasswordException {
+        ThrowingSupplier<Exception> passwordHistoryCheck = () -> {
+            if (isPasswordInHistory(id, newPassword)) {
+                throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
+            }
+            return null;
+        };
+        return getNewResetIssue(id,
+                currentPassword,
+                passwordEncoder.encode(newPassword),
+                passwordHistoryCheck,
+                new MailResetIssuePropertiesDTO("change-my-password",
+                        "mail.password.changed.by.you.subject",
+                        "mail.password.changed.by.you.body"),
+                this::getChangeMyPassword);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public String changeMyEmailSendMail(UUID id, String currentPassword, String newEmail)
+            throws AccountNotFoundException, WrongOldPasswordException {
+        return getNewResetIssue(id,
+                currentPassword,
+                newEmail,
+                null,
+                new MailResetIssuePropertiesDTO("change-my-email",
+                "mail.email.changed.by.you.subject",
+                "mail.email.changed.by.you.body"),
+                this::getChangeMyEmail);
+    }
+
+    private String getNewResetIssue(UUID id,
+                                    String currentPassword,
+                                    String newCredential,
+                                    ThrowingSupplier<Exception> additionalCondition,
+                                    MailResetIssuePropertiesDTO mailResetIssuePropertiesDTO,
+                                    Function<CredentialUpdateArgumentDTO, AbstractCredentialChange> tokenFunction)
+            throws WrongOldPasswordException, AccountNotFoundException {
+        Account account = accountMokRepository.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
+            throw new WrongOldPasswordException(ExceptionMessages.WRONG_OLD_PASSWORD);
+        }
+        if (additionalCondition != null) {
+            additionalCondition.get();
+        }
+        var newResetIssue = tokenFunction.apply(new CredentialUpdateArgumentDTO(newCredential, account));
+        sendMailForMyCredentialReset(mailResetIssuePropertiesDTO.endpointName(),
+                mailResetIssuePropertiesDTO.mailSubject(),
+                mailResetIssuePropertiesDTO.mailBody(),
+                newResetIssue);
+        return newResetIssue.getToken();
+    }
+
+    private void sendMailForMyCredentialReset(String endpointName, String mailSubject, String mailBody, AbstractCredentialChange newResetIssue) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");
+        sb.append(endpointName);
+        sb.append("?token=");
+        sb.append(newResetIssue.getToken());
+        sb.append("'>Link</a>");
+        mailService.sendEmail(newResetIssue.getAccount(), mailSubject,
+                mailBody, new Object[] {sb});
+    }
+
+    private AbstractCredentialChange getChangeMyPassword(CredentialUpdateArgumentDTO credentialUpdateArgumentDTO) {
+        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        var expiration = Integer.parseInt(Objects.requireNonNull(env.getProperty("credential_change.token.expiration.minutes")));
+        var expirationDate = LocalDateTime.now().plusMinutes(expiration);
+        var newResetIssue = new ChangeMyPassword(randString, credentialUpdateArgumentDTO.account(),
+                expirationDate, credentialUpdateArgumentDTO.newCredential());
+        changeMyPasswordRepository.saveAndFlush(newResetIssue);
+        return newResetIssue;
+    }
+
+    private AbstractCredentialChange getChangeMyEmail(CredentialUpdateArgumentDTO credentialUpdateArgumentDTO) {
+        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        var expiration = Integer.parseInt(Objects.requireNonNull(env.getProperty("credential_change.token.expiration.minutes")));
+        var expirationDate = LocalDateTime.now().plusMinutes(expiration);
+        var newResetIssue = new ChangeMyEmail(randString, credentialUpdateArgumentDTO.account(),
+                expirationDate, credentialUpdateArgumentDTO.newCredential());
+        return changeMyEmailRepository.saveAndFlush(newResetIssue);
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void changeMyPasswordWithToken(String token)
-            throws PasswordTokenExpiredException, AccountNotFoundException {
+            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
         Account account = verifyCredentialReset(token, changeMyPasswordRepository);
         String password = changeMyPasswordRepository.findByToken(token).get().getPassword();
         account.setPassword(password);
@@ -275,13 +352,13 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public <T extends AbstractCredentialChange> Account verifyCredentialReset(String token, GenericChangeCredentialTokenRepository<T> repo)
-            throws AccountNotFoundException, PasswordTokenExpiredException {
+            throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
         Optional<T> credentialReset = repo.findByToken(token);
         if (credentialReset.isEmpty()) {
-            throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
+            throw new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND);
         }
         if (credentialReset.get().getExpirationDate().isBefore(LocalDateTime.now())) {
-            throw new PasswordTokenExpiredException(ExceptionMessages.PASS_TOKEN_EXPIRED);
+            throw new TokenExpiredException(ExceptionMessages.TOKEN_EXPIRED);
         }
         return accountMokRepository.findByEmail(credentialReset.get().getAccount().getEmail())
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
@@ -297,8 +374,8 @@ public class AccountService {
         }
     }
 
-    private boolean isPasswordInHistory(Account account, String password) {
-        return passwordHistoryRepository.findPasswordHistoryByAccount(account)
+    private boolean isPasswordInHistory(UUID accountId, String password) {
+        return passwordHistoryRepository.findPasswordHistoryByAccount_Id(accountId)
                 .stream().anyMatch(passwordHistory -> passwordEncoder.matches(password, passwordHistory.getPassword()));
     }
 
@@ -314,7 +391,7 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @Scheduled(fixedRate = 120000)
-    public void deleteExiredTokens() {
+    public void deleteExpiredTokens() {
         resetMyCredentialRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
         changeMyPasswordRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }

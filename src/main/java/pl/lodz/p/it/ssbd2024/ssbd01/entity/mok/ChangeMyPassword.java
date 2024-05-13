@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "change_my_credential")
+@Table(name = "change_my_password")
 public class ChangeMyPassword extends AbstractCredentialChange {
 
     @Column(nullable = false)
