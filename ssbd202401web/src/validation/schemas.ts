@@ -50,7 +50,15 @@ export const ResetPasswordSchema = yup.object<ResetPasswordType>().shape({
 
 export const ChangeMyPasswordSchema = yup.object<ChangeMyPasswordType>().shape({
   oldPassword: yup.string().min(8).max(64).required(),
-  newPassword: yup.string().min(8).max(64).required(),
+  newPassword: yup
+    .string()
+    .min(8)
+    .max(64)
+    .required()
+    .notOneOf(
+      [yup.ref("oldPassword")],
+      "New password must be different from the old one",
+    ),
   confirmNewPassword: yup
     .string()
     .oneOf([yup.ref("newPassword")], "Passwords don't match")

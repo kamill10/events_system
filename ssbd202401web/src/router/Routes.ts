@@ -16,6 +16,8 @@ import UsersPage from "../pages/UsersPage.tsx";
 import Logout from "../pages/Logout.tsx";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
+import ConfirmPasswordUpdate from "../pages/ConfirmPasswordUpdate.tsx";
+
 export const PublicRoutes: RouteType[] = [
   {
     pathname: Pathnames.public.home,
@@ -49,6 +51,13 @@ export const PublicRoutes: RouteType[] = [
     pathname: Pathnames.public.forgotPassword,
     page: ForgotPasswordPage,
     name: "Forgot password",
+    renderOnNavbar: false,
+    renderOnDropdown: false,
+  },
+  {
+    pathname: Pathnames.public.confirmPasswordUpdate,
+    page: ConfirmPasswordUpdate,
+    name: "Confirm password",
     renderOnNavbar: false,
     renderOnDropdown: false,
   },
@@ -96,6 +105,13 @@ export const ParticipantRoutes: RouteType[] = [
     name: "Logout",
     renderOnNavbar: false,
     renderOnDropdown: true,
+  },
+  {
+    pathname: Pathnames.public.confirmPasswordUpdate,
+    page: ConfirmPasswordUpdate,
+    name: "Confirm password",
+    renderOnNavbar: false,
+    renderOnDropdown: false,
   },
 ];
 
@@ -170,6 +186,13 @@ export const ManagerRoutes: RouteType[] = [
     renderOnNavbar: false,
     renderOnDropdown: true,
   },
+  {
+    pathname: Pathnames.public.confirmPasswordUpdate,
+    page: ConfirmPasswordUpdate,
+    name: "Confirm password",
+    renderOnNavbar: false,
+    renderOnDropdown: false,
+  },
 ];
 
 export const AdminRoutes: RouteType[] = [
@@ -212,6 +235,13 @@ export const AdminRoutes: RouteType[] = [
     pathname: Pathnames.public.resetPassword,
     page: ResetPasswordPage,
     name: "Reset password",
+    renderOnNavbar: false,
+    renderOnDropdown: false,
+  },
+  {
+    pathname: Pathnames.public.confirmPasswordUpdate,
+    page: ConfirmPasswordUpdate,
+    name: "Confirm password",
     renderOnNavbar: false,
     renderOnDropdown: false,
   },

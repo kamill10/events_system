@@ -123,6 +123,26 @@ export const useAccount = () => {
     }
   };
 
+  const confirmPasswordUpdate = async (key: string) => {
+    try {
+      setIsFetching(true);
+      await api.confirmPasswordUpdate(key);
+      sendNotification({
+        type: "success",
+        description: "Account has been verified!!",
+      });
+    } catch (e) {
+      console.error(e);
+      sendNotification({
+        description: "Failed to verify an account :(",
+        type: "error",
+      });
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const getMyAccount = async () => {
     try {
       setIsFetching(true);
@@ -236,6 +256,7 @@ export const useAccount = () => {
     logOut,
     signIn,
     verifyAccount,
+    confirmPasswordUpdate,
     getMyAccount,
     updateMyPersonalData,
     updateMyPassword,

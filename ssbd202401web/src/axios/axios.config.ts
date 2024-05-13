@@ -120,5 +120,10 @@ export const api = {
       value: data.newPassword,
     }),
   changeMyPassword: (data: ChangeMyPasswordType) =>
-    apiWithEtag.patch("/me/password", { value: data.newPassword }),
+    apiWithEtag.post("/me/change-password", {
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword,
+    }),
+  confirmPasswordUpdate: (key: string): ApiResponseType<void> =>
+    apiForAnon.patch(`/me/change-password/token/${key}`),
 };
