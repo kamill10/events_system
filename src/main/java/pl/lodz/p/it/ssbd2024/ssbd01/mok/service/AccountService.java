@@ -394,6 +394,7 @@ public class AccountService {
     public void deleteExpiredTokens() {
         resetMyCredentialRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
         changeMyPasswordRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
+        changeMyEmailRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
 
