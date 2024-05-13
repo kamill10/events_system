@@ -8,6 +8,7 @@ import {
 import { PersonalDataType } from "../types/PersonalData.ts";
 import { ForgotPasswordType } from "../types/ForgotPassword.ts";
 import { ResetPasswordType } from "../types/ResetPasswordType.ts";
+import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -118,4 +119,6 @@ export const api = {
     apiForAnon.patch("/accounts/reset-password/token/" + data.token, {
       value: data.newPassword,
     }),
+  changeMyPassword: (data: ChangeMyPasswordType) =>
+    apiWithEtag.patch("/me/password", { value: data.newPassword }),
 };

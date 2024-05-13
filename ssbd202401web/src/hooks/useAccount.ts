@@ -9,6 +9,7 @@ import { ForgotPasswordType } from "../types/ForgotPassword";
 import { ResetPasswordType } from "../types/ResetPasswordType";
 import { jwtDecode } from "jwt-decode";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
+import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
 
 export const useAccount = () => {
   const sendNotification = useNotification();
@@ -160,6 +161,26 @@ export const useAccount = () => {
     }
   };
 
+  const updateMyPassword = async (data: ChangeMyPasswordType) => {
+    try {
+      setIsFetching(true);
+      await api.changeMyPassword(data);
+      sendNotification({
+        type: "success",
+        description: "Password has been changed successfully!",
+      });
+    } catch (e) {
+      console.error(e);
+      sendNotification({
+        type: "error",
+        description: "Password change failed :(",
+      });
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const requestPasswordReset = async (data: ForgotPasswordType) => {
     try {
       setIsFetching(true);
@@ -217,6 +238,7 @@ export const useAccount = () => {
     verifyAccount,
     getMyAccount,
     updateMyPersonalData,
+    updateMyPassword,
     requestPasswordReset,
     resetMyPassword,
     adminLayout,
