@@ -8,10 +8,10 @@ import {
 import { useAccount } from "../hooks/useAccount.ts";
 import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {ChangeMyEmailSchema} from "../validation/schemas.ts";
+import { ChangeMyEmailSchema } from "../validation/schemas.ts";
 import { useEffect } from "react";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import {ChangeMyEmailType} from "../types/ChangeMyEmailType.ts";
+import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
 
 export default function ChangeEmailComponent() {
   const { updateMyEmail, getMyAccount } = useAccount();
@@ -23,7 +23,7 @@ export default function ChangeEmailComponent() {
   } = useForm<ChangeMyEmailType>({
     defaultValues: {
       password: "",
-        email: "",
+      email: "",
     },
     resolver: yupResolver(ChangeMyEmailSchema),
   });

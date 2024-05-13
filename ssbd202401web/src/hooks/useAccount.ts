@@ -10,7 +10,7 @@ import { ResetPasswordType } from "../types/ResetPasswordType";
 import { jwtDecode } from "jwt-decode";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
-import {ChangeMyEmailType} from "../types/ChangeMyEmailType.ts";
+import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
 
 export const useAccount = () => {
   const sendNotification = useNotification();
@@ -162,7 +162,7 @@ export const useAccount = () => {
     } finally {
       setIsFetching(false);
     }
-  }
+  };
 
   const getMyAccount = async () => {
     try {
@@ -228,19 +228,19 @@ export const useAccount = () => {
       await api.changeMyEmail(data);
       sendNotification({
         type: "success",
-        description: "Sent email! Confirm your email change"
+        description: "Sent email! Confirm your email change",
       });
     } catch (e) {
       console.error(e);
       sendNotification({
-        type:"error",
+        type: "error",
         description: "Email change failed",
       });
       return e;
     } finally {
       setIsFetching(false);
     }
-  }
+  };
 
   const requestPasswordReset = async (data: ForgotPasswordType) => {
     try {

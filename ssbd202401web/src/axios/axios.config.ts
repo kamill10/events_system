@@ -9,7 +9,7 @@ import { PersonalDataType } from "../types/PersonalData.ts";
 import { ForgotPasswordType } from "../types/ForgotPassword.ts";
 import { ResetPasswordType } from "../types/ResetPasswordType.ts";
 import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
-import {ChangeMyEmailType} from "../types/ChangeMyEmailType.ts";
+import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -129,6 +129,6 @@ export const api = {
     apiWithEtag.patch("/me/email", data),
   confirmPasswordUpdate: (key: string): ApiResponseType<void> =>
     apiForAnon.patch(`/me/change-password/token/${key}`),
-    confirmEmailUpdate: (key: string): ApiResponseType<void> =>
-        apiWithEtag.patch(`/me/email/token/${key}`),
+  confirmEmailUpdate: (key: string): ApiResponseType<void> =>
+    apiWithEtag.patch(`/me/email/token/${key}`),
 };

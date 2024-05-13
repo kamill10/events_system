@@ -21,6 +21,7 @@ import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
 import AdminLayout from "../layouts/AdminLayout.tsx";
 import ManagerLayout from "../layouts/ManagerLayout.tsx";
 import ConfirmPasswordUpdate from "../pages/ConfirmPasswordUpdate.tsx";
+import { ConfirmEmailUpdate } from "../pages/ConfirmEmailUpdate.tsx";
 
 export default function RouterComponent() {
   const { isAuthenticated, isAdmin, isParticipant, isManager, adminLayout } =
@@ -138,14 +139,22 @@ export default function RouterComponent() {
           </ThemeProvider>
         }
       ></Route>
-        <Route
-            path={Pathnames.public.confirmPasswordUpdate}
-            element={
-                <ThemeProvider theme={PublicTheme}>
-                    <ConfirmPasswordUpdate></ConfirmPasswordUpdate>
-                </ThemeProvider>
-            }
-        ></Route>
+      <Route
+        path={Pathnames.public.confirmPasswordUpdate}
+        element={
+          <ThemeProvider theme={PublicTheme}>
+            <ConfirmPasswordUpdate></ConfirmPasswordUpdate>
+          </ThemeProvider>
+        }
+      ></Route>
+      <Route
+        path={Pathnames.public.confirmEmailUpdate}
+        element={
+          <ThemeProvider theme={PublicTheme}>
+            <ConfirmEmailUpdate></ConfirmEmailUpdate>
+          </ThemeProvider>
+        }
+      ></Route>
     </Routes>
   );
 }

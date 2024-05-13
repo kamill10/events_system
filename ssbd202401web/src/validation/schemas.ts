@@ -4,7 +4,7 @@ import { PersonalDataType } from "../types/PersonalData";
 import { ForgotPasswordType } from "../types/ForgotPassword";
 import { ResetPasswordType } from "../types/ResetPasswordType";
 import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
-import {ChangeMyEmailType} from "../types/ChangeMyEmailType.ts";
+import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
 
 export const signInValidationSchema = yup.object<AccountSingInType>().shape({
   username: yup
