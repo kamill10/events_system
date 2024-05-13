@@ -6,5 +6,5 @@ export default function EventsPage() {
     <ContainerComponent>
       <Typography variant={"h4"}>Events page</Typography>;
     </ContainerComponent>
-  )
+  );
 }

@@ -11,8 +11,8 @@ interface ManageAccounts {
 const ManageAccountsStateContext = createContext<ManageAccounts | null>(null);
 
 export const ManageAccountsStateContextProvider = ({
-  children, 
-} : {
+  children,
+}: {
   children: ReactNode;
 }) => {
   const [accounts, setAccounts] = useState<AccountType[] | null>(null);
@@ -24,13 +24,13 @@ export const ManageAccountsStateContextProvider = ({
         accounts,
         setAccounts,
         isFetching,
-        setIsFetching
+        setIsFetching,
       }}
     >
       {children}
     </ManageAccountsStateContext.Provider>
   );
-}
+};
 
 export const useUsersState = () => {
   const usersState = useContext(ManageAccountsStateContext);
@@ -40,4 +40,4 @@ export const useUsersState = () => {
   }
 
   return usersState;
-}
+};

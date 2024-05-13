@@ -28,7 +28,7 @@ export default function ConfirmPasswordUpdatePage() {
     return (
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
-        <Typography variant="h3" textAlign={"center"}>
+          <Typography variant="h3" textAlign={"center"}>
             Something happened :((
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
@@ -47,7 +47,7 @@ export default function ConfirmPasswordUpdatePage() {
     return (
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
-        <Typography variant="h3" textAlign={"center"}>
+          <Typography variant="h3" textAlign={"center"}>
             Confirm your password change!
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
@@ -74,7 +74,7 @@ export default function ConfirmPasswordUpdatePage() {
   return (
     <CenteredContainerComponent>
       <ContainerWithShadowComponent>
-      <Typography variant="h3" textAlign={"center"}>
+        <Typography variant="h3" textAlign={"center"}>
           Password has been changed!
         </Typography>
         <Typography variant="h6" textAlign={"center"}>

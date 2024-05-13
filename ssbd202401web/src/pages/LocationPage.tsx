@@ -6,5 +6,5 @@ export default function LocationPage() {
     <ContainerComponent>
       <Typography variant="h4">LocationPage</Typography>;
     </ContainerComponent>
-  )
+  );
 }

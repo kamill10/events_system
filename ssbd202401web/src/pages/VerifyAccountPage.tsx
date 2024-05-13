@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount";
@@ -27,13 +27,7 @@ export default function VerifyAccountPage() {
   if (failed) {
     return (
       <CenteredContainerComponent>
-        <Box
-          component={"div"}
-          sx={{
-            boxShadow: 6,
-            padding: "3rem",
-          }}
-        >
+        <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
             Something happened :((
           </Typography>
@@ -44,7 +38,7 @@ export default function VerifyAccountPage() {
           <Typography variant="h6" textAlign={"center"}>
             <Link to={"/"}>Go to home page</Link>
           </Typography>
-        </Box>
+        </ContainerWithShadowComponent>
       </CenteredContainerComponent>
     );
   }
@@ -79,21 +73,15 @@ export default function VerifyAccountPage() {
 
   return (
     <CenteredContainerComponent>
-      <Box
-        component={"div"}
-        sx={{
-          boxShadow: 6,
-          padding: "3rem",
-        }}
-      >
-        <Typography variant="h3" textAlign={"center"}>
+      <ContainerWithShadowComponent>
+      <Typography variant="h3" textAlign={"center"}>
           Account has been activated!
         </Typography>
         <Typography variant="h6" textAlign={"center"}>
           You can go to login page manually, or&#x20;
           <Link to={"/login"}>click here!</Link>
-        </Typography>as
-      </Box>
+        </Typography>
+      </ContainerWithShadowComponent>
     </CenteredContainerComponent>
   );
 }

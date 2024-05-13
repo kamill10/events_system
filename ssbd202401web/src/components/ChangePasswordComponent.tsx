@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ChangeMyPasswordSchema } from "../validation/schemas";
 import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
+import FormComponent from "./FormComponent.tsx";
+import TextFieldComponent from "./TextFieldComponent.tsx";
 
 export default function ChangePasswordComponent() {
   const { updateMyPassword, getMyAccount } = useAccount();
@@ -41,13 +43,11 @@ export default function ChangePasswordComponent() {
   };
 
   return (
-    <Box
-      component={"form"}
-      onSubmit={handleSubmit(onSubmit, onError)}
-      margin={"3rem"}
-      display={"flex"}
-      flexDirection={"column"}
-      alignItems={"left"}
+    <FormComponent
+      handleSubmit={handleSubmit}
+      onError={onError}
+      onSubmit={onSubmit}
+      align="start"
     >
       <Typography variant="h4">Change password</Typography>
       <Divider
@@ -56,127 +56,40 @@ export default function ChangePasswordComponent() {
           marginBottom: "3rem",
         }}
       ></Divider>
-      <Controller
+      <TextFieldComponent
+        control={control}
+        errors={errors}
+        label="Current password"
         name="oldPassword"
+        trigger={trigger}
+        type="password"
+      />
+      <TextFieldComponent
         control={control}
-        render={({ field }) => {
-          return (
-            <TextField
-              value={field.value}
-              onChange={(e) => {
-                field.onChange(e);
-                setTimeout(
-                  () => trigger(e.target.name as keyof ChangeMyPasswordType),
-                  500,
-                );
-              }}
-              id={field.name}
-              label="Old password"
-              name={field.name}
-              error={!!errors.oldPassword}
-              type={"password"}
-            ></TextField>
-          );
-        }}
-      ></Controller>
-      <Typography
-        color={"red"}
-        fontSize={14}
-        width={"inherit"}
-        sx={{
-          marginBottom: "1rem",
-        }}
-      >
-        {errors.oldPassword?.message}
-      </Typography>
-      <Controller
+        errors={errors}
+        label="New password"
         name="newPassword"
+        trigger={trigger}
+        type="password"
+      />
+      <TextFieldComponent
         control={control}
-        render={({ field }) => {
-          return (
-            <TextField
-              value={field.value}
-              onChange={(e) => {
-                field.onChange(e);
-                setTimeout(
-                  () => trigger(e.target.name as keyof ChangeMyPasswordType),
-                  500,
-                );
-              }}
-              id={field.name}
-              label="New password"
-              name={field.name}
-              error={!!errors.newPassword}
-              type={"password"}
-            ></TextField>
-          );
-        }}
-      ></Controller>
-      <Typography
-        color={"red"}
-        fontSize={14}
-        width={"inherit"}
-        sx={{
-          marginBottom: "1rem",
-        }}
-      >
-        {errors.newPassword?.message}
-      </Typography>
-      <Controller
+        errors={errors}
+        label="Confirm new password"
         name="confirmNewPassword"
-        control={control}
-        render={({ field }) => {
-          return (
-            <TextField
-              value={field.value}
-              onChange={(e) => {
-                field.onChange(e);
-                setTimeout(
-                  () => trigger(e.target.name as keyof ChangeMyPasswordType),
-                  500,
-                );
-              }}
-              id={field.name}
-              label="Confirm new password"
-              name={field.name}
-              error={!!errors.confirmNewPassword}
-              type={"password"}
-            ></TextField>
-          );
-        }}
-      ></Controller>
-      <Typography
-        color={"red"}
-        fontSize={14}
-        width={"inherit"}
-        sx={{
-          marginBottom: "1rem",
-        }}
-      >
-        {errors.confirmNewPassword?.message}
-      </Typography>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-start",
-          gap: "1rem",
-          marginTop: "3rem",
-        }}
-      >
-        <Button
+        trigger={trigger}
+        type="password"
+      />
+      <Button
           type="submit"
           variant="contained"
           startIcon={<VpnKeyIcon />}
           sx={{
-            mt: 1,
-            mb: 2,
-            width: "fit-content",
-            alignSelf: "center",
+            mt: 9
           }}
         >
           Save changes
         </Button>
-      </Box>
-    </Box>
+    </FormComponent>
   );
 }

@@ -1,7 +1,11 @@
 import { Box } from "@mui/material";
 import { ReactNode } from "react";
 
-export default function ContainerWithShadowComponent({children}: {children: ReactNode}) {
+export default function ContainerWithShadowComponent({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <Box
       component={"div"}
@@ -15,5 +19,5 @@ export default function ContainerWithShadowComponent({children}: {children: Reac
     >
       {children}
     </Box>
-  )
+  );
 }

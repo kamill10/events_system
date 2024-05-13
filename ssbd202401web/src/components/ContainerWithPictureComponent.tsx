@@ -1,7 +1,11 @@
 import { CssBaseline, Grid, Paper } from "@mui/material";
 import { ReactNode } from "react";
 
-export default function ContainerWithPictureComponent({ children }: {children: ReactNode}) {
+export default function ContainerWithPictureComponent({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <Grid container component="main" sx={{ height: "85vh" }}>
       <CssBaseline />
@@ -21,5 +25,5 @@ export default function ContainerWithPictureComponent({ children }: {children: R
         {children}
       </Grid>
     </Grid>
-  )
+  );
 }

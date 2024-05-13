@@ -9,9 +9,11 @@ export default function LoadingScreen() {
     <>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={accountState.isFetching || 
-              accountState.isLogging  ||
-              manageAccountsState.isFetching}
+        open={
+          accountState.isFetching ||
+          accountState.isLogging ||
+          manageAccountsState.isFetching
+        }
       >
         <CircularProgress color="primary" />
       </Backdrop>

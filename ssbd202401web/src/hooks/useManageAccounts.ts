@@ -4,12 +4,7 @@ import useNotification from "./useNotification";
 
 export const useManageAccounts = () => {
   const sendNotification = useNotification();
-  const {
-    accounts,
-    setAccounts,
-    isFetching,
-    setIsFetching
-  } = useUsersState();
+  const { accounts, setAccounts, isFetching, setIsFetching } = useUsersState();
 
   const getAllAccounts = async () => {
     try {
@@ -20,18 +15,18 @@ export const useManageAccounts = () => {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Failed to fetch all accounts :("
+        description: "Failed to fetch all accounts :(",
       });
     } finally {
       setIsFetching(false);
     }
-  }
+  };
 
   return {
     accounts,
     isFetching,
     setIsFetching,
     setAccounts,
-    getAllAccounts
-  }
-}
+    getAllAccounts,
+  };
+};

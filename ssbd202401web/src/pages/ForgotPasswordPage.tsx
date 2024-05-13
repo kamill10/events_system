@@ -21,6 +21,7 @@ import { Pathnames } from "../router/Pathnames";
 import { Link } from "react-router-dom";
 import ContainerWithPictureComponent from "../components/ContainerWithPictureComponent";
 import FormComponent from "../components/FormComponent";
+import TextFieldComponent from "../components/TextFieldComponent";
 
 export default function ForgotPasswordPage() {
   const { requestPasswordReset } = useAccount();
@@ -51,53 +52,30 @@ export default function ForgotPasswordPage() {
         onSubmit={onSubmit}
         onError={onError}
       >
-        <Typography variant="h3" marginBottom={15} textAlign={"center"}>
-            Reset your password
-          </Typography>
-        <Controller
-              name="email"
-              control={control}
-              render={({ field }) => {
-                return (
-                  <TextField
-                    fullWidth
-                    value={field.value}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      setTimeout(
-                        () =>
-                          trigger(e.target.name as keyof ForgotPasswordType),
-                        500,
-                      );
-                    }}
-                    id={field.name}
-                    label="E-mail"
-                    name={field.name}
-                    autoComplete=""
-                    error={errors.email ? true : false}
-                  ></TextField>
-                );
-              }}
-            ></Controller>
-            <Typography
-              color={"red"}
-              fontSize={14}
-              width={"inherit"}
-              margin={"none"}
-            >
-              {errors.email?.message}
-            </Typography>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-              }}
-            >
-              Reset password
-            </Button>
-
+        <Typography variant="h3" textAlign={"center"}>
+          Reset your password
+        </Typography>
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          label="E-mail"
+          name="email"
+          trigger={trigger}
+          type="text"
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            mt: 3,
+            mb: 2,
+          }}
+        >
+          Reset password
+        </Button>
+        <Link to={Pathnames.public.login}>
+          Go back to login page
+        </Link>
       </FormComponent>
     </ContainerWithPictureComponent>
   );

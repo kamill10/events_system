@@ -6,5 +6,5 @@ export default function SpeakerPage() {
     <ContainerComponent>
       <Typography variant="h4">Speaker</Typography>;
     </ContainerComponent>
-  )
+  );
 }

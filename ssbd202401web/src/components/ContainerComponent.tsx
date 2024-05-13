@@ -1,7 +1,11 @@
 import { Box, Paper } from "@mui/material";
 import { ReactNode } from "react";
 
-export default function ContainerComponent({children}: {children: ReactNode}) {
+export default function ContainerComponent({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <Box
       component={Paper}
@@ -13,5 +17,5 @@ export default function ContainerComponent({children}: {children: ReactNode}) {
     >
       {children}
     </Box>
-  )
+  );
 }

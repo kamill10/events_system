@@ -6,5 +6,5 @@ export default function AccountPage() {
     <ContainerComponent>
       <Typography variant="h4">User</Typography>;
     </ContainerComponent>
-  )
+  );
 }

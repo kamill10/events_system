@@ -28,7 +28,7 @@ export function ConfirmEmailUpdatePage() {
     return (
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
-        <Typography variant="h3" textAlign={"center"}>
+          <Typography variant="h3" textAlign={"center"}>
             Something happened :((
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
@@ -47,7 +47,7 @@ export function ConfirmEmailUpdatePage() {
     return (
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
-        <Typography variant="h3" textAlign={"center"}>
+          <Typography variant="h3" textAlign={"center"}>
             Confirm your email change!
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
