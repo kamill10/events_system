@@ -16,6 +16,7 @@ import UsersPage from "../pages/UsersPage.tsx";
 import Logout from "../pages/Logout.tsx";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
+
 export const PublicRoutes: RouteType[] = [
   {
     pathname: Pathnames.public.home,

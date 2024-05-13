@@ -51,6 +51,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/**").hasAuthority("ADMIN")
                             .requestMatchers(HttpMethod.PUT, "/api/accounts/**").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.PATCH, "/api/me/change-password/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/me").authenticated()
                             .requestMatchers(HttpMethod.PATCH, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")

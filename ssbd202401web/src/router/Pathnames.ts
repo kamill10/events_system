@@ -7,6 +7,7 @@ export const Pathnames = {
     forgotPassword: "/login/forgot-password",
     verifyAccount: "/verify-account",
     resetPassword: "/login/reset-password",
+    confirmPasswordUpdate: "/change-my-password",
   },
   participant: {
     home: "/",
@@ -15,6 +16,7 @@ export const Pathnames = {
     profile: "/profile",
     myEvents: "/profile/events",
     logout: "/logout",
+    confirmPasswordUpdate: "/change-my-password",
   },
   manager: {
     home: "/",
@@ -27,6 +29,7 @@ export const Pathnames = {
     speakers: "/speakers",
     speaker: "/speakers/:id",
     logout: "/logout",
+    confirmPasswordUpdate: "/change-my-password",
   },
   admin: {
     home: "/",
@@ -34,5 +37,6 @@ export const Pathnames = {
     users: "/users",
     user: "/users/:id",
     logout: "/logout",
+    confirmPasswordUpdate: "/change-my-password",
   },
 };

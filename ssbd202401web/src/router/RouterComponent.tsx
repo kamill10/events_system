@@ -20,6 +20,7 @@ import ConfirmSignInPage from "../pages/VerifyAccount.tsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
 import AdminLayout from "../layouts/AdminLayout.tsx";
 import ManagerLayout from "../layouts/ManagerLayout.tsx";
+import ConfirmPasswordUpdate from "../pages/ConfirmPasswordUpdate.tsx";
 
 export default function RouterComponent() {
   const { isAuthenticated, isAdmin, isParticipant, isManager, adminLayout } =
@@ -137,6 +138,14 @@ export default function RouterComponent() {
           </ThemeProvider>
         }
       ></Route>
+        <Route
+            path={Pathnames.public.confirmPasswordUpdate}
+            element={
+                <ThemeProvider theme={PublicTheme}>
+                    <ConfirmPasswordUpdate></ConfirmPasswordUpdate>
+                </ThemeProvider>
+            }
+        ></Route>
     </Routes>
   );
 }

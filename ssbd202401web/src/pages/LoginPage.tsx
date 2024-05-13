@@ -22,12 +22,17 @@ import { LogInSchema } from "../validation/schemas";
 
 export default function LoginPage() {
   const { logIn } = useAccount();
-  const { handleSubmit, control, formState: {errors}, trigger } = useForm<AccountLoginType>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    trigger,
+  } = useForm<AccountLoginType>({
     defaultValues: {
       username: "",
       password: "",
     },
-    resolver: yupResolver(LogInSchema)
+    resolver: yupResolver(LogInSchema),
   });
 
   const onSubmit: SubmitHandler<AccountLoginType> = (data) => {
@@ -85,9 +90,11 @@ export default function LoginPage() {
                       onChange={(e) => {
                         field.onChange(e);
                         setTimeout(
-                          () => trigger(e.target.name as keyof AccountLoginType),
+                          () =>
+                            trigger(e.target.name as keyof AccountLoginType),
                           500,
-                        )}}
+                        );
+                      }}
                       id={field.name}
                       label="Username"
                       name={field.name}
@@ -119,14 +126,16 @@ export default function LoginPage() {
                       onChange={(e) => {
                         field.onChange(e);
                         setTimeout(
-                          () => trigger(e.target.name as keyof AccountLoginType),
+                          () =>
+                            trigger(e.target.name as keyof AccountLoginType),
                           500,
-                        )}}
+                        );
+                      }}
                       type="password"
                       id={field.name}
                       label="Password"
                       name={field.name}
-                      error={errors.password ? true : false }
+                      error={errors.password ? true : false}
                       autoComplete="current-password"
                     />
                   );
