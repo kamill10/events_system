@@ -255,8 +255,8 @@ public class AccountService {
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/change-mypassword?token=");
         sb.append(newResetIssue.getToken());
         sb.append("'>Link</a>");
-        mailService.sendEmail(newResetIssue.getAccount(), "mail.password.changed.by.admin.subject",
-                "mail.password.changed.by.admin.subject.body", new Object[] {sb});
+        mailService.sendEmail(newResetIssue.getAccount(), "mail.password.changed.by.you.subject",
+                "mail.password.changed.by.you.body", new Object[] {sb});
         return newResetIssue.getToken();
     }
 
@@ -268,6 +268,7 @@ public class AccountService {
         if (changeMyPassword.getExpirationDate().isBefore(LocalDateTime.now())) {
             throw new PasswordTokenExpiredException(ExceptionMessages.PASS_TOKEN_EXPIRED);
         }
+        Account account = verifyCredentialReset(token);
         changeMyPassword.getAccount().setPassword(changeMyPassword.getPassword());
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(changeMyPassword.getAccount()));
         accountMokRepository.saveAndFlush(changeMyPassword.getAccount());
@@ -276,7 +277,7 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account verifyCredentialReset(String token) throws AccountNotFoundException, PasswordTokenExpiredException {
+    public  Account verifyCredentialReset(String token) throws AccountNotFoundException, PasswordTokenExpiredException {
         Optional<CredentialReset> credentialReset = credentialResetRepository.findByToken(token);
         if (credentialReset.isEmpty()) {
             throw new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND);
