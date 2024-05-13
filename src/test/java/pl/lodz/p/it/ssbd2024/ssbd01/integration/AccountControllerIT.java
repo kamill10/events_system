@@ -3,11 +3,8 @@ package pl.lodz.p.it.ssbd2024.ssbd01.integration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
@@ -21,11 +18,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -789,7 +783,7 @@ public class AccountControllerIT {
                 .header("Authorization", "Bearer " + adminToken)
                 .body(password)
                 .when()
-                .post(baseUrl + "/accounts/change-password/token/"+"4234")
+                .post(baseUrl + "/accounts/change-password/token/" + "4234")
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .extract().asString();
