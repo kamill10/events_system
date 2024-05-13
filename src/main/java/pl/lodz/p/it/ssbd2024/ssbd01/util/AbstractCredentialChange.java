@@ -23,7 +23,7 @@ public abstract class AbstractCredentialChange extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false,updatable = false)
     @NotNull
-    Account account;
+    private Account account;
 
     @Column(nullable = false)
     @NotNull

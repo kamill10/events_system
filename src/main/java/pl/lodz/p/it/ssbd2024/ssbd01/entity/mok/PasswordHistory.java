@@ -19,14 +19,14 @@ public class PasswordHistory extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false,updatable = false)
     @NotNull
-    Account account;
+    private Account account;
 
 
     @ToString.Exclude
     @Column(nullable = false, length = 72)
     @Size(min = 8, max = 72)
     @NotNull
-    String password;
+    private String password;
 
     public PasswordHistory(Account account) {
         this.account = account;
