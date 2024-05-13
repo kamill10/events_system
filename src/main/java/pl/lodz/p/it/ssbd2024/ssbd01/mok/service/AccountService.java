@@ -252,7 +252,7 @@ public class AccountService {
         var newResetIssue = new ChangeMyPassword(randString, account, expirationDate, password);
         changeMyPasswordRepository.saveAndFlush(newResetIssue);
         StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/change-mypassword?token=");
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/change-my-password?token=");
         sb.append(newResetIssue.getToken());
         sb.append("'>Link</a>");
         mailService.sendEmail(newResetIssue.getAccount(), "mail.password.changed.by.you.subject",
