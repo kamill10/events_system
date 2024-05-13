@@ -268,7 +268,7 @@ public class AccountService {
         if (changeMyPassword.getExpirationDate().isBefore(LocalDateTime.now())) {
             throw new PasswordTokenExpiredException(ExceptionMessages.PASS_TOKEN_EXPIRED);
         }
-        Account account = verifyCredentialReset(token);
+//        Account account = verifyCredentialReset(token);
         changeMyPassword.getAccount().setPassword(changeMyPassword.getPassword());
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(changeMyPassword.getAccount()));
         accountMokRepository.saveAndFlush(changeMyPassword.getAccount());
