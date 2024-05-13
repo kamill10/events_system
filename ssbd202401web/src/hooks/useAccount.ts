@@ -130,12 +130,12 @@ export const useAccount = () => {
       await api.confirmPasswordUpdate(key);
       sendNotification({
         type: "success",
-        description: "Account has been verified!!",
+        description: "Password has been changed!!",
       });
     } catch (e) {
       console.error(e);
       sendNotification({
-        description: "Failed to verify an account :(",
+        description: "Failed to change a password :(",
         type: "error",
       });
       return e;
@@ -208,7 +208,7 @@ export const useAccount = () => {
       await api.changeMyPassword(data);
       sendNotification({
         type: "success",
-        description: "Password has been changed successfully!",
+        description: "Email with confirmation has been sent!",
       });
     } catch (e) {
       console.error(e);
