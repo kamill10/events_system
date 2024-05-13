@@ -1,9 +1,10 @@
-import { Box, Divider, Paper, Tab, Tabs } from "@mui/material";
+import { Divider, Tab, Tabs } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
 import ProfileDetailsComponent from "../components/ProfileDetailsComponent";
 import ChangeEmailComponent from "../components/ChangeEmailComponent";
 import ChangePasswordComponent from "../components/ChangePasswordComponent";
 import ChangePersonalDataComponent from "../components/ChangePersonalDataComponent";
+import ContainerComponent from "../components/ContainerComponent";
 
 export default function ProfilePage() {
   const [page, setPage] = useState(0);
@@ -13,13 +14,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <Box
-      component={Paper}
-      elevation={6}
-      minHeight={"80vh"}
-      maxHeight={"80vh"}
-      overflow={"auto"}
-    >
+    <ContainerComponent>
       <Tabs value={page} onChange={handleChange}>
         <Tab label="Profile details"></Tab>
         <Tab label="Change personal data"></Tab>
@@ -31,6 +26,6 @@ export default function ProfilePage() {
       {page == 1 && <ChangePersonalDataComponent></ChangePersonalDataComponent>}
       {page == 2 && <ChangePasswordComponent></ChangePasswordComponent>}
       {page == 3 && <ChangeEmailComponent></ChangeEmailComponent>}
-    </Box>
+    </ContainerComponent>
   );
 }

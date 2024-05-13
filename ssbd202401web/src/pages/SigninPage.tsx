@@ -21,6 +21,8 @@ import { signInValidationSchema } from "../validation/schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Pathnames } from "../router/Pathnames";
 import { Link } from "react-router-dom";
+import ContainerWithPictureComponent from "../components/ContainerWithPictureComponent";
+import FormComponent from "../components/FormComponent";
 
 export default function SigninPage() {
   const { signIn } = useAccount();
@@ -52,33 +54,13 @@ export default function SigninPage() {
   };
 
   return (
-    <Grid container component="main" sx={{ height: "85vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <Box
-          component={"form"}
-          onSubmit={handleSubmit(onSubmit, onError)}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            paddingTop: "3rem",
-            marginX: "5rem",
-          }}
-        >
-          <Typography variant="h3" component={"h1"}>
+    <ContainerWithPictureComponent>
+      <FormComponent
+        handleSubmit={handleSubmit}
+        onError={onError}
+        onSubmit={onSubmit}
+      >
+      <Typography variant="h3" component={"h1"}>
             Sign in
           </Typography>
           <Controller
@@ -326,8 +308,7 @@ export default function SigninPage() {
           <Link to={Pathnames.public.login}>
             Already have an account? Log in!
           </Link>
-        </Box>
-      </Grid>
-    </Grid>
+      </FormComponent>
+    </ContainerWithPictureComponent>
   );
 }

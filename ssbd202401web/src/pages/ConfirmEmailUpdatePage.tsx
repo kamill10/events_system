@@ -1,9 +1,11 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount.ts";
 import { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
+import CenteredContainerComponent from "../components/CenterdContainerComponent.tsx";
+import ContainerWithShadowComponent from "../components/ContainerWithShadowComponent.tsx";
 
-export function ConfirmEmailUpdate() {
+export function ConfirmEmailUpdatePage() {
   const [searchParams] = useSearchParams();
   const { confirmEmailUpdate } = useAccount();
   const [failed, setFailed] = useState(false);
@@ -24,23 +26,9 @@ export function ConfirmEmailUpdate() {
 
   if (failed) {
     return (
-      <Box
-        component={"div"}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <Box
-          component={"div"}
-          sx={{
-            boxShadow: 6,
-            padding: "3rem",
-          }}
-        >
-          <Typography variant="h3" textAlign={"center"}>
+      <CenteredContainerComponent>
+        <ContainerWithShadowComponent>
+        <Typography variant="h3" textAlign={"center"}>
             Something happened :((
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
@@ -50,33 +38,16 @@ export function ConfirmEmailUpdate() {
           <Typography variant="h6" textAlign={"center"}>
             <Link to={"/"}>Go to home page</Link>
           </Typography>
-        </Box>
-      </Box>
+        </ContainerWithShadowComponent>
+      </CenteredContainerComponent>
     );
   }
 
   if (!pressed) {
     return (
-      <Box
-        component={"div"}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <Box
-          component={"div"}
-          sx={{
-            boxShadow: 6,
-            padding: "3rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h3" textAlign={"center"}>
+      <CenteredContainerComponent>
+        <ContainerWithShadowComponent>
+        <Typography variant="h3" textAlign={"center"}>
             Confirm your email change!
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
@@ -95,35 +66,21 @@ export function ConfirmEmailUpdate() {
           <Typography variant="h6" textAlign={"center"}>
             <Link to={"/"}>Go to home page</Link>
           </Typography>
-        </Box>
-      </Box>
+        </ContainerWithShadowComponent>
+      </CenteredContainerComponent>
     );
   }
 
   return (
-    <Box
-      component={"div"}
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Box
-        component={"div"}
-        sx={{
-          boxShadow: 6,
-          padding: "3rem",
-        }}
-      >
+    <CenteredContainerComponent>
+      <ContainerWithShadowComponent>
         <Typography variant="h3" textAlign={"center"}>
           Email has been changed!
         </Typography>
         <Typography variant="h6" textAlign={"center"}>
           <Link to={"/"}>Go to home page</Link>
         </Typography>
-      </Box>
-    </Box>
+      </ContainerWithShadowComponent>
+    </CenteredContainerComponent>
   );
 }

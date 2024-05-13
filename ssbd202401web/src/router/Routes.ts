@@ -11,8 +11,8 @@ import LocationsPage from "../pages/LocationsPage.tsx";
 import LocationPage from "../pages/LocationPage.tsx";
 import SpeakersPage from "../pages/SpeakersPage.tsx";
 import SpeakerPage from "../pages/SpeakerPage.tsx";
-import UserPage from "../pages/UserPage.tsx";
-import UsersPage from "../pages/UsersPage.tsx";
+import AccountPage from "../pages/AccountPage.tsx";
+import AccountsPage from "../pages/AccountsPage.tsx";
 import Logout from "../pages/Logout.tsx";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
@@ -189,16 +189,16 @@ export const AdminRoutes: RouteType[] = [
     renderOnDropdown: true,
   },
   {
-    pathname: Pathnames.admin.users,
-    page: UsersPage,
-    name: "Users",
+    pathname: Pathnames.admin.accounts,
+    page: AccountsPage,
+    name: "Accounts",
     renderOnNavbar: true,
     renderOnDropdown: false,
   },
   {
-    pathname: Pathnames.admin.user,
-    page: UserPage,
-    name: "User",
+    pathname: Pathnames.admin.account,
+    page: AccountPage,
+    name: "Account",
     renderOnNavbar: false,
     renderOnDropdown: false,
   },

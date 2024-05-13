@@ -2,8 +2,10 @@ import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount";
+import CenteredContainerComponent from "../components/CenterdContainerComponent";
+import ContainerWithShadowComponent from "../components/ContainerWithShadowComponent";
 
-export default function VerifyAccount() {
+export default function VerifyAccountPage() {
   const [searchParams] = useSearchParams();
   const { verifyAccount } = useAccount();
   const [failed, setFailed] = useState(false);
@@ -24,15 +26,7 @@ export default function VerifyAccount() {
 
   if (failed) {
     return (
-      <Box
-        component={"div"}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
+      <CenteredContainerComponent>
         <Box
           component={"div"}
           sx={{
@@ -51,31 +45,14 @@ export default function VerifyAccount() {
             <Link to={"/"}>Go to home page</Link>
           </Typography>
         </Box>
-      </Box>
+      </CenteredContainerComponent>
     );
   }
 
   if (!pressed) {
     return (
-      <Box
-        component={"div"}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <Box
-          component={"div"}
-          sx={{
-            boxShadow: 6,
-            padding: "3rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
+      <CenteredContainerComponent>
+        <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
             Verify your account!
           </Typography>
@@ -95,21 +72,13 @@ export default function VerifyAccount() {
           <Typography variant="h6" textAlign={"center"}>
             <Link to={"/"}>Go to home page</Link>
           </Typography>
-        </Box>
-      </Box>
+        </ContainerWithShadowComponent>
+      </CenteredContainerComponent>
     );
   }
 
   return (
-    <Box
-      component={"div"}
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
+    <CenteredContainerComponent>
       <Box
         component={"div"}
         sx={{
@@ -123,8 +92,8 @@ export default function VerifyAccount() {
         <Typography variant="h6" textAlign={"center"}>
           You can go to login page manually, or&#x20;
           <Link to={"/login"}>click here!</Link>
-        </Typography>
+        </Typography>as
       </Box>
-    </Box>
+    </CenteredContainerComponent>
   );
 }

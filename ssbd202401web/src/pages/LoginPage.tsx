@@ -1,9 +1,7 @@
 import {
   Box,
   Button,
-  CssBaseline,
   Grid,
-  Paper,
   TextField,
   Typography,
 } from "@mui/material";
@@ -19,6 +17,8 @@ import { Link } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LogInSchema } from "../validation/schemas";
+import ContainerWithPictureComponent from "../components/ContainerWithPictureComponent";
+import FormComponent from "../components/FormComponent";
 
 export default function LoginPage() {
   const { logIn } = useAccount();
@@ -45,35 +45,13 @@ export default function LoginPage() {
   };
 
   return (
-    <>
-      <Grid container component="main" sx={{ height: "85vh" }}>
-        <CssBaseline />
-        <Grid
-          item
-          xs={false}
-          sm={4}
-          md={7}
-          sx={{
-            backgroundImage:
-              "url(https://source.unsplash.com/random?wallpapers)",
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
-            component={"form"}
-            onSubmit={handleSubmit(onSubmit, onError)}
-            sx={{
-              my: 8,
-              mx: 4,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography component="h1" variant="h3">
+    <ContainerWithPictureComponent>
+      <FormComponent
+        handleSubmit={handleSubmit}
+        onError={onError}
+        onSubmit={onSubmit}
+      >
+        <Typography component="h1" variant="h3">
               Log in
             </Typography>
             <Box sx={{ mt: 1 }}>
@@ -173,9 +151,7 @@ export default function LoginPage() {
                 </Grid>
               </Grid>
             </Box>
-          </Box>
-        </Grid>
-      </Grid>
-    </>
+      </FormComponent>
+    </ContainerWithPictureComponent>
   );
 }

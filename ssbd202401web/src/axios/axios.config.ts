@@ -103,7 +103,7 @@ apiWithEtag.interceptors.response.use(
 );
 
 export const api = {
-  getAccounts: (): ApiResponseType<Array<AccountType>> =>
+  getAllAccounts: (): ApiResponseType<AccountType[]> =>
     apiWithAuthToken.get("/accounts"),
   logIn: (formData: AccountLoginType): ApiResponseType<string> =>
     apiForAnon.post("/auth/authenticate", formData),

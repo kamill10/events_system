@@ -16,12 +16,12 @@ import { ThemeProvider } from "@mui/material";
 import { useAccount } from "../hooks/useAccount.ts";
 import ParticipantLayout from "../layouts/ParticipantLayout.tsx";
 import { Pathnames } from "./Pathnames.ts";
-import ConfirmSignInPage from "../pages/VerifyAccount.tsx";
+import ConfirmSignInPage from "../pages/VerifyAccountPage.tsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
 import AdminLayout from "../layouts/AdminLayout.tsx";
 import ManagerLayout from "../layouts/ManagerLayout.tsx";
-import ConfirmPasswordUpdate from "../pages/ConfirmPasswordUpdate.tsx";
-import { ConfirmEmailUpdate } from "../pages/ConfirmEmailUpdate.tsx";
+import ConfirmPasswordUpdatePage from "../pages/ConfirmPasswordUpdatePage.tsx";
+import { ConfirmEmailUpdatePage } from "../pages/ConfirmEmailUpdatePage.tsx";
 
 export default function RouterComponent() {
   const { isAuthenticated, isAdmin, isParticipant, isManager, adminLayout } =
@@ -143,7 +143,7 @@ export default function RouterComponent() {
         path={Pathnames.public.confirmPasswordUpdate}
         element={
           <ThemeProvider theme={PublicTheme}>
-            <ConfirmPasswordUpdate></ConfirmPasswordUpdate>
+            <ConfirmPasswordUpdatePage></ConfirmPasswordUpdatePage>
           </ThemeProvider>
         }
       ></Route>
@@ -151,7 +151,7 @@ export default function RouterComponent() {
         path={Pathnames.public.confirmEmailUpdate}
         element={
           <ThemeProvider theme={PublicTheme}>
-            <ConfirmEmailUpdate></ConfirmEmailUpdate>
+            <ConfirmEmailUpdatePage></ConfirmEmailUpdatePage>
           </ThemeProvider>
         }
       ></Route>

@@ -19,6 +19,8 @@ import { ForgotPasswordType } from "../types/ForgotPassword";
 import { useAccount } from "../hooks/useAccount";
 import { Pathnames } from "../router/Pathnames";
 import { Link } from "react-router-dom";
+import ContainerWithPictureComponent from "../components/ContainerWithPictureComponent";
+import FormComponent from "../components/FormComponent";
 
 export default function ForgotPasswordPage() {
   const { requestPasswordReset } = useAccount();
@@ -43,43 +45,16 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <Grid container component="main" sx={{ height: "85vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <Box
-          sx={{
-            my: 8,
-            mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography variant="h3" marginBottom={15} textAlign={"center"}>
+    <ContainerWithPictureComponent>
+      <FormComponent
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        onError={onError}
+      >
+        <Typography variant="h3" marginBottom={15} textAlign={"center"}>
             Reset your password
           </Typography>
-          <Box
-            component={"form"}
-            onSubmit={handleSubmit(onSubmit, onError)}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Controller
+        <Controller
               name="email"
               control={control}
               render={({ field }) => {
@@ -122,12 +97,8 @@ export default function ForgotPasswordPage() {
             >
               Reset password
             </Button>
-          </Box>
-          <Link to={Pathnames.public.login}>
-            Remember the password? Log in!
-          </Link>
-        </Box>
-      </Grid>
-    </Grid>
+
+      </FormComponent>
+    </ContainerWithPictureComponent>
   );
 }
