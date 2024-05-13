@@ -10,6 +10,7 @@ import { ResetPasswordType } from "../types/ResetPasswordType";
 import { jwtDecode } from "jwt-decode";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
+import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
 
 export const useAccount = () => {
   const sendNotification = useNotification();
@@ -143,6 +144,26 @@ export const useAccount = () => {
     }
   };
 
+  const confirmEmailUpdate = async (key: string) => {
+    try {
+      setIsFetching(true);
+      await api.confirmEmailUpdate(key);
+      sendNotification({
+        type: "success",
+        description: "Email has been verified!!",
+      });
+    } catch (e) {
+      console.error(e);
+      sendNotification({
+        type: "error",
+        description: "Failed to verify email",
+      });
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const getMyAccount = async () => {
     try {
       setIsFetching(true);
@@ -194,6 +215,26 @@ export const useAccount = () => {
       sendNotification({
         type: "error",
         description: "Password change failed :(",
+      });
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const updateMyEmail = async (data: ChangeMyEmailType) => {
+    try {
+      setIsFetching(true);
+      await api.changeMyEmail(data);
+      sendNotification({
+        type: "success",
+        description: "Sent email! Confirm your email change",
+      });
+    } catch (e) {
+      console.error(e);
+      sendNotification({
+        type: "error",
+        description: "Email change failed",
       });
       return e;
     } finally {
@@ -257,9 +298,11 @@ export const useAccount = () => {
     signIn,
     verifyAccount,
     confirmPasswordUpdate,
+    confirmEmailUpdate,
     getMyAccount,
     updateMyPersonalData,
     updateMyPassword,
+    updateMyEmail,
     requestPasswordReset,
     resetMyPassword,
     adminLayout,

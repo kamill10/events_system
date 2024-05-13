@@ -4,6 +4,7 @@ import { PersonalDataType } from "../types/PersonalData";
 import { ForgotPasswordType } from "../types/ForgotPassword";
 import { ResetPasswordType } from "../types/ResetPasswordType";
 import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
+import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
 
 export const signInValidationSchema = yup.object<AccountSingInType>().shape({
   username: yup
@@ -63,4 +64,9 @@ export const ChangeMyPasswordSchema = yup.object<ChangeMyPasswordType>().shape({
     .string()
     .oneOf([yup.ref("newPassword")], "Passwords don't match")
     .required(),
+});
+
+export const ChangeMyEmailSchema = yup.object<ChangeMyEmailType>().shape({
+  password: yup.string().min(8).max(72).required(),
+  email: yup.string().email().required(),
 });
