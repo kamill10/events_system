@@ -9,6 +9,7 @@ import { ForgotPasswordType } from "../types/ForgotPassword";
 import { ResetPasswordType } from "../types/ResetPasswordType";
 import { jwtDecode } from "jwt-decode";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
+import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
 
 export const useAccount = () => {
   const sendNotification = useNotification();
@@ -122,6 +123,26 @@ export const useAccount = () => {
     }
   };
 
+  const confirmPasswordUpdate = async (key: string) => {
+    try {
+      setIsFetching(true);
+      await api.confirmPasswordUpdate(key);
+      sendNotification({
+        type: "success",
+        description: "Account has been verified!!",
+      });
+    } catch (e) {
+      console.error(e);
+      sendNotification({
+        description: "Failed to verify an account :(",
+        type: "error",
+      });
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const getMyAccount = async () => {
     try {
       setIsFetching(true);
@@ -153,6 +174,26 @@ export const useAccount = () => {
       sendNotification({
         type: "error",
         description: "Account update failed :(",
+      });
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const updateMyPassword = async (data: ChangeMyPasswordType) => {
+    try {
+      setIsFetching(true);
+      await api.changeMyPassword(data);
+      sendNotification({
+        type: "success",
+        description: "Password has been changed successfully!",
+      });
+    } catch (e) {
+      console.error(e);
+      sendNotification({
+        type: "error",
+        description: "Password change failed :(",
       });
       return e;
     } finally {
@@ -215,8 +256,10 @@ export const useAccount = () => {
     logOut,
     signIn,
     verifyAccount,
+    confirmPasswordUpdate,
     getMyAccount,
     updateMyPersonalData,
+    updateMyPassword,
     requestPasswordReset,
     resetMyPassword,
     adminLayout,

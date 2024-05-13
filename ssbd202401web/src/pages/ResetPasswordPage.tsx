@@ -22,7 +22,12 @@ import { useAccount } from "../hooks/useAccount";
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
-  const { handleSubmit, control, trigger, formState: {errors} } = useForm<ResetPasswordType>({
+  const {
+    handleSubmit,
+    control,
+    trigger,
+    formState: { errors },
+  } = useForm<ResetPasswordType>({
     defaultValues: {
       token: searchParams.get("token"),
       newPassword: "",
