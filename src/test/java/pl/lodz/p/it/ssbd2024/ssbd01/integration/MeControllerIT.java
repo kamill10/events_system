@@ -226,7 +226,7 @@ public class MeControllerIT {
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
-    @Test
+    /*@Test
     public void testUpdateMyPassword() {
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword");
 
@@ -252,8 +252,7 @@ public class MeControllerIT {
                 .patch(baseUrl + "/me/password")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
-    }
-
+    } */
     @Test
     public void switchRoleAndLog() {
         given()

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -46,15 +46,24 @@ public class MeController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-
-    @PatchMapping("/password")
-    public ResponseEntity<GetAccountDTO> updateMyAccountPassword(@RequestBody UpdatePasswordDTO password)
-            throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory {
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changeMyPasswordSendEmail(@RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
+            throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, WrongOldPasswordException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        //accountService.updatePassword(account.getId(), password.value());
+        return ResponseEntity.status(HttpStatus.OK).body(
+                accountService.changeMyPasswordSendMail(account.getId(),updateMyPasswordDto.oldPassword(),
+                        updateMyPasswordDto.newPassword())
+        );
+    }
+
+    @PatchMapping("/change-password/token/{token}")
+    public ResponseEntity<?> changePasswordWithToken(@PathVariable String token)
+            throws PasswordTokenExpiredException, AccountNotFoundException {
+        accountService.changeMyPasswordWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 
     @PutMapping("/user-data")
     public ResponseEntity<GetAccountDTO> updateMyData(@RequestHeader("If-Match") String eTag, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
