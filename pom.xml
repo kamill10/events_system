@@ -501,6 +501,7 @@
                 <configuration>
                     <includes>
                         <include>**/*Test.java</include>
+                        <include>**/*Mock.java</include>
                     </includes>
                 </configuration>
                 <executions>
