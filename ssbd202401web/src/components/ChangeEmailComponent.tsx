@@ -1,10 +1,5 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
-import {
-  Controller,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { Button, Divider, Typography } from "@mui/material";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { useAccount } from "../hooks/useAccount.ts";
 import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -73,15 +68,15 @@ export default function ChangeEmailComponent() {
         type="text"
       />
       <Button
-          type="submit"
-          variant="contained"
-          startIcon={<VpnKeyIcon />}
-          sx={{
-            mt: 9
-          }}
-        >
-          Save changes
-        </Button>
+        type="submit"
+        variant="contained"
+        startIcon={<VpnKeyIcon />}
+        sx={{
+          mt: 9,
+        }}
+      >
+        Save changes
+      </Button>
     </FormComponent>
   );
 }

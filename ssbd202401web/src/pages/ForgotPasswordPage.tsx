@@ -1,19 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Box,
-  Button,
-  CssBaseline,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import {
-  Controller,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { Button, Typography } from "@mui/material";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { ForgotPasswordSchema } from "../validation/schemas";
 import { ForgotPasswordType } from "../types/ForgotPassword";
 import { useAccount } from "../hooks/useAccount";
@@ -73,9 +60,7 @@ export default function ForgotPasswordPage() {
         >
           Reset password
         </Button>
-        <Link to={Pathnames.public.login}>
-          Go back to login page
-        </Link>
+        <Link to={Pathnames.public.login}>Go back to login page</Link>
       </FormComponent>
     </ContainerWithPictureComponent>
   );

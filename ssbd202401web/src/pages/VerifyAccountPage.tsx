@@ -74,7 +74,7 @@ export default function VerifyAccountPage() {
   return (
     <CenteredContainerComponent>
       <ContainerWithShadowComponent>
-      <Typography variant="h3" textAlign={"center"}>
+        <Typography variant="h3" textAlign={"center"}>
           Account has been activated!
         </Typography>
         <Typography variant="h6" textAlign={"center"}>

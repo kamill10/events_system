@@ -1,10 +1,5 @@
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
-import {
-  Controller,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { Button, Divider, Typography } from "@mui/material";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
@@ -81,15 +76,15 @@ export default function ChangePasswordComponent() {
         type="password"
       />
       <Button
-          type="submit"
-          variant="contained"
-          startIcon={<VpnKeyIcon />}
-          sx={{
-            mt: 9
-          }}
-        >
-          Save changes
-        </Button>
+        type="submit"
+        variant="contained"
+        startIcon={<VpnKeyIcon />}
+        sx={{
+          mt: 9,
+        }}
+      >
+        Save changes
+      </Button>
     </FormComponent>
   );
 }

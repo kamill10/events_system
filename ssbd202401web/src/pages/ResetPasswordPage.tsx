@@ -1,11 +1,6 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Link, useSearchParams } from "react-router-dom";
-import {
-  Controller,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { ResetPasswordType } from "../types/ResetPasswordType";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ResetPasswordSchema } from "../validation/schemas";
@@ -49,9 +44,9 @@ export default function ResetPasswordPage() {
           onError={onError}
           onSubmit={onSubmit}
         >
-        <Typography component="h1" variant="h3" textAlign={"center"}>
+          <Typography component="h1" variant="h3" textAlign={"center"}>
             Reset your password
-        </Typography>
+          </Typography>
           <Box
             sx={{
               mt: 1,

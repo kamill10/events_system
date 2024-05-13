@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import { FormPropsType } from "../types/FormPropsType";
-import { ForgotPasswordType } from "../types/ForgotPassword";
-import { FieldValue, FieldValues } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
 
 export default function FormComponent<T extends FieldValues>(
   props: FormPropsType<T>,

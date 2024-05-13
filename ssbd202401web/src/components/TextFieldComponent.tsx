@@ -33,7 +33,7 @@ export default function TextFieldComponent<T extends FieldValues>(
         }}
       ></Controller>
       <Typography color={"red"} fontSize={14} width={"inherit"} margin={"none"}>
-        {errors[name]?.message}
+        {errors[name]?.message as string}
       </Typography>
     </>
   );

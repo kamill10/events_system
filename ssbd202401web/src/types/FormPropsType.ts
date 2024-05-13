@@ -1,11 +1,9 @@
 import {
-  FieldValue,
   FieldValues,
   SubmitErrorHandler,
   SubmitHandler,
   UseFormHandleSubmit,
 } from "react-hook-form";
-import { ForgotPasswordType } from "./ForgotPassword";
 import { ReactNode } from "react";
 
 export interface FormPropsType<T extends FieldValues> {

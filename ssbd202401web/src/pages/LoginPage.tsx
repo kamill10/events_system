@@ -1,10 +1,5 @@
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import {
-  Controller,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { Button, Typography } from "@mui/material";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { AccountLoginType } from "../types/Account";
 import { useAccount } from "../hooks/useAccount";
 import { Link } from "react-router-dom";
@@ -49,39 +44,39 @@ export default function LoginPage() {
         <Typography component="h1" variant="h3">
           Log in
         </Typography>
-          <TextFieldComponent
-            control={control}
-            errors={errors}
-            name="username"
-            trigger={trigger}
-            type="text"
-            label="Username"
-          />
-          <TextFieldComponent
-            control={control}
-            errors={errors}
-            name="password"
-            trigger={trigger}
-            type="password"
-            label="Password"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{
-              mt: 3,
-              mb: 2,
-            }}
-          >
-            Log in
-          </Button>
-          <Link to={Pathnames.public.forgotPassword}>
-            I forgot my password :(
-          </Link>
-          <Link to={Pathnames.public.signIn}>
-            You don't have an account yet? Sign in!
-          </Link>
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          name="username"
+          trigger={trigger}
+          type="text"
+          label="Username"
+        />
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          name="password"
+          trigger={trigger}
+          type="password"
+          label="Password"
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{
+            mt: 3,
+            mb: 2,
+          }}
+        >
+          Log in
+        </Button>
+        <Link to={Pathnames.public.forgotPassword}>
+          I forgot my password :(
+        </Link>
+        <Link to={Pathnames.public.signIn}>
+          You don't have an account yet? Sign in!
+        </Link>
       </FormComponent>
     </ContainerWithPictureComponent>
   );
