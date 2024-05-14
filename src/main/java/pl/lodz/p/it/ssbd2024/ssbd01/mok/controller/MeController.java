@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
@@ -38,27 +39,18 @@ public class MeController {
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
     }
 
-
-    @PatchMapping("/email")
-    public ResponseEntity<GetAccountDTO> updateMyEmail(@RequestBody UpdateEmailDTO email)
-            throws AccountNotFoundException, EmailAlreadyExistsException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @PostMapping("/change-password")
     public ResponseEntity<String> changeMyPasswordSendEmail(@RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
             throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, WrongOldPasswordException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         return ResponseEntity.status(HttpStatus.OK).body(
-                accountService.changeMyPasswordSendMail(account.getId(),updateMyPasswordDto.oldPassword(),
+                accountService.changeMyPasswordSendMail(account.getId(), updateMyPasswordDto.oldPassword(),
                         updateMyPasswordDto.newPassword())
         );
     }
 
-    @PostMapping("/change-email")
+    @PostMapping("/email")
     public ResponseEntity<String> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
             throws AccountNotFoundException, WrongOldPasswordException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -75,7 +67,7 @@ public class MeController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping("/change-email/token/{token}")
+    @PatchMapping("/email/token/{token}")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
             throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
         accountService.changeMyEmailWithToken(token);
@@ -84,11 +76,12 @@ public class MeController {
 
 
     @PutMapping("/user-data")
-    public ResponseEntity<GetAccountDTO> updateMyData(@RequestHeader("If-Match") String eTag, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+    public ResponseEntity<GetAccountPersonalDTO> updateMyData(@RequestHeader("If-Match") String eTag,
+                                                              @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws AccountNotFoundException, OptLockException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountDto(
+        return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountPersonalDTO(
                 accountService.updateAccountData(account.getId(), accountDTOConverter.toAccount(updateAccountDataDTO), eTag)));
     }
 
