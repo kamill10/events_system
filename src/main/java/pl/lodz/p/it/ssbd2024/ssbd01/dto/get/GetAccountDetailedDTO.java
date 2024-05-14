@@ -27,9 +27,9 @@ public record GetAccountDetailedDTO(
         Boolean verified,
         @NotNull
         Boolean nonLocked,
-        LocalDateTime lastSuccessfulLogin,
-        LocalDateTime lastFailedLogin,
-        LocalDateTime lockedUntil,
+        String lastSuccessfulLogin,
+        String lastFailedLogin,
+        String lockedUntil,
         @PositiveOrZero
         Integer gender,
         @NotNull
