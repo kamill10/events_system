@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -109,6 +110,7 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Secured({})
     public void verifyAccount(String token)
             throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
             RoleNotFoundException {
@@ -121,7 +123,7 @@ public class AuthenticationService {
         var account = accountMokRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setVerified(true);
-        account.addRole(roleRepository.findByName(AccountRoleEnum.PARTICIPANT)
+        account.addRole(roleRepository.findByName(AccountRoleEnum.ROLE_PARTICIPANT)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND)));
         accountMokRepository.saveAndFlush(account);
         accountConfirmationRepository.delete(accountConfirmation);
@@ -130,6 +132,7 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @Scheduled(fixedRate = 120000)
+    @Secured({})
     public void deleteExpiredTokensAndAccounts() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -149,6 +152,7 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @Scheduled(fixedRate = 120000)
+    @Secured({})
     public void unlockAccounts() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -164,12 +168,14 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @Scheduled(fixedRate = 120000)
+    @Secured({})
     public void deleteExpiredJWTTokensFromWhitelist() {
         jwtWhitelistRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @Scheduled(fixedRate = 120000)
+    @Secured({})
     public void sendAccountConfirmationReminder() {
         confirmationReminderRepository.findByReminderDateBefore(LocalDateTime.now()).forEach(confirmationReminder -> {
             AccountConfirmation confirmation =
@@ -185,10 +191,13 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     public void logout(String token) {
         jwtWhitelistRepository.deleteByToken(token);
     }
 
+    @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
+    @Secured({})
     public void updateFailedLoginAttempts(String username) {
         Account account = accountAuthRepository.findByUsername(username);
         account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);

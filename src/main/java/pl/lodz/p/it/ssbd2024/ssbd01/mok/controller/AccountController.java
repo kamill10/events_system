@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
@@ -35,18 +36,21 @@ public class AccountController {
 
 
     @GetMapping
+    @Secured({"ROLE_ADMIN"})
     public List<GetAccountDTO> getAllUsers() {
         List<GetAccountDTO> getAccountDTOS = accountDTOConverter.accountDtoList(accountService.getAllAccounts());
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOS).getBody();
     }
 
     @PostMapping
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GetAccountDTO> createUser(@RequestBody CreateAccountDTO createAccountDTO) {
         GetAccountDTO getAccountDTO = accountDTOConverter.toAccountDto(accountService.addAccount(accountDTOConverter.toAccount(createAccountDTO)));
         return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
     }
 
     @PostMapping("/{id}/add-role")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
             throws BadRequestException, UnprocessableEntityException, NotFoundException, ConflictException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.addRoleToAccount(id, roleName));
@@ -54,6 +58,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}/remove-role")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
             throws BadRequestException, NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.removeRole(id, roleName));
@@ -61,18 +66,21 @@ public class AccountController {
     }
 
     @PatchMapping("/{id}/set-active")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GetAccountDTO> setActive(@PathVariable UUID id) throws NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.setAccountStatus(id, true));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @PatchMapping("/{id}/set-inactive")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GetAccountDTO> setInactive(@PathVariable UUID id) throws NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.setAccountStatus(id, false));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @GetMapping("/username/{username}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GetAccountDTO> getAccountByUsername(@PathVariable String username) throws NotFoundException {
         Account account = accountService.getAccountByUsername(username);
         GetAccountDTO accountDto = accountDTOConverter.toAccountDto(account);
@@ -82,6 +90,7 @@ public class AccountController {
 
 
     @PutMapping("/{id}/user-data")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GetAccountDTO> updateAccountData(@RequestHeader("If-Match") String eTag, @PathVariable UUID id,
                                                            @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws NotFoundException, OptLockException {
@@ -91,18 +100,21 @@ public class AccountController {
     }
 
     @GetMapping("/participants")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<List<GetAccountDTO>> getParticipants() throws NotFoundException {
         List<GetAccountDTO> participants = accountDTOConverter.accountDtoList(accountService.getParticipants());
         return ResponseEntity.status(HttpStatus.OK).body(participants);
     }
 
     @GetMapping("/administrators")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws NotFoundException {
         List<GetAccountDTO> administrators = accountDTOConverter.accountDtoList(accountService.getAdmins());
         return ResponseEntity.status(HttpStatus.OK).body(administrators);
     }
 
     @GetMapping("/managers")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<List<GetAccountDTO>> getManagers() throws NotFoundException {
         List<GetAccountDTO> managers = accountDTOConverter.accountDtoList(accountService.getManagers());
         return ResponseEntity.status(HttpStatus.OK).body(managers);
@@ -122,6 +134,7 @@ public class AccountController {
     }
 
     @PostMapping("/change-password")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<String> changePassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(
                 accountService.changePasswordAndSendEmail(emailDTO.email())
@@ -129,6 +142,7 @@ public class AccountController {
     }
 
     @PostMapping("/change-email/{id}")
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<String> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(
                 accountService.sendMailWhenEmailChange(id, emailDTO.email())

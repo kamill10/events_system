@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -43,11 +44,13 @@ public class AccountService {
     private final CredentialResetRepository resetMyCredentialRepository;
 
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getAllAccounts() {
         return accountMokRepository.findAll();
     }
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
         Account returnedAccount = accountMokRepository.saveAndFlush(account);
@@ -55,6 +58,7 @@ public class AccountService {
         return returnedAccount;
     }
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addRoleToAccount(UUID id, AccountRoleEnum roleName)
             throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException,
@@ -66,10 +70,10 @@ public class AccountService {
             throw new RoleAlreadyAssignedException(ExceptionMessages.ROLE_ALREADY_ASSIGNED);
         }
         switch (roleName) {
-            case PARTICIPANT:
+            case ROLE_PARTICIPANT:
                 canAddParticipantRole(account);
                 break;
-            case MANAGER, ADMIN:
+            case ROLE_MANAGER, ROLE_ADMIN:
                 canAddManagerOrAdminRole(account);
                 break;
             default:
@@ -80,13 +84,15 @@ public class AccountService {
         return accountMokRepository.saveAndFlush(account);
     }
 
+    @Secured({"ROLE_ADMIN"})
     private void canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
         List<Role> accountRoles = account.getRoles();
-        if (accountRoles.contains(new Role(AccountRoleEnum.PARTICIPANT))) {
+        if (accountRoles.contains(new Role(AccountRoleEnum.ROLE_PARTICIPANT))) {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
         }
     }
 
+    @Secured({"ROLE_ADMIN"})
     private void canAddParticipantRole(Account account) throws WrongRoleToAccountException {
         List<Role> accountRoles = account.getRoles();
         if (!accountRoles.isEmpty()) {
@@ -94,6 +100,7 @@ public class AccountService {
         }
     }
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account removeRole(UUID id, AccountRoleEnum roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
         Role role = roleRepository.findByName(roleName)
@@ -110,6 +117,7 @@ public class AccountService {
         throw new RoleCanNotBeRemoved(ExceptionMessages.ACCOUNT_NOT_HAVE_THIS_ROLE);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account setAccountStatus(UUID id, boolean status) throws AccountNotFoundException {
         Account account = accountMokRepository.findById(id)
@@ -124,12 +132,14 @@ public class AccountService {
     }
 
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account getAccountByUsername(String username) throws AccountNotFoundException {
         return accountMokRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account updateAccountData(UUID id, Account account, String eTag) throws AccountNotFoundException, OptLockException {
         Account accountToUpdate = accountMokRepository.findById(id)
@@ -144,26 +154,32 @@ public class AccountService {
     }
 
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getParticipants() throws RoleNotFoundException {
         Role role =
-                roleRepository.findByName(AccountRoleEnum.PARTICIPANT).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+                roleRepository.findByName(AccountRoleEnum.ROLE_PARTICIPANT)
+                        .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getManagers() throws RoleNotFoundException {
-        Role role = roleRepository.findByName(AccountRoleEnum.MANAGER).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Role role = roleRepository.findByName(AccountRoleEnum.ROLE_MANAGER)
+                .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
+    @Secured({"ROLE_ADMIN"})
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getAdmins() throws RoleNotFoundException {
-        Role role = roleRepository.findByName(AccountRoleEnum.ADMIN).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
+        Role role =
+                roleRepository.findByName(AccountRoleEnum.ROLE_ADMIN).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
-
+    @Secured({"ROLE_ADMIN"})
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account getAccountById(UUID id) throws AccountNotFoundException {
         return accountMokRepository.findById(id)
@@ -218,7 +234,7 @@ public class AccountService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void resetPasswordWithToken(String token, String newPassword)
             throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException {
-        Account accountToUpdate = verifyCredentialReset(token,resetMyCredentialRepository);
+        Account accountToUpdate = verifyCredentialReset(token, resetMyCredentialRepository);
         if (isPasswordInHistory(accountToUpdate.getId(), newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
@@ -234,7 +250,7 @@ public class AccountService {
         if (accountMokRepository.findByEmail(newEmail).isPresent()) {
             throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
-        Account accountToUpdate = verifyCredentialReset(token,resetMyCredentialRepository);
+        Account accountToUpdate = verifyCredentialReset(token, resetMyCredentialRepository);
         accountToUpdate.setEmail(newEmail);
         accountMokRepository.saveAndFlush(accountToUpdate);
         resetMyCredentialRepository.deleteByToken(token);
@@ -244,7 +260,7 @@ public class AccountService {
     public void changeMyEmailWithToken(String token)
             throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException {
 
-        Account accountToUpdate = verifyCredentialReset(token,changeMyEmailRepository);
+        Account accountToUpdate = verifyCredentialReset(token, changeMyEmailRepository);
         var changeMyEmail = changeMyEmailRepository.findByToken(token)
                 .orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.EMAIL_RESET_TOKEN_NOT_FOUND));
         accountToUpdate.setEmail(changeMyEmail.getEmail());
@@ -252,6 +268,7 @@ public class AccountService {
         changeMyEmailRepository.deleteByToken(token);
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public String changeMyPasswordSendMail(UUID id, String currentPassword, String newPassword)
             throws AccountNotFoundException, WrongOldPasswordException {
@@ -271,28 +288,32 @@ public class AccountService {
                 this::getChangeMyPassword);
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public String changeMyEmailSendMail(UUID id, String currentPassword, String newEmail)
-            throws AccountNotFoundException, WrongOldPasswordException {
-        return getNewResetIssue(id,
+    public String changeMyEmailSendMail(UUID id, String currentPassword, String newEmail) throws AccountNotFoundException, WrongOldPasswordException {
+        return getNewResetIssue(
+                id,
                 currentPassword,
                 newEmail,
                 null,
-                new MailResetIssuePropertiesDTO("change-my-email",
-                "mail.email.changed.by.you.subject",
-                "mail.email.changed.by.you.body"),
-                this::getChangeMyEmail);
+                new MailResetIssuePropertiesDTO(
+                        "change-my-email",
+                        "mail.email.changed.by.you.subject",
+                        "mail.email.changed.by.you.body"
+                ),
+                this::getChangeMyEmail
+        );
     }
 
-    private String getNewResetIssue(UUID id,
-                                    String currentPassword,
-                                    String newCredential,
-                                    ThrowingSupplier<Exception> additionalCondition,
-                                    MailResetIssuePropertiesDTO mailResetIssuePropertiesDTO,
-                                    Function<CredentialUpdateArgumentDTO, AbstractCredentialChange> tokenFunction)
-            throws WrongOldPasswordException, AccountNotFoundException {
-        Account account = accountMokRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+    @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
+    protected String getNewResetIssue(
+            UUID id, String currentPassword,
+            String newCredential,
+            ThrowingSupplier<Exception> additionalCondition,
+            MailResetIssuePropertiesDTO mailResetIssuePropertiesDTO,
+            Function<CredentialUpdateArgumentDTO, AbstractCredentialChange> tokenFunction
+    ) throws WrongOldPasswordException, AccountNotFoundException {
+        Account account = accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
             throw new WrongOldPasswordException(ExceptionMessages.WRONG_OLD_PASSWORD);
         }
@@ -307,7 +328,7 @@ public class AccountService {
         return newResetIssue.getToken();
     }
 
-    private void sendMailForMyCredentialReset(String endpointName, String mailSubject, String mailBody, AbstractCredentialChange newResetIssue) {
+    protected void sendMailForMyCredentialReset(String endpointName, String mailSubject, String mailBody, AbstractCredentialChange newResetIssue) {
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");
         sb.append(endpointName);
@@ -347,10 +368,9 @@ public class AccountService {
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(account));
         accountMokRepository.saveAndFlush(account);
         changeMyPasswordRepository.deleteByToken(token);
-
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public <T extends AbstractCredentialChange> Account verifyCredentialReset(String token, GenericChangeCredentialTokenRepository<T> repo)
             throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
         Optional<T> credentialReset = repo.findByToken(token);
@@ -364,6 +384,7 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void logSwitchRole(UUID accountId, AccountRoleEnum roleEnum) throws AccountNotFoundException, RoleNotAssignedToAccount {
         Account account = accountMokRepository.findById(accountId)
@@ -379,6 +400,7 @@ public class AccountService {
                 .stream().anyMatch(passwordHistory -> passwordEncoder.matches(password, passwordHistory.getPassword()));
     }
 
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public CredentialReset saveTokenToChangeCredential(Account account) {
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
@@ -389,15 +411,26 @@ public class AccountService {
         return newResetIssue;
     }
 
+    @Secured({})
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @Scheduled(fixedRate = 120000)
-    public void deleteExpiredTokens() {
+    public void deleteExpiredResetCredentialTokens() {
         resetMyCredentialRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
-        changeMyPasswordRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
-        changeMyEmailRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
+    @Secured({})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Scheduled(fixedRate = 120000)
+    public void deleteExpiredChangePasswordTokens() {
+        changeMyPasswordRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
+    }
 
+    @Secured({})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Scheduled(fixedRate = 120000)
+    public void deleteExpiredChangeEmailTokens() {
+        changeMyEmailRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
+    }
 }
 
 

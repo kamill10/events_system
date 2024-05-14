@@ -53,9 +53,9 @@ public class EntitityTest {
 
     @BeforeAll
     public static void setup() {
-        role = new Role(AccountRoleEnum.ADMIN);
-        role2 = new Role(AccountRoleEnum.ADMIN);
-        role3 = new Role(AccountRoleEnum.MANAGER);
+        role = new Role(AccountRoleEnum.ROLE_ADMIN);
+        role2 = new Role(AccountRoleEnum.ROLE_ADMIN);
+        role3 = new Role(AccountRoleEnum.ROLE_MANAGER);
         role4 = new Role();
         role5 = new Role(null);
 
@@ -162,7 +162,7 @@ public class EntitityTest {
 
     @Test
     public void settersTest() {
-        Assertions.assertEquals("ADMIN", role.getName().toString());
+        Assertions.assertEquals("ROLE_ADMIN", role.getName().toString());
 
         Assertions.assertEquals(true, account.getActive());
         Assertions.assertEquals("email@email.com", account.getEmail());

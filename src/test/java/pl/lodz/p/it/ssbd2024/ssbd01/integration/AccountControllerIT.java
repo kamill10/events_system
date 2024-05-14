@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -180,7 +181,7 @@ public class AccountControllerIT {
     public void addManagerRoleToAdmin() throws Exception {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "MANAGER")
+                .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
                 .then()
@@ -191,7 +192,7 @@ public class AccountControllerIT {
     public void addAdminRoleToManager() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "ADMIN")
+                .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/add-role")
                 .then()
@@ -202,7 +203,7 @@ public class AccountControllerIT {
     public void addParticipantRoleToManager() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "PARTICIPANT")
+                .param("roleName", AccountRoleEnum.ROLE_PARTICIPANT.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/add-role")
                 .then()
@@ -246,7 +247,7 @@ public class AccountControllerIT {
     public void addParticipantRoleToParticipant() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "PARTICIPANT")
+                .param("roleName", AccountRoleEnum.ROLE_PARTICIPANT.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6" + "/add-role")
                 .then()
@@ -257,7 +258,7 @@ public class AccountControllerIT {
     public void addManagerRoleToManager() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "MANAGER")
+                .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/add-role")
                 .then()
@@ -268,7 +269,7 @@ public class AccountControllerIT {
     public void addAdminRoleToAdmin() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "ADMIN")
+                .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
                 .then()
@@ -290,7 +291,7 @@ public class AccountControllerIT {
     public void addRoleToNonExistentAccount() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "ADMIN")
+                .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + UUID.randomUUID() + "/add-role")
                 .then()
@@ -301,7 +302,7 @@ public class AccountControllerIT {
     public void addRoleAsManager() {
         given()
                 .header("Authorization", "Bearer " + managerToken)
-                .param("roleName", "MANAGER")
+                .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
                 .then()
@@ -312,7 +313,7 @@ public class AccountControllerIT {
     public void addRoleAsParticipant() {
         given()
                 .header("Authorization", "Bearer " + participantToken)
-                .param("roleName", "MANAGER")
+                .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
                 .then()
@@ -323,7 +324,7 @@ public class AccountControllerIT {
     public void removeAdminRoleFromAdmin() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "ADMIN")
+                .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/remove-role")
                 .then()
@@ -334,7 +335,7 @@ public class AccountControllerIT {
     public void removeManagerRoleFromManager() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "MANAGER")
+                .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/remove-role")
                 .then()
@@ -345,7 +346,7 @@ public class AccountControllerIT {
     public void removeParticipantRoleFromParticipant() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "PARTICIPANT")
+                .param("roleName", AccountRoleEnum.ROLE_PARTICIPANT.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6" + "/remove-role")
                 .then()
@@ -356,7 +357,7 @@ public class AccountControllerIT {
     public void removeAdminRoleFromManager() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "ADMIN")
+                .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/remove-role")
                 .then()
@@ -378,7 +379,7 @@ public class AccountControllerIT {
     public void removeRoleFromNonExistentAccount() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
-                .param("roleName", "ADMIN")
+                .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + UUID.randomUUID() + "/remove-role")
                 .then()
@@ -389,7 +390,7 @@ public class AccountControllerIT {
     public void removeRoleAsManager() {
         given()
                 .header("Authorization", "Bearer " + managerToken)
-                .param("roleName", "ADMIN")
+                .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/remove-role")
                 .then()
@@ -400,7 +401,7 @@ public class AccountControllerIT {
     public void removeRoleAsParticipant() {
         given()
                 .header("Authorization", "Bearer " + participantToken)
-                .param("roleName", "ADMIN")
+                .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/remove-role")
                 .then()

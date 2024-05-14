@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundExcepti
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 
@@ -26,13 +28,15 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 @RequiredArgsConstructor
 public class MeController {
     private final AccountService accountService;
+    private final MeService meService;
     private final AccountDTOConverter accountDTOConverter;
 
     @GetMapping
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     public ResponseEntity<GetAccountDTO> getMyAccount() throws NotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        Account accountToReturn = accountService.getAccountById(account.getId());
+        Account accountToReturn = meService.getAccountById(account.getId());
         String eTag = ETagBuilder.buildETag(accountToReturn.getVersion().toString());
         GetAccountDTO accountDto = accountDTOConverter.toAccountDto(accountToReturn);
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
@@ -40,6 +44,7 @@ public class MeController {
 
 
     @PatchMapping("/email")
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     public ResponseEntity<GetAccountDTO> updateMyEmail(@RequestBody UpdateEmailDTO email)
             throws AccountNotFoundException, EmailAlreadyExistsException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,17 +53,19 @@ public class MeController {
     }
 
     @PostMapping("/change-password")
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     public ResponseEntity<String> changeMyPasswordSendEmail(@RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
             throws AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, WrongOldPasswordException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         return ResponseEntity.status(HttpStatus.OK).body(
-                accountService.changeMyPasswordSendMail(account.getId(),updateMyPasswordDto.oldPassword(),
+                accountService.changeMyPasswordSendMail(account.getId(), updateMyPasswordDto.oldPassword(),
                         updateMyPasswordDto.newPassword())
         );
     }
 
     @PostMapping("/change-email")
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     public ResponseEntity<String> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
             throws AccountNotFoundException, WrongOldPasswordException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -84,6 +91,7 @@ public class MeController {
 
 
     @PutMapping("/user-data")
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     public ResponseEntity<GetAccountDTO> updateMyData(@RequestHeader("If-Match") String eTag, @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws AccountNotFoundException, OptLockException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -93,6 +101,7 @@ public class MeController {
     }
 
     @PostMapping("/switch-role")
+    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
     public ResponseEntity<?> logSwitchRole(@RequestParam AccountRoleEnum role) throws AccountNotFoundException, RoleNotAssignedToAccount {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
