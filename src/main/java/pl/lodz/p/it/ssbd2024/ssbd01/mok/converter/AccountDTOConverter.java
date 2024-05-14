@@ -40,7 +40,8 @@ public class AccountDTOConverter {
                 account.getNonLocked(),
                 account.getFirstName(),
                 account.getLastName(),
-                account.getLanguage());
+                account.getLanguage(),
+                account.getGender());
     }
 
     public GetAccountDetailedDTO toAccountDetailedDTO(Account account) {
