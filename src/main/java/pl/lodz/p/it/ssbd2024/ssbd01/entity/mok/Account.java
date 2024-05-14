@@ -27,6 +27,7 @@ public class Account extends ControlledEntity implements UserDetails {
     @Column(unique = true, updatable = false, nullable = false, length = 32)
     @Size(min = 3, max = 32)
     @NotBlank
+    @Pattern(regexp = "^(?!anonymous$)[a-zA-Z0-9]{3,32}$")
     private String username;
 
     @ToString.Exclude
