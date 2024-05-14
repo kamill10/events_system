@@ -8,7 +8,7 @@ export const Pathnames = {
     verifyAccount: "/verify-account",
     resetPassword: "/login/reset-password",
     confirmPasswordUpdate: "/change-my-password",
-    confirmEmailUpdate: "/change-my-email",
+    confirmEmailUpdate: "/confirm-email",
   },
   participant: {
     home: "/",
@@ -37,8 +37,8 @@ export const Pathnames = {
   admin: {
     home: "/",
     profile: "/profile",
-    users: "/users",
-    user: "/users/:id",
+    accounts: "/accounts",
+    account: "/accounts/:id",
     logout: "/logout",
     confirmPasswordUpdate: "/change-my-password",
     confirmEmailUpdate: "/change-my-email",

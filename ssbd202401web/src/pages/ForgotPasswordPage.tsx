@@ -1,24 +1,14 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Box,
-  Button,
-  CssBaseline,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import {
-  Controller,
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { Button, Typography } from "@mui/material";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { ForgotPasswordSchema } from "../validation/schemas";
 import { ForgotPasswordType } from "../types/ForgotPassword";
 import { useAccount } from "../hooks/useAccount";
 import { Pathnames } from "../router/Pathnames";
 import { Link } from "react-router-dom";
+import ContainerWithPictureComponent from "../components/ContainerWithPictureComponent";
+import FormComponent from "../components/FormComponent";
+import TextFieldComponent from "../components/TextFieldComponent";
 
 export default function ForgotPasswordPage() {
   const { requestPasswordReset } = useAccount();
@@ -43,91 +33,35 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <Grid container component="main" sx={{ height: "85vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <Box
+    <ContainerWithPictureComponent>
+      <FormComponent
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        onError={onError}
+      >
+        <Typography variant="h3" textAlign={"center"}>
+          Reset your password
+        </Typography>
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          label="E-mail"
+          name="email"
+          trigger={trigger}
+          type="text"
+        />
+        <Button
+          type="submit"
+          variant="contained"
           sx={{
-            my: 8,
-            mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            mt: 3,
+            mb: 2,
           }}
         >
-          <Typography variant="h3" marginBottom={15} textAlign={"center"}>
-            Reset your password
-          </Typography>
-          <Box
-            component={"form"}
-            onSubmit={handleSubmit(onSubmit, onError)}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => {
-                return (
-                  <TextField
-                    fullWidth
-                    value={field.value}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      setTimeout(
-                        () =>
-                          trigger(e.target.name as keyof ForgotPasswordType),
-                        500,
-                      );
-                    }}
-                    id={field.name}
-                    label="E-mail"
-                    name={field.name}
-                    autoComplete=""
-                    error={errors.email ? true : false}
-                  ></TextField>
-                );
-              }}
-            ></Controller>
-            <Typography
-              color={"red"}
-              fontSize={14}
-              width={"inherit"}
-              margin={"none"}
-            >
-              {errors.email?.message}
-            </Typography>
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                mt: 3,
-                mb: 2,
-              }}
-            >
-              Reset password
-            </Button>
-          </Box>
-          <Link to={Pathnames.public.login}>
-            Remember the password? Log in!
-          </Link>
-        </Box>
-      </Grid>
-    </Grid>
+          Reset password
+        </Button>
+        <Link to={Pathnames.public.login}>Go back to login page</Link>
+      </FormComponent>
+    </ContainerWithPictureComponent>
   );
 }

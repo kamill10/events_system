@@ -228,7 +228,7 @@ export const useAccount = () => {
       await api.changeMyEmail(data);
       sendNotification({
         type: "success",
-        description: "Sent email! Confirm your email change",
+        description: "Email sent! Confirm your email change",
       });
     } catch (e) {
       console.error(e);

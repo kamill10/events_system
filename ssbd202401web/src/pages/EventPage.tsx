@@ -1,5 +1,10 @@
 import { Typography } from "@mui/material";
+import ContainerComponent from "../components/ContainerComponent";
 
 export default function EventPage() {
-  return <Typography variant="h4">Event Page</Typography>;
+  return (
+    <ContainerComponent>
+      <Typography variant="h4">Event Page</Typography>;
+    </ContainerComponent>
+  );
 }

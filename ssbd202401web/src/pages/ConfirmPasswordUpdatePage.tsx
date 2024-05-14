@@ -1,9 +1,11 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount";
+import CenteredContainerComponent from "../components/CenterdContainerComponent";
+import ContainerWithShadowComponent from "../components/ContainerWithShadowComponent";
 
-export default function ConfirmPasswordUpdate() {
+export default function ConfirmPasswordUpdatePage() {
   const [searchParams] = useSearchParams();
   const { confirmPasswordUpdate } = useAccount();
   const [failed, setFailed] = useState(false);
@@ -24,22 +26,8 @@ export default function ConfirmPasswordUpdate() {
 
   if (failed) {
     return (
-      <Box
-        component={"div"}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <Box
-          component={"div"}
-          sx={{
-            boxShadow: 6,
-            padding: "3rem",
-          }}
-        >
+      <CenteredContainerComponent>
+        <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
             Something happened :((
           </Typography>
@@ -50,32 +38,15 @@ export default function ConfirmPasswordUpdate() {
           <Typography variant="h6" textAlign={"center"}>
             <Link to={"/"}>Go to home page</Link>
           </Typography>
-        </Box>
-      </Box>
+        </ContainerWithShadowComponent>
+      </CenteredContainerComponent>
     );
   }
 
   if (!pressed) {
     return (
-      <Box
-        component={"div"}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <Box
-          component={"div"}
-          sx={{
-            boxShadow: 6,
-            padding: "3rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
+      <CenteredContainerComponent>
+        <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
             Confirm your password change!
           </Typography>
@@ -95,28 +66,14 @@ export default function ConfirmPasswordUpdate() {
           <Typography variant="h6" textAlign={"center"}>
             <Link to={"/"}>Go to home page</Link>
           </Typography>
-        </Box>
-      </Box>
+        </ContainerWithShadowComponent>
+      </CenteredContainerComponent>
     );
   }
 
   return (
-    <Box
-      component={"div"}
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Box
-        component={"div"}
-        sx={{
-          boxShadow: 6,
-          padding: "3rem",
-        }}
-      >
+    <CenteredContainerComponent>
+      <ContainerWithShadowComponent>
         <Typography variant="h3" textAlign={"center"}>
           Password has been changed!
         </Typography>
@@ -124,7 +81,7 @@ export default function ConfirmPasswordUpdate() {
           You can go to login page manually, or&#x20;
           <Link to={"/login"}>click here!</Link>
         </Typography>
-      </Box>
-    </Box>
+      </ContainerWithShadowComponent>
+    </CenteredContainerComponent>
   );
 }
