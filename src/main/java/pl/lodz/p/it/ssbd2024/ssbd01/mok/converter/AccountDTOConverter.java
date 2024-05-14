@@ -9,6 +9,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
 import java.util.List;
 import java.util.Locale;
@@ -23,7 +24,7 @@ public class AccountDTOConverter {
                 account.getId(),
                 account.getUsername(),
                 account.getEmail(),
-                account.getRoles(),
+                account.getRoles().stream().map(Role::getName).toList(),
                 account.getActive(),
                 account.getVerified(),
                 account.getNonLocked());
@@ -34,7 +35,7 @@ public class AccountDTOConverter {
                 account.getId(),
                 account.getUsername(),
                 account.getEmail(),
-                account.getRoles(),
+                account.getRoles().stream().map(Role::getName).toList(),
                 account.getActive(),
                 account.getVerified(),
                 account.getNonLocked(),
@@ -49,7 +50,7 @@ public class AccountDTOConverter {
                 account.getId(),
                 account.getUsername(),
                 account.getEmail(),
-                account.getRoles(),
+                account.getRoles().stream().map(Role::getName).toList(),
                 account.getActive(),
                 account.getVerified(),
                 account.getNonLocked(),

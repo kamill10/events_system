@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.dto.get;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public record GetAccountDTO(
         @Email
         String email,
         @NotNull
-        List<Role> roles,
+        List<AccountRoleEnum> roles,
         @NotNull
         Boolean active,
         @NotNull
