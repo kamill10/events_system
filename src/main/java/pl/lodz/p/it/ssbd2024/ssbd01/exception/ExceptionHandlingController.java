@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.LockedException;
@@ -41,6 +42,17 @@ public class ExceptionHandlingController {
     @ExceptionHandler
     ResponseEntity<String> handleOptLockException(OptLockException e) {
         return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed: " + e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleHibernateConstraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Database constraint violation: " + e.getMessage());
     }
 
 }
