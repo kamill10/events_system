@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,6 +47,12 @@ public class AccountDTOConverter {
     }
 
     public GetAccountDetailedDTO toAccountDetailedDTO(Account account) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        String lastSuccessfulLogin = account.getLastSuccessfulLogin() != null ? account.getLastSuccessfulLogin().format(formatter) : null;
+        String lastFailedLogin = account.getLastFailedLogin() != null ? account.getLastFailedLogin().format(formatter) : null;
+        String lockedUntil = account.getLockedUntil() != null ? account.getLockedUntil().format(formatter) : null;
+
         return new GetAccountDetailedDTO(
                 account.getId(),
                 account.getUsername(),
@@ -54,13 +61,14 @@ public class AccountDTOConverter {
                 account.getActive(),
                 account.getVerified(),
                 account.getNonLocked(),
-                account.getLastSuccessfulLogin(),
-                account.getLastFailedLogin(),
-                account.getLockedUntil(),
+                lastSuccessfulLogin,
+                lastFailedLogin,
+                lockedUntil,
                 account.getGender(),
                 account.getFirstName(),
                 account.getLastName(),
-                account.getLanguage());
+                account.getLanguage()
+        );
     }
 
     public Account toAccount(CreateAccountDTO createAccountDTO) {
