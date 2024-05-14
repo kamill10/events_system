@@ -50,9 +50,9 @@ public class AccountDTOConverter {
                 account.getGender());
     }
 
-    public GetAccountDetailedDTO toAccountDetailedDTO(Account account, TimeZone timezone) {
+    public GetAccountDetailedDTO toAccountDetailedDTO(Account account, String timezone) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        ZoneId targetZoneId = timezone != null ? timezone.toZoneId() : ZoneId.systemDefault();
+        ZoneId targetZoneId = timezone != null ? ZoneId.of(timezone) : ZoneId.systemDefault();
 
         String lastSuccessfulLogin =
                 account.getLastSuccessfulLogin() != null ? convertAndFormatDateTime(account.getLastSuccessfulLogin(), targetZoneId, formatter) : null;

@@ -79,10 +79,11 @@ public class AccountController {
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username, HttpServletRequest request)
+    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username,
+                                                                      @RequestHeader("The-Timezone-IANA") String timezone)
             throws NotFoundException {
         Account account = accountService.getAccountByUsername(username);
-        GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account, RequestContextUtils.getTimeZone(request));
+        GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account, timezone);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
     }
