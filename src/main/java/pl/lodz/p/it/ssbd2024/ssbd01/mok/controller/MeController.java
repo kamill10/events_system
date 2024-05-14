@@ -30,12 +30,12 @@ public class MeController {
     private final AccountDTOConverter accountDTOConverter;
 
     @GetMapping
-    public ResponseEntity<GetAccountDTO> getMyAccount() throws NotFoundException {
+    public ResponseEntity<GetAccountPersonalDTO> getMyAccount() throws NotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         Account accountToReturn = accountService.getAccountById(account.getId());
         String eTag = ETagBuilder.buildETag(accountToReturn.getVersion().toString());
-        GetAccountDTO accountDto = accountDTOConverter.toAccountDto(accountToReturn);
+        GetAccountPersonalDTO accountDto = accountDTOConverter.toAccountPersonalDTO(accountToReturn);
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
     }
 
