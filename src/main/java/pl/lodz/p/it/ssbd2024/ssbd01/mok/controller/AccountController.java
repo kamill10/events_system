@@ -1,10 +1,12 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDetailedDTO;
@@ -77,9 +79,10 @@ public class AccountController {
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username, TimeZone timezone) throws NotFoundException {
+    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username, HttpServletRequest request)
+            throws NotFoundException {
         Account account = accountService.getAccountByUsername(username);
-        GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account, timezone);
+        GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account, RequestContextUtils.getTimeZone(request));
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
     }
