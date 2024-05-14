@@ -24,6 +24,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 
 @RestController
@@ -76,9 +77,9 @@ public class AccountController {
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username) throws NotFoundException {
+    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username, TimeZone timezone) throws NotFoundException {
         Account account = accountService.getAccountByUsername(username);
-        GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account);
+        GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account, timezone);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
     }

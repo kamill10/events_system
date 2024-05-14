@@ -11,9 +11,13 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 @Component
 @RequiredArgsConstructor
@@ -46,12 +50,15 @@ public class AccountDTOConverter {
                 account.getGender());
     }
 
-    public GetAccountDetailedDTO toAccountDetailedDTO(Account account) {
+    public GetAccountDetailedDTO toAccountDetailedDTO(Account account, TimeZone timezone) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        ZoneId targetZoneId = timezone != null ? timezone.toZoneId() : ZoneId.systemDefault();
 
-        String lastSuccessfulLogin = account.getLastSuccessfulLogin() != null ? account.getLastSuccessfulLogin().format(formatter) : null;
-        String lastFailedLogin = account.getLastFailedLogin() != null ? account.getLastFailedLogin().format(formatter) : null;
-        String lockedUntil = account.getLockedUntil() != null ? account.getLockedUntil().format(formatter) : null;
+        String lastSuccessfulLogin =
+                account.getLastSuccessfulLogin() != null ? convertAndFormatDateTime(account.getLastSuccessfulLogin(), targetZoneId, formatter) : null;
+        String lastFailedLogin =
+                account.getLastFailedLogin() != null ? convertAndFormatDateTime(account.getLastFailedLogin(), targetZoneId, formatter) : null;
+        String lockedUntil = account.getLockedUntil() != null ? convertAndFormatDateTime(account.getLockedUntil(), targetZoneId, formatter) : null;
 
         return new GetAccountDetailedDTO(
                 account.getId(),
@@ -100,4 +107,10 @@ public class AccountDTOConverter {
     public List<GetAccountDTO> accountDtoList(List<Account> accounts) {
         return accounts.stream().map(this::toAccountDto).toList();
     }
+
+    private String convertAndFormatDateTime(LocalDateTime dateTime, ZoneId targetZoneId, DateTimeFormatter formatter) {
+        ZonedDateTime zonedDateTime = dateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(targetZoneId);
+        return zonedDateTime.format(formatter);
+    }
+
 }
