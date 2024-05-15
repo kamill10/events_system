@@ -89,7 +89,7 @@ public class Account extends ControlledEntity implements UserDetails {
     private String lastName;
 
     @Enumerated(EnumType.STRING)
-    @Column(table = "personal_data")
+    @Column(nullable = false)
     private LanguageEnum language;
 
 

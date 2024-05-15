@@ -20,6 +20,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountConfirmation;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ConfirmationReminder;
@@ -88,7 +89,7 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
-    public String authenticate(LoginDTO loginDTO) {
+    public String authenticate(LoginDTO loginDTO, String language) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -102,6 +103,12 @@ public class AuthenticationService {
         }
 
         var user = accountAuthRepository.findByUsername(loginDTO.username());
+        if (language.contains("pl")) {
+            user.setLanguage(LanguageEnum.POLISH);
+        } else if (language.contains("en")) {
+            user.setLanguage(LanguageEnum.ENGLISH);
+        }
+
         user.setFailedLoginAttempts(0);
         user.setLastSuccessfulLogin(LocalDateTime.now());
         accountAuthRepository.saveAndFlush(user);
