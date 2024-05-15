@@ -86,6 +86,7 @@ public class AccountControllerIT {
             .withNetworkAliases("tomcat")
             .withNetwork(network)
             .dependsOn(postgres)
+            .withEnv("SPRING_PROFILES_ACTIVE", "test")
             .withCopyFileToContainer(
                     MountableFile.forHostPath("target/ssbd01.war"),
                     "/usr/local/tomcat/webapps/ssbd01.war"

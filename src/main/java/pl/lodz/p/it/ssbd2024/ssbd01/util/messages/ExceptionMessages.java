@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.messages;
+package pl.lodz.p.it.ssbd2024.ssbd01.util.messages;
 
 public class ExceptionMessages {
     public static final String ROLE_NOT_FOUND = "Role with given name does not exist.";

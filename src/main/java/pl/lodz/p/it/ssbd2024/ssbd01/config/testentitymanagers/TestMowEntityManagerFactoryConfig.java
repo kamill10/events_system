@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig;
+package pl.lodz.p.it.ssbd2024.ssbd01.config.testentitymanagers;
 
 import com.atomikos.jdbc.AtomikosNonXADataSourceBean;
 import jakarta.persistence.EntityManagerFactory;
@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
@@ -15,18 +14,17 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Configuration
-@Profile("!test")
+@Profile("test")
 @PropertySource("classpath:data-access.properties")
 @EnableJpaRepositories(
         basePackages = "pl.lodz.p.it.ssbd2024.ssbd01.mow.repository",
-        entityManagerFactoryRef = "mowEntityManagerFactory",
+        entityManagerFactoryRef = "testMowEntityManagerFactory",
         transactionManagerRef = "transactionManager"
 )
 @RequiredArgsConstructor
-public class MowEntityManagerFactoryConfig {
+public class TestMowEntityManagerFactoryConfig {
 
     private final ConfigurationProperties config;
 
@@ -42,11 +40,11 @@ public class MowEntityManagerFactoryConfig {
         return jpaProperties;
     }
 
-    @Bean(name = "mowEntityManagerFactory")
-    public EntityManagerFactory mowEntityManagerFactory() {
+    @Bean(name = "testMowEntityManagerFactory")
+    public EntityManagerFactory testMowEntityManagerFactory() {
         AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
         dataSource.setUniqueResourceName("mow");
-        dataSource.setUrl(config.getJdbcUrl());
+        dataSource.setUrl(config.getTestJdbcUrl());
         dataSource.setUser(config.getJdbcMowUser());
         dataSource.setPassword(config.getJdbcMowPassword());
         dataSource.setDriverClassName(config.getJdbcDriverClassName());

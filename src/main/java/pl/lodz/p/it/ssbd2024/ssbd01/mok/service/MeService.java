@@ -12,12 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.function.ThrowingSupplier;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.CredentialUpdateArgumentDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.MailResetIssuePropertiesDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.ChangeMyEmailRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.ChangeMyPasswordRepository;
@@ -51,7 +52,8 @@ public class MeService {
 
     private final MailService mailService;
 
-    private final Environment env;
+    private final ConfigurationProperties config;
+
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -199,7 +201,7 @@ public class MeService {
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public AbstractCredentialChange getChangeMyPassword(CredentialUpdateArgumentDTO credentialUpdateArgumentDTO) {
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-        var expiration = Integer.parseInt(Objects.requireNonNull(env.getProperty("credential_change.token.expiration.minutes")));
+        var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
         var newResetIssue = new ChangeMyPassword(randString, credentialUpdateArgumentDTO.account(),
                 expirationDate, credentialUpdateArgumentDTO.newCredential());
@@ -210,7 +212,7 @@ public class MeService {
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public AbstractCredentialChange getChangeMyEmail(CredentialUpdateArgumentDTO credentialUpdateArgumentDTO) {
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-        var expiration = Integer.parseInt(Objects.requireNonNull(env.getProperty("credential_change.token.expiration.minutes")));
+        var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
         var newResetIssue = new ChangeMyEmail(randString, credentialUpdateArgumentDTO.account(),
                 expirationDate, credentialUpdateArgumentDTO.newCredential());

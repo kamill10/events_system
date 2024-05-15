@@ -17,6 +17,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
@@ -28,7 +29,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpir
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
@@ -41,7 +42,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@PropertySource("classpath:expiration.properties")
 public class AuthenticationService {
     private final AccountMokRepository accountMokRepository;
     private final AccountAuthRepository accountAuthRepository;
@@ -51,16 +51,9 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final JWTWhitelistRepository jwtWhitelistRepository;
     private final AuthenticationManager authenticationManager;
-    private final Environment env;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final MailService mailService;
-
-
-    @Value("${auth.attempts:3}")
-    private int maxFailedLoginAttempts;
-
-    @Value("${auth.lock-time:86400}")
-    private int lockTimeout;
+    private final ConfigurationProperties config;
 
     private LocalDateTime calculateExpirationDate(int expirationHours) {
         return LocalDateTime.now().plusHours(expirationHours);
@@ -70,7 +63,7 @@ public class AuthenticationService {
     public void registerUser(Account account) {
         var savedAccount = accountMokRepository.saveAndFlush(account);
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-        var expirationHours = Integer.parseInt(Objects.requireNonNull(env.getProperty("confirmation.token.expiration.hours")));
+        var expirationHours = config.getConfirmationTokenExpiration();
         var expirationDate = calculateExpirationDate(expirationHours);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
         StringBuilder sb = new StringBuilder();
@@ -202,9 +195,9 @@ public class AuthenticationService {
                         .getRequest();
         account.setLastFailedLoginIp(
                 curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
-        if (account.getFailedLoginAttempts() >= maxFailedLoginAttempts) {
+        if (account.getFailedLoginAttempts() >= config.getAuthAttempts()) {
             account.setNonLocked(false);
-            LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(this.lockTimeout);
+            LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(config.getAuthLockTime());
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             account.setLockedUntil(lockTimeout);
             jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());

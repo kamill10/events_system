@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig;
+package pl.lodz.p.it.ssbd2024.ssbd01.config.testentitymanagers;
 
 import com.atomikos.jdbc.AtomikosNonXADataSourceBean;
 import jakarta.persistence.EntityManagerFactory;
@@ -7,54 +7,48 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Configuration
-@Profile("!test")
+@Profile("test")
 @PropertySource("classpath:data-access.properties")
-@EnableJpaRepositories(
-        basePackages = "pl.lodz.p.it.ssbd2024.ssbd01.mow.repository",
-        entityManagerFactoryRef = "mowEntityManagerFactory",
-        transactionManagerRef = "transactionManager"
-)
 @RequiredArgsConstructor
-public class MowEntityManagerFactoryConfig {
+public class TestAdminEntityManagerFactoryConfig {
 
     private final ConfigurationProperties config;
 
     public Map<String, String> jpaProperties() {
         Map<String, String> jpaProperties = new HashMap<>();
-        jpaProperties.put("jakarta.persistence.exclude-unlisted-classes", config.getJpaExcludeUnlistedClasses());
-        jpaProperties.put("jakarta.persistence.schema-generation.database.action", config.getJpaSchemaGeneration());
+        jpaProperties.put("jakarta.persistence.exclude-unlisted-classes", config.getJpaAdminExcludeUnlistedClasses());
+        jpaProperties.put("jakarta.persistence.schema-generation.database.action", config.getJpaAdminSchemaGeneration());
         jpaProperties.put("hibernate.dialect", config.getHibernateDialect());
         jpaProperties.put("hibernate.show_sql", config.getHibernateShowSql());
         jpaProperties.put("hibernate.temp.use_jdbc_metadata_defaults", config.getHibernateUseJdbcMetadataDefaults());
         jpaProperties.put("jakarta.persistence.transactionType", config.getJpaTransactionType());
+        jpaProperties.put("jakarta.persistence.sql-load-script-source", config.getJpaLoadScriptSource());
 
         return jpaProperties;
     }
 
-    @Bean(name = "mowEntityManagerFactory")
-    public EntityManagerFactory mowEntityManagerFactory() {
+    @Bean(name = "testAdminEntityManagerFactory")
+    public EntityManagerFactory testEntityManagerFactory() {
         AtomikosNonXADataSourceBean dataSource = new AtomikosNonXADataSourceBean();
-        dataSource.setUniqueResourceName("mow");
-        dataSource.setUrl(config.getJdbcUrl());
-        dataSource.setUser(config.getJdbcMowUser());
-        dataSource.setPassword(config.getJdbcMowPassword());
+        dataSource.setUniqueResourceName("admin");
+        dataSource.setUrl(config.getTestJdbcUrl());
+        dataSource.setUser(config.getJdbcAdminUser());
+        dataSource.setPassword(config.getJdbcAdminPassword());
         dataSource.setDriverClassName(config.getJdbcDriverClassName());
         dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
-        dataSource.setMaxPoolSize(5);
+        dataSource.setLocalTransactionMode(true);
+        dataSource.setMaxPoolSize(1);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setPersistenceUnitName("ssbd01mow");
+        em.setPersistenceUnitName("ssbd01admin");
         em.setPersistenceProviderClass(org.hibernate.jpa.HibernatePersistenceProvider.class);
         em.setJtaDataSource(dataSource);
         em.setPackagesToScan(
@@ -64,4 +58,5 @@ public class MowEntityManagerFactoryConfig {
         em.afterPropertiesSet();
         return em.getObject();
     }
+
 }

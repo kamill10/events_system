@@ -1,38 +1,19 @@
 version: '3'
 
 services:
-#  nginx:
-#    depends_on:
-#      - tomcat
-#    image: nginx:1.25.4
-#    volumes:
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#    build:
-#        context: .
-#        dockerfile: Dockerfile
-#    hostname: nginx
-#    container_name: nginx
-#    networks:
-#          - ssbd01
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
-
   tomcat:
     depends_on:
       postgres:
         condition: service_healthy
     image: tomcat:10.1.19-jre21
     hostname: tomcat
-    container_name: tomcat
+    container_name: tomcat_test
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
     networks:
-      - ssbd01
+      - ssbd01_test
     ports:
-      - "8080:8080"
+      - "28080:8080"
     volumes:
       - '../target/ssbd01.war:/usr/local/tomcat/webapps/ssbd01.war'
 
@@ -46,19 +27,19 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     hostname: postgres
-    container_name: postgres
+    container_name: postgres_test
     networks:
-      - ssbd01
+      - ssbd01_test
     ports:
-      - "5432:5432"
+      - "54320:5432"
     volumes:
-      - pg:/var/lib/postgresql/data
+      - pg_test:/var/lib/postgresql/data
       - ./create-users.sql:/docker-entrypoint-initdb.d/create-users.sql
 
 volumes:
-  pg:
+  pg_test:
 
 networks:
-  ssbd01:
+  ssbd01_test:
     driver: bridge
 
