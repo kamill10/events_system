@@ -12,19 +12,18 @@ import java.util.Objects;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:mail.properties")
 @AllArgsConstructor
 public class MailConfig {
 
-    private final Environment env;
+    private ConfigurationProperties config;
 
     @Bean
     public JavaMailSender getMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-        javaMailSender.setHost(env.getProperty("spring.mail.host"));
-        javaMailSender.setPort(Integer.parseInt(Objects.requireNonNull(env.getProperty("spring.mail.port"))));
-        javaMailSender.setUsername(env.getProperty("spring.mail.username"));
-        String password = env.getProperty("spring.mail.password");
+        javaMailSender.setHost(config.getMailHost());
+        javaMailSender.setPort(config.getMailPort());
+        javaMailSender.setUsername(config.getMailUsername());
+        String password = config.getMailPassword();
         javaMailSender.setPassword(new String(java.util.Base64.getDecoder().decode(password)));
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.ssl.enable", "true");

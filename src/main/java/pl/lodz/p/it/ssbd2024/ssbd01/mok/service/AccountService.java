@@ -8,13 +8,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractCredentialChange;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
@@ -35,11 +36,12 @@ public class AccountService {
     private final RoleRepository roleRepository;
     private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
-    private final Environment env;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final ChangeMyPasswordRepository changeMyPasswordRepository;
     private final ChangeMyEmailRepository changeMyEmailRepository;
     private final CredentialResetRepository resetMyCredentialRepository;
+    private final ConfigurationProperties config;
+
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -292,7 +294,7 @@ public class AccountService {
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public CredentialReset saveTokenToChangeCredential(Account account) {
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
-        var expiration = Integer.parseInt(Objects.requireNonNull(env.getProperty("credential_change.token.expiration.minutes")));
+        var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
         var newResetIssue = new CredentialReset(randString, account, expirationDate);
         resetMyCredentialRepository.saveAndFlush(newResetIssue);

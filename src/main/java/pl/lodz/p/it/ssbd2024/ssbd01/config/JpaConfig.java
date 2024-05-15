@@ -8,7 +8,12 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig.MokEntityM
 import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig.MowEntityManagerFactoryConfig;
 
 @Configuration
-@Import({AdminEntityManagerFactoryConfig.class, MokEntityManagerFactoryConfig.class, AuthEntityManagerFactoryConfig.class,
-        MowEntityManagerFactoryConfig.class, AtomikosConfig.class})
+@Import({
+        AdminEntityManagerFactoryConfig.class,
+        MokEntityManagerFactoryConfig.class,
+        AuthEntityManagerFactoryConfig.class,
+        MowEntityManagerFactoryConfig.class,
+        AtomikosConfig.class
+})
 public class JpaConfig {
 }
