@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Compose down') {
             steps {
-                dir("${WORKSPACE}/docker") {
+                dir("${WORKSPACE}/docker-test") {
                     sh('docker compose down')
                 }
             }
@@ -24,7 +24,7 @@ pipeline {
 
         stage('Infrastructure setup') {
             steps {
-                dir("${WORKSPACE}/docker") {
+                dir("${WORKSPACE}/docker-test") {
                     sh('cd ../ssbd202401web/ && npm install && npm run build')
                     sh('rm -rf ./html/')
                     sh('cp -r ../ssbd202401web/dist/ html/')
@@ -44,7 +44,7 @@ pipeline {
 
         stage('Infrastructure down') {
             steps {
-                dir("${WORKSPACE}/docker") {
+                dir("${WORKSPACE}/docker-test") {
                      sh('docker compose down')
                 }
             }
