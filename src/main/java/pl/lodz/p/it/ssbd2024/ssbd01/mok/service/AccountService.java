@@ -129,7 +129,6 @@ public class AccountService {
         return accountMokRepository.saveAndFlush(account);
     }
 
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account getAccountByUsername(String username) throws AccountNotFoundException {
@@ -150,7 +149,6 @@ public class AccountService {
         accountToUpdate.setGender(account.getGender());
         return accountMokRepository.saveAndFlush(accountToUpdate);
     }
-
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -211,7 +209,6 @@ public class AccountService {
         sb.append("'>Link</a>");
         mailService.sendEmail(credentialReset.getAccount(), "mail.password.changed.by.admin.subject",
                 "mail.password.changed.by.admin.body", new Object[] {sb});
-//        return credentialReset.getToken();
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -226,8 +223,6 @@ public class AccountService {
         sb.append("'>Link</a>");
         mailService.sendEmailOnNewMail(credentialReset.getAccount(), "mail.email.changed.by.admin.subject",
                 "mail.email.changed.by.admin.body", new Object[] {sb}, email);
-//        return credentialReset.getToken();
-
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -275,7 +270,7 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public <T extends AbstractCredentialChange> Account verifyCredentialReset(String token, GenericChangeCredentialTokenRepository<T> repo)
-            throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
+            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException {
         Optional<T> credentialReset = repo.findByToken(token);
         if (credentialReset.isEmpty()) {
             throw new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND);
