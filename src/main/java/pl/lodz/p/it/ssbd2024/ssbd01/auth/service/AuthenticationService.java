@@ -132,7 +132,6 @@ public class AuthenticationService {
         accountConfirmationRepository.delete(accountConfirmation);
         confirmationReminderRepository.deleteByAccount(account);
         mailService.sendEmail(account, "mail.after.verify.subject", "mail.after.verify.body", new Object[] {AccountRoleEnum.ROLE_PARTICIPANT});
-
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})

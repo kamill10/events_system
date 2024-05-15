@@ -28,4 +28,8 @@ public interface AccountConfirmationRepository extends JpaRepository<AccountConf
     @Override
     AccountConfirmation saveAndFlush(AccountConfirmation accountConfirmation);
 
+    @PreAuthorize("permitAll()")
+    @Override
+    void delete(AccountConfirmation accountConfirmation);
+
 }
