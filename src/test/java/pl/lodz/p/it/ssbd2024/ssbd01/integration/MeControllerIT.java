@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
@@ -105,6 +106,7 @@ public class MeControllerIT {
 
         ValidatableResponse response = given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(objectMapper.writeValueAsString(loginDTO))
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -117,6 +119,7 @@ public class MeControllerIT {
         loginDTO = new LoginDTO("testParticipant", "P@ssw0rd");
         response = given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(objectMapper.writeValueAsString(loginDTO))
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -129,6 +132,7 @@ public class MeControllerIT {
         loginDTO = new LoginDTO("testManager", "P@ssw0rd");
         response = given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(objectMapper.writeValueAsString(loginDTO))
                 .when()
                 .post(baseUrl + "/auth/authenticate")

@@ -102,6 +102,7 @@ public class AuthenticationControllerIT {
 
         ValidatableResponse response = given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(objectMapper.writeValueAsString(loginDTO))
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -114,6 +115,7 @@ public class AuthenticationControllerIT {
         loginDTO = new LoginDTO("testParticipant", "P@ssw0rd");
         response = given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(objectMapper.writeValueAsString(loginDTO))
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -126,6 +128,7 @@ public class AuthenticationControllerIT {
         loginDTO = new LoginDTO("testManager", "P@ssw0rd");
         response = given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(objectMapper.writeValueAsString(loginDTO))
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -215,6 +218,7 @@ public class AuthenticationControllerIT {
 
         given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(loginDTO)
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -223,6 +227,7 @@ public class AuthenticationControllerIT {
 
         given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(loginDTO)
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -231,6 +236,7 @@ public class AuthenticationControllerIT {
 
         given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(loginDTO)
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -241,6 +247,7 @@ public class AuthenticationControllerIT {
 
         ValidatableResponse response = given()
                 .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
                 .body(newLoginDto)
                 .when()
                 .post(baseUrl + "/auth/authenticate")

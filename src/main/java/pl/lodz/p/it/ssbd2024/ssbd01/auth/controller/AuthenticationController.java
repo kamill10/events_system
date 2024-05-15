@@ -30,8 +30,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody LoginDTO request) {
-        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request));
+    public ResponseEntity<String> authenticate(@RequestBody LoginDTO request,@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language) {
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request, language));
     }
 
     @PostMapping("/verify-account/{token}")
