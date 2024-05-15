@@ -2,26 +2,24 @@ import {
   Box,
   Button,
   Divider,
-  MenuItem,
-  TextField,
   Typography,
 } from "@mui/material";
 import {
-  Controller,
   SubmitErrorHandler,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SaveIcon from "@mui/icons-material/Save";
-import { PersonalDataType } from "../types/PersonalData";
+
 import { useAccount } from "../hooks/useAccount";
-import { GenderEnum } from "../types/enums/Gender.enum";
 import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { changePersonalDataSchema } from "../validation/schemas";
 import FormComponent from "./FormComponent";
 import TextFieldComponent from "./TextFieldComponent";
+import GenderListComponent from "./GenderListComponent";
+import { UpdatePersonalDataType } from "../types/Account";
 
 export default function ChangePersonalDataComponent() {
   const { account, updateMyPersonalData, getMyAccount } = useAccount();
@@ -31,7 +29,7 @@ export default function ChangePersonalDataComponent() {
     formState: { errors },
     trigger,
     setValue,
-  } = useForm<PersonalDataType>({
+  } = useForm<UpdatePersonalDataType>({
     defaultValues: {
       firstName: account ? account.firstName : "",
       lastName: account ? account.lastName : "",
@@ -50,11 +48,11 @@ export default function ChangePersonalDataComponent() {
     setValue("gender", account?.gender ?? 0);
   }, [account, setValue]);
 
-  const onSubmit: SubmitHandler<PersonalDataType> = async (data) => {
+  const onSubmit: SubmitHandler<UpdatePersonalDataType> = async (data) => {
     updateMyPersonalData(data);
   };
 
-  const onError: SubmitErrorHandler<PersonalDataType> = (error) => {
+  const onError: SubmitErrorHandler<UpdatePersonalDataType> = (error) => {
     console.error(error);
   };
 
@@ -88,48 +86,11 @@ export default function ChangePersonalDataComponent() {
         trigger={trigger}
         type="text"
       />
-      <Controller
-        name="gender"
+      <GenderListComponent
         control={control}
-        render={({ field }) => {
-          return (
-            <TextField
-              select
-              label="Gender"
-              value={field.value}
-              onChange={(e) => {
-                field.onChange(e);
-                setTimeout(
-                  () => trigger(e.target.name as keyof PersonalDataType),
-                  500,
-                );
-              }}
-              id={field.name}
-              sx={{ marginTop: "1rem" }}
-              name={field.name}
-              autoComplete=""
-            >
-              {Object.keys(GenderEnum).map((key, value) => {
-                return (
-                  <MenuItem key={key} value={value}>
-                    {GenderEnum[key as keyof typeof GenderEnum].info}
-                  </MenuItem>
-                );
-              })}
-            </TextField>
-          );
-        }}
-      ></Controller>
-      <Typography
-        color={"red"}
-        fontSize={14}
-        width={"inherit"}
-        sx={{
-          marginBottom: "1rem",
-        }}
-      >
-        {errors.gender?.message}
-      </Typography>
+        errors={errors}
+        name="gender"
+      />
       <Box
         sx={{
           display: "flex",

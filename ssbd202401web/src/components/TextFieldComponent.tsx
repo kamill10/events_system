@@ -1,12 +1,13 @@
 import { TextField, Typography } from "@mui/material";
 import { Controller, FieldValues, Path } from "react-hook-form";
+import { TextFieldProps } from "../types/Components";
 
-import { TextFieldProps } from "../types/TextFieldProps";
+
 
 export default function TextFieldComponent<T extends FieldValues>(
   props: TextFieldProps<T>,
 ) {
-  const { control, name, trigger, errors, label, type } = props;
+  const { control, name, trigger, errors, label, type, disabled } = props;
   return (
     <>
       <Controller
@@ -15,7 +16,9 @@ export default function TextFieldComponent<T extends FieldValues>(
         render={({ field }) => {
           return (
             <TextField
-              sx={{ marginTop: "1rem" }}
+              sx={{ 
+                marginTop: "1rem"
+               }}
               value={field.value}
               onChange={(e) => {
                 field.onChange(e);
@@ -28,6 +31,7 @@ export default function TextFieldComponent<T extends FieldValues>(
               fullWidth
               type={type}
               error={errors[name] ? true : false}
+              disabled={disabled}
             ></TextField>
           );
         }}

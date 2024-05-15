@@ -1,14 +1,13 @@
 import { Button, Divider, Typography } from "@mui/material";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { useAccount } from "../hooks/useAccount.ts";
-import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ChangeMyEmailSchema } from "../validation/schemas.ts";
 import { useEffect } from "react";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
 import FormComponent from "./FormComponent.tsx";
 import TextFieldComponent from "./TextFieldComponent.tsx";
+import { ChangeMyEmailType, ChangeMyPasswordType } from "../types/Account.ts";
 
 export default function ChangeEmailComponent() {
   const { updateMyEmail, getMyAccount } = useAccount();

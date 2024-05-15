@@ -1,7 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Link, useSearchParams } from "react-router-dom";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
-import { ResetPasswordType } from "../types/ResetPasswordType";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ResetPasswordSchema } from "../validation/schemas";
 import { useAccount } from "../hooks/useAccount";
@@ -10,6 +9,7 @@ import CenteredContainerComponent from "../components/CenterdContainerComponent"
 import { Pathnames } from "../router/Pathnames";
 import FormComponent from "../components/FormComponent";
 import TextFieldComponent from "../components/TextFieldComponent";
+import { ResetPasswordType } from "../types/Authentication";
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();

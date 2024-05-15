@@ -11,7 +11,7 @@ import {
   Typography,
   useScrollTrigger,
 } from "@mui/material";
-import NavbarPropType from "../types/NavbarPropType";
+import NavbarPropType from "../types/Components";
 import LinkComponent from "./LinkComponent";
 import HeadingComponent from "./HeadingComponent";
 import { MouseEvent, useState } from "react";

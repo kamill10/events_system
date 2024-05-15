@@ -1,6 +1,7 @@
 import { Box, Divider, Typography } from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
+import ElementComponent from "./ElementComponent";
 
 export default function ProfileDetailsComponent() {
   const { account, getMyAccount } = useAccount();
@@ -18,46 +19,49 @@ export default function ProfileDetailsComponent() {
           marginBottom: "3rem",
         }}
       ></Divider>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">Username</Typography>
-        <Typography variant="subtitle1">{account?.username}</Typography>
-      </Box>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">First name</Typography>
-        <Typography variant="subtitle1">{account?.firstName}</Typography>
-      </Box>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">Last name</Typography>
-        <Typography variant="subtitle1">{account?.lastName}</Typography>
-      </Box>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">E-mail</Typography>
-        <Typography variant="subtitle1">{account?.email}</Typography>
-      </Box>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">Gender</Typography>
-        <Typography variant="subtitle1">{account?.gender}</Typography>
-      </Box>
+      <ElementComponent
+        label="Username"
+        value={account?.username}
+      />
+      <ElementComponent
+        label="First name"
+        value={account?.firstName}
+      />
+      <ElementComponent
+        label="Last name"
+        value={account?.lastName}
+      />
+      <ElementComponent
+        label="E-mail"
+        value={account?.email}
+      />
+      <ElementComponent
+        label="Gender"
+        value={account?.gender}
+      />
+      <ElementComponent
+        label="Gender"
+        value={account?.active}
+      />
+      <ElementComponent
+        label="Is active"
+        value={account?.active ? "Yes" : "No"}
+        color={account?.active ? "green" : "red"}
+      />
+      <ElementComponent
+        label="Is verified"
+        value={account?.verified ? "Yes" : "No"}
+        color={account?.verified ? "green" : "red"}
+      />
+      <ElementComponent
+        label="Is unlocked"
+        value={account?.nonLocked ? "Yes" : "No"}
+        color={account?.nonLocked ? "green" : "red"}
+      />
+      <ElementComponent
+        label="Language preference"
+        value={account?.language}
+      />
     </Box>
   );
 }

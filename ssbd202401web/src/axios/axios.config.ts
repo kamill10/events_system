@@ -1,15 +1,15 @@
 import axios from "axios";
 import { ApiResponseType } from "../types/ApiResponse.ts";
 import {
-  AccountType,
-  AccountLoginType,
-  AccountSingInType,
+  ChangeEmailType,
+  ChangeMyEmailType,
+  ChangeMyPasswordType,
+  GetAccountType,
+  GetDetailedAccountType,
+  GetPersonalAccountType,
+  UpdatePersonalDataType,
 } from "../types/Account.ts";
-import { PersonalDataType } from "../types/PersonalData.ts";
-import { ForgotPasswordType } from "../types/ForgotPassword.ts";
-import { ResetPasswordType } from "../types/ResetPasswordType.ts";
-import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
-import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
+import { LoginCredentialsType, ForgotPasswordType, ResetPasswordType, SignInCredentialsType } from "../types/Authentication.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -103,17 +103,19 @@ apiWithEtag.interceptors.response.use(
 );
 
 export const api = {
-  getAllAccounts: (): ApiResponseType<AccountType[]> =>
+  getAllAccounts: (): ApiResponseType<GetAccountType[]> =>
     apiWithAuthToken.get("/accounts"),
-  logIn: (formData: AccountLoginType): ApiResponseType<string> =>
+  getAccountByUsername: (username: string): ApiResponseType<GetDetailedAccountType> => 
+    apiWithEtag.get("/accounts/username/" + username),
+  logIn: (formData: LoginCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/authenticate", formData),
-  singIn: (formData: AccountSingInType): ApiResponseType<string> =>
+  singIn: (formData: SignInCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/register", formData),
   verifyAccount: (key: string): ApiResponseType<void> =>
     apiForAnon.post(`/auth/verify-account/${key}`),
-  updateMyPersonalData: (data: PersonalDataType): ApiResponseType<void> =>
+  updateMyPersonalData: (data: UpdatePersonalDataType): ApiResponseType<void> =>
     apiWithEtag.put("/me/user-data", data),
-  getMyAccount: (): ApiResponseType<AccountType> => apiWithEtag.get("/me"),
+  getMyAccount: (): ApiResponseType<GetPersonalAccountType> => apiWithEtag.get("/me"),
   forgotMyPassword: (data: ForgotPasswordType) =>
     apiForAnon.post("/accounts/reset-password", data),
   resetMyPassword: (data: ResetPasswordType) =>
@@ -131,4 +133,10 @@ export const api = {
     apiForAnon.patch(`/me/change-password/token/${key}`),
   confirmEmailUpdate: (key: string): ApiResponseType<void> =>
     apiWithEtag.patch(`/me/email/token/${key}`),
+  updateAccountData: (id: string, data: UpdatePersonalDataType) => 
+    apiWithEtag.put("/accounts/" + id + "/user-data", data),
+  updateAccountPassword: (data: ChangeEmailType) => 
+    apiWithEtag.post("/accounts/change-password", data),
+  updateAccountEmail: (id: string, data: ChangeEmailType) =>
+    apiWithEtag.post("/accounts/change-email/" + id, data)
 };

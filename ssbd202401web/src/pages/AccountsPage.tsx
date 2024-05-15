@@ -1,4 +1,5 @@
 import {
+  Breadcrumbs,
   Button,
   Divider,
   Paper,
@@ -14,6 +15,9 @@ import { useEffect } from "react";
 import { useManageAccounts } from "../hooks/useManageAccounts";
 import AccountRowComponent from "../components/AccountRowComponent";
 import ContainerComponent from "../components/ContainerComponent";
+import { Link } from "react-router-dom";
+import { Pathnames } from "../router/Pathnames";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function AccountsPage() {
   const { accounts, getAllAccounts } = useManageAccounts();
@@ -24,6 +28,24 @@ export default function AccountsPage() {
 
   return (
     <ContainerComponent>
+      <Breadcrumbs aria-label="breadcrumb" sx={{
+        marginBottom: 3
+      }}>
+        <Link to={Pathnames.public.home} style={{
+          textDecoration: "none",
+          color: "black"
+        }}>
+          Home
+        </Link>
+        <Link to={Pathnames.admin.accounts} style={{
+          textDecoration: "none",
+          color: "black",
+          fontWeight: "bold"
+        }}>
+          Accounts
+        </Link>
+        <Typography color={"grey"}>Account details</Typography>
+      </Breadcrumbs>
       <Typography variant="h3">Manage accounts</Typography>
       <Divider
         sx={{
@@ -33,6 +55,7 @@ export default function AccountsPage() {
       ></Divider>
       <Button
         variant="contained"
+        startIcon={<RefreshIcon></RefreshIcon>}
         onClick={getAllAccounts}
         sx={{
           margin: "1rem",
@@ -68,33 +91,31 @@ export default function AccountsPage() {
                   fontSize: "18px",
                 }}
               >
-                First name
-              </TableCell>
-              <TableCell
-                align="right"
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "18px",
-                }}
-              >
-                Last name
-              </TableCell>
-              <TableCell
-                align="right"
-                sx={{
-                  fontWeight: "bold",
-                  fontSize: "18px",
-                }}
-              >
                 E-mail
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                Roles
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                Is active
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {accounts?.map((account) => {
-              return (
-                <AccountRowComponent account={account}></AccountRowComponent>
-              );
+            {accounts?.map(account => {
+              return <AccountRowComponent key={account.id} account={account}></AccountRowComponent>
             })}
           </TableBody>
         </Table>

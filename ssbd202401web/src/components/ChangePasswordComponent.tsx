@@ -5,9 +5,9 @@ import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ChangeMyPasswordSchema } from "../validation/schemas";
-import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
 import FormComponent from "./FormComponent.tsx";
 import TextFieldComponent from "./TextFieldComponent.tsx";
+import { ChangeMyPasswordType } from "../types/Account.ts";
 
 export default function ChangePasswordComponent() {
   const { updateMyPassword, getMyAccount } = useAccount();

@@ -1,16 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useAccountState } from "../context/AccountContext";
-import { AccountLoginType, AccountSingInType } from "../types/Account";
 import { api } from "../axios/axios.config";
 import { Pathnames } from "../router/Pathnames";
 import useNotification from "./useNotification";
-import { PersonalDataType } from "../types/PersonalData";
-import { ForgotPasswordType } from "../types/ForgotPassword";
-import { ResetPasswordType } from "../types/ResetPasswordType";
 import { jwtDecode } from "jwt-decode";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
-import { ChangeMyPasswordType } from "../types/ChangeMyPasswordType.ts";
-import { ChangeMyEmailType } from "../types/ChangeMyEmailType.ts";
+import { ForgotPasswordType, LoginCredentialsType, ResetPasswordType, SignInCredentialsType } from "../types/Authentication";
+import { ChangeMyEmailType, ChangeMyPasswordType, UpdatePersonalDataType } from "../types/Account";
 
 export const useAccount = () => {
   const sendNotification = useNotification();
@@ -34,7 +30,7 @@ export const useAccount = () => {
   const isAdmin = parsedToken?.role.includes(AccountTypeEnum.ADMIN);
   const isParticipant = parsedToken?.role.includes(AccountTypeEnum.PARTICIPANT);
 
-  const logIn = async (formData: AccountLoginType) => {
+  const logIn = async (formData: LoginCredentialsType) => {
     try {
       setIsLogging(true);
       const { data } = await api.logIn(formData);
@@ -81,7 +77,7 @@ export const useAccount = () => {
     }
   };
 
-  const signIn = async (formData: AccountSingInType) => {
+  const signIn = async (formData: SignInCredentialsType) => {
     try {
       setIsFetching(true);
       const { data } = await api.singIn(formData);
@@ -181,7 +177,7 @@ export const useAccount = () => {
     }
   };
 
-  const updateMyPersonalData = async (data: PersonalDataType) => {
+  const updateMyPersonalData = async (data: UpdatePersonalDataType) => {
     try {
       setIsFetching(true);
       await api.updateMyPersonalData(data);
