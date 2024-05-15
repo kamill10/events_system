@@ -352,7 +352,7 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public <T extends AbstractCredentialChange> Account verifyCredentialReset(String token, GenericChangeCredentialTokenRepository<T> repo)
-            throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
+            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException {
         Optional<T> credentialReset = repo.findByToken(token);
         if (credentialReset.isEmpty()) {
             throw new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND);
