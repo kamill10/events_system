@@ -15,7 +15,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestControllerConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.AccountController;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
@@ -26,7 +27,7 @@ import java.util.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringJUnitWebConfig(classes = {WebCoreConfig.class, TestConfig.class})
+@SpringJUnitWebConfig(classes = {TestControllerConfig.class})
 class AccountControllerMockTest {
 
 

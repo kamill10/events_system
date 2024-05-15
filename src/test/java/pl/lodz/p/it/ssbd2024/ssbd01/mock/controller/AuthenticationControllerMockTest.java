@@ -15,13 +15,14 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestControllerConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringJUnitWebConfig(classes = {WebCoreConfig.class, TestConfig.class})
+@SpringJUnitWebConfig(classes = {TestControllerConfig.class})
 public class AuthenticationControllerMockTest {
 
     @Autowired
@@ -39,8 +40,7 @@ public class AuthenticationControllerMockTest {
         mockMvcAuthentication = MockMvcBuilders.standaloneSetup(authenticationController).build();
         var adminLoginDTO = new LoginDTO("admin", "admin");
         Account account = null;
-        Mockito.when(authenticationService.authenticate(adminLoginDTO)).thenReturn("secr3t_token");
-
+        Mockito.when(authenticationService.authenticate(adminLoginDTO, "en-US")).thenReturn("secr3t_token");
     }
 
     public static ObjectMapper objectMapper() {
@@ -53,6 +53,7 @@ public class AuthenticationControllerMockTest {
     void testAdminAuthentication() throws Exception {
         var adminLoginDTO = new LoginDTO("admin", "admin");
         var tokenFromService = mockMvcAuthentication.perform(post("/api/auth/authenticate")
+                        .header("Accept-Language", "en-US")
                 .contentType("application/json")
                 .content(objectMapper().writeValueAsString(adminLoginDTO)))
                 .andExpect(status().isOk())
