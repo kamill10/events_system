@@ -19,6 +19,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -661,7 +662,7 @@ public class AccountControllerIT {
                 .body(
                         not(containsString("testAdmin")),
                         containsString("testManager"),
-                        containsString("ENGLISH"),
+                        containsString(AccountRoleEnum.ROLE_MANAGER.toString()),
                         not(containsString("testParticipant"))
                 );
     }

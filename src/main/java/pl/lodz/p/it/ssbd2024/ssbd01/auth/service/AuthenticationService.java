@@ -128,6 +128,8 @@ public class AuthenticationService {
         accountMokRepository.saveAndFlush(account);
         accountConfirmationRepository.delete(accountConfirmation);
         confirmationReminderRepository.deleteByAccount(account);
+        mailService.sendEmail(account, "mail.after.verify.subject", "mail.after.verify.body", new Object[] {AccountRoleEnum.PARTICIPANT});
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})

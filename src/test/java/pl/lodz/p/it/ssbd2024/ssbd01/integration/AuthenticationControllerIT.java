@@ -22,7 +22,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import java.io.IOException;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 
 @Testcontainers
@@ -152,6 +151,57 @@ public class AuthenticationControllerIT {
                 .post(baseUrl + "/auth/register")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    public void testRegisterAccountWithAnonymousUserName() {
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("anonymous", "password", "isrpgrupa2@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
+        given()
+                .contentType("application/json")
+                .body(createAccountDTO)
+                .when()
+                .post(baseUrl + "/auth/register")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void testRegisterAccountWithViolations() {
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("messi", "password"
+                , "isrpgrupa1@proton.me", 1, "", "lastName", LanguageEnum.POLISH);
+        given()
+                .contentType("application/json")
+                .body(createAccountDTO)
+                .when()
+                .post(baseUrl + "/auth/register")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
+
+    @Test
+    public void testRegisterAccountWithNotUniqueUsername() {
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("testAdmin", "password", "isrpgrupa1@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
+        given()
+                .contentType("application/json")
+                .body(createAccountDTO)
+                .when()
+                .post(baseUrl + "/auth/register")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value());
+    }
+
+    @Test
+    public void testRegisterAccountWithNotUniqueEmail() {
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("testAdmin", "password"
+                , "admin202401@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
+        given()
+                .contentType("application/json")
+                .body(createAccountDTO)
+                .when()
+                .post(baseUrl + "/auth/register")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value());
     }
 
     @Test

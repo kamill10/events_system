@@ -1,6 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.auth.controller;
 
-import jakarta.annotation.security.RolesAllowed;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class AuthenticationController {
     private final AccountDTOConverter accountDTOConverter;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody CreateAccountDTO request) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody CreateAccountDTO request) {
         authenticationService.registerUser(accountDTOConverter.toAccount(request));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

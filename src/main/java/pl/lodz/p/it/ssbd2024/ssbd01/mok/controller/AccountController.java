@@ -8,6 +8,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDetailedDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
@@ -43,16 +45,16 @@ public class AccountController {
     }
 
     @PostMapping
-    @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<GetAccountDTO> createUser(@RequestBody CreateAccountDTO createAccountDTO) {
-        GetAccountDTO getAccountDTO = accountDTOConverter.toAccountDto(accountService.addAccount(accountDTOConverter.toAccount(createAccountDTO)));
+    public ResponseEntity<GetAccountPersonalDTO> createUser(@RequestBody CreateAccountDTO createAccountDTO) {
+        GetAccountPersonalDTO getAccountDTO = accountDTOConverter.toAccountPersonalDTO(accountService
+                .addAccount(accountDTOConverter.toAccount(createAccountDTO)));
         return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
     }
 
     @PostMapping("/{id}/add-role")
     @Secured({"ROLE_ADMIN"})
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
-            throws BadRequestException, UnprocessableEntityException, NotFoundException, ConflictException {
+            throws BadRequestException, NotFoundException, ConflictException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.addRoleToAccount(id, roleName));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
@@ -80,22 +82,21 @@ public class AccountController {
     }
 
     @GetMapping("/username/{username}")
-    @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<GetAccountDTO> getAccountByUsername(@PathVariable String username) throws NotFoundException {
+    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username) throws NotFoundException {
         Account account = accountService.getAccountByUsername(username);
-        GetAccountDTO accountDto = accountDTOConverter.toAccountDto(account);
+        GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(accountDto);
     }
 
 
     @PutMapping("/{id}/user-data")
-    @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<GetAccountDTO> updateAccountData(@RequestHeader("If-Match") String eTag, @PathVariable UUID id,
-                                                           @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+    public ResponseEntity<GetAccountPersonalDTO> updateAccountData(@RequestHeader("If-Match") String eTag, @PathVariable UUID id,
+                                                                   @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws NotFoundException, OptLockException {
-        GetAccountDTO updatedAccount =
-                accountDTOConverter.toAccountDto(accountService.updateAccountData(id, accountDTOConverter.toAccount(updateAccountDataDTO), eTag));
+        GetAccountPersonalDTO updatedAccount =
+                accountDTOConverter.toAccountPersonalDTO(accountService.updateAccountData(id, accountDTOConverter
+                        .toAccount(updateAccountDataDTO), eTag));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -134,19 +135,15 @@ public class AccountController {
     }
 
     @PostMapping("/change-password")
-    @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<String> changePassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                accountService.changePasswordAndSendEmail(emailDTO.email())
-        );
+    public ResponseEntity<?> changePassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
+        accountService.changePasswordAndSendEmail(emailDTO.email());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/change-email/{id}")
-    @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<String> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                accountService.sendMailWhenEmailChange(id, emailDTO.email())
-        );
+    public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
+        accountService.sendMailWhenEmailChange(id, emailDTO.email());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/change-email/token/{token}")
