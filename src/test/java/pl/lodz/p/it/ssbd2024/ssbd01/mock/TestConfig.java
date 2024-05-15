@@ -8,6 +8,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
 
 @Configuration
 public class TestConfig {
@@ -20,6 +21,11 @@ public class TestConfig {
     @Bean
     public AuthenticationService authenticationService() {
         return Mockito.mock(AuthenticationService.class);
+    }
+
+    @Bean
+    public MeService meService() {
+        return Mockito.mock(MeService.class);
     }
 
     @Bean

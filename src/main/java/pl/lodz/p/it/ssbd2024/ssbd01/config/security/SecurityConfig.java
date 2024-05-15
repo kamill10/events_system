@@ -24,7 +24,8 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(
-        securedEnabled = true
+        securedEnabled = true,
+        jsr250Enabled = true
 )
 @RequiredArgsConstructor
 public class SecurityConfig {
