@@ -45,13 +45,13 @@ public class AccountService {
     private final CredentialResetRepository resetMyCredentialRepository;
 
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getAllAccounts() {
         return accountMokRepository.findAll();
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
         Account returnedAccount = accountMokRepository.saveAndFlush(account);
@@ -59,7 +59,7 @@ public class AccountService {
         return returnedAccount;
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addRoleToAccount(UUID id, AccountRoleEnum roleName)
             throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException,
@@ -85,7 +85,7 @@ public class AccountService {
         return accountMokRepository.saveAndFlush(account);
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     private void canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
         List<Role> accountRoles = account.getRoles();
         if (accountRoles.contains(new Role(AccountRoleEnum.ROLE_PARTICIPANT))) {
@@ -93,7 +93,7 @@ public class AccountService {
         }
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     private void canAddParticipantRole(Account account) throws WrongRoleToAccountException {
         List<Role> accountRoles = account.getRoles();
         if (!accountRoles.isEmpty()) {
@@ -101,7 +101,7 @@ public class AccountService {
         }
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account removeRole(UUID id, AccountRoleEnum roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
         Role role = roleRepository.findByName(roleName)
@@ -118,7 +118,7 @@ public class AccountService {
         throw new RoleCanNotBeRemoved(ExceptionMessages.ACCOUNT_NOT_HAVE_THIS_ROLE);
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account setAccountStatus(UUID id, boolean status) throws AccountNotFoundException {
         Account account = accountMokRepository.findById(id)
@@ -133,14 +133,14 @@ public class AccountService {
     }
 
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account getAccountByUsername(String username) throws AccountNotFoundException {
         return accountMokRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account updateAccountData(UUID id, Account account, String eTag) throws AccountNotFoundException, OptLockException {
         Account accountToUpdate = accountMokRepository.findById(id)
@@ -155,7 +155,7 @@ public class AccountService {
     }
 
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getParticipants() throws RoleNotFoundException {
         Role role =
@@ -164,7 +164,7 @@ public class AccountService {
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getManagers() throws RoleNotFoundException {
         Role role = roleRepository.findByName(AccountRoleEnum.ROLE_MANAGER)
@@ -172,7 +172,7 @@ public class AccountService {
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public List<Account> getAdmins() throws RoleNotFoundException {
         Role role =
@@ -180,7 +180,7 @@ public class AccountService {
         return accountMokRepository.findAccountByRolesContains(role);
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account getAccountById(UUID id) throws AccountNotFoundException {
         return accountMokRepository.findById(id)
@@ -202,7 +202,7 @@ public class AccountService {
                 "mail.password.reset.body", new Object[] {sb});
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public String changePasswordAndSendEmail(String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findByEmail(email)
@@ -217,7 +217,7 @@ public class AccountService {
         return credentialReset.getToken();
     }
 
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public String sendMailWhenEmailChange(UUID id, String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findById(id)

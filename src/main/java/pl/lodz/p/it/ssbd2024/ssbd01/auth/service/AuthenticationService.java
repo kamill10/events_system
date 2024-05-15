@@ -189,7 +189,7 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
+    @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     public void logout(String token) {
         jwtWhitelistRepository.deleteByToken(token);
     }

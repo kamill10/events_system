@@ -12,8 +12,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import java.util.Optional;
 import java.util.UUID;
 
-//@PreAuthorize("hasRole('ROLE_ADMIN')")
 @Transactional(propagation = Propagation.MANDATORY)
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public interface RoleRepository  extends JpaRepository<Role, UUID> {
 
     @PreAuthorize("permitAll()")

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,7 +54,7 @@ public class MeService {
 
     private final Environment env;
 
-    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account getAccount() throws AccountNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,7 +63,7 @@ public class MeService {
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public String changeMyPasswordSendMail(String currentPassword, String newPassword) throws AccountNotFoundException, WrongOldPasswordException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -89,7 +90,7 @@ public class MeService {
         );
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public String changeMyEmailSendMail(String currentPassword, String newEmail) throws AccountNotFoundException, WrongOldPasswordException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -133,7 +134,7 @@ public class MeService {
         changeMyEmailRepository.deleteByToken(token);
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account updateMyAccountData(Account accountData, String eTag) throws AccountNotFoundException, OptLockException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -149,7 +150,7 @@ public class MeService {
         return accountMokRepository.saveAndFlush(accountToUpdate);
     }
 
-    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void logSwitchRole(AccountRoleEnum roleEnum) throws AccountNotFoundException, RoleNotAssignedToAccount {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

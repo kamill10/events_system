@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
@@ -27,6 +28,7 @@ public class MeController {
     private final AccountDTOConverter accountDTOConverter;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<GetAccountPersonalDTO> getMyAccount() throws NotFoundException {
         Account accountToReturn = meService.getAccount();
         String eTag = ETagBuilder.buildETag(accountToReturn.getVersion().toString());
@@ -35,7 +37,7 @@ public class MeController {
     }
 
     @PostMapping("/change-password")
-    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<String> changeMyPasswordSendEmail(@RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
             throws AccountNotFoundException, WrongOldPasswordException {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -44,6 +46,7 @@ public class MeController {
     }
 
     @PostMapping("/email")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<String> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
             throws AccountNotFoundException, WrongOldPasswordException {
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -67,6 +70,7 @@ public class MeController {
 
 
     @PutMapping("/user-data")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<GetAccountPersonalDTO> updateMyData(
             @RequestHeader("If-Match") String eTag,
             @RequestBody UpdateAccountDataDTO updateAccountDataDTO
@@ -76,7 +80,7 @@ public class MeController {
     }
 
     @PostMapping("/switch-role")
-    @Secured({"ROLE_ADMIN", "ROLE_MANAGER", "ROLE_PARTICIPANT"})
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<?> logSwitchRole(@RequestParam AccountRoleEnum role) throws AccountNotFoundException, RoleNotAssignedToAccount {
         meService.logSwitchRole(role);
         return ResponseEntity.status(HttpStatus.OK).build();
