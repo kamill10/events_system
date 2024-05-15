@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +23,10 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true
+)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -47,17 +52,17 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.POST, "/api/accounts/reset-password").permitAll()
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/reset-password/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/change-email/token/{token}").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/**").hasAuthority("ADMIN")
-                            .requestMatchers(HttpMethod.PUT, "/api/accounts/**").hasAuthority("ADMIN")
+                            .requestMatchers(HttpMethod.POST, "/api/accounts/**").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.DELETE, "/api/accounts/**").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/api/accounts/**").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.PATCH, "/api/accounts/**").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.PUT, "/api/accounts/**").hasRole("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/me/change-password/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.PATCH, "/api/me/change-email/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/me").authenticated()
-                            .requestMatchers(HttpMethod.PATCH, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")
-                            .requestMatchers(HttpMethod.PUT, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER")
-                            .requestMatchers(HttpMethod.POST, "/api/me/*").hasAnyAuthority("ADMIN", "PARTICIPANT", "MANAGER");
+                            .requestMatchers(HttpMethod.PATCH, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
+                            .requestMatchers(HttpMethod.PUT, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
+                            .requestMatchers(HttpMethod.POST, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER");
                 });
         return http.build();
     }

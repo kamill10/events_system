@@ -58,13 +58,13 @@ class AccountControllerMockTest {
                 new Account("manager", "$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y", "manager@email.com", 1, "Jan", "Kowalski",
                         LanguageEnum.POLISH);
         List<Role> adminRole = new ArrayList<>() {{
-            add(new Role(AccountRoleEnum.ADMIN));
+            add(new Role(AccountRoleEnum.ROLE_ADMIN));
         }};
         List<Role> participantRole = new ArrayList<>() {{
-            add(new Role(AccountRoleEnum.PARTICIPANT));
+            add(new Role(AccountRoleEnum.ROLE_PARTICIPANT));
         }};
         List<Role> managerRole = new ArrayList<>() {{
-            add(new Role(AccountRoleEnum.MANAGER));
+            add(new Role(AccountRoleEnum.ROLE_MANAGER));
         }};
         adminAccount.setRoles(adminRole);
         participantAccount.setRoles(participantRole);

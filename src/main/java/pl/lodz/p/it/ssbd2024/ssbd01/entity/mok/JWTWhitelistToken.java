@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,6 +16,7 @@ import java.util.Date;
 public class JWTWhitelistToken extends AbstractEntity {
     private String token;
     private Date expirationDate;
+
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)

@@ -4,19 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig.AdminEntityManagerFactoryConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig.AuthEntityManagerFactoryConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig.MokEntityManagerFactoryConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig.MowEntityManagerFactoryConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.security.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.security.ApplicationConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtAuthFilter;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.security.SecurityConfig;
 
 @Configuration
 @Import({AdminEntityManagerFactoryConfig.class, MokEntityManagerFactoryConfig.class, AuthEntityManagerFactoryConfig.class,
         MowEntityManagerFactoryConfig.class, AtomikosConfig.class, MailConfig.class, ApplicationConfig.class, JwtAuthFilter.class,
-        JwtService.class, SecurityConfig.class,BusinessConfig.class, ToolsConfig.class})
+        JwtService.class, SecurityConfig.class, BusinessConfig.class, ToolsConfig.class})
 public class RootConfig {
 
     @Bean

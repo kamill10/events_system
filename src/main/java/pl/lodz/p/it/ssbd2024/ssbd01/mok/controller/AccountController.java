@@ -1,12 +1,11 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.RequestContextUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDetailedDTO;
@@ -19,14 +18,12 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 import java.util.List;
-import java.util.TimeZone;
 import java.util.UUID;
 
 @RestController
@@ -40,12 +37,14 @@ public class AccountController {
 
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<GetAccountDTO> getAllUsers() {
         List<GetAccountDTO> getAccountDTOS = accountDTOConverter.accountDtoList(accountService.getAllAccounts());
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOS).getBody();
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountPersonalDTO> createUser(@RequestBody CreateAccountDTO createAccountDTO) {
         GetAccountPersonalDTO getAccountDTO = accountDTOConverter.toAccountPersonalDTO(accountService
                 .addAccount(accountDTOConverter.toAccount(createAccountDTO)));
@@ -53,6 +52,7 @@ public class AccountController {
     }
 
     @PostMapping("/{id}/add-role")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
             throws BadRequestException, NotFoundException, ConflictException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.addRoleToAccount(id, roleName));
@@ -60,6 +60,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}/remove-role")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
             throws BadRequestException, NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.removeRole(id, roleName));
@@ -67,18 +68,21 @@ public class AccountController {
     }
 
     @PatchMapping("/{id}/set-active")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> setActive(@PathVariable UUID id) throws NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.setAccountStatus(id, true));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @PatchMapping("/{id}/set-inactive")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> setInactive(@PathVariable UUID id) throws NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.setAccountStatus(id, false));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
     @GetMapping("/username/{username}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username)
             throws NotFoundException {
         Account account = accountService.getAccountByUsername(username);
@@ -89,6 +93,7 @@ public class AccountController {
 
 
     @PutMapping("/{id}/user-data")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountPersonalDTO> updateAccountData(@RequestHeader("If-Match") String eTag, @PathVariable UUID id,
                                                                    @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws NotFoundException, OptLockException {
@@ -99,18 +104,21 @@ public class AccountController {
     }
 
     @GetMapping("/participants")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GetAccountDTO>> getParticipants() throws NotFoundException {
         List<GetAccountDTO> participants = accountDTOConverter.accountDtoList(accountService.getParticipants());
         return ResponseEntity.status(HttpStatus.OK).body(participants);
     }
 
     @GetMapping("/administrators")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws NotFoundException {
         List<GetAccountDTO> administrators = accountDTOConverter.accountDtoList(accountService.getAdmins());
         return ResponseEntity.status(HttpStatus.OK).body(administrators);
     }
 
     @GetMapping("/managers")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<GetAccountDTO>> getManagers() throws NotFoundException {
         List<GetAccountDTO> managers = accountDTOConverter.accountDtoList(accountService.getManagers());
         return ResponseEntity.status(HttpStatus.OK).body(managers);
@@ -130,12 +138,14 @@ public class AccountController {
     }
 
     @PostMapping("/change-password")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changePassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
         accountService.changePasswordAndSendEmail(emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/change-email/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
         accountService.sendMailWhenEmailChange(id, emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();

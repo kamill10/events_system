@@ -13,12 +13,12 @@ import java.nio.charset.StandardCharsets;
 public class WebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] {RootConfig.class, WebSecurityConfig.class};
+        return new Class[] {RootConfig.class, WebSecurityConfig.class, WebCoreConfig.class};
     }
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {WebCoreConfig.class};
+        return new Class[] {};
     }
 
     @Override

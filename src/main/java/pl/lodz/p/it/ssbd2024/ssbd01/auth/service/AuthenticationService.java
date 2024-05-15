@@ -6,7 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -104,7 +104,7 @@ public class AuthenticationService {
         var user = accountAuthRepository.findByUsername(loginDTO.username());
         user.setFailedLoginAttempts(0);
         user.setLastSuccessfulLogin(LocalDateTime.now());
-        accountAuthRepository.save(user);
+        accountAuthRepository.saveAndFlush(user);
         return jwtService.generateToken(user);
     }
 
@@ -121,17 +121,17 @@ public class AuthenticationService {
         var account = accountMokRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setVerified(true);
-        account.addRole(roleRepository.findByName(AccountRoleEnum.PARTICIPANT)
+        account.addRole(roleRepository.findByName(AccountRoleEnum.ROLE_PARTICIPANT)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND)));
         accountMokRepository.saveAndFlush(account);
         accountConfirmationRepository.delete(accountConfirmation);
         confirmationReminderRepository.deleteByAccount(account);
-        mailService.sendEmail(account, "mail.after.verify.subject", "mail.after.verify.body", new Object[] {AccountRoleEnum.PARTICIPANT});
+        mailService.sendEmail(account, "mail.after.verify.subject", "mail.after.verify.body", new Object[] {AccountRoleEnum.ROLE_PARTICIPANT});
 
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    @Scheduled(fixedRate = 120000)
+    @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void deleteExpiredTokensAndAccounts() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -150,7 +150,7 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    @Scheduled(fixedRate = 120000)
+    @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void unlockAccounts() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -165,13 +165,13 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    @Scheduled(fixedRate = 120000)
+    @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void deleteExpiredJWTTokensFromWhitelist() {
         jwtWhitelistRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    @Scheduled(fixedRate = 120000)
+    @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void sendAccountConfirmationReminder() {
         confirmationReminderRepository.findByReminderDateBefore(LocalDateTime.now()).forEach(confirmationReminder -> {
             AccountConfirmation confirmation =
@@ -187,10 +187,12 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     public void logout(String token) {
         jwtWhitelistRepository.deleteByToken(token);
     }
 
+    @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public void updateFailedLoginAttempts(String username) {
         Account account = accountAuthRepository.findByUsername(username);
         account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);
@@ -208,7 +210,7 @@ public class AuthenticationService {
             jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
             mailService.sendEmail(account, "mail.locked.until.subject", "mail.locked.until.body", new Object[] {lockTimeout.format(formatter)});
         }
-        accountAuthRepository.save(account);
+        accountAuthRepository.saveAndFlush(account);
     }
 
 }
