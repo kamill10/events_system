@@ -1,4 +1,3 @@
-import { RouteType } from "../types/RouteType.ts";
 import HomePage from "../pages/HomePage.tsx";
 import { Pathnames } from "./Pathnames.ts";
 import EventsPage from "../pages/EventsPage.tsx";
@@ -16,6 +15,7 @@ import AccountsPage from "../pages/AccountsPage.tsx";
 import Logout from "../pages/Logout.tsx";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
+import { RouteType } from "../types/Components.ts";
 
 export const PublicRoutes: RouteType[] = [
   {

@@ -11,19 +11,22 @@ import {
   Typography,
   useScrollTrigger,
 } from "@mui/material";
-import NavbarPropType from "../types/NavbarPropType";
+import NavbarPropType from "../types/Components";
 import LinkComponent from "./LinkComponent";
 import HeadingComponent from "./HeadingComponent";
 import { MouseEvent, useState } from "react";
 import { useAccount } from "../hooks/useAccount";
+import { useNavigate } from "react-router-dom";
+import { Pathnames } from "../router/Pathnames";
 
 export default function NavbarComponent(props: NavbarPropType) {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const { adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
+  const navigate = useNavigate();
 
   const handleSwitchClick = () => {
     setAdminLayout(!adminLayout);
-    console.log(adminLayout);
+    navigate(Pathnames.public.home);
   };
 
   function handleDropDownOpen(event: MouseEvent<HTMLElement>) {

@@ -1,4 +1,4 @@
-import PublicLayoutPropType from "../types/PublicLayoutPropType.ts";
+import { PublicLayoutPropType } from "../types/Components.ts";
 import Navbar from "../components/NavbarComponent.tsx";
 import { ParticipantRoutes } from "../router/Routes.ts";
 import { Box, Container } from "@mui/material";

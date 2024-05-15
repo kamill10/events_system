@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import LinkPropType from "../types/LinkPropType";
+import { LinkPropType } from "../types/Components";
 
 export default function LinkComponent(props: LinkPropType) {
   return (

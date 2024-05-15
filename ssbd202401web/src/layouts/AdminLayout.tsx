@@ -1,7 +1,7 @@
-import PublicLayoutPropType from "../types/PublicLayoutPropType.ts";
 import Navbar from "../components/NavbarComponent.tsx";
 import { AdminRoutes } from "../router/Routes.ts";
 import { Box, Container } from "@mui/material";
+import { PublicLayoutPropType } from "../types/Components.ts";
 
 export default function AdminLayout(props: PublicLayoutPropType) {
   const Page = props.page;

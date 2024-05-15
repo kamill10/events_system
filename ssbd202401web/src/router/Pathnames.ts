@@ -38,7 +38,7 @@ export const Pathnames = {
     home: "/",
     profile: "/profile",
     accounts: "/accounts",
-    account: "/accounts/:id",
+    account: "/accounts/:username",
     logout: "/logout",
     confirmPasswordUpdate: "/change-my-password",
     confirmEmailUpdate: "/change-my-email",

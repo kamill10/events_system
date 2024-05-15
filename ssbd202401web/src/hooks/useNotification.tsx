@@ -1,8 +1,8 @@
 import { useSnackbar } from "notistack";
-import { NotificationType } from "../types/NotificationType";
 import { Fragment } from "react/jsx-runtime";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { NotificationType } from "../types/Hooks";
 
 const useNotification = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();

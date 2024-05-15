@@ -1,6 +1,5 @@
 import { Button, Typography } from "@mui/material";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
-import { AccountLoginType } from "../types/Account";
 import { useAccount } from "../hooks/useAccount";
 import { Link } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
@@ -9,6 +8,7 @@ import { LogInSchema } from "../validation/schemas";
 import ContainerWithPictureComponent from "../components/ContainerWithPictureComponent";
 import FormComponent from "../components/FormComponent";
 import TextFieldComponent from "../components/TextFieldComponent";
+import { LoginCredentialsType } from "../types/Authentication";
 
 export default function LoginPage() {
   const { logIn } = useAccount();
@@ -17,7 +17,7 @@ export default function LoginPage() {
     control,
     formState: { errors },
     trigger,
-  } = useForm<AccountLoginType>({
+  } = useForm<LoginCredentialsType>({
     defaultValues: {
       username: "",
       password: "",
@@ -25,11 +25,11 @@ export default function LoginPage() {
     resolver: yupResolver(LogInSchema),
   });
 
-  const onSubmit: SubmitHandler<AccountLoginType> = (data) => {
+  const onSubmit: SubmitHandler<LoginCredentialsType> = (data) => {
     logIn(data);
   };
 
-  const onError: SubmitErrorHandler<AccountLoginType> = (errors) => {
+  const onError: SubmitErrorHandler<LoginCredentialsType> = (errors) => {
     console.error(errors);
     alert(errors);
   };

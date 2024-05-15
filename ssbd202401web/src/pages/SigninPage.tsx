@@ -6,7 +6,6 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { AccountSingInType } from "../types/Account";
 import { GenderEnum } from "../types/enums/Gender.enum";
 import { signInValidationSchema } from "../validation/schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,6 +14,7 @@ import { Link } from "react-router-dom";
 import ContainerWithPictureComponent from "../components/ContainerWithPictureComponent";
 import FormComponent from "../components/FormComponent";
 import TextFieldComponent from "../components/TextFieldComponent";
+import { SignInCredentialsType } from "../types/Authentication";
 
 export default function SigninPage() {
   const { signIn } = useAccount();
@@ -23,7 +23,7 @@ export default function SigninPage() {
     control,
     formState: { errors },
     trigger,
-  } = useForm<AccountSingInType>({
+  } = useForm<SignInCredentialsType>({
     defaultValues: {
       username: "",
       password: "",
@@ -37,11 +37,11 @@ export default function SigninPage() {
     resolver: yupResolver(signInValidationSchema),
   });
 
-  const onSubmit: SubmitHandler<AccountSingInType> = async (data) => {
+  const onSubmit: SubmitHandler<SignInCredentialsType> = async (data) => {
     await signIn(data);
   };
 
-  const onError: SubmitErrorHandler<AccountSingInType> = (errors) => {
+  const onError: SubmitErrorHandler<SignInCredentialsType> = (errors) => {
     console.error(errors);
   };
 
@@ -115,7 +115,7 @@ export default function SigninPage() {
                 onChange={(e) => {
                   field.onChange(e);
                   setTimeout(
-                    () => trigger(e.target.name as keyof AccountSingInType),
+                    () => trigger(e.target.name as keyof SignInCredentialsType),
                     500,
                   );
                 }}

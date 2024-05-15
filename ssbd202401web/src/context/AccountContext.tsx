@@ -5,12 +5,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import { AccountType } from "../types/Account";
+import { GetPersonalAccountType } from "../types/Account";
 import { jwtDecode } from "jwt-decode";
 
 interface AccountState {
-  account: AccountType | null;
-  setAccount: (account: AccountType | null) => void;
+  account: GetPersonalAccountType | null;
+  setAccount: (account: GetPersonalAccountType | null) => void;
   token: string | null;
   setToken: (token: string | null) => void;
   parsedToken: TokenType | null;
@@ -42,15 +42,16 @@ export const AccountStateContextProvider = ({
     localStorage.getItem("token"),
   );
   const [parsedToken, setParsedToken] = useState<TokenType | null>(null);
-  const [account, setAccount] = useState<AccountType | null>(null);
+  const [account, setAccount] = useState<GetPersonalAccountType | null>(null);
   const [isLogging, setIsLogging] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [adminLayout, setAdminLayout] = useState(false);
+  const [adminLayout, setAdminLayout] = useState(true);
 
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
       setParsedToken(jwtDecode(token));
+      console.log(jwtDecode(token));
     }
   }, [token]);
 

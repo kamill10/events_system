@@ -2,13 +2,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Typography } from "@mui/material";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { ForgotPasswordSchema } from "../validation/schemas";
-import { ForgotPasswordType } from "../types/ForgotPassword";
 import { useAccount } from "../hooks/useAccount";
 import { Pathnames } from "../router/Pathnames";
 import { Link } from "react-router-dom";
 import ContainerWithPictureComponent from "../components/ContainerWithPictureComponent";
 import FormComponent from "../components/FormComponent";
 import TextFieldComponent from "../components/TextFieldComponent";
+import { ForgotPasswordType } from "../types/Authentication";
 
 export default function ForgotPasswordPage() {
   const { requestPasswordReset } = useAccount();

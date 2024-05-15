@@ -1,4 +1,12 @@
-import { Box, Divider, Typography } from "@mui/material";
+import {
+  Box,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
 
@@ -9,55 +17,57 @@ export default function ProfileDetailsComponent() {
     getMyAccount();
   }, []);
 
+  const data = [
+    { ID: account?.id },
+    { Username: account?.username },
+    { Roles: account?.roles },
+    { "E-mail": account?.email },
+    { "First name": account?.firstName },
+    { "Last name": account?.lastName },
+    { Gender: account?.gender },
+    { "Is active": account?.active ? "Yes" : "No" },
+    { "Is verified": account?.verified ? "Yes" : "No" },
+    { "Is unlocked": account?.nonLocked ? "Yes" : "No" },
+    { "Language preference": account?.language },
+  ];
   return (
-    <Box component={Box} margin={"3rem"}>
-      <Typography variant="h4">Personal data</Typography>
-      <Divider
-        sx={{
-          marginTop: "3rem",
-          marginBottom: "3rem",
-        }}
-      ></Divider>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">Username</Typography>
-        <Typography variant="subtitle1">{account?.username}</Typography>
-      </Box>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">First name</Typography>
-        <Typography variant="subtitle1">{account?.firstName}</Typography>
-      </Box>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">Last name</Typography>
-        <Typography variant="subtitle1">{account?.lastName}</Typography>
-      </Box>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">E-mail</Typography>
-        <Typography variant="subtitle1">{account?.email}</Typography>
-      </Box>
-      <Box
-        sx={{
-          marginBottom: "3rem",
-        }}
-      >
-        <Typography variant="h6">Gender</Typography>
-        <Typography variant="subtitle1">{account?.gender}</Typography>
-      </Box>
+    <Box
+      sx={{
+        marginTop: 4,
+        marginLeft: 5,
+      }}
+    >
+      <Typography variant="h4">Change personal data</Typography>
+      <TableContainer>
+        <TableHead>
+          <TableCell
+            sx={{
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+          >
+            Key
+          </TableCell>
+          <TableCell
+            sx={{
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+          >
+            Value
+          </TableCell>
+        </TableHead>
+        <TableBody>
+          {data.map((_, value) => {
+            return (
+              <TableRow hover>
+                <TableCell>{Object.keys(data[value])}</TableCell>
+                <TableCell>{Object.values(data[value])}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </TableContainer>
     </Box>
   );
 }
