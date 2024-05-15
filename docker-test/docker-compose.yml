@@ -8,8 +8,6 @@ services:
     image: tomcat:10.1.19-jre21
     hostname: tomcat
     container_name: tomcat_test
-    environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
     networks:
       - ssbd01_test
     ports:

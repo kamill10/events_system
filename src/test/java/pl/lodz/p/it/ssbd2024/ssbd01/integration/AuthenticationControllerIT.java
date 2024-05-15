@@ -42,11 +42,6 @@ public class AuthenticationControllerIT {
 
     static String managerToken;
 
-    @BeforeAll
-    public static void setup() {
-        System.setProperty("spring.profiles.active", "test");
-    }
-
     public static ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -79,7 +74,6 @@ public class AuthenticationControllerIT {
             .withNetworkAliases("tomcat")
             .withNetwork(network)
             .dependsOn(postgres)
-            .withEnv("SPRING_PROFILES_ACTIVE", "test")
             .withCopyFileToContainer(
                     MountableFile.forHostPath("target/ssbd01.war"),
                     "/usr/local/tomcat/webapps/ssbd01.war"

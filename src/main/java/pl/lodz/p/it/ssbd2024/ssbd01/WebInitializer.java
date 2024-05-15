@@ -26,14 +26,6 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
     }
 
     @Override
-    protected WebApplicationContext createRootApplicationContext() {
-        AnnotationConfigWebApplicationContext rootAppContext = new AnnotationConfigWebApplicationContext();
-        rootAppContext.register(Objects.requireNonNull(getRootConfigClasses()));
-        rootAppContext.getEnvironment().setDefaultProfiles(System.getenv("SPRING_PROFILES_ACTIVE"));
-        return rootAppContext;
-    }
-
-    @Override
     protected String[] getServletMappings() {
         return new String[] {"/"};
     }

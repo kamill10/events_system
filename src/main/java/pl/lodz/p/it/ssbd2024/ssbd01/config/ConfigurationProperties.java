@@ -9,8 +9,7 @@ import org.springframework.context.annotation.PropertySources;
 @Configuration
 @PropertySources({
         @PropertySource("classpath:app.properties"),
-        @PropertySource("classpath:data-access.properties"),
-        @PropertySource("classpath:test.properties")
+        @PropertySource("classpath:data-access.properties")
 })
 @Getter
 public class ConfigurationProperties {
@@ -98,7 +97,4 @@ public class ConfigurationProperties {
 
     @Value("${hibernate.use_jdbc_metadata_defaults}")
     private String hibernateUseJdbcMetadataDefaults;
-
-    @Value("${test.jdbc.url}")
-    private String testJdbcUrl;
 }

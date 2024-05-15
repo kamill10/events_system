@@ -16,7 +16,6 @@ import java.util.Map;
 
 
 @Configuration
-@Profile("!test")
 @PropertySource("classpath:data-access.properties")
 @RequiredArgsConstructor
 public class AdminEntityManagerFactoryConfig {

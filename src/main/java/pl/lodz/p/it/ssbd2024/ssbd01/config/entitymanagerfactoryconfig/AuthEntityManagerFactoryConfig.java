@@ -6,9 +6,7 @@ import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
@@ -16,10 +14,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Configuration
-@Profile("!test")
 @PropertySource("classpath:data-access.properties")
 @EnableJpaRepositories(
         basePackages = "pl.lodz.p.it.ssbd2024.ssbd01.auth.repository",

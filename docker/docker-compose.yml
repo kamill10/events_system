@@ -1,24 +1,24 @@
 version: '3'
 
 services:
-#  nginx:
-#    depends_on:
-#      - tomcat
-#    image: nginx:1.25.4
-#    volumes:
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#    build:
-#        context: .
-#        dockerfile: Dockerfile
-#    hostname: nginx
-#    container_name: nginx
-#    networks:
-#          - ssbd01
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
+  nginx:
+    depends_on:
+      - tomcat
+    image: nginx:1.25.4
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    build:
+        context: .
+        dockerfile: Dockerfile
+    hostname: nginx
+    container_name: nginx
+    networks:
+          - ssbd01
+    ports:
+      - "80:80"
+      - "443:443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   tomcat:
     depends_on:
@@ -27,8 +27,6 @@ services:
     image: tomcat:10.1.19-jre21
     hostname: tomcat
     container_name: tomcat
-    environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
     networks:
       - ssbd01
     ports:
