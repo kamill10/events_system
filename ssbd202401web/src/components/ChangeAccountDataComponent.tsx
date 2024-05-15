@@ -1,6 +1,9 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
-import { GetPersonalAccountType, UpdatePersonalDataType } from "../types/Account";
+import {
+  GetPersonalAccountType,
+  UpdatePersonalDataType,
+} from "../types/Account";
 import { changePersonalDataSchema } from "../validation/schemas";
 import { Typography, Divider, Button } from "@mui/material";
 import FormComponent from "./FormComponent";
@@ -9,7 +12,13 @@ import TextFieldComponent from "./TextFieldComponent";
 import { useManageAccounts } from "../hooks/useManageAccounts";
 import { useEffect } from "react";
 
-export default function ChangeAccountDataComponent({ account, fetchAccount }: { account: GetPersonalAccountType | null, fetchAccount: () => void }) {
+export default function ChangeAccountDataComponent({
+  account,
+  fetchAccount,
+}: {
+  account: GetPersonalAccountType | null;
+  fetchAccount: () => void;
+}) {
   const { updateAccountData } = useManageAccounts();
   const {
     handleSubmit,
@@ -21,7 +30,7 @@ export default function ChangeAccountDataComponent({ account, fetchAccount }: { 
     defaultValues: {
       firstName: account?.firstName,
       lastName: account?.lastName,
-      gender: account?.gender
+      gender: account?.gender,
     },
     resolver: yupResolver(changePersonalDataSchema),
   });
@@ -41,7 +50,7 @@ export default function ChangeAccountDataComponent({ account, fetchAccount }: { 
     setValue("firstName", account?.firstName ?? "");
     setValue("lastName", account?.lastName ?? "");
     setValue("gender", account?.gender ?? 0);
-  }, [account])
+  }, [account]);
 
   return (
     <FormComponent
@@ -51,7 +60,9 @@ export default function ChangeAccountDataComponent({ account, fetchAccount }: { 
       align="start"
     >
       <Typography variant="h4">Change personal data</Typography>
-      <Typography variant="body1">Enter account's new personal data below!</Typography>
+      <Typography variant="body1">
+        Enter account's new personal data below!
+      </Typography>
       <Divider
         sx={{
           marginTop: "1rem",
@@ -73,20 +84,16 @@ export default function ChangeAccountDataComponent({ account, fetchAccount }: { 
         trigger={trigger}
         type="text"
       />
-      <GenderListComponent
-        control={control}
-        errors={errors}
-        name="gender"
-      />
+      <GenderListComponent control={control} errors={errors} name="gender" />
       <Button
         type="submit"
         variant="contained"
         sx={{
-          marginY: 2
+          marginY: 2,
         }}
       >
         Save changes
       </Button>
     </FormComponent>
-  )
+  );
 }

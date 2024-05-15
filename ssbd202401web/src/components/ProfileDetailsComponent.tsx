@@ -1,7 +1,14 @@
-import { Box, Divider, Typography } from "@mui/material";
+import {
+  Box,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
-import ElementComponent from "./ElementComponent";
 
 export default function ProfileDetailsComponent() {
   const { account, getMyAccount } = useAccount();
@@ -10,58 +17,57 @@ export default function ProfileDetailsComponent() {
     getMyAccount();
   }, []);
 
+  const data = [
+    { ID: account?.id },
+    { Username: account?.username },
+    { Roles: account?.roles },
+    { "E-mail": account?.email },
+    { "First name": account?.firstName },
+    { "Last name": account?.lastName },
+    { Gender: account?.gender },
+    { "Is active": account?.active ? "Yes" : "No" },
+    { "Is verified": account?.verified ? "Yes" : "No" },
+    { "Is unlocked": account?.nonLocked ? "Yes" : "No" },
+    { "Language preference": account?.language },
+  ];
   return (
-    <Box component={Box} margin={"3rem"}>
-      <Typography variant="h4">Personal data</Typography>
-      <Divider
-        sx={{
-          marginTop: "3rem",
-          marginBottom: "3rem",
-        }}
-      ></Divider>
-      <ElementComponent
-        label="Username"
-        value={account?.username}
-      />
-      <ElementComponent
-        label="First name"
-        value={account?.firstName}
-      />
-      <ElementComponent
-        label="Last name"
-        value={account?.lastName}
-      />
-      <ElementComponent
-        label="E-mail"
-        value={account?.email}
-      />
-      <ElementComponent
-        label="Gender"
-        value={account?.gender}
-      />
-      <ElementComponent
-        label="Gender"
-        value={account?.active}
-      />
-      <ElementComponent
-        label="Is active"
-        value={account?.active ? "Yes" : "No"}
-        color={account?.active ? "green" : "red"}
-      />
-      <ElementComponent
-        label="Is verified"
-        value={account?.verified ? "Yes" : "No"}
-        color={account?.verified ? "green" : "red"}
-      />
-      <ElementComponent
-        label="Is unlocked"
-        value={account?.nonLocked ? "Yes" : "No"}
-        color={account?.nonLocked ? "green" : "red"}
-      />
-      <ElementComponent
-        label="Language preference"
-        value={account?.language}
-      />
+    <Box
+      sx={{
+        marginTop: 4,
+        marginLeft: 5,
+      }}
+    >
+      <Typography variant="h4">Change personal data</Typography>
+      <TableContainer>
+        <TableHead>
+          <TableCell
+            sx={{
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+          >
+            Key
+          </TableCell>
+          <TableCell
+            sx={{
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+          >
+            Value
+          </TableCell>
+        </TableHead>
+        <TableBody>
+          {data.map((_, value) => {
+            return (
+              <TableRow hover>
+                <TableCell>{Object.keys(data[value])}</TableCell>
+                <TableCell>{Object.values(data[value])}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </TableContainer>
     </Box>
   );
 }

@@ -1,14 +1,5 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Typography,
-} from "@mui/material";
-import {
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { Box, Button, Divider, Typography } from "@mui/material";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SaveIcon from "@mui/icons-material/Save";
 
@@ -86,11 +77,7 @@ export default function ChangePersonalDataComponent() {
         trigger={trigger}
         type="text"
       />
-      <GenderListComponent
-        control={control}
-        errors={errors}
-        name="gender"
-      />
+      <GenderListComponent control={control} errors={errors} name="gender" />
       <Box
         sx={{
           display: "flex",

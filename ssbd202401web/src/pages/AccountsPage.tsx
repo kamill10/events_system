@@ -18,9 +18,11 @@ import ContainerComponent from "../components/ContainerComponent";
 import { Link } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useAccount } from "../hooks/useAccount";
 
 export default function AccountsPage() {
   const { accounts, getAllAccounts } = useManageAccounts();
+  const { account } = useAccount();
 
   useEffect(() => {
     getAllAccounts();
@@ -28,20 +30,29 @@ export default function AccountsPage() {
 
   return (
     <ContainerComponent>
-      <Breadcrumbs aria-label="breadcrumb" sx={{
-        marginBottom: 3
-      }}>
-        <Link to={Pathnames.public.home} style={{
-          textDecoration: "none",
-          color: "black"
-        }}>
+      <Breadcrumbs
+        aria-label="breadcrumb"
+        sx={{
+          marginBottom: 3,
+        }}
+      >
+        <Link
+          to={Pathnames.public.home}
+          style={{
+            textDecoration: "none",
+            color: "black",
+          }}
+        >
           Home
         </Link>
-        <Link to={Pathnames.admin.accounts} style={{
-          textDecoration: "none",
-          color: "black",
-          fontWeight: "bold"
-        }}>
+        <Link
+          to={Pathnames.admin.accounts}
+          style={{
+            textDecoration: "none",
+            color: "black",
+            fontWeight: "bold",
+          }}
+        >
           Accounts
         </Link>
         <Typography color={"grey"}>Account details</Typography>
@@ -114,8 +125,14 @@ export default function AccountsPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {accounts?.map(account => {
-              return <AccountRowComponent key={account.id} account={account}></AccountRowComponent>
+            {accounts?.map((obj) => {
+              if (obj.username == account?.username) return;
+              return (
+                <AccountRowComponent
+                  key={obj.id}
+                  account={obj}
+                ></AccountRowComponent>
+              );
             })}
           </TableBody>
         </Table>

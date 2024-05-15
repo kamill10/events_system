@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import {
   AdminRoutes,
   ManagerRoutes,
@@ -58,6 +58,42 @@ export default function RouterComponent() {
               ></Route>
             );
           })}
+        <Route
+          path={Pathnames.public.verifyAccount}
+          element={
+            <ThemeProvider theme={PublicTheme}>
+              <ConfirmSignInPage></ConfirmSignInPage>
+            </ThemeProvider>
+          }
+        ></Route>
+        <Route
+          path={Pathnames.public.resetPassword}
+          element={
+            <ThemeProvider theme={PublicTheme}>
+              <ResetPasswordPage></ResetPasswordPage>
+            </ThemeProvider>
+          }
+        ></Route>
+        <Route
+          path={Pathnames.public.confirmPasswordUpdate}
+          element={
+            <ThemeProvider theme={PublicTheme}>
+              <ConfirmPasswordUpdatePage></ConfirmPasswordUpdatePage>
+            </ThemeProvider>
+          }
+        ></Route>
+        <Route
+          path={Pathnames.public.confirmEmailUpdate}
+          element={
+            <ThemeProvider theme={PublicTheme}>
+              <ConfirmEmailUpdatePage></ConfirmEmailUpdatePage>
+            </ThemeProvider>
+          }
+        ></Route>
+        <Route
+          path="*"
+          element={<Navigate to={Pathnames.public.home}></Navigate>}
+        ></Route>
       </Routes>
     );
   }
@@ -154,6 +190,10 @@ export default function RouterComponent() {
             <ConfirmEmailUpdatePage></ConfirmEmailUpdatePage>
           </ThemeProvider>
         }
+      ></Route>
+      <Route
+        path="*"
+        element={<Navigate to={Pathnames.public.home}></Navigate>}
       ></Route>
     </Routes>
   );

@@ -42,5 +42,5 @@ export interface GenderListProps<T extends FieldValues> {
   control: Control<T>;
   disabled?: boolean;
   errors: FieldErrors<T>;
-  name: Path<T>; 
+  name: Path<T>;
 }

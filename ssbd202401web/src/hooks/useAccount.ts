@@ -5,8 +5,17 @@ import { Pathnames } from "../router/Pathnames";
 import useNotification from "./useNotification";
 import { jwtDecode } from "jwt-decode";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
-import { ForgotPasswordType, LoginCredentialsType, ResetPasswordType, SignInCredentialsType } from "../types/Authentication";
-import { ChangeMyEmailType, ChangeMyPasswordType, UpdatePersonalDataType } from "../types/Account";
+import {
+  ForgotPasswordType,
+  LoginCredentialsType,
+  ResetPasswordType,
+  SignInCredentialsType,
+} from "../types/Authentication";
+import {
+  ChangeMyEmailType,
+  ChangeMyPasswordType,
+  UpdatePersonalDataType,
+} from "../types/Account";
 
 export const useAccount = () => {
   const sendNotification = useNotification();

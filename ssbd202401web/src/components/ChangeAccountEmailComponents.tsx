@@ -8,7 +8,13 @@ import TextFieldComponent from "./TextFieldComponent";
 import { useManageAccounts } from "../hooks/useManageAccounts";
 import { useEffect } from "react";
 
-export default function ChangeAccountEmailComponent({ account, fetchAccount }: { account: GetPersonalAccountType | null, fetchAccount: () => void }) {
+export default function ChangeAccountEmailComponent({
+  account,
+  fetchAccount,
+}: {
+  account: GetPersonalAccountType | null;
+  fetchAccount: () => void;
+}) {
   const { updateAccountEmail } = useManageAccounts();
   const {
     handleSubmit,
@@ -18,7 +24,7 @@ export default function ChangeAccountEmailComponent({ account, fetchAccount }: {
     setValue,
   } = useForm<ChangeEmailType>({
     defaultValues: {
-      email: account?.email
+      email: account?.email,
     },
     resolver: yupResolver(ChangeEmailSchema),
   });
@@ -64,11 +70,11 @@ export default function ChangeAccountEmailComponent({ account, fetchAccount }: {
         type="submit"
         variant="contained"
         sx={{
-          marginY: 2
+          marginY: 2,
         }}
       >
         Save changes
       </Button>
     </FormComponent>
-  )
+  );
 }

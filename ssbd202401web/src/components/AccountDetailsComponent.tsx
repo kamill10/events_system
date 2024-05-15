@@ -1,72 +1,73 @@
-import { Box } from "@mui/material";
+import {
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { GetDetailedAccountType } from "../types/Account";
-import ElementComponent from "./ElementComponent";
-import parseDate from "../validation/parseDate";
 
-export default function AccountDetailsComponent({ account }: { account: GetDetailedAccountType | null }) {
+export default function AccountDetailsComponent({
+  account,
+}: {
+  account: GetDetailedAccountType | null;
+}) {
+  const data = [
+    { ID: account?.id },
+    { Username: account?.username },
+    { Roles: account?.roles },
+    { "E-mail": account?.email },
+    { "First name": account?.firstName },
+    { "Last name": account?.lastName },
+    { Gender: account?.gender },
+    { "Is active": account?.active ? "Yes" : "No" },
+    { "Is verified": account?.verified ? "Yes" : "No" },
+    { "Is unlocked": account?.nonLocked ? "Yes" : "No" },
+    { "Language preference": account?.language },
+    {
+      "Last successful login": account?.lastSuccessfulLogin
+        ? account.lastSuccessfulLogin
+        : "Never",
+    },
+    {
+      "Last failed login": account?.lastFailedLogin
+        ? account?.lastFailedLogin
+        : "Never",
+    },
+    {
+      "Locked until": account?.lockedUntil ? account.lockedUntil : "Not locked",
+    },
+  ];
   return (
-    <Box component={Box} margin={"3rem"}>
-      <ElementComponent
-        label="ID"
-        value={account?.id}
-      />
-      <ElementComponent
-        label="Username"
-        value={account?.username}
-      />
-      <ElementComponent
-        label="Roles"
-        value={JSON.stringify(account?.roles)}
-      />
-      <ElementComponent
-        label="E-mail"
-        value={account?.email}
-      />
-      <ElementComponent
-        label="First name"
-        value={account?.firstName}
-      />
-      <ElementComponent
-        label="Last name"
-        value={account?.lastName}
-      />
-      <ElementComponent
-        label="Gender"
-        value={account?.gender}
-      />
-      <ElementComponent
-        label="Is active"
-        value={account?.active ? "Yes" : "No"}
-        color={account?.active ? "green" : "red"}
-      />
-      <ElementComponent
-        label="Is verified"
-        value={account?.verified ? "Yes" : "No"}
-        color={account?.verified ? "green" : "red"}
-      />
-      <ElementComponent
-        label="Is unlocked"
-        value={account?.nonLocked ? "Yes" : "No"}
-        color={account?.nonLocked ? "green" : "red"}
-      />
-      <ElementComponent
-        label="Language preference"
-        value={account?.language}
-      />
-      <ElementComponent
-        label="Last successful login"
-        value={account?.lastSuccessfulLogin ? parseDate(account?.lastSuccessfulLogin) : "Never"}
-      />
-      <ElementComponent
-        label="Last failed login"
-        value={account?.lastFailedLogin ? parseDate(account?.lastFailedLogin) : "Never"}
-        color={account?.lastFailedLogin ? "red" : "green"}
-      />
-      <ElementComponent
-        label="Locked until"
-        value={account?.lockedUntil ? parseDate(account?.lockedUntil) : "Not locked"}
-        color={account?.lockedUntil ? "red" : "green"}
-      />
-    </Box>
-  )
+    <TableContainer>
+      <TableHead>
+        <TableCell
+          sx={{
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
+          Key
+        </TableCell>
+        <TableCell
+          sx={{
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
+          Value
+        </TableCell>
+      </TableHead>
+      <TableBody>
+        {data.map((_, value) => {
+          return (
+            <TableRow hover>
+              <TableCell>{Object.keys(data[value])}</TableCell>
+              <TableCell>{Object.values(data[value])}</TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </TableContainer>
+  );
 }

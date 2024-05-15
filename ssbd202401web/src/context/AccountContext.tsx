@@ -45,12 +45,13 @@ export const AccountStateContextProvider = ({
   const [account, setAccount] = useState<GetPersonalAccountType | null>(null);
   const [isLogging, setIsLogging] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [adminLayout, setAdminLayout] = useState(false);
+  const [adminLayout, setAdminLayout] = useState(true);
 
   useEffect(() => {
     if (token) {
       localStorage.setItem("token", token);
       setParsedToken(jwtDecode(token));
+      console.log(jwtDecode(token));
     }
   }, [token]);
 

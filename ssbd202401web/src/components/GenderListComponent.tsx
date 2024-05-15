@@ -3,11 +3,13 @@ import { Controller, FieldValues } from "react-hook-form";
 import { GenderEnum } from "../types/enums/Gender.enum";
 import { GenderListProps } from "../types/Components";
 
-export default function GenderListComponent<T extends FieldValues>(props: GenderListProps<T>) {
+export default function GenderListComponent<T extends FieldValues>(
+  props: GenderListProps<T>,
+) {
   const { control, errors, disabled, name } = props;
   return (
     <>
-    <Controller
+      <Controller
         name={name}
         control={control}
         render={({ field }) => {
@@ -36,12 +38,9 @@ export default function GenderListComponent<T extends FieldValues>(props: Gender
           );
         }}
       ></Controller>
-      <Typography
-        color={"red"}
-        fontSize={14}
-        width={"inherit"}
-      >
+      <Typography color={"red"} fontSize={14} width={"inherit"}>
         {errors.gender?.message as string}
-      </Typography></>
-  )
+      </Typography>
+    </>
+  );
 }

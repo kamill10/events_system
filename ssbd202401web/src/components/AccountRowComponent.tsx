@@ -9,16 +9,22 @@ export default function AccountRowComponent({
 }) {
   const navigate = useNavigate();
   return (
-    <TableRow hover onClick={() => {
-      navigate("/accounts/" + account.username)
-    }}>
-      <TableCell >{account.id}</TableCell>
+    <TableRow
+      hover
+      onClick={() => {
+        navigate("/accounts/" + account.username);
+      }}
+    >
+      <TableCell>{account.id}</TableCell>
       <TableCell align="right">{account.username}</TableCell>
       <TableCell align="right">{account.email}</TableCell>
       <TableCell align="right">{JSON.stringify(account.roles)}</TableCell>
-      <TableCell align="right" sx={{
-        color: account.active ? "green" : "red"
-      }}>
+      <TableCell
+        align="right"
+        sx={{
+          color: account.active ? "green" : "red",
+        }}
+      >
         {account.active ? "Yes" : "No"}
       </TableCell>
     </TableRow>

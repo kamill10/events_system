@@ -9,7 +9,13 @@ import {
   GetPersonalAccountType,
   UpdatePersonalDataType,
 } from "../types/Account.ts";
-import { LoginCredentialsType, ForgotPasswordType, ResetPasswordType, SignInCredentialsType } from "../types/Authentication.ts";
+import {
+  LoginCredentialsType,
+  ForgotPasswordType,
+  ResetPasswordType,
+  SignInCredentialsType,
+} from "../types/Authentication.ts";
+import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -105,7 +111,9 @@ apiWithEtag.interceptors.response.use(
 export const api = {
   getAllAccounts: (): ApiResponseType<GetAccountType[]> =>
     apiWithAuthToken.get("/accounts"),
-  getAccountByUsername: (username: string): ApiResponseType<GetDetailedAccountType> => 
+  getAccountByUsername: (
+    username: string,
+  ): ApiResponseType<GetDetailedAccountType> =>
     apiWithEtag.get("/accounts/username/" + username),
   logIn: (formData: LoginCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/authenticate", formData),
@@ -115,7 +123,8 @@ export const api = {
     apiForAnon.post(`/auth/verify-account/${key}`),
   updateMyPersonalData: (data: UpdatePersonalDataType): ApiResponseType<void> =>
     apiWithEtag.put("/me/user-data", data),
-  getMyAccount: (): ApiResponseType<GetPersonalAccountType> => apiWithEtag.get("/me"),
+  getMyAccount: (): ApiResponseType<GetPersonalAccountType> =>
+    apiWithEtag.get("/me"),
   forgotMyPassword: (data: ForgotPasswordType) =>
     apiForAnon.post("/accounts/reset-password", data),
   resetMyPassword: (data: ResetPasswordType) =>
@@ -133,10 +142,18 @@ export const api = {
     apiForAnon.patch(`/me/change-password/token/${key}`),
   confirmEmailUpdate: (key: string): ApiResponseType<void> =>
     apiWithEtag.patch(`/me/email/token/${key}`),
-  updateAccountData: (id: string, data: UpdatePersonalDataType) => 
+  updateAccountData: (id: string, data: UpdatePersonalDataType) =>
     apiWithEtag.put("/accounts/" + id + "/user-data", data),
-  updateAccountPassword: (data: ChangeEmailType) => 
+  updateAccountPassword: (data: ChangeEmailType) =>
     apiWithEtag.post("/accounts/change-password", data),
   updateAccountEmail: (id: string, data: ChangeEmailType) =>
-    apiWithEtag.post("/accounts/change-email/" + id, data)
+    apiWithEtag.post("/accounts/change-email/" + id, data),
+  setAccountActive: (id: string) =>
+    apiWithEtag.patch("/accounts/" + id + "/set-active"),
+  setAccountInactive: (id: string) =>
+    apiWithEtag.patch("/accounts/" + id + "/set-inactive"),
+  removeRole: (role: AccountTypeEnum, id: string) =>
+    apiWithEtag.delete("/accounts/" + id + "/remove-role?roleName=" + role),
+  addRole: (role: AccountTypeEnum, id: string) =>
+    apiWithEtag.post("/accounts/" + id + "/add-role?roleName=" + role),
 };
