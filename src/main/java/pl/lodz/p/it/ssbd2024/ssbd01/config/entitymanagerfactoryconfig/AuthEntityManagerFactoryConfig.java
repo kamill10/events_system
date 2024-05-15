@@ -1,11 +1,9 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.entitymanagerfactoryconfig;
 
 
-import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.atomikos.jdbc.AtomikosNonXADataSourceBean;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
-import org.postgresql.xa.PGXADataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

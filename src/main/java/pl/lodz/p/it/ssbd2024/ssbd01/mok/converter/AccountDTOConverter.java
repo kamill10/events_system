@@ -9,9 +9,15 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +29,7 @@ public class AccountDTOConverter {
                 account.getId(),
                 account.getUsername(),
                 account.getEmail(),
-                account.getRoles(),
+                account.getRoles().stream().map(Role::getName).toList(),
                 account.getActive(),
                 account.getVerified(),
                 account.getNonLocked());
@@ -34,7 +40,7 @@ public class AccountDTOConverter {
                 account.getId(),
                 account.getUsername(),
                 account.getEmail(),
-                account.getRoles(),
+                account.getRoles().stream().map(Role::getName).toList(),
                 account.getActive(),
                 account.getVerified(),
                 account.getNonLocked(),
@@ -45,21 +51,23 @@ public class AccountDTOConverter {
     }
 
     public GetAccountDetailedDTO toAccountDetailedDTO(Account account) {
+
         return new GetAccountDetailedDTO(
                 account.getId(),
                 account.getUsername(),
                 account.getEmail(),
-                account.getRoles(),
+                account.getRoles().stream().map(Role::getName).toList(),
                 account.getActive(),
                 account.getVerified(),
                 account.getNonLocked(),
-                account.getLastSuccessfulLogin(),
-                account.getLastFailedLogin(),
-                account.getLockedUntil(),
+                account.getLastSuccessfulLogin() != null ? account.getLastSuccessfulLogin().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
+                account.getLastFailedLogin() != null ? account.getLastFailedLogin().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
+                account.getLockedUntil() != null ? account.getLockedUntil().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
                 account.getGender(),
                 account.getFirstName(),
                 account.getLastName(),
-                account.getLanguage());
+                account.getLanguage()
+        );
     }
 
     public Account toAccount(CreateAccountDTO createAccountDTO) {
@@ -91,4 +99,10 @@ public class AccountDTOConverter {
     public List<GetAccountDTO> accountDtoList(List<Account> accounts) {
         return accounts.stream().map(this::toAccountDto).toList();
     }
+
+    private String convertAndFormatDateTime(LocalDateTime dateTime, ZoneId targetZoneId, DateTimeFormatter formatter) {
+        ZonedDateTime zonedDateTime = dateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(targetZoneId);
+        return zonedDateTime.format(formatter);
+    }
+
 }

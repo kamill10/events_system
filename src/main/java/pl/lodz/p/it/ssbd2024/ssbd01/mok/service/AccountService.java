@@ -3,18 +3,16 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.function.ThrowingSupplier;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.CredentialUpdateArgumentDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.MailResetIssuePropertiesDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
@@ -28,7 +26,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
 
 @Service
@@ -204,7 +201,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public String changePasswordAndSendEmail(String email) throws AccountNotFoundException {
+    public void changePasswordAndSendEmail(String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         CredentialReset credentialReset = saveTokenToChangeCredential(account);
@@ -214,12 +211,12 @@ public class AccountService {
         sb.append("'>Link</a>");
         mailService.sendEmail(credentialReset.getAccount(), "mail.password.changed.by.admin.subject",
                 "mail.password.changed.by.admin.body", new Object[] {sb});
-        return credentialReset.getToken();
+//        return credentialReset.getToken();
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public String sendMailWhenEmailChange(UUID id, String email) throws AccountNotFoundException {
+    public void sendMailWhenEmailChange(UUID id, String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         CredentialReset credentialReset = saveTokenToChangeCredential(account);
@@ -229,7 +226,7 @@ public class AccountService {
         sb.append("'>Link</a>");
         mailService.sendEmailOnNewMail(credentialReset.getAccount(), "mail.email.changed.by.admin.subject",
                 "mail.email.changed.by.admin.body", new Object[] {sb}, email);
-        return credentialReset.getToken();
+//        return credentialReset.getToken();
 
     }
 

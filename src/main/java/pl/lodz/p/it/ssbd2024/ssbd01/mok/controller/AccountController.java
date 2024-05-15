@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
@@ -19,7 +18,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
@@ -85,7 +83,8 @@ public class AccountController {
 
     @GetMapping("/username/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username) throws NotFoundException {
+    public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username)
+            throws NotFoundException {
         Account account = accountService.getAccountByUsername(username);
         GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());

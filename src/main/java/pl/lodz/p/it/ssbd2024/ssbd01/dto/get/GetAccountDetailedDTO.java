@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
@@ -19,16 +20,16 @@ public record GetAccountDetailedDTO(
         @Email
         String email,
         @NotNull
-        List<Role> roles,
+        List<AccountRoleEnum> roles,
         @NotNull
         Boolean active,
         @NotNull
         Boolean verified,
         @NotNull
         Boolean nonLocked,
-        LocalDateTime lastSuccessfulLogin,
-        LocalDateTime lastFailedLogin,
-        LocalDateTime lockedUntil,
+        String lastSuccessfulLogin,
+        String lastFailedLogin,
+        String lockedUntil,
         @PositiveOrZero
         Integer gender,
         @NotNull
