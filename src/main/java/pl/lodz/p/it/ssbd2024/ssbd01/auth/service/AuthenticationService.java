@@ -103,9 +103,14 @@ public class AuthenticationService {
         }
 
         var user = accountAuthRepository.findByUsername(loginDTO.username());
-        if (language.contains("pl")) {
+        String[] primaryLang = new String[1];
+        primaryLang[0] = language;
+        if (language.contains(",")) {
+            primaryLang = language.split(",");
+        }
+        if (primaryLang[0].contains("pl")) {
             user.setLanguage(LanguageEnum.POLISH);
-        } else if (language.contains("en")) {
+        } else if (primaryLang[0].contains("en")) {
             user.setLanguage(LanguageEnum.ENGLISH);
         }
 
