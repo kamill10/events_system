@@ -6,18 +6,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringJUnitWebConfig(classes = {WebCoreConfig.class, TestConfig.class})
+@SpringJUnitWebConfig(classes = {TestServiceConfig.class})
 public class AccountServiceMockTest {
 
     @Autowired

@@ -15,9 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.SecurityConfig;
 
 @Configuration
-@Import({AdminEntityManagerFactoryConfig.class, MokEntityManagerFactoryConfig.class, AuthEntityManagerFactoryConfig.class,
-        MowEntityManagerFactoryConfig.class, AtomikosConfig.class, MailConfig.class, ApplicationConfig.class, JwtAuthFilter.class,
-        JwtService.class, SecurityConfig.class, BusinessConfig.class, ToolsConfig.class})
+@Import({JpaConfig.class, BusinessConfig.class, ToolsConfig.class})
 public class RootConfig {
 
     @Bean

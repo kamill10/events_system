@@ -8,9 +8,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;
 
-@SpringJUnitWebConfig(classes = {WebCoreConfig.class, TestConfig.class})
+@SpringJUnitWebConfig(classes = {TestServiceConfig.class})
 public class AuthenticationServiceMockTest {
 
     @Autowired
