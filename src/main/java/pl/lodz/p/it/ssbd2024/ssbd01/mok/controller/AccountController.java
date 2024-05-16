@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
@@ -155,16 +156,17 @@ public class AccountController {
 
     @PostMapping("/change-email/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
-        CredentialReset credentialReset = accountService.sendMailWhenEmailChangeByAdmin(id);
-        mailService.sendEmailToChangeEmailByAdmin(credentialReset, emailDTO.email());
+    public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO)
+            throws AccountNotFoundException, EmailAlreadyExistsException {
+        ChangeEmail changeEmail = accountService.sendMailWhenEmailChangeByAdmin(id, emailDTO.email());
+        mailService.sendEmailToChangeEmailByAdmin(changeEmail, emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/change-email/token/{token}")
-    public ResponseEntity<?> changeEmailWithToken(@PathVariable String token, @RequestBody UpdateEmailDTO email)
-            throws TokenExpiredException, AccountNotFoundException, EmailAlreadyExistsException, TokenNotFoundException {
-        accountService.changeEmailByAdminWithToken(token, email.email());
+    public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
+            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
+        accountService.changeEmailByAdminWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

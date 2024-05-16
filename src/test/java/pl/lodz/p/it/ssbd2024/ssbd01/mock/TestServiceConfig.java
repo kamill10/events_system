@@ -64,8 +64,8 @@ public class TestServiceConfig {
     }
 
     @Bean
-    public ChangeMyEmailRepository changeMyEmailRepository() {
-        return Mockito.mock(ChangeMyEmailRepository.class);
+    public ChangeEmailRepository changeMyEmailRepository() {
+        return Mockito.mock(ChangeEmailRepository.class);
     }
 
     @Bean

@@ -688,7 +688,7 @@ public class AccountControllerIT {
 
     @Test
     public void sendEmailWhenEmailChange() throws JsonProcessingException {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("jeszczeniema202401@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
