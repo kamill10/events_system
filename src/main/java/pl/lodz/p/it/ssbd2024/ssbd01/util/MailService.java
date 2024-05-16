@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyEmail;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyPassword;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
 
@@ -100,7 +100,7 @@ public class MailService {
 
     public void sendEmailToChangeEmailByAdmin(CredentialReset credentialReset, String email) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/change-email?token=");
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/confirm-email?token=");
         sb.append(credentialReset.getToken());
         sb.append("'>Link</a>");
         sendEmailOnNewMail(credentialReset.getAccount(), "mail.email.changed.by.admin.subject",
@@ -118,7 +118,7 @@ public class MailService {
                 "mail.password.changed.by.you.body", new Object[] {sb});
     }
 
-    public void sendEmailToChangeMyEmail(ChangeMyEmail newResetIssue) {
+    public void sendEmailToChangeMyEmail(ChangeEmail newResetIssue) {
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");
         sb.append("change-my-email");
