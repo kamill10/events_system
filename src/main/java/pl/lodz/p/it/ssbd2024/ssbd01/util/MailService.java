@@ -100,7 +100,7 @@ public class MailService {
 
     public void sendEmailToChangeEmailByAdmin(CredentialReset credentialReset, String email) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/change-email?token=");
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/confirm-email?token=");
         sb.append(credentialReset.getToken());
         sb.append("'>Link</a>");
         sendEmailOnNewMail(credentialReset.getAccount(), "mail.email.changed.by.admin.subject",
