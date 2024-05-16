@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.exception;
 
 import jakarta.validation.ConstraintViolationException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.LockedException;
@@ -12,7 +13,11 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundExcepti
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ExceptionHandlingController {
@@ -64,7 +69,14 @@ public class ExceptionHandlingController {
 
     @ExceptionHandler
     public ResponseEntity<?> handleHibernateConstraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getCause().getMessage().split("Detail: ")[1]);
+        ArrayList<String> causes = new ArrayList<>();
+        Collections.addAll(causes,e.getCause().getMessage().split("Detail: ")[1].split("\\(|\\)"));
+        causes.remove(0);
+        causes.remove(1);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new HashMap<>() {{
+            put(causes.get(1),causes.get(0) + StringUtils.chop(causes.get(2)));
+            }
+        });
     }
 
 }

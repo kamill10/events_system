@@ -96,8 +96,7 @@ public class AuthenticationService {
         }
 
         var user = accountAuthRepository.findByUsername(loginDTO.username());
-        String[] primaryLang = new String[1];
-        primaryLang[0] = language;
+        String[] primaryLang = {language};
         if (language.contains(",")) {
             primaryLang = language.split(",");
         }
