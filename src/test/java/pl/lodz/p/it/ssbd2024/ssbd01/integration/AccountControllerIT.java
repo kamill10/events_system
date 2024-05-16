@@ -738,6 +738,19 @@ public class AccountControllerIT {
     }
 
     @Test
+    public void sendEmailWhenPasswordResetAndEmailNotExists() {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("niematakiego@proton.me");
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/reset-password")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
     public void sendTokenWhenPasswordChangeByAdminPositiveScenario() {
         UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
         String token = given()
