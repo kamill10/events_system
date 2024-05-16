@@ -5,6 +5,7 @@ import com.atomikos.icatch.jta.J2eeUserTransaction;
 import com.atomikos.icatch.jta.UserTransactionManager;
 import jakarta.transaction.TransactionManager;
 import jakarta.transaction.UserTransaction;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -14,12 +15,15 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 
 @Configuration
 @EnableTransactionManagement
+@RequiredArgsConstructor
 public class AtomikosConfig {
+
+    private final ConfigurationProperties config;
 
     @Bean(name = "userTransaction")
     public UserTransaction userTransaction() throws Throwable {
         J2eeUserTransaction userTransactionImp = new J2eeUserTransaction();
-        userTransactionImp.setTransactionTimeout(300);
+        userTransactionImp.setTransactionTimeout(config.getTransactionTimeout());
         return userTransactionImp;
     }
 

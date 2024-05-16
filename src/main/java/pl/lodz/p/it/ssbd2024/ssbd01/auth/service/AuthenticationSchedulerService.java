@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 
 @Service

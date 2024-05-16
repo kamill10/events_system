@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
 
@@ -32,11 +33,15 @@ public class JwtService {
     private final JWTWhitelistRepository jwtWhitelistRepository;
     private final String SECRET_KEY;
 
+    private final ConfigurationProperties config;
+
     public JwtService(UserDetailsService userDetailsService,
-                      JWTWhitelistRepository jwtWhitelistRepository) {
+                      JWTWhitelistRepository jwtWhitelistRepository,
+                      ConfigurationProperties config) {
         this.userDetailsService = userDetailsService;
         this.SECRET_KEY = KeyGenerator.getSecretKey();
         this.jwtWhitelistRepository = jwtWhitelistRepository;
+        this.config = config;
     }
 
 
@@ -87,7 +92,7 @@ public class JwtService {
                 .setId(account.getId().toString())
                 .setSubject(account.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15))
+                .setExpiration(new Date(System.currentTimeMillis() + config.getJwtExpiration()))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
         jwtWhitelistRepository.save(new JWTWhitelistToken(token, extractExpiration(token), account));

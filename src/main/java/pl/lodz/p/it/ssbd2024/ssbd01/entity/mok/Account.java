@@ -66,6 +66,10 @@ public class Account extends ControlledEntity implements UserDetails {
     @Size(max = 39)
     private String lastFailedLoginIp;
 
+    @Column(length = 39)
+    @Size(max = 39)
+    private String lastSuccessfulLoginIp;
+
     @FutureOrPresent
     private LocalDateTime lockedUntil;
 
