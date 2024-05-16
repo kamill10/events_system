@@ -158,14 +158,14 @@ public class AccountController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO)
             throws AccountNotFoundException, EmailAlreadyExistsException {
-        ChangeEmail changeEmail= accountService.sendMailWhenEmailChangeByAdmin(id,emailDTO.email());
+        ChangeEmail changeEmail = accountService.sendMailWhenEmailChangeByAdmin(id, emailDTO.email());
         mailService.sendEmailToChangeEmailByAdmin(changeEmail, emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/change-email/token/{token}")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
-            throws TokenExpiredException, AccountNotFoundException,TokenNotFoundException {
+            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
         accountService.changeEmailByAdminWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

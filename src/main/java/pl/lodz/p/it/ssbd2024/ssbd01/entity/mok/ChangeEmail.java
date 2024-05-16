@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "change_my_email")
+@Table(name = "change_email")
 public class ChangeEmail extends AbstractCredentialChange {
 
     @Column(nullable = false)

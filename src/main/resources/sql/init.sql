@@ -7,7 +7,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.accountconfirmation TO ssbd
 GRANT SELECT, INSERT, DELETE ON TABLE public.confirmation_reminder TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE credential_reset TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE change_my_password TO ssbd01mok;
-GRANT SELECT, INSERT, DELETE ON TABLE change_my_email TO ssbd01mok;
+GRANT SELECT, INSERT, DELETE ON TABLE change_email TO ssbd01mok;
 
 GRANT SELECT, INSERT, DELETE ON TABLE public.jwt_whitelist_token TO ssbd01auth;
 GRANT SELECT, UPDATE ON TABLE public.account TO ssbd01auth;
