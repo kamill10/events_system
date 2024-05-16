@@ -134,7 +134,10 @@ public class AccountController {
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO emailDTO) {
         CredentialReset credentialReset = accountService.resetPasswordAndSendEmail(emailDTO.email());
-        mailService.sendEmailToResetPassword(credentialReset);
+        if (credentialReset != null) {
+            mailService.sendEmailToResetPassword(credentialReset);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
