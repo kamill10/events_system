@@ -36,10 +36,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody LoginDTO request,@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language) {
-        String token = authenticationService.authenticate(request, language);
-        mailService.sendEmailToInformAboutAccountBlocked(authenticationService.getAccountByUsername(request.username()));
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+    public ResponseEntity<String> authenticate(@RequestBody LoginDTO request, @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language) {
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request, language));
     }
 
     @PostMapping("/verify-account/{token}")
