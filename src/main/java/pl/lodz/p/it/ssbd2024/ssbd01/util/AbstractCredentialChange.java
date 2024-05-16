@@ -13,7 +13,7 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @MappedSuperclass
-public abstract class AbstractCredentialChange extends AbstractEntity {
+public abstract class AbstractCredentialChange extends ControlledEntity {
     @Column(nullable = false, unique = true)
     @NotNull
     private  String token;

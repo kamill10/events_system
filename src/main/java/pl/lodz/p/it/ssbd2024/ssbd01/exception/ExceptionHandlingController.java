@@ -12,6 +12,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundExcepti
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 
+import java.util.HashMap;
+
 @RestControllerAdvice
 public class ExceptionHandlingController {
     @ExceptionHandler
@@ -45,14 +47,24 @@ public class ExceptionHandlingController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation failed: " + e.getMessage());
+    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException e) {
+        var violations = e.getConstraintViolations();
+        HashMap<String, String> errors = new HashMap<>();
+        violations.forEach(violation ->
+                errors.put(
+                        violation.getPropertyPath().toString(),
+                        violation.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handleHibernateConstraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Database constraint violation: " + e.getMessage());
+    public ResponseEntity<?> handleUnexpectedRollbackException(org.springframework.transaction.UnexpectedRollbackException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Transaction failed");
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleHibernateConstraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getCause().getMessage().split("Detail: ")[1]);
     }
 
 }

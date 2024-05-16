@@ -149,6 +149,13 @@ public class AuthenticationControllerIT {
                 .post(baseUrl + "/auth/register")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+        given()
+                .contentType("application/json")
+                .body(createAccountDTO)
+                .when()
+                .post(baseUrl + "/auth/register")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value());
     }
 
     @Test
