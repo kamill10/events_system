@@ -78,11 +78,15 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public ChangeEmail changeMyEmailSendMail(String currentPassword, String newEmail) throws AccountNotFoundException, WrongOldPasswordException {
+    public ChangeEmail changeMyEmailSendMail(String currentPassword, String newEmail)
+            throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
             throw new WrongOldPasswordException(ExceptionMessages.WRONG_OLD_PASSWORD);
+        }
+        if (accountMokRepository.findByEmail(newEmail).isPresent()) {
+            throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expiration = config.getCredentialChangeTokenExpiration();

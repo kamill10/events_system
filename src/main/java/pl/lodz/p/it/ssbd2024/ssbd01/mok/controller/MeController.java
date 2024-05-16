@@ -51,7 +51,7 @@ public class MeController {
     @PostMapping("/email")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<?> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
-            throws AccountNotFoundException, WrongOldPasswordException {
+            throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
         ChangeEmail changeEmail = meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
         mailService.sendEmailToChangeMyEmail(changeEmail);
         return ResponseEntity.status(HttpStatus.OK).build();
