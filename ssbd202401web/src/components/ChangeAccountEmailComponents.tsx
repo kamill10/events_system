@@ -6,7 +6,8 @@ import { Typography, Divider, Button } from "@mui/material";
 import FormComponent from "./FormComponent";
 import TextFieldComponent from "./TextFieldComponent";
 import { useManageAccounts } from "../hooks/useManageAccounts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ConfirmChangeModal from "./ConfirmChangeModal";
 
 export default function ChangeAccountEmailComponent({
   account,
@@ -16,12 +17,14 @@ export default function ChangeAccountEmailComponent({
   fetchAccount: () => void;
 }) {
   const { updateAccountEmail } = useManageAccounts();
+  const [open, setOpen] = useState(false);
   const {
     handleSubmit,
     control,
     formState: { errors },
     trigger,
     setValue,
+    getValues
   } = useForm<ChangeEmailType>({
     defaultValues: {
       email: account?.email,
@@ -29,11 +32,15 @@ export default function ChangeAccountEmailComponent({
     resolver: yupResolver(ChangeEmailSchema),
   });
 
-  const onSubmit: SubmitHandler<ChangeEmailType> = async (data) => {
-    const err = await updateAccountEmail(account?.id ?? "", data);
+  const handleRequest = async () => {
+    const err = await updateAccountEmail(account?.id ?? "", getValues());
     if (!err) {
       fetchAccount();
     }
+  }
+
+  const onSubmit: SubmitHandler<ChangeEmailType> = async (_) => {
+    setOpen(true);
   };
 
   const onError: SubmitErrorHandler<ChangeEmailType> = (error) => {
@@ -45,7 +52,8 @@ export default function ChangeAccountEmailComponent({
   }, [account]);
 
   return (
-    <FormComponent
+    <>
+      <FormComponent
       handleSubmit={handleSubmit}
       onError={onError}
       onSubmit={onSubmit}
@@ -76,5 +84,11 @@ export default function ChangeAccountEmailComponent({
         Save changes
       </Button>
     </FormComponent>
+    <ConfirmChangeModal
+      callback={handleRequest}
+      handleClose={() => setOpen(false)}
+      open={open}
+    ></ConfirmChangeModal>
+    </>
   );
 }
