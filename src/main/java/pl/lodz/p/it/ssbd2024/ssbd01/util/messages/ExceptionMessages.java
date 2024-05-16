@@ -16,6 +16,12 @@ public class ExceptionMessages {
     public static final String OPTIMISTIC_LOCK_EXCEPTION = "Optimistic lock exception.";
     public static final String WRONG_OLD_PASSWORD = "Old password is not correct";
     public static final String EMAIL_RESET_TOKEN_NOT_FOUND = "Email reset token not found.";
-
+    public static final String INCORRECT_EMAIL = "Incorrect email.";
+    public static final String INCORRECT_PASSWORD = "Incorrect password.";
+    public static final String INCORRECT_USERNAME = "Incorrect username.";
+    public static final String INCORRECT_GENDER = "Incorrect gender";
+    public static final String INCORRECT_FIRST_NAME = "Incorrect first name";
+    public static final String INCORRECT_LAST_NAME = "Incorrect last name";
+    public static final String INCORRECT_LANGUAGE = "Incorrect language";
 
 }
