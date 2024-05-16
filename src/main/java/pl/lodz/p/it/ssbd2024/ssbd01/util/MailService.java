@@ -100,7 +100,7 @@ public class MailService {
 
     public void sendEmailToChangeEmailByAdmin(ChangeEmail changeEmail, String email) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/confirm-email?token=");
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/confirm-email?token=");
         sb.append(changeEmail.getToken());
         sb.append("'>Link</a>");
         sendEmailOnNewMail(changeEmail.getAccount(), "mail.email.changed.by.admin.subject",
