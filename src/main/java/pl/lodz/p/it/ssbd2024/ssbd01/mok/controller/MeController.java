@@ -38,7 +38,7 @@ public class MeController {
     @PostMapping("/change-password")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<String> changeMyPasswordSendEmail(@RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
-            throws AccountNotFoundException, WrongOldPasswordException {
+            throws AccountNotFoundException, WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
         return ResponseEntity.status(HttpStatus.OK).body(
                 meService.changeMyPasswordSendMail(updateMyPasswordDto.oldPassword(), updateMyPasswordDto.newPassword())
         );
