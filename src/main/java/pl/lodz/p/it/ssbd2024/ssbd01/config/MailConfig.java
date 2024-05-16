@@ -26,13 +26,13 @@ public class MailConfig {
         String password = config.getMailPassword();
         javaMailSender.setPassword(new String(java.util.Base64.getDecoder().decode(password)));
         Properties javaMailProperties = new Properties();
-        javaMailProperties.put("mail.smtp.ssl.enable", "true");
-        javaMailProperties.put("mail.debug", "true");
-        javaMailProperties.put("mail.smtp.ssl.trust", "*");
-        javaMailProperties.put("mail.smtp.auth", "true");
-        javaMailProperties.put("mail.transport.protocol", "smtp");
-        javaMailProperties.put("mail.smtp.connectiontimeout", "5000");
-        javaMailProperties.put("mail.smtp.timeout", "3000");
+        javaMailProperties.put("mail.smtp.ssl.enable", config.getMailSslEnable());
+        javaMailProperties.put("mail.debug", config.getMailDebug());
+        javaMailProperties.put("mail.smtp.ssl.trust", config.getMailSslTrust());
+        javaMailProperties.put("mail.smtp.auth", config.getMailAuth());
+        javaMailProperties.put("mail.transport.protocol", config.getMailProtocol());
+        javaMailProperties.put("mail.smtp.connectiontimeout", config.getMailConnectionTimeout());
+        javaMailProperties.put("mail.smtp.timeout", config.getMailTimeout());
 
         javaMailSender.setJavaMailProperties(javaMailProperties);
         return javaMailSender;

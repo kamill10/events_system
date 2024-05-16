@@ -48,7 +48,7 @@ public class AuthEntityManagerFactoryConfig {
         dataSource.setPassword(config.getJdbcAuthPassword());
         dataSource.setDriverClassName(config.getJdbcDriverClassName());
         dataSource.setDefaultIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
-        dataSource.setMaxPoolSize(5);
+        dataSource.setMaxPoolSize(config.getJdbcPoolSize());
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setPersistenceUnitName("ssbd01auth");
