@@ -96,9 +96,12 @@ public class AuthenticationService {
                     curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
             if (account.getFailedLoginAttempts() >= config.getAuthAttempts()) {
                 account.setNonLocked(false);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(config.getAuthLockTime());
                 account.setLockedUntil(lockTimeout);
                 jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
+                mailService.sendEmailTemplate(account, "mail.locked.until.subject", "mail.locked.until.body",
+                        new Object[] {lockTimeout.format(formatter)});
             }
             accountAuthRepository.saveAndFlush(account);
             throw e;
