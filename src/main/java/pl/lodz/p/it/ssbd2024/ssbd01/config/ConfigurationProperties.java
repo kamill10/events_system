@@ -20,10 +20,10 @@ public class ConfigurationProperties {
     @Value("${auth.lock-time:86400}")
     private Integer authLockTime;
 
-    @Value("${confirmation.token.expiration.hours}")
+    @Value("${confirmation.token.expiration.hours:24}")
     private Integer confirmationTokenExpiration;
 
-    @Value("${credential_change.token.expiration.minutes}")
+    @Value("${credential_change.token.expiration.minutes:30}")
     private Integer credentialChangeTokenExpiration;
 
     @Value("${spring.mail.host}")
@@ -41,11 +41,14 @@ public class ConfigurationProperties {
     @Value("${jdbc.url}")
     private String jdbcUrl;
 
+    @Value("${jdbc.admin.pool-size:1}")
+    private Integer jdbcAdminPoolSize;
+
+    @Value("${jdbc.pool-size}")
+    private Integer jdbcPoolSize;
+
     @Value("${jdbc.driverClassName}")
     private String jdbcDriverClassName;
-
-    @Value("${jdbc.username}")
-    private String jdbcUsername;
 
     @Value("${jdbc.mok.user}")
     private String jdbcMokUser;
@@ -97,4 +100,34 @@ public class ConfigurationProperties {
 
     @Value("${hibernate.use_jdbc_metadata_defaults}")
     private String hibernateUseJdbcMetadataDefaults;
+
+    @Value("${spring.mail.connection-timeout}")
+    private Integer mailConnectionTimeout;
+
+    @Value("${spring.mail.timeout}")
+    private Integer mailTimeout;
+
+    @Value("${transaction.timeout}")
+    private Integer transactionTimeout;
+
+    @Value("${spring.mail.protocol}")
+    private String mailProtocol;
+
+    @Value("${spring.mail.auth}")
+    private String mailAuth;
+
+    @Value("${spring.mail.ssl.trust}")
+    private String mailSslTrust;
+
+    @Value("${spring.mail.debug}")
+    private String mailDebug;
+
+    @Value("${spring.mail.ssl.enable}")
+    private String mailSslEnable;
+
+    @Value("${scheduler.task.time-rate}")
+    private Integer schedulerTaskTimeRate;
+
+    @Value("${jwt.expiration}")
+    private Integer jwtExpiration;
 }

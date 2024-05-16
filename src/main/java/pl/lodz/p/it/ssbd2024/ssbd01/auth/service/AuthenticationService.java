@@ -3,9 +3,6 @@ package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,15 +28,14 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpir
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -54,8 +50,8 @@ public class AuthenticationService {
     private final JWTWhitelistRepository jwtWhitelistRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordHistoryRepository passwordHistoryRepository;
-    private final ConfigurationProperties config;
     private final MailService mailService;
+    private final ConfigurationProperties config;
 
     private LocalDateTime calculateExpirationDate(int expirationHours) {
         return LocalDateTime.now().plusHours(expirationHours);
@@ -79,12 +75,7 @@ public class AuthenticationService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
     public String authenticate(LoginDTO loginDTO, String language) {
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginDTO.username(),
-                            loginDTO.password()
-                    )
-            );
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
         } catch (BadCredentialsException e) {
             Account account = accountAuthRepository.findByUsername(loginDTO.username());
             account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);
@@ -118,6 +109,9 @@ public class AuthenticationService {
 
         user.setFailedLoginAttempts(0);
         user.setLastSuccessfulLogin(LocalDateTime.now());
+        HttpServletRequest curRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        user.setLastSuccessfulLoginIp(
+                curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
         accountAuthRepository.saveAndFlush(user);
         return jwtService.generateToken(user);
     }
@@ -132,8 +126,7 @@ public class AuthenticationService {
             throw new AccountConfirmationTokenExpiredException(ExceptionMessages.CONFIRMATION_TOKEN_EXPIRED);
         }
         var accountId = accountConfirmation.getAccount().getId();
-        var account = accountMokRepository.findById(accountId)
-                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        var account = accountMokRepository.findById(accountId).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setVerified(true);
         account.addRole(roleRepository.findByName(AccountRoleEnum.ROLE_PARTICIPANT)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND)));

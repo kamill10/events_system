@@ -18,8 +18,8 @@ public abstract class AbstractCredentialChange extends AbstractEntity {
     @NotNull
     private  String token;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id", nullable = false,updatable = false)
+    @OneToOne
+    @JoinColumn(name = "account_id", nullable = false, updatable = false, unique = true)
     @NotNull
     private Account account;
 
