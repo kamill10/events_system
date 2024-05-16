@@ -191,7 +191,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public CredentialReset sendMailWhenEmailChangeByAdmin(UUID id,String email) throws AccountNotFoundException, EmailAlreadyExistsException {
+    public ChangeEmail sendMailWhenEmailChangeByAdmin(UUID id,String email) throws AccountNotFoundException, EmailAlreadyExistsException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (accountMokRepository.findByEmail(email).isPresent()) {
@@ -203,7 +203,7 @@ public class AccountService {
         var newResetIssue = new ChangeEmail(randString, account,
                 expirationDate, email);
         changeEmailRepository.saveAndFlush(newResetIssue);
-        return verifier.saveTokenToResetCredential(account);
+        return newResetIssue;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})

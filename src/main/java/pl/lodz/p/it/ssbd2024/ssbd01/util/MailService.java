@@ -98,12 +98,12 @@ public class MailService {
                 "mail.password.changed.by.admin.body", new Object[] {sb});
     }
 
-    public void sendEmailToChangeEmailByAdmin(CredentialReset credentialReset, String email) {
+    public void sendEmailToChangeEmailByAdmin(ChangeEmail changeEmail, String email) {
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/confirm-email?token=");
-        sb.append(credentialReset.getToken());
+        sb.append(changeEmail.getToken());
         sb.append("'>Link</a>");
-        sendEmailOnNewMail(credentialReset.getAccount(), "mail.email.changed.by.admin.subject",
+        sendEmailOnNewMail(changeEmail.getAccount(), "mail.email.changed.by.admin.subject",
                 "mail.email.changed.by.admin.body", new Object[] {sb}, email);
     }
 

@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
@@ -157,8 +158,8 @@ public class AccountController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO)
             throws AccountNotFoundException, EmailAlreadyExistsException {
-        CredentialReset credentialReset = accountService.sendMailWhenEmailChangeByAdmin(id,emailDTO.email());
-        mailService.sendEmailToChangeEmailByAdmin(credentialReset, emailDTO.email());
+        ChangeEmail changeEmail= accountService.sendMailWhenEmailChangeByAdmin(id,emailDTO.email());
+        mailService.sendEmailToChangeEmailByAdmin(changeEmail, emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
