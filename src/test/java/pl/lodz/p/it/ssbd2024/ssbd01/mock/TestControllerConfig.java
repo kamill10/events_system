@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.ToolsConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 @Configuration
 @Import({
@@ -36,5 +37,10 @@ public class TestControllerConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return Mockito.mock(PasswordEncoder.class);
+    }
+
+    @Bean
+    public MailService mailService() {
+        return Mockito.mock(MailService.class);
     }
 }

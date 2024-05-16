@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 
 @Service
@@ -10,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 public class AuthenticationSchedulerService {
 
     private final AuthenticationService authenticationService;
+    private final MailService mailService;
 
     @Scheduled(fixedRate = 120000)
     public void executeDeleteExpiredTokensAndAccounts() {

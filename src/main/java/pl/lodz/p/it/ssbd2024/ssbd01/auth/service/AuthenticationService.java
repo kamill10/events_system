@@ -20,6 +20,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.MailToVerifyDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -53,32 +54,26 @@ public class AuthenticationService {
     private final JWTWhitelistRepository jwtWhitelistRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordHistoryRepository passwordHistoryRepository;
-    private final MailService mailService;
     private final ConfigurationProperties config;
+    private final MailService mailService;
 
     private LocalDateTime calculateExpirationDate(int expirationHours) {
         return LocalDateTime.now().plusHours(expirationHours);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void registerUser(Account account) {
+    public MailToVerifyDTO registerUser(Account account) {
         var savedAccount = accountMokRepository.saveAndFlush(account);
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expirationHours = config.getConfirmationTokenExpiration();
         var expirationDate = calculateExpirationDate(expirationHours);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
-        sb.append(randString);
-        sb.append("'>Link</a>");
-        mailService.sendEmail(account, "mail.verify.account.subject",
-                "mail.verify.account.body", new Object[] {sb});
         var confirmationReminder = new ConfirmationReminder(savedAccount, savedAccount.getCreatedAt()
                 .plusHours(expirationHours / 2).plusMinutes(expirationHours % 2 * 30));
         accountConfirmationRepository.saveAndFlush(newAccountConfirmation);
         confirmationReminderRepository.saveAndFlush(confirmationReminder);
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(savedAccount));
-
+        return new MailToVerifyDTO(savedAccount, randString);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
@@ -91,7 +86,21 @@ public class AuthenticationService {
                     )
             );
         } catch (BadCredentialsException e) {
-            updateFailedLoginAttempts(loginDTO.username());
+            Account account = accountAuthRepository.findByUsername(loginDTO.username());
+            account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);
+            account.setLastFailedLogin(LocalDateTime.now());
+            HttpServletRequest curRequest =
+                    ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                            .getRequest();
+            account.setLastFailedLoginIp(
+                    curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
+            if (account.getFailedLoginAttempts() >= config.getAuthAttempts()) {
+                account.setNonLocked(false);
+                LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(config.getAuthLockTime());
+                account.setLockedUntil(lockTimeout);
+                jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
+            }
+            accountAuthRepository.saveAndFlush(account);
             throw e;
         }
 
@@ -114,7 +123,7 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void verifyAccount(String token)
+    public Account verifyAccount(String token)
             throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
             RoleNotFoundException {
         var accountConfirmation = accountConfirmationRepository.findByToken(token)
@@ -131,7 +140,7 @@ public class AuthenticationService {
         accountMokRepository.saveAndFlush(account);
         accountConfirmationRepository.delete(accountConfirmation);
         confirmationReminderRepository.deleteByAccount(account);
-        mailService.sendEmail(account, "mail.after.verify.subject", "mail.after.verify.body", new Object[] {AccountRoleEnum.ROLE_PARTICIPANT});
+        return account;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -147,7 +156,7 @@ public class AuthenticationService {
             if (optionalAccount.isPresent()) {
                 Account account = optionalAccount.get();
                 accountMokRepository.delete(account);
-                mailService.sendEmail(account, "mail.delete.account.subject", "mail.delete.account.body", null);
+                mailService.sendEmailTemplate(account, "mail.delete.account.subject", "mail.delete.account.body", null);
                 passwordHistoryRepository.deletePasswordHistoriesByAccount(account);
             }
         }
@@ -184,7 +193,7 @@ public class AuthenticationService {
             sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
             sb.append(confirmation.getToken());
             sb.append("'>Link</a>");
-            mailService.sendEmail(confirmation.getAccount(), "mail.verify.account.subject",
+            mailService.sendEmailTemplate(confirmation.getAccount(), "mail.verify.account.subject",
                     "mail.verify.account.body", new Object[] {sb});
             confirmationReminderRepository.deleteById(confirmationReminder.getId());
         });
@@ -196,25 +205,9 @@ public class AuthenticationService {
         jwtWhitelistRepository.deleteByToken(token);
     }
 
-    @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
-    public void updateFailedLoginAttempts(String username) {
-        Account account = accountAuthRepository.findByUsername(username);
-        account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);
-        account.setLastFailedLogin(LocalDateTime.now());
-        HttpServletRequest curRequest =
-                ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                        .getRequest();
-        account.setLastFailedLoginIp(
-                curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
-        if (account.getFailedLoginAttempts() >= config.getAuthAttempts()) {
-            account.setNonLocked(false);
-            LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(config.getAuthLockTime());
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            account.setLockedUntil(lockTimeout);
-            jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
-            mailService.sendEmail(account, "mail.locked.until.subject", "mail.locked.until.body", new Object[] {lockTimeout.format(formatter)});
-        }
-        accountAuthRepository.saveAndFlush(account);
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public Account getAccountByUsername(String username) {
+        return accountAuthRepository.findByUsername(username);
     }
 
 }

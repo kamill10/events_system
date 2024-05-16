@@ -3,7 +3,6 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.core.env.Environment;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,29 +10,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.function.ThrowingSupplier;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.CredentialUpdateArgumentDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.MailResetIssuePropertiesDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.ChangeMyEmailRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.ChangeMyPasswordRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractCredentialChange;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +42,8 @@ public class MeService {
 
     private final ChangeMyEmailRepository changeMyEmailRepository;
 
-    private final MailService mailService;
-
     private final ConfigurationProperties config;
+
     private final ServiceVerifier verifier;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
@@ -67,36 +57,28 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public String changeMyPasswordSendMail(String currentPassword, String newPassword)
-            throws AccountNotFoundException, WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
+    public ChangeMyPassword changeMyPasswordSendMail(String currentPassword, String newPassword)
+            throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
             throw new WrongOldPasswordException(ExceptionMessages.WRONG_OLD_PASSWORD);
         }
         if (verifier.isPasswordInHistory(account.getId(), newPassword)) {
-                throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
+            throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeMyPassword(randString,account,
-                expirationDate,passwordEncoder.encode(newPassword));
+        var newResetIssue = new ChangeMyPassword(randString, account,
+                expirationDate, passwordEncoder.encode(newPassword));
         changeMyPasswordRepository.saveAndFlush(newResetIssue);
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");
-        sb.append("change-my-password");
-        sb.append("?token=");
-        sb.append(newResetIssue.getToken());
-        sb.append("'>Link</a>");
-        mailService.sendEmail(newResetIssue.getAccount(), "mail.password.changed.by.you.subject",
-                "mail.password.changed.by.you.body", new Object[] {sb});
-        return randString;
+        return newResetIssue;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public String changeMyEmailSendMail(String currentPassword, String newEmail) throws AccountNotFoundException, WrongOldPasswordException {
+    public ChangeMyEmail changeMyEmailSendMail(String currentPassword, String newEmail) throws AccountNotFoundException, WrongOldPasswordException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
@@ -108,15 +90,7 @@ public class MeService {
         var newResetIssue = new ChangeMyEmail(randString, account,
                 expirationDate, newEmail);
         changeMyEmailRepository.saveAndFlush(newResetIssue);
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");
-        sb.append("change-my-email");
-        sb.append("?token=");
-        sb.append(newResetIssue.getToken());
-        sb.append("'>Link</a>");
-        mailService.sendEmail(newResetIssue.getAccount(), "mail.email.changed.by.you.subject",
-                "mail.email.changed.by.you.body", new Object[] {sb});
-        return randString;
+        return newResetIssue;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})

@@ -12,11 +12,14 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyEmail;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyPassword;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 
 @RestController
@@ -25,6 +28,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 public class MeController {
     private final MeService meService;
     private final AccountDTOConverter accountDTOConverter;
+    private final MailService mailService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
@@ -37,20 +41,20 @@ public class MeController {
 
     @PostMapping("/change-password")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<String> changeMyPasswordSendEmail(@RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
-            throws AccountNotFoundException, WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                meService.changeMyPasswordSendMail(updateMyPasswordDto.oldPassword(), updateMyPasswordDto.newPassword())
-        );
+    public ResponseEntity<?> changeMyPasswordSendEmail(@RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
+            throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
+        ChangeMyPassword changeMyPassword = meService.changeMyPasswordSendMail(updateMyPasswordDto.oldPassword(), updateMyPasswordDto.newPassword());
+        mailService.sendEmailToChangeMyPassword(changeMyPassword);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/email")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<String> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
+    public ResponseEntity<?> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
             throws AccountNotFoundException, WrongOldPasswordException {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail())
-        );
+        ChangeMyEmail changeMyEmail = meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
+        mailService.sendEmailToChangeMyEmail(changeMyEmail);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/change-password/token/{token}")
