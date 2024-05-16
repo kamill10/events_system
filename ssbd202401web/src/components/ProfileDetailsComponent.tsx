@@ -9,12 +9,15 @@ import {
 } from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ProfileDetailsComponent() {
+  const { t, i18n } = useTranslation();
   const { account, getMyAccount } = useAccount();
 
   useEffect(() => {
     getMyAccount();
+    i18n.changeLanguage("ENGLISH");
   }, []);
 
   const data = [
@@ -46,7 +49,7 @@ export default function ProfileDetailsComponent() {
               fontSize: "18px",
             }}
           >
-            Key
+            {t("tableKey")}
           </TableCell>
           <TableCell
             sx={{
