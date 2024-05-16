@@ -140,21 +140,21 @@ public class AccountController {
     @PostMapping("/change-password")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changePassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
-        accountService.changePasswordAndSendEmail(emailDTO.email());
+        accountService.changePasswordByAdminAndSendEmail(emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/change-email/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
-        accountService.sendMailWhenEmailChange(id, emailDTO.email());
+        accountService.sendMailWhenEmailChangeByAdmin(id, emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/change-email/token/{token}")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token, @RequestBody UpdateEmailDTO email)
             throws TokenExpiredException, AccountNotFoundException, EmailAlreadyExistsException, TokenNotFoundException {
-        accountService.changeEmailWithToken(token, email.email());
+        accountService.changeEmailByAdminWithToken(token, email.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

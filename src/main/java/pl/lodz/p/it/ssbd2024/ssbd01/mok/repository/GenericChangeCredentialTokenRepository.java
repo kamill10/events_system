@@ -25,6 +25,5 @@ public interface GenericChangeCredentialTokenRepository<T extends AbstractCreden
     void deleteByToken(String token);
 
     @PreAuthorize("permitAll()")
-    @Override
     <S extends T> S saveAndFlush(S entity);
 }
