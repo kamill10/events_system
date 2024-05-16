@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.exception;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -77,6 +79,16 @@ public class ExceptionHandlingController {
             put(causes.get(1),causes.get(0) + StringUtils.chop(causes.get(2)));
             }
         });
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleSignatureException(SignatureException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleExpiredJwtException(ExpiredJwtException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
 }
