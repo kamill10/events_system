@@ -79,7 +79,7 @@ export const ChangeMyPasswordSchema = yup.object<ChangeMyPasswordType>().shape({
 
 export const ChangeMyEmailSchema = yup.object<ChangeMyEmailType>().shape({
   password: yup.string().min(8).max(72).required(),
-  email: yup.string().email().required(),
+  newEmail: yup.string().email().required(),
 });
 
 export const ManageAccountValidationSchema = yup

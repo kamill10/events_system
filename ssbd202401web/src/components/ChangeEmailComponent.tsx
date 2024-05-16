@@ -22,7 +22,7 @@ export default function ChangeEmailComponent() {
   } = useForm<ChangeMyEmailType>({
     defaultValues: {
       password: "",
-      email: "",
+      newEmail: "",
     },
     resolver: yupResolver(ChangeMyEmailSchema),
   });
@@ -66,7 +66,7 @@ export default function ChangeEmailComponent() {
         control={control}
         errors={errors}
         label="New E-mail"
-        name="email"
+        name="newEmail"
         trigger={trigger}
         type="text"
       />
