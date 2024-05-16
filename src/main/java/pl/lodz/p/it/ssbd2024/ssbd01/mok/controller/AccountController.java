@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -133,7 +134,7 @@ public class AccountController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO emailDTO) {
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody UpdateEmailDTO emailDTO) {
         CredentialReset credentialReset = accountService.resetPasswordAndSendEmail(emailDTO.email());
         if (credentialReset != null) {
             mailService.sendEmailToResetPassword(credentialReset);
@@ -151,7 +152,7 @@ public class AccountController {
 
     @PostMapping("/change-password")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> changePassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
+    public ResponseEntity<?> changePassword(@Valid @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
         CredentialReset credentialReset = accountService.changePasswordByAdminAndSendEmail(emailDTO.email());
         mailService.sendEmailToChangePasswordByAdmin(credentialReset);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -159,7 +160,7 @@ public class AccountController {
 
     @PostMapping("/change-email/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO)
+    public ResponseEntity<?> changeEmail(@PathVariable UUID id, @Valid @RequestBody UpdateEmailDTO emailDTO)
             throws AccountNotFoundException, EmailAlreadyExistsException {
         ChangeEmail changeEmail = accountService.sendMailWhenEmailChangeByAdmin(id, emailDTO.email());
         mailService.sendEmailToChangeEmailByAdmin(changeEmail, emailDTO.email());

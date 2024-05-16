@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,7 @@ public class MeController {
 
     @PostMapping("/email")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<?> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
+    public ResponseEntity<?> changeMyEmailSendEmail(@Valid @RequestBody UpdateMyEmailDTO updateMyEmailDTO)
             throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
         ChangeEmail changeEmail = meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
         mailService.sendEmailToChangeMyEmail(changeEmail);
