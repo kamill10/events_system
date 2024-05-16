@@ -16,6 +16,8 @@ import {
   ChangeMyPasswordType,
   UpdatePersonalDataType,
 } from "../types/Account";
+import { useTranslation } from "react-i18next";
+import { LanguageType } from "../types/enums/LanguageType.enum";
 
 export const useAccount = () => {
   const sendNotification = useNotification();
@@ -33,6 +35,8 @@ export const useAccount = () => {
     adminLayout,
     setAdminLayout,
   } = useAccountState();
+
+  const { i18n } = useTranslation();
 
   const isAuthenticated = !!token;
   const isManager = parsedToken?.role.includes(AccountTypeEnum.MANAGER);
@@ -79,8 +83,11 @@ export const useAccount = () => {
       return e;
     } finally {
       localStorage.removeItem("token");
+      localStorage.removeItem("language");
+      localStorage.removeItem("etag");
       setAccount(null);
       setToken(null);
+      i18n.changeLanguage(LanguageType.ENGLISH);
       navigate(Pathnames.public.home);
       setIsFetching(false);
     }
@@ -174,6 +181,8 @@ export const useAccount = () => {
       setIsFetching(true);
       const { data } = await api.getMyAccount();
       setAccount(data);
+      i18n.changeLanguage(data.language);
+      localStorage.setItem("language", data.language);
     } catch (e) {
       console.error(e);
       sendNotification({
