@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -22,6 +23,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +36,7 @@ public class AccountController {
 
     private final AccountService accountService;
     private final AccountDTOConverter accountDTOConverter;
+    private final MailService mailService;
 
 
     @GetMapping
@@ -56,6 +59,7 @@ public class AccountController {
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
             throws BadRequestException, NotFoundException, ConflictException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.addRoleToAccount(id, roleName));
+        mailService.sendEmailToAddRoleToAccount(accountService.getAccountById(id), roleName.name());
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -63,7 +67,8 @@ public class AccountController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> removeRole(@PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
             throws BadRequestException, NotFoundException {
-        GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.removeRole(id, roleName));
+        GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.removeRoleFromAccount(id, roleName));
+        mailService.sendEmailToRemoveRoleFromAccount(accountService.getAccountById(id), roleName.name());
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -71,6 +76,7 @@ public class AccountController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> setActive(@PathVariable UUID id) throws NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.setAccountStatus(id, true));
+        mailService.sendEmailToSetActiveAccount(accountService.getAccountById(id));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -78,6 +84,7 @@ public class AccountController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> setInactive(@PathVariable UUID id) throws NotFoundException {
         GetAccountDTO updatedAccount = accountDTOConverter.toAccountDto(accountService.setAccountStatus(id, false));
+        mailService.sendEmailToSetInactiveAccount(accountService.getAccountById(id));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 
@@ -125,8 +132,9 @@ public class AccountController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
-        accountService.resetPasswordAndSendEmail(emailDTO.email());
+    public ResponseEntity<?> resetPassword(@RequestBody UpdateEmailDTO emailDTO) {
+        CredentialReset credentialReset = accountService.resetPasswordAndSendEmail(emailDTO.email());
+        mailService.sendEmailToResetPassword(credentialReset);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -140,14 +148,16 @@ public class AccountController {
     @PostMapping("/change-password")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changePassword(@RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
-        accountService.changePasswordByAdminAndSendEmail(emailDTO.email());
+        CredentialReset credentialReset = accountService.changePasswordByAdminAndSendEmail(emailDTO.email());
+        mailService.sendEmailToChangePasswordByAdmin(credentialReset);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/change-email/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changeEmail(@PathVariable UUID id, @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
-        accountService.sendMailWhenEmailChangeByAdmin(id, emailDTO.email());
+        CredentialReset credentialReset = accountService.sendMailWhenEmailChangeByAdmin(id);
+        mailService.sendEmailToChangeEmailByAdmin(credentialReset, emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

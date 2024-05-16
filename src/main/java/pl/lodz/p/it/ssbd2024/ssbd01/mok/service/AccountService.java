@@ -33,7 +33,6 @@ import java.util.UUID;
 public class AccountService {
     private final AccountMokRepository accountMokRepository;
     private final RoleRepository roleRepository;
-    private final MailService mailService;
     private final PasswordEncoder passwordEncoder;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final ChangeMyPasswordRepository changeMyPasswordRepository;
@@ -41,7 +40,6 @@ public class AccountService {
     private final CredentialResetRepository resetMyCredentialRepository;
     private final ConfigurationProperties config;
     private final ServiceVerifier verifier;
-
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -80,7 +78,6 @@ public class AccountService {
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
-        mailService.sendEmail(account, "mail.role.added.subject", "mail.role.added.body", new Object[] {roleName.name()});
         return accountMokRepository.saveAndFlush(account);
     }
 
@@ -102,7 +99,8 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account removeRole(UUID id, AccountRoleEnum roleName) throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
+    public Account removeRoleFromAccount(UUID id, AccountRoleEnum roleName)
+            throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id)
@@ -110,7 +108,6 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                mailService.sendEmail(account, "mail.role.removed.subject", "mail.role.removed.body", new Object[] {roleName.name()});
                 return accountMokRepository.saveAndFlush(account);
             }
         }
@@ -123,11 +120,6 @@ public class AccountService {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setActive(status);
-        if (status) {
-            mailService.sendEmail(account, "mail.unblocked.subject", "mail.unblocked.body", new Object[] {});
-        } else {
-            mailService.sendEmail(account, "mail.blocked.subject", "mail.blocked.body", new Object[] {});
-        }
         return accountMokRepository.saveAndFlush(account);
     }
 
@@ -185,46 +177,29 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void resetPasswordAndSendEmail(String email) {
+    public CredentialReset resetPasswordAndSendEmail(String email) {
         Optional<Account> account = accountMokRepository.findByEmail(email);
         if (account.isEmpty()) {
-            return;
+            return null;
         }
         CredentialReset credentialReset = verifier.saveTokenToResetCredential(account.get());
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
-        sb.append(credentialReset.getToken());
-        sb.append("'>Link</a>");
-        mailService.sendEmail(credentialReset.getAccount(), "mail.password.reset.subject",
-                "mail.password.reset.body", new Object[] {sb});
+        return credentialReset;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void changePasswordByAdminAndSendEmail(String email) throws AccountNotFoundException {
+    public CredentialReset changePasswordByAdminAndSendEmail(String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        CredentialReset credentialReset = verifier.saveTokenToResetCredential(account);
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
-        sb.append(credentialReset.getToken());
-        sb.append("'>Link</a>");
-        mailService.sendEmail(credentialReset.getAccount(), "mail.password.changed.by.admin.subject",
-                "mail.password.changed.by.admin.body", new Object[] {sb});
+        return verifier.saveTokenToResetCredential(account);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void sendMailWhenEmailChangeByAdmin(UUID id, String email) throws AccountNotFoundException {
+    public CredentialReset sendMailWhenEmailChangeByAdmin(UUID id) throws AccountNotFoundException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        CredentialReset credentialReset = verifier.saveTokenToResetCredential(account);
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/change-email?token=");
-        sb.append(credentialReset.getToken());
-        sb.append("'>Link</a>");
-        mailService.sendEmailOnNewMail(credentialReset.getAccount(), "mail.email.changed.by.admin.subject",
-                "mail.email.changed.by.admin.body", new Object[] {sb}, email);
+        return verifier.saveTokenToResetCredential(account);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
