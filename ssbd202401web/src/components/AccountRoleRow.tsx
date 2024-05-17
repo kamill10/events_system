@@ -16,10 +16,10 @@ export default function AccountRoleRow({
   return (
     <>
       <TableRow>
-      <TableCell>{role}</TableCell>
-      <TableCell>
-        <Button onClick={() => setOpen(true)}>{icon}</Button>
-      </TableCell>
+        <TableCell>{role}</TableCell>
+        <TableCell>
+          <Button onClick={() => setOpen(true)}>{icon}</Button>
+        </TableCell>
       </TableRow>
       <ConfirmChangeModal
         open={open}

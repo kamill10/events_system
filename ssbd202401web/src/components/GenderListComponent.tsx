@@ -8,7 +8,7 @@ export default function GenderListComponent<T extends FieldValues>(
   props: GenderListProps<T>,
 ) {
   const { control, errors, disabled, name } = props;
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   return (
     <>
       <Controller

@@ -9,21 +9,23 @@ import { GetDetailedAccountType } from "../types/Account";
 import { useTranslation } from "react-i18next";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 
-
-
 export default function AccountDetailsComponent({
   account,
 }: {
   account: GetDetailedAccountType | null;
 }) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const mapRolesToString = (rolesArray: AccountTypeEnum[]): string => {
-    return rolesArray.map(role => t(role)).join(", ");
+    return rolesArray.map((role) => t(role)).join(", ");
   };
   const data = [
     { ID: account?.id },
     { [t("userName")]: account?.username },
-    { [t("roles")]: mapRolesToString(account?.roles ?? [AccountTypeEnum.ADMIN]) },
+    {
+      [t("roles")]: mapRolesToString(
+        account?.roles ?? [AccountTypeEnum.PARTICIPANT],
+      ),
+    },
     { "E-mail": account?.email },
     { [t("firstName")]: account?.firstName },
     { [t("lastName")]: account?.lastName },
@@ -43,11 +45,11 @@ export default function AccountDetailsComponent({
         : [t("never")],
     },
     {
-      [t("lockedUntil")]: account?.lockedUntil ? account.lockedUntil : [t("notLocked")],
+      [t("lockedUntil")]: account?.lockedUntil
+        ? account.lockedUntil
+        : [t("notLocked")],
     },
   ];
-
-
 
   return (
     <TableContainer>

@@ -89,7 +89,11 @@ export const useAccount = () => {
       localStorage.removeItem("etag");
       setAccount(null);
       setToken(null);
-      i18n.changeLanguage((navigator.language === "pl" ? LanguageType.POLISH : LanguageType.ENGLISH));
+      i18n.changeLanguage(
+        navigator.language === "pl"
+          ? LanguageType.POLISH
+          : LanguageType.ENGLISH,
+      );
       navigate(Pathnames.public.home);
       setIsFetching(false);
     }

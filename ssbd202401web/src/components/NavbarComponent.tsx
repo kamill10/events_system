@@ -25,7 +25,7 @@ export default function NavbarComponent(props: NavbarPropType) {
   const { adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
   const navigate = useNavigate();
 
-  const {t} = useTranslation()
+  const { t } = useTranslation();
 
   const handleSwitchClick = () => {
     setAdminLayout(!adminLayout);

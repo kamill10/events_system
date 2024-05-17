@@ -4,8 +4,10 @@ import { useState } from "react";
 import { Button, Typography } from "@mui/material";
 import CenteredContainerComponent from "../components/CenterdContainerComponent.tsx";
 import ContainerWithShadowComponent from "../components/ContainerWithShadowComponent.tsx";
+import { useTranslation } from "react-i18next";
 
 export function ConfirmEmailUpdatePage() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { confirmEmailUpdate } = useAccount();
   const [failed, setFailed] = useState(false);
@@ -29,14 +31,13 @@ export function ConfirmEmailUpdatePage() {
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
-            Something happened :((
+            {t("somethingHappened")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            There was an error while confirming your email change. If you think
-            this is a mistake, contact support.
+            {t("errorConfPassword")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            <Link to={"/"}>Go to home page</Link>
+            <Link to={"/"}>{t("gotoHomePage")}</Link>
           </Typography>
         </ContainerWithShadowComponent>
       </CenteredContainerComponent>
@@ -48,10 +49,10 @@ export function ConfirmEmailUpdatePage() {
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
-            Confirm your email change!
+            {t("confEmailChange")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            Click the button below to confirm your email change!
+            {t("clickToConfEmail")}
           </Typography>
           <Button
             onClick={verify}
@@ -61,10 +62,10 @@ export function ConfirmEmailUpdatePage() {
               mb: 2,
             }}
           >
-            Verify
+            {t("verify")}
           </Button>
           <Typography variant="h6" textAlign={"center"}>
-            <Link to={"/"}>Go to home page</Link>
+            <Link to={"/"}>{t("gotoHomePage")}</Link>
           </Typography>
         </ContainerWithShadowComponent>
       </CenteredContainerComponent>
@@ -75,10 +76,10 @@ export function ConfirmEmailUpdatePage() {
     <CenteredContainerComponent>
       <ContainerWithShadowComponent>
         <Typography variant="h3" textAlign={"center"}>
-          Email has been changed!
+          {t("emailHasBeenChanged")}
         </Typography>
         <Typography variant="h6" textAlign={"center"}>
-          <Link to={"/"}>Go to home page</Link>
+          <Link to={"/"}>{t("gotoHomePage")}</Link>
         </Typography>
       </ContainerWithShadowComponent>
     </CenteredContainerComponent>

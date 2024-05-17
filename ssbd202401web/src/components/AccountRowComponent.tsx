@@ -10,9 +10,9 @@ export default function AccountRowComponent({
   account: GetAccountType;
 }) {
   const navigate = useNavigate();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const mapRolesToString = (rolesArray: AccountTypeEnum[]): string => {
-    return rolesArray.map(role => t(role)).join(", ");
+    return rolesArray.map((role) => t(role)).join(", ");
   };
   return (
     <TableRow

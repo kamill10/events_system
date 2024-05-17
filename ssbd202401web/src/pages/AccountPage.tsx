@@ -16,8 +16,10 @@ import useNotification from "../hooks/useNotification";
 import AccountDetailsComponent from "../components/AccountDetailsComponent";
 import ChangeAccountDetails from "../components/ChangeAccountDetails";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useTranslation } from "react-i18next";
 
 export default function AccountPage() {
+  const { t } = useTranslation();
   const [account, setAccount] = useState<GetDetailedAccountType | null>(null);
   const sendNotification = useNotification();
   const { username } = useParams();
@@ -28,8 +30,6 @@ export default function AccountPage() {
   const handleChange = (_: SyntheticEvent, newValue: number) => {
     setPage(newValue);
   };
-
-  useEffect(() => console.log(account), [account]);
 
   async function fetchAccount() {
     if (username) {
@@ -61,7 +61,7 @@ export default function AccountPage() {
             color: "black",
           }}
         >
-          Home
+          {t("home")}
         </Link>
         <Link
           to={Pathnames.admin.accounts}
@@ -70,7 +70,7 @@ export default function AccountPage() {
             color: "black",
           }}
         >
-          Accounts
+          {t("accounts")}
         </Link>
         <Typography
           color="text.primary"
@@ -78,10 +78,12 @@ export default function AccountPage() {
             fontWeight: "bold",
           }}
         >
-          Account details
+          {t("accountDetails")}
         </Typography>
       </Breadcrumbs>
-      <Typography variant="h3">Account details: {username}</Typography>
+      <Typography variant="h3">
+        {t("accountDetails")}: {username}
+      </Typography>
       <Button
         variant="contained"
         onClick={fetchAccount}
@@ -90,11 +92,11 @@ export default function AccountPage() {
           margin: 2,
         }}
       >
-        Refresh data
+        {t("refreshData")}
       </Button>
       <Tabs value={page} onChange={handleChange}>
-        <Tab label="Profile details"></Tab>
-        <Tab label="Change account details"></Tab>
+        <Tab label={t("profileDetails")}></Tab>
+        <Tab label={t("changeProfileDetails")}></Tab>
       </Tabs>
       <Divider></Divider>
       {page == 0 && (

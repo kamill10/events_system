@@ -11,10 +11,12 @@ import TextFieldComponent from "./TextFieldComponent";
 import GenderListComponent from "./GenderListComponent";
 import { UpdatePersonalDataType } from "../types/Account";
 import ConfirmChangeModal from "./ConfirmChangeModal";
+import { useTranslation } from "react-i18next";
 
 export default function ChangePersonalDataComponent() {
   const { account, updateMyPersonalData, getMyAccount } = useAccount();
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const {
     handleSubmit,
@@ -22,7 +24,7 @@ export default function ChangePersonalDataComponent() {
     formState: { errors },
     trigger,
     setValue,
-    getValues
+    getValues,
   } = useForm<UpdatePersonalDataType>({
     defaultValues: {
       firstName: account ? account.firstName : "",
@@ -42,7 +44,7 @@ export default function ChangePersonalDataComponent() {
     setValue("gender", account?.gender ?? 0);
   }, [account, setValue]);
 
-  const onSubmit: SubmitHandler<UpdatePersonalDataType> = (_) => {
+  const onSubmit: SubmitHandler<UpdatePersonalDataType> = () => {
     setOpen(true);
   };
 
@@ -52,78 +54,80 @@ export default function ChangePersonalDataComponent() {
 
   return (
     <>
-    <FormComponent
-      handleSubmit={handleSubmit}
-      onError={onError}
-      onSubmit={onSubmit}
-      align="start"
-    >
-      <Typography variant="h4">Change personal data</Typography>
-      <Divider
-        sx={{
-          marginTop: "3rem",
-          marginBottom: "3rem",
-        }}
-      ></Divider>
-      <TextFieldComponent
-        control={control}
-        errors={errors}
-        label="First name"
-        name="firstName"
-        trigger={trigger}
-        type="text"
-      />
-      <TextFieldComponent
-        control={control}
-        errors={errors}
-        label="Last name"
-        name="lastName"
-        trigger={trigger}
-        type="text"
-      />
-      <GenderListComponent control={control} errors={errors} name="gender" />
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-start",
-          gap: "1rem",
-          marginTop: "3rem",
-        }}
+      <FormComponent
+        handleSubmit={handleSubmit}
+        onError={onError}
+        onSubmit={onSubmit}
+        align="start"
       >
-        <Button
-          onClick={getMyAccount}
-          variant="contained"
-          startIcon={<RefreshIcon />}
-          color="secondary"
+        <Typography variant="h4">{t("changePersonalData")}</Typography>
+        <Divider
           sx={{
-            mt: 1,
-            mb: 2,
-            width: "fit-content",
-            alignSelf: "center",
+            marginTop: "3rem",
+            marginBottom: "3rem",
+          }}
+        ></Divider>
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          label={t("firstName")}
+          name="firstName"
+          trigger={trigger}
+          type="text"
+        />
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          label={t("lastName")}
+          name="lastName"
+          trigger={trigger}
+          type="text"
+        />
+        <GenderListComponent control={control} errors={errors} name="gender" />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            gap: "1rem",
+            marginTop: "3rem",
           }}
         >
-          Refresh Data
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          startIcon={<SaveIcon />}
-          sx={{
-            mt: 1,
-            mb: 2,
-            width: "fit-content",
-            alignSelf: "center",
-          }}
-        >
-          Save changes
-        </Button>
-      </Box>
-    </FormComponent>
-    <ConfirmChangeModal
-      open={open}
-      handleClose={() => setOpen(false)}
-      callback={() => {updateMyPersonalData(getValues())}}
-    ></ConfirmChangeModal>
+          <Button
+            onClick={getMyAccount}
+            variant="contained"
+            startIcon={<RefreshIcon />}
+            color="secondary"
+            sx={{
+              mt: 1,
+              mb: 2,
+              width: "fit-content",
+              alignSelf: "center",
+            }}
+          >
+            {t("refreshData")}
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            startIcon={<SaveIcon />}
+            sx={{
+              mt: 1,
+              mb: 2,
+              width: "fit-content",
+              alignSelf: "center",
+            }}
+          >
+            {t("saveChanges")}
+          </Button>
+        </Box>
+      </FormComponent>
+      <ConfirmChangeModal
+        open={open}
+        handleClose={() => setOpen(false)}
+        callback={() => {
+          updateMyPersonalData(getValues());
+        }}
+      ></ConfirmChangeModal>
     </>
   );
 }

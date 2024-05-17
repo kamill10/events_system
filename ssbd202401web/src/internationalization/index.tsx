@@ -50,6 +50,7 @@ i18next.use(initReactI18next).init({
         speakersLink: "Prelegenci",
 
         roles: "Role",
+        role: "Rola",
         userName: "Nazwa konta",
         firstName: "Imie",
         lastName: "Nazwisko",
@@ -57,6 +58,7 @@ i18next.use(initReactI18next).init({
         isActive: "Aktywne",
         isVerified: "Zweryfikowe",
         isUnlocked: "Odblokowane",
+        verify: "Strona z wydarzeniami",
 
         tableKey: "Klucz",
         tableValue: "Wartość",
@@ -72,6 +74,16 @@ i18next.use(initReactI18next).init({
         never: "Nigdy",
         save: "zapisz",
         saveChanges: "zapisz zmiany",
+        action: "Akcja",
+        refreshData: "Odśwież Dane",
+        home: "Strona główna",
+        accounts: "Konta",
+        accountDetails: "Szczegóły konta",
+        gotoHomePage: "Wróć do strony głównej",
+        confEmailChange: "Potwierdź swoją zmiane adresu email!",
+        clickToConfEmail:
+          "Naciśnij przycisk poniżej, aby potwierdzić zmiane email!",
+        emailHasBeenChanged: "Adres email został zmieniony!",
 
         POLISH: "Polski",
         ENGLISH: "Angielski",
@@ -81,7 +93,39 @@ i18next.use(initReactI18next).init({
         ROLE_MANAGER: "Zarządca",
 
         changePersonalData: "Zmień dane personalne",
+        changePassword: "Zmień hasło",
+        changeEmail: "Zmień adres e-mail",
+        enterNewMail: "Wprowadź nowy adres e-mail poniżej",
+        newEmail: "Nowy adres e-mail",
+        newPassword: "Nowe hasło",
+        confirmNewPassword: "Potwierdz nowe hasło",
+        changeAccStatus: "Zmień status konta",
+        activeDeactiveAcc: "Aktywuj lub dezaktywuj konto!",
+        clickButBToChangePass:
+          "Naciśnij poniższy przycisk, aby wysłać maila z linkiem do zmiany hasła!",
         enterNewPersonalData: "Podaj nowe dane personalne konta!",
+        changeAccRole: "Zmień role konta",
+        assignRemoveRoles: "Nadaj lub odbierz role!",
+        addRole: "Nadaj rolę",
+        chooseOneOfRoles: "Wybierz jedną z dostępnych ról do nadania!",
+        rolesAssignedToAcc: "Role przypisane do konta",
+        currentPassword: "Aktulane hasło",
+        areYouSure: "Czy jesteś pewnien, że chcesz kontynuować?",
+        confirmChange: "Potwierdź zmiane",
+        profileDetails: "Dane konta",
+        changeProfileDetails: "Zmień dane konta",
+        manageAccounts: "Zarządzaj kontami",
+        somethingHappened: "Stało się coś złego :((",
+        errorConfPassword:
+          "Wystąpił błąd podczas potwierdzania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
+        clickToConfPassChange:
+          "Naciśnij przycisk na dole, aby potwierdzić zmiane hasła!",
+        passwordHasBeenChanged: "Hasło zostało zmienione!",
+        youCanGoToLogin: "Możesz przejść samemu na strone logowania, lub&#x20;",
+        goBackToLoginPage: "Wróć do strony głównej",
+
+        active: "Aktywne",
+        inactive: "Nieaktywne",
 
         NotKnown: "Nieznana",
         Male: "Mężczyzna",
@@ -102,6 +146,7 @@ i18next.use(initReactI18next).init({
         speakersLink: "Speakers",
 
         roles: "Roles",
+        role: "Role",
         userName: "UserName",
         firstName: "First Name",
         lastName: "Last Name",
@@ -109,6 +154,8 @@ i18next.use(initReactI18next).init({
         isActive: "Is Active",
         isVerified: "Is Verified",
         isUnlocked: "Is Unlocked",
+        verify: "Verify",
+        eventPage: "Event Page",
 
         tableKey: "Key",
         tableValue: "Value",
@@ -124,6 +171,17 @@ i18next.use(initReactI18next).init({
         never: "Never",
         save: "save",
         saveChanges: "Save changes",
+        action: "Action",
+        refreshData: "Refresh Data",
+        home: "Home",
+        accounts: "Accounts",
+        accountDetails: "Account details",
+        gotoHomePage: "Go to home page",
+        confEmailChange: "Confirm your email change!",
+        confPassChange: "Confirm your password change!",
+        clickToConfEmail:
+          "Click the button below to confirm your email change!",
+        emailHasBeenChanged: "Email has been changed!",
 
         POLISH: "Polish",
         ENGLISH: "English",
@@ -133,7 +191,39 @@ i18next.use(initReactI18next).init({
         ROLE_MANAGER: "Manager",
 
         changePersonalData: "Change personal data",
+        changePassword: "Change password",
+        changeEmail: "Change e-mail",
+        enterNewMail: "Enter new e-mail address below!",
+        newEmail: "New e-mail",
+        newPassword: "New password",
+        confirmNewPassword: "Confirm new password",
+        changeAccStatus: "Change account's status",
+        activeDeactiveAcc: "Activate or deactivate user's account!",
+        clickButBToChangePass:
+          "Click the button below to send an e-mail with password reset link!",
         enterNewPersonalData: "Enter account's new personal data below!",
+        changeAccRole: "Change account's roles",
+        assignRemoveRoles: "Assing or remove account's roles!",
+        addRole: "Add role",
+        chooseOneOfRoles: "Choose one of the available roles to add!",
+        rolesAssignedToAcc: "Roles assigned to the account",
+        currentPassword: "Current password",
+        areYouSure: "Are you sure you want to procceed?",
+        confirmChange: "Confirm change",
+        profileDetails: "Profile details",
+        changeProfileDetails: "Change personal data",
+        manageAccounts: "Manage accounts",
+        somethingHappened: "Something bad happened :((",
+        errorConfPassword:
+          "There was an error while confirming your email change. If you think this is a mistake, contact support.",
+        clickToConfPassChange:
+          "Click the button below to confirm your password change!",
+        passwordHasBeenChanged: "Password has been changed!",
+        youCanGoToLogin: "You can go to login page manually, or&#x20;",
+        goBackToLoginPage: "Go back to login page",
+
+        active: "Active",
+        inactive: "Inactive",
 
         NotKnown: "Not Known",
         Male: "Male",
@@ -142,6 +232,8 @@ i18next.use(initReactI18next).init({
       },
     },
   },
-  lng: localStorage.getItem("language") ?? (navigator.language === "pl" ? LanguageType.POLISH : LanguageType.ENGLISH)
-})
+  lng:
+    localStorage.getItem("language") ??
+    (navigator.language === "pl" ? LanguageType.POLISH : LanguageType.ENGLISH),
+});
 export default i18next;

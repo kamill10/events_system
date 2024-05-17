@@ -14,7 +14,8 @@ import ModalComponent from "./ModalComponent";
 import { useManageAccounts } from "../hooks/useManageAccounts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import AddBoxIcon from "@mui/icons-material/AddBox";
+import { useTranslation } from "react-i18next";
 
 export default function ChangeAccountRolesComponent({
   account,
@@ -23,6 +24,7 @@ export default function ChangeAccountRolesComponent({
   account: GetPersonalAccountType | null;
   fetchAccount: () => void;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -54,8 +56,8 @@ export default function ChangeAccountRolesComponent({
         marginX: 8,
       }}
     >
-      <Typography variant="h4">Change account's roles</Typography>
-      <Typography variant="body1">Assing or remove account's roles!</Typography>
+      <Typography variant="h4">{t("changeAccRole")}</Typography>
+      <Typography variant="body1">{t("assignRemoveRoles")}</Typography>
       <Button
         variant="contained"
         sx={{
@@ -63,18 +65,16 @@ export default function ChangeAccountRolesComponent({
         }}
         onClick={handleOpen}
       >
-        Add role
+        {t("addRole")}
       </Button>
       <ModalComponent open={open} onClose={handleClose}>
         <>
-          <Typography variant="h4">Add role!</Typography>
-          <Typography variant="body1">
-            Choose one of the available roles to add!
-          </Typography>
+          <Typography variant="h4">{t("addRole")}</Typography>
+          <Typography variant="body1">{t("chooseOneOfRoles")}</Typography>
           <TableContainer>
             <TableHead>
-              <TableCell>Role</TableCell>
-              <TableCell>Action</TableCell>
+              <TableCell>{t("role")}</TableCell>
+              <TableCell>{t("action")}</TableCell>
             </TableHead>
             <TableBody>
               {Object.values(AccountTypeEnum).map((val, key) => {
@@ -94,8 +94,8 @@ export default function ChangeAccountRolesComponent({
                 return (
                   <AccountRoleRow
                     key={key}
-                    role={val}
-                    callback={() => callAddRole(val, account?.id ?? "")}
+                    role={t(val)}
+                    callback={() => callAddRole(val, t(account?.id ?? ""))}
                     icon={<AddBoxIcon />}
                   ></AccountRoleRow>
                 );
@@ -104,19 +104,19 @@ export default function ChangeAccountRolesComponent({
           </TableContainer>
         </>
       </ModalComponent>
-      <Typography variant="body1">Roles assigned to the account</Typography>
+      <Typography variant="body1">{t("rolesAssignedToAcc")}</Typography>
       <TableContainer>
         <TableHead>
-          <TableCell>Role</TableCell>
-          <TableCell>Action</TableCell>
+          <TableCell>{t("role")}</TableCell>
+          <TableCell>{t("action")}</TableCell>
         </TableHead>
         <TableBody>
           {account?.roles.map((val, key) => {
             return (
               <AccountRoleRow
                 key={key}
-                role={val}
-                callback={() => callRemoveRole(val, account.id)}
+                role={t(val)}
+                callback={() => callRemoveRole(val, t(account.id))}
                 icon={<DisabledByDefaultIcon />}
               ></AccountRoleRow>
             );

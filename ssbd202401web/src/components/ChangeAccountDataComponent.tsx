@@ -21,7 +21,7 @@ export default function ChangeAccountDataComponent({
   account: GetPersonalAccountType | null;
   fetchAccount: () => void;
 }) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { updateAccountData } = useManageAccounts();
   const [open, setOpen] = useState(false);
   const {
@@ -30,7 +30,7 @@ export default function ChangeAccountDataComponent({
     formState: { errors },
     trigger,
     setValue,
-    getValues
+    getValues,
   } = useForm<UpdatePersonalDataType>({
     defaultValues: {
       firstName: account?.firstName,
@@ -45,7 +45,7 @@ export default function ChangeAccountDataComponent({
     if (!err) {
       fetchAccount();
     }
-  }
+  };
 
   const onSubmit: SubmitHandler<UpdatePersonalDataType> = async () => {
     setOpen(true);
@@ -63,53 +63,51 @@ export default function ChangeAccountDataComponent({
 
   return (
     <>
-    <FormComponent
-      handleSubmit={handleSubmit}
-      onError={onError}
-      onSubmit={onSubmit}
-      align="start"
-    >
-      <Typography variant="h4">{t("changePersonalData")}</Typography>
-      <Typography variant="body1">
-      {t("enterNewPersonalData")}
-      </Typography>
-      <Divider
-        sx={{
-          marginTop: "1rem",
-        }}
-      ></Divider>
-      <TextFieldComponent
-        control={control}
-        errors={errors}
-        label={t("firstName")}
-        name="firstName"
-        trigger={trigger}
-        type="text"
-      />
-      <TextFieldComponent
-        control={control}
-        errors={errors}
-        label={t("lastName")}
-        name="lastName"
-        trigger={trigger}
-        type="text"
-      />
-      <GenderListComponent control={control} errors={errors} name="gender" />
-      <Button
-        type="submit"
-        variant="contained"
-        sx={{
-          marginY: 2,
-        }}
+      <FormComponent
+        handleSubmit={handleSubmit}
+        onError={onError}
+        onSubmit={onSubmit}
+        align="start"
       >
-        {t("saveChanges")}
-      </Button>
-    </FormComponent>
-    <ConfirmChangeModal
-      callback={handleRequest}
-      handleClose={() => setOpen(false)}
-      open={open}
-    ></ConfirmChangeModal>
+        <Typography variant="h4">{t("changePersonalData")}</Typography>
+        <Typography variant="body1">{t("enterNewPersonalData")}</Typography>
+        <Divider
+          sx={{
+            marginTop: "1rem",
+          }}
+        ></Divider>
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          label={t("firstName")}
+          name="firstName"
+          trigger={trigger}
+          type="text"
+        />
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          label={t("lastName")}
+          name="lastName"
+          trigger={trigger}
+          type="text"
+        />
+        <GenderListComponent control={control} errors={errors} name="gender" />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            marginY: 2,
+          }}
+        >
+          {t("saveChanges")}
+        </Button>
+      </FormComponent>
+      <ConfirmChangeModal
+        callback={handleRequest}
+        handleClose={() => setOpen(false)}
+        open={open}
+      ></ConfirmChangeModal>
     </>
   );
 }
