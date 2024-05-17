@@ -1,14 +1,18 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mock.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -24,7 +28,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringJUnitWebConfig(classes = {TestControllerConfig.class})
@@ -44,6 +48,12 @@ class AccountControllerMockTest {
     private Account participantAccount;
 
     private Account managerAccount;
+
+    public static ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
+    }
 
     @BeforeEach
     public void setup() throws AccountNotFoundException, NoSuchFieldException, IllegalAccessException, RoleNotFoundException {
@@ -129,5 +139,4 @@ class AccountControllerMockTest {
                 .andReturn().getResponse().getContentAsString();
         Assertions.assertTrue(participantsFromController.contains(participantAccount.getUsername()));
     }
-
 }
