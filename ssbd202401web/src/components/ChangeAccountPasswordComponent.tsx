@@ -1,6 +1,8 @@
 import { Typography, Button, Box } from "@mui/material";
 import { useManageAccounts } from "../hooks/useManageAccounts";
 import { GetPersonalAccountType } from "../types/Account";
+import { useState } from "react";
+import ConfirmChangeModal from "./ConfirmChangeModal";
 
 export default function ChangeAccountPasswordComponent({
   account,
@@ -9,6 +11,7 @@ export default function ChangeAccountPasswordComponent({
   account: GetPersonalAccountType | null;
   fetchAccount: () => void;
 }) {
+  const [open, setOpen] = useState(false);
   const { updateAccountPassword } = useManageAccounts();
   async function resetPassword() {
     const err = await updateAccountPassword({ email: account?.email ?? "" });
@@ -18,6 +21,7 @@ export default function ChangeAccountPasswordComponent({
   }
 
   return (
+    <>
     <Box
       sx={{
         display: "flex",
@@ -36,10 +40,16 @@ export default function ChangeAccountPasswordComponent({
         sx={{
           marginY: 2,
         }}
-        onClick={resetPassword}
+        onClick={() => setOpen(true)}
       >
         Reset password
       </Button>
     </Box>
+    <ConfirmChangeModal
+      open={open}
+      callback={resetPassword}
+      handleClose={() => setOpen(false)}
+    ></ConfirmChangeModal>
+    </>
   );
 }

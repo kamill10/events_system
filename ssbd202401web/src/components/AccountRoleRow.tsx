@@ -1,6 +1,7 @@
 import { Button, TableCell, TableRow } from "@mui/material";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import ConfirmChangeModal from "./ConfirmChangeModal";
 
 export default function AccountRoleRow({
   role,
@@ -11,12 +12,20 @@ export default function AccountRoleRow({
   callback: () => void;
   icon: ReactNode;
 }) {
+  const [open, setOpen] = useState(false);
   return (
-    <TableRow>
+    <>
+      <TableRow>
       <TableCell>{role}</TableCell>
       <TableCell>
-        <Button onClick={callback}>{icon}</Button>
+        <Button onClick={() => setOpen(true)}>{icon}</Button>
       </TableCell>
-    </TableRow>
+      </TableRow>
+      <ConfirmChangeModal
+        open={open}
+        handleClose={() => setOpen(false)}
+        callback={callback}
+      ></ConfirmChangeModal>
+    </>
   );
 }

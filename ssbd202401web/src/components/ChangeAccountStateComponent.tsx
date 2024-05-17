@@ -1,6 +1,8 @@
 import { Box, Typography, Switch, Stack } from "@mui/material";
 import { GetPersonalAccountType } from "../types/Account";
 import { useManageAccounts } from "../hooks/useManageAccounts";
+import { useState } from "react";
+import ConfirmChangeModal from "./ConfirmChangeModal";
 
 export default function ChangeAccountStateComponent({
   account,
@@ -11,6 +13,7 @@ export default function ChangeAccountStateComponent({
 }) {
   const { activateAccount, deactivateAccount } = useManageAccounts();
   const state = account?.active;
+  const [open, setOpen] = useState(false);
 
   async function changeState() {
     const err = state
@@ -22,6 +25,7 @@ export default function ChangeAccountStateComponent({
   }
 
   return (
+    <>
     <Box
       sx={{
         display: "flex",
@@ -37,9 +41,15 @@ export default function ChangeAccountStateComponent({
       </Typography>
       <Stack direction={"row"} spacing={1} alignItems={"center"} margin={2}>
         <Typography>Inactive</Typography>
-        <Switch onChange={changeState} checked={state} color="primary"></Switch>
+        <Switch onChange={() => setOpen(true)} checked={state} color="primary"></Switch>
         <Typography>Active</Typography>
       </Stack>
     </Box>
+    <ConfirmChangeModal
+      callback={changeState}
+      handleClose={() => setOpen(false)}
+      open={open}
+    ></ConfirmChangeModal>
+    </>
   );
 }
