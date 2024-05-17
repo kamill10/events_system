@@ -2,11 +2,13 @@ import { TextField, MenuItem, Typography } from "@mui/material";
 import { Controller, FieldValues } from "react-hook-form";
 import { GenderEnum } from "../types/enums/Gender.enum";
 import { GenderListProps } from "../types/Components";
+import { useTranslation } from "react-i18next";
 
 export default function GenderListComponent<T extends FieldValues>(
   props: GenderListProps<T>,
 ) {
   const { control, errors, disabled, name } = props;
+  const {t} = useTranslation();
   return (
     <>
       <Controller
@@ -16,7 +18,7 @@ export default function GenderListComponent<T extends FieldValues>(
           return (
             <TextField
               select
-              label="Gender"
+              label={t("gender")}
               value={field.value}
               onChange={(e) => {
                 field.onChange(e);
@@ -30,7 +32,7 @@ export default function GenderListComponent<T extends FieldValues>(
               {Object.keys(GenderEnum).map((key, value) => {
                 return (
                   <MenuItem key={key} value={value}>
-                    {GenderEnum[key as keyof typeof GenderEnum].info}
+                    {t(GenderEnum[key as keyof typeof GenderEnum].info)}
                   </MenuItem>
                 );
               })}

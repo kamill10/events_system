@@ -31,7 +31,6 @@ export default function LoginPage() {
 
   const onError: SubmitErrorHandler<LoginCredentialsType> = (errors) => {
     console.error(errors);
-    alert(errors);
   };
 
   return (

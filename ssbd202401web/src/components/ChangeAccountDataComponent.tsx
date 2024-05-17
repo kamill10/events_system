@@ -11,6 +11,7 @@ import GenderListComponent from "./GenderListComponent";
 import TextFieldComponent from "./TextFieldComponent";
 import { useManageAccounts } from "../hooks/useManageAccounts";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ChangeAccountDataComponent({
   account,
@@ -19,6 +20,7 @@ export default function ChangeAccountDataComponent({
   account: GetPersonalAccountType | null;
   fetchAccount: () => void;
 }) {
+  const {t} = useTranslation();
   const { updateAccountData } = useManageAccounts();
   const {
     handleSubmit,
@@ -59,9 +61,9 @@ export default function ChangeAccountDataComponent({
       onSubmit={onSubmit}
       align="start"
     >
-      <Typography variant="h4">Change personal data</Typography>
+      <Typography variant="h4">{t("changePersonalData")}</Typography>
       <Typography variant="body1">
-        Enter account's new personal data below!
+      {t("enterNewPersonalData")}
       </Typography>
       <Divider
         sx={{
@@ -71,7 +73,7 @@ export default function ChangeAccountDataComponent({
       <TextFieldComponent
         control={control}
         errors={errors}
-        label="First name"
+        label={t("firstName")}
         name="firstName"
         trigger={trigger}
         type="text"
@@ -79,7 +81,7 @@ export default function ChangeAccountDataComponent({
       <TextFieldComponent
         control={control}
         errors={errors}
-        label="Last name"
+        label={t("lastName")}
         name="lastName"
         trigger={trigger}
         type="text"
@@ -92,7 +94,7 @@ export default function ChangeAccountDataComponent({
           marginY: 2,
         }}
       >
-        Save changes
+        {t("saveChanges")}
       </Button>
     </FormComponent>
   );

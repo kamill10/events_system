@@ -7,7 +7,7 @@ export default function EventsPage() {
 
   return (
     <ContainerComponent>
-      <Typography variant={"h4"}>{t("eventsHeading")}</Typography>;
+      <Typography variant={"h4"}>{t("eventsHeading")}</Typography>
     </ContainerComponent>
   );
 }

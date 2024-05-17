@@ -6,38 +6,49 @@ import {
   TableRow,
 } from "@mui/material";
 import { GetDetailedAccountType } from "../types/Account";
+import { useTranslation } from "react-i18next";
+import { AccountTypeEnum } from "../types/enums/AccountType.enum";
+
+
 
 export default function AccountDetailsComponent({
   account,
 }: {
   account: GetDetailedAccountType | null;
 }) {
+  const {t} = useTranslation();
+  const mapRolesToString = (rolesArray: AccountTypeEnum[]): string => {
+    return rolesArray.map(role => t(role)).join(", ");
+  };
   const data = [
     { ID: account?.id },
-    { Username: account?.username },
-    { Roles: account?.roles },
+    { [t("userName")]: account?.username },
+    { [t("roles")]: mapRolesToString(account?.roles ?? [AccountTypeEnum.ADMIN]) },
     { "E-mail": account?.email },
-    { "First name": account?.firstName },
-    { "Last name": account?.lastName },
-    { Gender: account?.gender },
-    { "Is active": account?.active ? "Yes" : "No" },
-    { "Is verified": account?.verified ? "Yes" : "No" },
-    { "Is unlocked": account?.nonLocked ? "Yes" : "No" },
-    { "Language preference": account?.language },
+    { [t("firstName")]: account?.firstName },
+    { [t("lastName")]: account?.lastName },
+    { [t("gender")]: account?.gender },
+    { [t("isActive")]: account?.active ? [t("yes")] : [t("no")] },
+    { [t("isVerified")]: account?.verified ? [t("yes")] : [t("no")] },
+    { [t("isUnlocked")]: account?.nonLocked ? [t("yes")] : [t("no")] },
+    { [t("languagePref")]: [t(account?.language ?? "")] },
     {
-      "Last successful login": account?.lastSuccessfulLogin
+      [t("lastSuccLogin")]: account?.lastSuccessfulLogin
         ? account.lastSuccessfulLogin
-        : "Never",
+        : [t("never")],
     },
     {
-      "Last failed login": account?.lastFailedLogin
+      [t("lastFailedLogin")]: account?.lastFailedLogin
         ? account?.lastFailedLogin
-        : "Never",
+        : [t("never")],
     },
     {
-      "Locked until": account?.lockedUntil ? account.lockedUntil : "Not locked",
+      [t("lockedUntil")]: account?.lockedUntil ? account.lockedUntil : [t("notLocked")],
     },
   ];
+
+
+
   return (
     <TableContainer>
       <TableHead>
@@ -47,7 +58,7 @@ export default function AccountDetailsComponent({
             fontSize: "18px",
           }}
         >
-          Key
+          {[t("tableKey")]}
         </TableCell>
         <TableCell
           sx={{
@@ -55,7 +66,7 @@ export default function AccountDetailsComponent({
             fontSize: "18px",
           }}
         >
-          Value
+          {[t("tableValue")]}
         </TableCell>
       </TableHead>
       <TableBody>
