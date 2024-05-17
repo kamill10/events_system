@@ -14,6 +14,7 @@ import ModalComponent from "./ModalComponent";
 import { useManageAccounts } from "../hooks/useManageAccounts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import DisabledByDefaultIcon from "@mui/icons-material/DisabledByDefault";
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 export default function ChangeAccountRolesComponent({
   account,
@@ -95,7 +96,7 @@ export default function ChangeAccountRolesComponent({
                     key={key}
                     role={val}
                     callback={() => callAddRole(val, account?.id ?? "")}
-                    icon={<DisabledByDefaultIcon />}
+                    icon={<AddBoxIcon />}
                   ></AccountRoleRow>
                 );
               })}

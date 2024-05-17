@@ -3,23 +3,26 @@ import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { useAccount } from "../hooks/useAccount.ts";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ChangeMyEmailSchema } from "../validation/schemas.ts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import FormComponent from "./FormComponent.tsx";
 import TextFieldComponent from "./TextFieldComponent.tsx";
 import { ChangeMyEmailType, ChangeMyPasswordType } from "../types/Account.ts";
+import ConfirmChangeModal from "./ConfirmChangeModal.tsx";
 
 export default function ChangeEmailComponent() {
   const { updateMyEmail, getMyAccount } = useAccount();
+  const [open, setOpen] = useState(false);
   const {
     handleSubmit,
     control,
     formState: { errors },
     trigger,
+    getValues
   } = useForm<ChangeMyEmailType>({
     defaultValues: {
       password: "",
-      email: "",
+      newEmail: "",
     },
     resolver: yupResolver(ChangeMyEmailSchema),
   });
@@ -28,8 +31,8 @@ export default function ChangeEmailComponent() {
     getMyAccount();
   }, []);
 
-  const onSubmit: SubmitHandler<ChangeMyEmailType> = async (data) => {
-    updateMyEmail(data);
+  const onSubmit: SubmitHandler<ChangeMyEmailType> = async (_) => {
+    setOpen(true);
   };
 
   const onError: SubmitErrorHandler<ChangeMyPasswordType> = (error) => {
@@ -37,7 +40,8 @@ export default function ChangeEmailComponent() {
   };
 
   return (
-    <FormComponent
+    <>
+      <FormComponent
       handleSubmit={handleSubmit}
       onError={onError}
       onSubmit={onSubmit}
@@ -62,7 +66,7 @@ export default function ChangeEmailComponent() {
         control={control}
         errors={errors}
         label="New E-mail"
-        name="email"
+        name="newEmail"
         trigger={trigger}
         type="text"
       />
@@ -77,5 +81,11 @@ export default function ChangeEmailComponent() {
         Save changes
       </Button>
     </FormComponent>
+    <ConfirmChangeModal
+      callback={() => updateMyEmail(getValues())}
+      handleClose={() => setOpen(false)}
+      open={open}
+    ></ConfirmChangeModal>
+    </>
   );
 }

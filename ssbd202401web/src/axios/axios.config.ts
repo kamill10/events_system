@@ -117,6 +117,8 @@ export const api = {
     apiWithEtag.get("/accounts/username/" + username),
   logIn: (formData: LoginCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/authenticate", formData),
+  logOut: () => 
+    apiWithAuthToken.post("/auth/logout"),
   singIn: (formData: SignInCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/register", formData),
   verifyAccount: (key: string): ApiResponseType<void> =>
@@ -137,11 +139,11 @@ export const api = {
       newPassword: data.newPassword,
     }),
   changeMyEmail: (data: ChangeMyEmailType): ApiResponseType<void> =>
-    apiWithEtag.patch("/me/email", data),
+    apiWithEtag.post("/me/email", data),
   confirmPasswordUpdate: (key: string): ApiResponseType<void> =>
     apiForAnon.patch(`/me/change-password/token/${key}`),
   confirmEmailUpdate: (key: string): ApiResponseType<void> =>
-    apiWithEtag.patch(`/me/email/token/${key}`),
+    apiWithEtag.patch(`/me/change-email/token/${key}`),
   updateAccountData: (id: string, data: UpdatePersonalDataType) =>
     apiWithEtag.put("/accounts/" + id + "/user-data", data),
   updateAccountPassword: (data: ChangeEmailType) =>

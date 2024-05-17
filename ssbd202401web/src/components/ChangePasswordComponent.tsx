@@ -2,20 +2,23 @@ import { Button, Divider, Typography } from "@mui/material";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { useAccount } from "../hooks/useAccount";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ChangeMyPasswordSchema } from "../validation/schemas";
 import FormComponent from "./FormComponent.tsx";
 import TextFieldComponent from "./TextFieldComponent.tsx";
 import { ChangeMyPasswordType } from "../types/Account.ts";
+import ConfirmChangeModal from "./ConfirmChangeModal.tsx";
 
 export default function ChangePasswordComponent() {
   const { updateMyPassword, getMyAccount } = useAccount();
+  const [open, setOpen] = useState(false);
   const {
     handleSubmit,
     control,
     formState: { errors },
     trigger,
+    getValues
   } = useForm<ChangeMyPasswordType>({
     defaultValues: {
       oldPassword: "",
@@ -29,8 +32,8 @@ export default function ChangePasswordComponent() {
     getMyAccount();
   }, []);
 
-  const onSubmit: SubmitHandler<ChangeMyPasswordType> = async (data) => {
-    updateMyPassword(data);
+  const onSubmit: SubmitHandler<ChangeMyPasswordType> = async (_) => {
+    setOpen(true);
   };
 
   const onError: SubmitErrorHandler<ChangeMyPasswordType> = (error) => {
@@ -38,7 +41,8 @@ export default function ChangePasswordComponent() {
   };
 
   return (
-    <FormComponent
+    <>
+      <FormComponent
       handleSubmit={handleSubmit}
       onError={onError}
       onSubmit={onSubmit}
@@ -86,5 +90,11 @@ export default function ChangePasswordComponent() {
         Save changes
       </Button>
     </FormComponent>
+    <ConfirmChangeModal
+      callback={() => updateMyPassword(getValues())}
+      handleClose={() => setOpen(false)}
+      open={open}
+    ></ConfirmChangeModal>
+    </>
   );
 }
