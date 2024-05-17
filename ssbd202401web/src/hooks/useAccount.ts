@@ -18,6 +18,7 @@ import {
 } from "../types/Account";
 import { useTranslation } from "react-i18next";
 import { LanguageType } from "../types/enums/LanguageType.enum";
+import { AxiosError } from "axios";
 
 export const useAccount = () => {
   const sendNotification = useNotification();
@@ -70,6 +71,7 @@ export const useAccount = () => {
   const logOut = async () => {
     try {
       setIsFetching(true);
+      await api.logOut();
       sendNotification({
         type: "success",
         description: "Successfully logged out!",
@@ -165,6 +167,9 @@ export const useAccount = () => {
         description: "Email has been verified!!",
       });
     } catch (e) {
+      if (e instanceof AxiosError && e.status === 403) {
+        logOut();
+      }
       console.error(e);
       sendNotification({
         type: "error",
@@ -184,6 +189,9 @@ export const useAccount = () => {
       i18n.changeLanguage(data.language);
       localStorage.setItem("language", data.language);
     } catch (e) {
+      if (e instanceof AxiosError && e.status === 403) {
+        logOut();
+      }
       console.error(e);
       sendNotification({
         description: "Failed to fetch an account :(",
@@ -205,6 +213,9 @@ export const useAccount = () => {
         description: "Account has been updated!!",
       });
     } catch (e) {
+      if (e instanceof AxiosError && e.status === 403) {
+        logOut();
+      }
       console.error(e);
       sendNotification({
         type: "error",
@@ -225,6 +236,9 @@ export const useAccount = () => {
         description: "Email with confirmation has been sent!",
       });
     } catch (e) {
+      if (e instanceof AxiosError && e.status === 403) {
+        logOut();
+      }
       console.error(e);
       sendNotification({
         type: "error",
@@ -245,6 +259,9 @@ export const useAccount = () => {
         description: "Email sent! Confirm your email change",
       });
     } catch (e) {
+      if (e instanceof AxiosError && e.status === 403) {
+        logOut();
+      }
       console.error(e);
       sendNotification({
         type: "error",

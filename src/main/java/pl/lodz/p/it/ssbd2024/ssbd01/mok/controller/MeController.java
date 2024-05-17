@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyEmail;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyPassword;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -50,10 +51,10 @@ public class MeController {
 
     @PostMapping("/email")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<?> changeMyEmailSendEmail(@RequestBody UpdateMyEmailDTO updateMyEmailDTO)
-            throws AccountNotFoundException, WrongOldPasswordException {
-        ChangeMyEmail changeMyEmail = meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
-        mailService.sendEmailToChangeMyEmail(changeMyEmail);
+    public ResponseEntity<?> changeMyEmailSendEmail(@Valid @RequestBody UpdateMyEmailDTO updateMyEmailDTO)
+            throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
+        ChangeEmail changeEmail = meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
+        mailService.sendEmailToChangeMyEmail(changeEmail);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -64,7 +65,7 @@ public class MeController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping("/email/token/{token}")
+    @PatchMapping("/change-email/token/{token}")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
             throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
         meService.changeMyEmailWithToken(token);

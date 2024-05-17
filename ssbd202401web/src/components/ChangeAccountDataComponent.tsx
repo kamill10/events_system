@@ -10,8 +10,9 @@ import FormComponent from "./FormComponent";
 import GenderListComponent from "./GenderListComponent";
 import TextFieldComponent from "./TextFieldComponent";
 import { useManageAccounts } from "../hooks/useManageAccounts";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import ConfirmChangeModal from "./ConfirmChangeModal";
 
 export default function ChangeAccountDataComponent({
   account,
@@ -22,12 +23,14 @@ export default function ChangeAccountDataComponent({
 }) {
   const {t} = useTranslation();
   const { updateAccountData } = useManageAccounts();
+  const [open, setOpen] = useState(false);
   const {
     handleSubmit,
     control,
     formState: { errors },
     trigger,
     setValue,
+    getValues
   } = useForm<UpdatePersonalDataType>({
     defaultValues: {
       firstName: account?.firstName,
@@ -37,11 +40,15 @@ export default function ChangeAccountDataComponent({
     resolver: yupResolver(changePersonalDataSchema),
   });
 
-  const onSubmit: SubmitHandler<UpdatePersonalDataType> = async (data) => {
-    const err = await updateAccountData(account?.id ?? "", data);
+  const handleRequest = async () => {
+    const err = await updateAccountData(account?.id ?? "", getValues());
     if (!err) {
       fetchAccount();
     }
+  }
+
+  const onSubmit: SubmitHandler<UpdatePersonalDataType> = async () => {
+    setOpen(true);
   };
 
   const onError: SubmitErrorHandler<UpdatePersonalDataType> = (error) => {
@@ -55,6 +62,7 @@ export default function ChangeAccountDataComponent({
   }, [account]);
 
   return (
+    <>
     <FormComponent
       handleSubmit={handleSubmit}
       onError={onError}
@@ -97,5 +105,11 @@ export default function ChangeAccountDataComponent({
         {t("saveChanges")}
       </Button>
     </FormComponent>
+    <ConfirmChangeModal
+      callback={handleRequest}
+      handleClose={() => setOpen(false)}
+      open={open}
+    ></ConfirmChangeModal>
+    </>
   );
 }

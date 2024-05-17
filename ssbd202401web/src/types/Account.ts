@@ -38,7 +38,7 @@ export interface ChangeMyPasswordType {
 
 export interface ChangeMyEmailType {
   password: string;
-  email: string;
+  newEmail: string;
 }
 
 export interface ManageAccountType {

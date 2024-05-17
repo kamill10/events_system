@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Entity
-@Table(name = "change_my_email")
-public class ChangeMyEmail extends AbstractCredentialChange {
+@Table(name = "change_email")
+public class ChangeEmail extends AbstractCredentialChange {
 
     @Column(nullable = false)
     @Email
     private String email;
 
-    public ChangeMyEmail(String token, Account account, LocalDateTime expirationDate, String email) {
+    public ChangeEmail(String token, Account account, LocalDateTime expirationDate, String email) {
         super(token, account, expirationDate);
         this.email = email;
     }
