@@ -118,15 +118,15 @@ public class MailService {
                 "mail.password.changed.by.you.body", new Object[] {sb});
     }
 
-    public void sendEmailToChangeMyEmail(ChangeEmail newResetIssue) {
+    public void sendEmailToChangeMyEmail(ChangeEmail changeEmail, String email) {
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");
-        sb.append("change-my-email");
+        sb.append("confirm-email");
         sb.append("?token=");
-        sb.append(newResetIssue.getToken());
+        sb.append(changeEmail.getToken());
         sb.append("'>Link</a>");
-        sendEmailTemplate(newResetIssue.getAccount(), "mail.email.changed.by.you.subject",
-                "mail.email.changed.by.you.body", new Object[] {sb});
+        sendEmailOnNewMail(changeEmail.getAccount(), "mail.email.changed.by.you.subject",
+                "mail.email.changed.by.you.body", new Object[] {sb}, email);
     }
 
     public void sendEmailToVerifyAccount(Account account, String randString) {
