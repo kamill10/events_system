@@ -65,7 +65,7 @@ public class MeController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping("/email/token/{token}")
+    @PatchMapping("/change-email/token/{token}")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
             throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
         meService.changeMyEmailWithToken(token);

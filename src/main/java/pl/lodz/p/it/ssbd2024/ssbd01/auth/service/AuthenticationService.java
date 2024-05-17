@@ -169,6 +169,7 @@ public class AuthenticationService {
             account.setFailedLoginAttempts(0);
             account.setLockedUntil(null);
             accountMokRepository.save(account);
+            mailService.sendEmailToInformAboutUnblockAccount(account);
         }
     }
 

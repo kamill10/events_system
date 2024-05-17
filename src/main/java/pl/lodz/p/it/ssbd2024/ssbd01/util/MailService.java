@@ -142,6 +142,11 @@ public class MailService {
         sendEmailTemplate(account, "mail.after.verify.subject", "mail.after.verify.body", new Object[] {AccountRoleEnum.ROLE_PARTICIPANT});
     }
 
+    public void sendEmailToInformAboutUnblockAccount(Account account) {
+        sendEmailTemplate(account, "mail.unblocked.subject", "mail.unblocked.body", null);
+    }
+
+
     public void sendEmailToInformAboutAccountBlocked(Account account) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(config.getAuthLockTime());
