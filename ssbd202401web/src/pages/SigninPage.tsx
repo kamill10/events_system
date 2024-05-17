@@ -1,12 +1,10 @@
-import { Button, MenuItem, TextField, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import {
-  Controller,
   SubmitErrorHandler,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { GenderEnum } from "../types/enums/Gender.enum";
 import { signInValidationSchema } from "../validation/schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Pathnames } from "../router/Pathnames";
@@ -19,7 +17,7 @@ import { useTranslation } from "react-i18next";
 import GenderListComponent from "../components/GenderListComponent";
 
 export default function SigninPage() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { signIn } = useAccount();
   const {
     handleSubmit,
@@ -117,9 +115,7 @@ export default function SigninPage() {
         >
           Sign in
         </Button>
-        <Link to={Pathnames.public.login}>
-          {t("haveAccountLabel")}
-        </Link>
+        <Link to={Pathnames.public.login}>{t("haveAccountLabel")}</Link>
       </FormComponent>
     </ContainerWithPictureComponent>
   );

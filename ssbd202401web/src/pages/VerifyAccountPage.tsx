@@ -7,7 +7,7 @@ import ContainerWithShadowComponent from "../components/ContainerWithShadowCompo
 import { useTranslation } from "react-i18next";
 
 export default function VerifyAccountPage() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { verifyAccount } = useAccount();
   const [failed, setFailed] = useState(false);
@@ -31,7 +31,7 @@ export default function VerifyAccountPage() {
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
-          {t("somethingHappened")}
+            {t("somethingHappened")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
             {t("errorVerifyAccount")}
@@ -52,7 +52,7 @@ export default function VerifyAccountPage() {
             {t("verifyAccountHeading")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-          {t("verifyAccountButton")}
+            {t("verifyAccountButton")}
           </Typography>
           <Button
             onClick={verify}

@@ -132,12 +132,6 @@ i18next.use(initReactI18next).init({
         Female: "Kobieta",
         NotSpecified: "Nie podano",
 
-
-
-
-
-
-
         noURLParam: "Brak parametru w adresie URL",
         clickHere: "kliknij tutaj!",
         homeHeading: "Strona główna",
@@ -152,15 +146,18 @@ i18next.use(initReactI18next).init({
         haveAccountLabel: "Masz już konto? Zaloguj się!",
         speakerHeading: "Strona prelegenta",
         speakersHeading: "Strona z prelegentami",
-        errorVerifyAccount: "Wystąpił błąd podczas potwierdzania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
+        errorVerifyAccount:
+          "Wystąpił błąd podczas potwierdzania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
         verifyAccountHeading: "Potwierdź swoje konto!",
-        verifyAccountButton: "Wciśnij ten przycisk aby potwierdzić swoje konto!",
+        verifyAccountButton:
+          "Wciśnij ten przycisk aby potwierdzić swoje konto!",
         verifiedAccount: "Konto zostało potwierdzone!",
         logInSucc: "Zalogowano pomyślnie! Witaj, ",
         logInFail: "Nie udało się zalogować :(",
         logOutSucc: "Wylogowano pomyślnie! Do zobaczenia :)",
         logOutFail: "Nie udało się wylogować :(",
-        signInSucc: "Zarejestrowano pomyślnie! Sprawdź swoją skrzynkę mailową i zweryfikuj swoje konto!",
+        signInSucc:
+          "Zarejestrowano pomyślnie! Sprawdź swoją skrzynkę mailową i zweryfikuj swoje konto!",
         signInFail: "Nie udało się zarejestrować :(",
         verifyAccountSucc: "Konto potwierdzone pomyślnie!",
         verifyAccountFail: "Nie udało się potwierdzić konta :(",
@@ -170,20 +167,17 @@ i18next.use(initReactI18next).init({
         changeEmailFail: "Nie udało się zmienić maila :(",
         getMyAccountFail: "Nie udało się zaktualizować konta :(",
         updateMyPersonalDataSucc: "Dane personalne zmienione pomyślnie!",
-        updateMyPersonalDataFail: "Nie udało się zmienić danych personalnych :(",
-        updateMyPasswordSucc: "Kod do potwierdzenia nowego hasła został wysłany na twojego maila!",
+        updateMyPersonalDataFail:
+          "Nie udało się zmienić danych personalnych :(",
+        updateMyPasswordSucc:
+          "Kod do potwierdzenia nowego hasła został wysłany na twojego maila!",
         updateMyPasswordFail: "Nie udało się zmienić hasła :(",
-        updateMyEmailSucc: "Sprawdź swoją skrzynkę mailową i potwierdź zmianę maila!",
+        updateMyEmailSucc:
+          "Sprawdź swoją skrzynkę mailową i potwierdź zmianę maila!",
         updateMyEmailFail: "Nie udało się zmienić maila :(",
         requestPasswordResetSucc: "Sprawdź skrzynkę mailową i zresetuj hasło!",
         requestPasswordResetFail: "Nie udało się zresetować hasła :(",
         resetMyPasswordSucc: "Hasło zresetowane pomyślnie!",
-
-
-
-
-
-
 
         getAllAccountFail: "Nie udało się pobrać wszystkich kont :(",
         getAccountByUsernameFail: "Nie udało się pobrać użytkownika :(",
@@ -201,7 +195,7 @@ i18next.use(initReactI18next).init({
         addRoleFail: "Nie udało się przyznać roli :(",
         removeRoleSucc: "Rola odebrana pomyślnie!",
         removeRoleFail: "Nie udało się odebrać roli :(",
-        signInHeading: "Zarejestruj się!"
+        signInHeading: "Zarejestruj się!",
       },
     },
     ENGLISH: {
@@ -300,7 +294,6 @@ i18next.use(initReactI18next).init({
         Male: "Male",
         Female: "Female",
         NotSpecified: "Not Specified",
-        
 
         noURLParam: "No URL parameter has been provided",
         clickHere: "click here!",
@@ -316,7 +309,8 @@ i18next.use(initReactI18next).init({
         haveAccountLabel: "Already have an account? Log in!",
         speakerHeading: "Speaker page",
         speakersHeading: "Speakers page",
-        errorVerifyAccount: "There was an error while verifying your account. If you think this is a mistake, contact support.",
+        errorVerifyAccount:
+          "There was an error while verifying your account. If you think this is a mistake, contact support.",
         verifyAccountHeading: "Verify your account!",
         verifyAccountButton: "Click the button below to verify your account!",
         verifiedAccount: "Account has been confirmed!",
@@ -324,7 +318,8 @@ i18next.use(initReactI18next).init({
         logInFail: "Failed to log in :(",
         logOutSucc: "Successfully logged out! See you soon :)",
         logOutFail: "Failed to log out :(",
-        signInSucc: "Successfully signed in! Check your e-mail box and verify your account!",
+        signInSucc:
+          "Successfully signed in! Check your e-mail box and verify your account!",
         signInFail: "Signing in failed :(",
         verifyAccountSucc: "Konto potwierdzone pomyślnie!",
         verifyAccountFail: "Failed to verify an account :(",
@@ -339,10 +334,11 @@ i18next.use(initReactI18next).init({
         updateMyPasswordFail: "Password change failed :(",
         updateMyEmailSucc: "Email sent! Confirm your email change",
         updateMyEmailFail: "Email change failed :(",
-        requestPasswordResetSucc: "Request sent successfully! Check your mailbox!",
+        requestPasswordResetSucc:
+          "Request sent successfully! Check your mailbox!",
         requestPasswordResetFail: "Password reset failed :(",
         resetMyPasswordSucc: "Password has been reset successfully!",
-        
+
         getAllAccountFail: "Failed to fetch all users :(",
         getAccountByUsernameFail: "Failed to fetch user :(",
         updateAccountDataSucc: "Data updated successfully!",
@@ -359,7 +355,7 @@ i18next.use(initReactI18next).init({
         addRoleFail: "Failed to assing role :(",
         removeRoleSucc: "Role removed successfully!",
         removeRoleFail: "Failed to remove role :(",
-        signInHeading: "Sign in!"
+        signInHeading: "Sign in!",
       },
     },
   },

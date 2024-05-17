@@ -12,7 +12,7 @@ import { LoginCredentialsType } from "../types/Authentication";
 import { useTranslation } from "react-i18next";
 
 export default function LoginPage() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { logIn } = useAccount();
   const {
     handleSubmit,
@@ -75,9 +75,7 @@ export default function LoginPage() {
         <Link to={Pathnames.public.forgotPassword}>
           {t("forgotPasswordLabel")}
         </Link>
-        <Link to={Pathnames.public.signIn}>
-          {t("signInLabel")}
-        </Link>
+        <Link to={Pathnames.public.signIn}>{t("signInLabel")}</Link>
       </FormComponent>
     </ContainerWithPictureComponent>
   );

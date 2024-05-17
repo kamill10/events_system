@@ -7,7 +7,7 @@ import useNotification from "./useNotification";
 
 export const useManageAccounts = () => {
   const sendNotification = useNotification();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const { accounts, setAccounts, isFetching, setIsFetching } = useUsersState();
 
   const getAllAccounts = async () => {

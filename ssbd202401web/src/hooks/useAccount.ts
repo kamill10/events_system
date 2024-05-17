@@ -21,7 +21,7 @@ import { LanguageType } from "../types/enums/LanguageType.enum";
 import { AxiosError } from "axios";
 
 export const useAccount = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const sendNotification = useNotification();
   const navigate = useNavigate();
   const {
@@ -107,8 +107,7 @@ export const useAccount = () => {
       setToken(data);
       sendNotification({
         type: "success",
-        description:
-        t("signInSucc")
+        description: t("signInSucc"),
       });
       navigate(Pathnames.public.login);
     } catch (e) {

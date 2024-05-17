@@ -13,7 +13,7 @@ import { ResetPasswordType } from "../types/Authentication";
 import { useTranslation } from "react-i18next";
 
 export default function ResetPasswordPage() {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const {
     handleSubmit,
