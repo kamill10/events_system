@@ -37,7 +37,7 @@ export default function AccountPage() {
     } else {
       sendNotification({
         type: "error",
-        description: "Username in URL is not present",
+        description: t("noURLParam"),
       });
     }
   }

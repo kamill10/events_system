@@ -15,8 +15,11 @@ import ContainerWithPictureComponent from "../components/ContainerWithPictureCom
 import FormComponent from "../components/FormComponent";
 import TextFieldComponent from "../components/TextFieldComponent";
 import { SignInCredentialsType } from "../types/Authentication";
+import { useTranslation } from "react-i18next";
+import GenderListComponent from "../components/GenderListComponent";
 
 export default function SigninPage() {
+  const {t} = useTranslation();
   const { signIn } = useAccount();
   const {
     handleSubmit,
@@ -53,7 +56,7 @@ export default function SigninPage() {
         onSubmit={onSubmit}
       >
         <Typography variant="h3" component={"h1"}>
-          Sign in
+          {t("signInHeading")}
         </Typography>
         <TextFieldComponent
           control={control}
@@ -61,7 +64,7 @@ export default function SigninPage() {
           name="firstName"
           trigger={trigger}
           type="text"
-          label="First name"
+          label={t("firstName")}
         />
         <TextFieldComponent
           control={control}
@@ -69,7 +72,7 @@ export default function SigninPage() {
           name="lastName"
           trigger={trigger}
           type="text"
-          label="Last name"
+          label={t("lastName")}
         />
         <TextFieldComponent
           control={control}
@@ -85,7 +88,7 @@ export default function SigninPage() {
           name="username"
           trigger={trigger}
           type="text"
-          label="Username"
+          label={t("usernameLabel")}
         />
         <TextFieldComponent
           control={control}
@@ -93,7 +96,7 @@ export default function SigninPage() {
           name="password"
           trigger={trigger}
           type="password"
-          label="Password"
+          label={t("passwordLabel")}
         />
         <TextFieldComponent
           control={control}
@@ -101,40 +104,9 @@ export default function SigninPage() {
           name="confirmPassword"
           trigger={trigger}
           type="password"
-          label="Confirm password"
+          label={t("confirmPasswordLabel")}
         />
-        <Controller
-          name="gender"
-          control={control}
-          render={({ field }) => {
-            return (
-              <TextField
-                select
-                label="Gender"
-                value={field.value}
-                onChange={(e) => {
-                  field.onChange(e);
-                  setTimeout(
-                    () => trigger(e.target.name as keyof SignInCredentialsType),
-                    500,
-                  );
-                }}
-                id={field.name}
-                sx={{ marginTop: "1rem" }}
-                name={field.name}
-                autoComplete=""
-              >
-                {Object.keys(GenderEnum).map((key, value) => {
-                  return (
-                    <MenuItem key={key} value={value}>
-                      {GenderEnum[key as keyof typeof GenderEnum].info}
-                    </MenuItem>
-                  );
-                })}
-              </TextField>
-            );
-          }}
-        ></Controller>
+        <GenderListComponent control={control} errors={errors} name="gender" />
         <Button
           type="submit"
           variant="contained"
@@ -146,7 +118,7 @@ export default function SigninPage() {
           Sign in
         </Button>
         <Link to={Pathnames.public.login}>
-          Already have an account? Log in!
+          {t("haveAccountLabel")}
         </Link>
       </FormComponent>
     </ContainerWithPictureComponent>

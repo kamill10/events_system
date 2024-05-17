@@ -4,8 +4,10 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount";
 import CenteredContainerComponent from "../components/CenterdContainerComponent";
 import ContainerWithShadowComponent from "../components/ContainerWithShadowComponent";
+import { useTranslation } from "react-i18next";
 
 export default function VerifyAccountPage() {
+  const {t} = useTranslation();
   const [searchParams] = useSearchParams();
   const { verifyAccount } = useAccount();
   const [failed, setFailed] = useState(false);
@@ -29,14 +31,13 @@ export default function VerifyAccountPage() {
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
-            Something happened :((
+          {t("somethingHappened")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            There was an error while verifying your account. If you think this
-            is a mistake, contact support.
+            {t("errorVerifyAccount")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            <Link to={"/"}>Go to home page</Link>
+            <Link to={"/"}>{t("gotoHomePage")}</Link>
           </Typography>
         </ContainerWithShadowComponent>
       </CenteredContainerComponent>
@@ -48,10 +49,10 @@ export default function VerifyAccountPage() {
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
-            Verify your account!
+            {t("verifyAccountHeading")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            Click the button below to verify your account!
+          {t("verifyAccountButton")}
           </Typography>
           <Button
             onClick={verify}
@@ -61,10 +62,10 @@ export default function VerifyAccountPage() {
               mb: 2,
             }}
           >
-            Verify
+            {t("verifyAccountHeading")}
           </Button>
           <Typography variant="h6" textAlign={"center"}>
-            <Link to={"/"}>Go to home page</Link>
+            <Link to={"/"}>{t("gotoHomePage")}</Link>
           </Typography>
         </ContainerWithShadowComponent>
       </CenteredContainerComponent>
@@ -75,11 +76,11 @@ export default function VerifyAccountPage() {
     <CenteredContainerComponent>
       <ContainerWithShadowComponent>
         <Typography variant="h3" textAlign={"center"}>
-          Account has been activated!
+          {t("verifiedAccount")}
         </Typography>
         <Typography variant="h6" textAlign={"center"}>
-          You can go to login page manually, or&#x20;
-          <Link to={"/login"}>click here!</Link>
+          {t("youCanGoToLogin")}
+          <Link to={"/login"}>{t("clickHere")}</Link>
         </Typography>
       </ContainerWithShadowComponent>
     </CenteredContainerComponent>

@@ -10,8 +10,10 @@ import { Pathnames } from "../router/Pathnames";
 import FormComponent from "../components/FormComponent";
 import TextFieldComponent from "../components/TextFieldComponent";
 import { ResetPasswordType } from "../types/Authentication";
+import { useTranslation } from "react-i18next";
 
 export default function ResetPasswordPage() {
+  const {t} = useTranslation();
   const [searchParams] = useSearchParams();
   const {
     handleSubmit,
@@ -45,7 +47,7 @@ export default function ResetPasswordPage() {
           onSubmit={onSubmit}
         >
           <Typography component="h1" variant="h3" textAlign={"center"}>
-            Reset your password
+            {t("resetPasswordLabel")}
           </Typography>
           <Box
             sx={{
@@ -58,7 +60,7 @@ export default function ResetPasswordPage() {
             <TextFieldComponent
               control={control}
               errors={errors}
-              label="New password"
+              label={t("newPassword")}
               name="newPassword"
               trigger={trigger}
               type="password"
@@ -66,7 +68,7 @@ export default function ResetPasswordPage() {
             <TextFieldComponent
               control={control}
               errors={errors}
-              label="Confirm new password"
+              label={t("confirmNewPassword")}
               name="confirmNewPassword"
               trigger={trigger}
               type="password"
@@ -79,9 +81,9 @@ export default function ResetPasswordPage() {
                 mb: 2,
               }}
             >
-              Reset password
+              {t("resetPasswordLabel")}
             </Button>
-            <Link to={Pathnames.public.home}>Go back to home page</Link>
+            <Link to={Pathnames.public.home}>{t("gotoHomePage")}</Link>
           </Box>
         </FormComponent>
       </ContainerWithPictureComponent>

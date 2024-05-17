@@ -9,8 +9,10 @@ import ContainerWithPictureComponent from "../components/ContainerWithPictureCom
 import FormComponent from "../components/FormComponent";
 import TextFieldComponent from "../components/TextFieldComponent";
 import { LoginCredentialsType } from "../types/Authentication";
+import { useTranslation } from "react-i18next";
 
 export default function LoginPage() {
+  const {t} = useTranslation();
   const { logIn } = useAccount();
   const {
     handleSubmit,
@@ -41,7 +43,7 @@ export default function LoginPage() {
         onSubmit={onSubmit}
       >
         <Typography component="h1" variant="h3">
-          Log in
+          {t("logInLink")}
         </Typography>
         <TextFieldComponent
           control={control}
@@ -49,7 +51,7 @@ export default function LoginPage() {
           name="username"
           trigger={trigger}
           type="text"
-          label="Username"
+          label={t("usernameLabel")}
         />
         <TextFieldComponent
           control={control}
@@ -57,7 +59,7 @@ export default function LoginPage() {
           name="password"
           trigger={trigger}
           type="password"
-          label="Password"
+          label={t("passwordLabel")}
         />
         <Button
           type="submit"
@@ -68,13 +70,13 @@ export default function LoginPage() {
             mb: 2,
           }}
         >
-          Log in
+          {t("logInLink")}
         </Button>
         <Link to={Pathnames.public.forgotPassword}>
-          I forgot my password :(
+          {t("forgotPasswordLabel")}
         </Link>
         <Link to={Pathnames.public.signIn}>
-          You don't have an account yet? Sign in!
+          {t("signInLabel")}
         </Link>
       </FormComponent>
     </ContainerWithPictureComponent>
