@@ -80,7 +80,7 @@ export default function ConfirmPasswordUpdatePage() {
         </Typography>
         <Typography variant="h6" textAlign={"center"}>
           {t("youCanGoToLogin")}
-          <Link to={"/login"}>click here!</Link>
+          <Link to={"/login"}>{t("clickHere")}</Link>
         </Typography>
       </ContainerWithShadowComponent>
     </CenteredContainerComponent>

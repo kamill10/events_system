@@ -21,6 +21,7 @@ import { LanguageType } from "../types/enums/LanguageType.enum";
 import { AxiosError } from "axios";
 
 export const useAccount = () => {
+  const { t } = useTranslation();
   const sendNotification = useNotification();
   const navigate = useNavigate();
   const {
@@ -52,7 +53,7 @@ export const useAccount = () => {
       localStorage.setItem("token", data);
       sendNotification({
         type: "success",
-        description: "Successfully logged in! Welcome, " + jwtDecode(data).sub,
+        description: t("logInSucc") + jwtDecode(data).sub,
       });
       navigate(Pathnames.public.home);
       getMyAccount();
@@ -60,7 +61,7 @@ export const useAccount = () => {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Failed to log in :(",
+        description: t("logInFail"),
       });
       return e;
     } finally {
@@ -74,13 +75,13 @@ export const useAccount = () => {
       await api.logOut();
       sendNotification({
         type: "success",
-        description: "Successfully logged out!",
+        description: t("logOutSucc"),
       });
     } catch (e) {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Failed to log out :(",
+        description: t("logOutFail"),
       });
       return e;
     } finally {
@@ -106,14 +107,13 @@ export const useAccount = () => {
       setToken(data);
       sendNotification({
         type: "success",
-        description:
-          "Successfully signed in! Check your e-mail box and verify your account!",
+        description: t("signInSucc"),
       });
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
       sendNotification({
-        description: "Signing in failed :(",
+        description: t("signInFail"),
         type: "error",
       });
       return e;
@@ -128,12 +128,12 @@ export const useAccount = () => {
       await api.verifyAccount(key);
       sendNotification({
         type: "success",
-        description: "Account has been verified!!",
+        description: t("verifyAccountSucc"),
       });
     } catch (e) {
       console.error(e);
       sendNotification({
-        description: "Failed to verify an account :(",
+        description: t("verifyAccountFail"),
         type: "error",
       });
       return e;
@@ -148,12 +148,12 @@ export const useAccount = () => {
       await api.confirmPasswordUpdate(key);
       sendNotification({
         type: "success",
-        description: "Password has been changed!!",
+        description: t("changePasswordSucc"),
       });
     } catch (e) {
       console.error(e);
       sendNotification({
-        description: "Failed to change a password :(",
+        description: t("changePasswordFail"),
         type: "error",
       });
       return e;
@@ -168,7 +168,7 @@ export const useAccount = () => {
       await api.confirmEmailUpdate(key);
       sendNotification({
         type: "success",
-        description: "Email has been verified!!",
+        description: t("changeEmailSucc"),
       });
     } catch (e) {
       if (e instanceof AxiosError && e.status === 403) {
@@ -177,7 +177,7 @@ export const useAccount = () => {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Failed to verify email",
+        description: t("changeEmailFail"),
       });
       return e;
     } finally {
@@ -198,7 +198,7 @@ export const useAccount = () => {
       }
       console.error(e);
       sendNotification({
-        description: "Failed to fetch an account :(",
+        description: t("getMyAccountFail"),
         type: "error",
       });
       return e;
@@ -214,7 +214,7 @@ export const useAccount = () => {
       getMyAccount();
       sendNotification({
         type: "success",
-        description: "Account has been updated!!",
+        description: t("updateMyPersonalDataSucc"),
       });
     } catch (e) {
       if (e instanceof AxiosError && e.status === 403) {
@@ -223,7 +223,7 @@ export const useAccount = () => {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Account update failed :(",
+        description: t("updateMyPersonalDataFail"),
       });
       return e;
     } finally {
@@ -237,7 +237,7 @@ export const useAccount = () => {
       await api.changeMyPassword(data);
       sendNotification({
         type: "success",
-        description: "Email with confirmation has been sent!",
+        description: t("updateMyPasswordSucc"),
       });
     } catch (e) {
       if (e instanceof AxiosError && e.status === 403) {
@@ -246,7 +246,7 @@ export const useAccount = () => {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Password change failed :(",
+        description: t("updateMyPasswordFail"),
       });
       return e;
     } finally {
@@ -260,7 +260,7 @@ export const useAccount = () => {
       await api.changeMyEmail(data);
       sendNotification({
         type: "success",
-        description: "Email sent! Confirm your email change",
+        description: t("updateMyEmailSucc"),
       });
     } catch (e) {
       if (e instanceof AxiosError && e.status === 403) {
@@ -269,7 +269,7 @@ export const useAccount = () => {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Email change failed",
+        description: t("updateMyEmailFail"),
       });
       return e;
     } finally {
@@ -283,14 +283,14 @@ export const useAccount = () => {
       await api.forgotMyPassword(data);
       sendNotification({
         type: "success",
-        description: "Request sent successfully! Check your mailbox!",
+        description: t("requestPasswordResetSucc"),
       });
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Request failed :(",
+        description: t("requestPasswordResetFail"),
       });
       return e;
     } finally {
@@ -304,14 +304,14 @@ export const useAccount = () => {
       await api.resetMyPassword(data);
       sendNotification({
         type: "success",
-        description: "Password has been reset successfully!",
+        description: t("resetMyPasswordSucc"),
       });
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
       sendNotification({
         type: "error",
-        description: "Password reset failed :(",
+        description: t("requestPasswordResetFail"),
       });
       return e;
     } finally {
