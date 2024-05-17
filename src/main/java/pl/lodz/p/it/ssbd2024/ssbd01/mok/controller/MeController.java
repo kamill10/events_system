@@ -54,7 +54,7 @@ public class MeController {
     public ResponseEntity<?> changeMyEmailSendEmail(@Valid @RequestBody UpdateMyEmailDTO updateMyEmailDTO)
             throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
         ChangeEmail changeEmail = meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
-        mailService.sendEmailToChangeMyEmail(changeEmail);
+        mailService.sendEmailToChangeMyEmail(changeEmail, updateMyEmailDTO.newEmail());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
