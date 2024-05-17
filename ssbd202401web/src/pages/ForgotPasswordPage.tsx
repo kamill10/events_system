@@ -9,8 +9,10 @@ import ContainerWithPictureComponent from "../components/ContainerWithPictureCom
 import FormComponent from "../components/FormComponent";
 import TextFieldComponent from "../components/TextFieldComponent";
 import { ForgotPasswordType } from "../types/Authentication";
+import { useTranslation } from "react-i18next";
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const { requestPasswordReset } = useAccount();
   const {
     handleSubmit,
@@ -40,7 +42,7 @@ export default function ForgotPasswordPage() {
         onError={onError}
       >
         <Typography variant="h3" textAlign={"center"}>
-          Reset your password
+          {t("changePassword")}
         </Typography>
         <TextFieldComponent
           control={control}
@@ -58,9 +60,9 @@ export default function ForgotPasswordPage() {
             mb: 2,
           }}
         >
-          Reset password
+          {t("changePassword")}
         </Button>
-        <Link to={Pathnames.public.login}>Go back to login page</Link>
+        <Link to={Pathnames.public.login}>{t("goBackToLoginPage")}</Link>
       </FormComponent>
     </ContainerWithPictureComponent>
   );

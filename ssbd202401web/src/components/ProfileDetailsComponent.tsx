@@ -10,10 +10,14 @@ import {
 import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 
 export default function ProfileDetailsComponent() {
   const { t, i18n } = useTranslation();
   const { account, getMyAccount } = useAccount();
+  const mapRolesToString = (rolesArray: AccountTypeEnum[]): string => {
+    return rolesArray.map((role) => t(role)).join(", ");
+  };
 
   useEffect(() => {
     getMyAccount();
@@ -22,16 +26,20 @@ export default function ProfileDetailsComponent() {
 
   const data = [
     { ID: account?.id },
-    { Username: account?.username },
-    { Roles: account?.roles },
+    { [t("userName")]: account?.username },
+    {
+      [t("roles")]: mapRolesToString(
+        account?.roles ?? [AccountTypeEnum.PARTICIPANT],
+      ),
+    },
     { "E-mail": account?.email },
-    { "First name": account?.firstName },
-    { "Last name": account?.lastName },
-    { Gender: account?.gender },
-    { "Is active": account?.active ? "Yes" : "No" },
-    { "Is verified": account?.verified ? "Yes" : "No" },
-    { "Is unlocked": account?.nonLocked ? "Yes" : "No" },
-    { "Language preference": account?.language },
+    { [t("firstName")]: account?.firstName },
+    { [t("lastName")]: account?.lastName },
+    { [t("gender")]: account?.gender },
+    { [t("isActive")]: account?.active ? [t("yes")] : [t("no")] },
+    { [t("isVerified")]: account?.verified ? [t("yes")] : [t("no")] },
+    { [t("isUnlocked")]: account?.nonLocked ? [t("yes")] : [t("no")] },
+    { [t("languagePref")]: [t(account?.language ?? "")] },
   ];
   return (
     <Box
@@ -40,7 +48,7 @@ export default function ProfileDetailsComponent() {
         marginLeft: 5,
       }}
     >
-      <Typography variant="h4">Change personal data</Typography>
+      <Typography variant="h4">{t("changePersonalData")}</Typography>
       <TableContainer>
         <TableHead>
           <TableCell
@@ -57,7 +65,7 @@ export default function ProfileDetailsComponent() {
               fontSize: "18px",
             }}
           >
-            Value
+            {[t("tableValue")]}
           </TableCell>
         </TableHead>
         <TableBody>

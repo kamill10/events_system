@@ -19,8 +19,10 @@ import { Link } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useAccount } from "../hooks/useAccount";
+import { useTranslation } from "react-i18next";
 
 export default function AccountsPage() {
+  const { t } = useTranslation();
   const { accounts, getAllAccounts } = useManageAccounts();
   const { account } = useAccount();
 
@@ -43,7 +45,7 @@ export default function AccountsPage() {
             color: "black",
           }}
         >
-          Home
+          {t("home")}
         </Link>
         <Link
           to={Pathnames.admin.accounts}
@@ -53,11 +55,11 @@ export default function AccountsPage() {
             fontWeight: "bold",
           }}
         >
-          Accounts
+          {t("accounts")}
         </Link>
-        <Typography color={"grey"}>Account details</Typography>
+        <Typography color={"grey"}>{t("accountDetails")}</Typography>
       </Breadcrumbs>
-      <Typography variant="h3">Manage accounts</Typography>
+      <Typography variant="h3">{t("manageAccounts")}</Typography>
       <Divider
         sx={{
           marginTop: "1rem",
@@ -72,7 +74,7 @@ export default function AccountsPage() {
           margin: "1rem",
         }}
       >
-        Refresh data
+        {t("refreshData")}
       </Button>
       <TableContainer component={Paper}>
         <Table>
@@ -93,7 +95,7 @@ export default function AccountsPage() {
                   fontSize: "18px",
                 }}
               >
-                Username
+                {t("userName")}
               </TableCell>
               <TableCell
                 align="right"
@@ -102,7 +104,7 @@ export default function AccountsPage() {
                   fontSize: "18px",
                 }}
               >
-                E-mail
+                {t("e-mail")}
               </TableCell>
               <TableCell
                 align="right"
@@ -111,7 +113,7 @@ export default function AccountsPage() {
                   fontSize: "18px",
                 }}
               >
-                Roles
+                {t("roles")}
               </TableCell>
               <TableCell
                 align="right"
@@ -120,7 +122,7 @@ export default function AccountsPage() {
                   fontSize: "18px",
                 }}
               >
-                Is active
+                {t("isActive")}
               </TableCell>
             </TableRow>
           </TableHead>

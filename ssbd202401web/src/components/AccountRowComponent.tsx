@@ -1,6 +1,8 @@
 import { TableCell, TableRow } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { GetAccountType } from "../types/Account";
+import { useTranslation } from "react-i18next";
+import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 
 export default function AccountRowComponent({
   account,
@@ -8,6 +10,10 @@ export default function AccountRowComponent({
   account: GetAccountType;
 }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const mapRolesToString = (rolesArray: AccountTypeEnum[]): string => {
+    return rolesArray.map((role) => t(role)).join(", ");
+  };
   return (
     <TableRow
       hover
@@ -18,14 +24,14 @@ export default function AccountRowComponent({
       <TableCell>{account.id}</TableCell>
       <TableCell align="right">{account.username}</TableCell>
       <TableCell align="right">{account.email}</TableCell>
-      <TableCell align="right">{JSON.stringify(account.roles)}</TableCell>
+      <TableCell align="right">{mapRolesToString(account.roles)}</TableCell>
       <TableCell
         align="right"
         sx={{
           color: account.active ? "green" : "red",
         }}
       >
-        {account.active ? "Yes" : "No"}
+        {account.active ? [t("yes")] : [t("yes")]}
       </TableCell>
     </TableRow>
   );

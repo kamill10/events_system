@@ -9,8 +9,10 @@ import FormComponent from "./FormComponent.tsx";
 import TextFieldComponent from "./TextFieldComponent.tsx";
 import { ChangeMyEmailType, ChangeMyPasswordType } from "../types/Account.ts";
 import ConfirmChangeModal from "./ConfirmChangeModal.tsx";
+import { useTranslation } from "react-i18next";
 
 export default function ChangeEmailComponent() {
+  const { t } = useTranslation();
   const { updateMyEmail, getMyAccount } = useAccount();
   const [open, setOpen] = useState(false);
   const {
@@ -18,7 +20,7 @@ export default function ChangeEmailComponent() {
     control,
     formState: { errors },
     trigger,
-    getValues
+    getValues,
   } = useForm<ChangeMyEmailType>({
     defaultValues: {
       password: "",
@@ -31,7 +33,7 @@ export default function ChangeEmailComponent() {
     getMyAccount();
   }, []);
 
-  const onSubmit: SubmitHandler<ChangeMyEmailType> = async (_) => {
+  const onSubmit: SubmitHandler<ChangeMyEmailType> = async () => {
     setOpen(true);
   };
 
@@ -42,50 +44,50 @@ export default function ChangeEmailComponent() {
   return (
     <>
       <FormComponent
-      handleSubmit={handleSubmit}
-      onError={onError}
-      onSubmit={onSubmit}
-      align="start"
-    >
-      <Typography variant="h4">Change email</Typography>
-      <Divider
-        sx={{
-          marginTop: "3rem",
-          marginBottom: "3rem",
-        }}
-      ></Divider>
-      <TextFieldComponent
-        control={control}
-        errors={errors}
-        label="Current password"
-        name="password"
-        trigger={trigger}
-        type="password"
-      />
-      <TextFieldComponent
-        control={control}
-        errors={errors}
-        label="New E-mail"
-        name="newEmail"
-        trigger={trigger}
-        type="text"
-      />
-      <Button
-        type="submit"
-        variant="contained"
-        startIcon={<VpnKeyIcon />}
-        sx={{
-          mt: 9,
-        }}
+        handleSubmit={handleSubmit}
+        onError={onError}
+        onSubmit={onSubmit}
+        align="start"
       >
-        Save changes
-      </Button>
-    </FormComponent>
-    <ConfirmChangeModal
-      callback={() => updateMyEmail(getValues())}
-      handleClose={() => setOpen(false)}
-      open={open}
-    ></ConfirmChangeModal>
+        <Typography variant="h4">{t("changeEmail")}</Typography>
+        <Divider
+          sx={{
+            marginTop: "3rem",
+            marginBottom: "3rem",
+          }}
+        ></Divider>
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          label={t("currentPassword")}
+          name="password"
+          trigger={trigger}
+          type="password"
+        />
+        <TextFieldComponent
+          control={control}
+          errors={errors}
+          label={t("newEmail")}
+          name="newEmail"
+          trigger={trigger}
+          type="text"
+        />
+        <Button
+          type="submit"
+          variant="contained"
+          startIcon={<VpnKeyIcon />}
+          sx={{
+            mt: 9,
+          }}
+        >
+          {t("saveChanges")}
+        </Button>
+      </FormComponent>
+      <ConfirmChangeModal
+        callback={() => updateMyEmail(getValues())}
+        handleClose={() => setOpen(false)}
+        open={open}
+      ></ConfirmChangeModal>
     </>
   );
 }

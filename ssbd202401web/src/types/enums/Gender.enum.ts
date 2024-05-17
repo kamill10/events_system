@@ -1,6 +1,6 @@
 export const GenderEnum = {
   NOT_KNOWN: {
-    info: "Not known",
+    info: "NotKnown",
     value: 0,
   },
   MALE: {
@@ -12,7 +12,7 @@ export const GenderEnum = {
     value: 2,
   },
   NOT_SPECIFIED: {
-    info: "Not specified",
+    info: "NotSpecified",
     value: 9,
   },
 };

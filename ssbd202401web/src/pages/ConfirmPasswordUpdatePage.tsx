@@ -4,8 +4,10 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAccount } from "../hooks/useAccount";
 import CenteredContainerComponent from "../components/CenterdContainerComponent";
 import ContainerWithShadowComponent from "../components/ContainerWithShadowComponent";
+import { useTranslation } from "react-i18next";
 
 export default function ConfirmPasswordUpdatePage() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { confirmPasswordUpdate } = useAccount();
   const [failed, setFailed] = useState(false);
@@ -29,14 +31,13 @@ export default function ConfirmPasswordUpdatePage() {
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
-            Something happened :((
+            {t("somethingHappened")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            There was an error while confirming your password change. If you
-            think this is a mistake, contact support.
+            {t("errorConfPassword")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            <Link to={"/"}>Go to home page</Link>
+            <Link to={"/"}>{t("gotoHomePage")}</Link>
           </Typography>
         </ContainerWithShadowComponent>
       </CenteredContainerComponent>
@@ -48,10 +49,10 @@ export default function ConfirmPasswordUpdatePage() {
       <CenteredContainerComponent>
         <ContainerWithShadowComponent>
           <Typography variant="h3" textAlign={"center"}>
-            Confirm your password change!
+            {t("confPassChange")}
           </Typography>
           <Typography variant="h6" textAlign={"center"}>
-            Click the button below to confirm your password change!
+            {t("clickToConfPassChange")}
           </Typography>
           <Button
             onClick={verify}
@@ -61,10 +62,10 @@ export default function ConfirmPasswordUpdatePage() {
               mb: 2,
             }}
           >
-            Verify
+            {t("verify")}
           </Button>
           <Typography variant="h6" textAlign={"center"}>
-            <Link to={"/"}>Go to home page</Link>
+            <Link to={"/"}>{t("gotoHomePage")}</Link>
           </Typography>
         </ContainerWithShadowComponent>
       </CenteredContainerComponent>
@@ -75,10 +76,10 @@ export default function ConfirmPasswordUpdatePage() {
     <CenteredContainerComponent>
       <ContainerWithShadowComponent>
         <Typography variant="h3" textAlign={"center"}>
-          Password has been changed!
+          {t("passwordHasBeenChanged")}
         </Typography>
         <Typography variant="h6" textAlign={"center"}>
-          You can go to login page manually, or&#x20;
+          {t("youCanGoToLogin")}
           <Link to={"/login"}>click here!</Link>
         </Typography>
       </ContainerWithShadowComponent>

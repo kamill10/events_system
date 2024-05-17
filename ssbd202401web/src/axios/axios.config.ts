@@ -117,8 +117,7 @@ export const api = {
     apiWithEtag.get("/accounts/username/" + username),
   logIn: (formData: LoginCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/authenticate", formData),
-  logOut: () => 
-    apiWithAuthToken.post("/auth/logout"),
+  logOut: () => apiWithAuthToken.post("/auth/logout"),
   singIn: (formData: SignInCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/register", formData),
   verifyAccount: (key: string): ApiResponseType<void> =>

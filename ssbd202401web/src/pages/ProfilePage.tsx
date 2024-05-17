@@ -5,8 +5,10 @@ import ChangeEmailComponent from "../components/ChangeEmailComponent";
 import ChangePasswordComponent from "../components/ChangePasswordComponent";
 import ChangePersonalDataComponent from "../components/ChangePersonalDataComponent";
 import ContainerComponent from "../components/ContainerComponent";
+import { useTranslation } from "react-i18next";
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(0);
 
   const handleChange = (_: SyntheticEvent, newValue: number) => {
@@ -16,10 +18,10 @@ export default function ProfilePage() {
   return (
     <ContainerComponent>
       <Tabs value={page} onChange={handleChange}>
-        <Tab label="Profile details"></Tab>
-        <Tab label="Change personal data"></Tab>
-        <Tab label="Change password"></Tab>
-        <Tab label="Change e-mail"></Tab>
+        <Tab label={t("profileDetails")}></Tab>
+        <Tab label={t("changeProfileDetails")}></Tab>
+        <Tab label={t("changePassword")}></Tab>
+        <Tab label={t("changeEmail")}></Tab>
       </Tabs>
       <Divider></Divider>
       {page == 0 && <ProfileDetailsComponent></ProfileDetailsComponent>}

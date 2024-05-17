@@ -18,11 +18,14 @@ import { MouseEvent, useState } from "react";
 import { useAccount } from "../hooks/useAccount";
 import { useNavigate } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
+import { useTranslation } from "react-i18next";
 
 export default function NavbarComponent(props: NavbarPropType) {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const { adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
   const navigate = useNavigate();
+
+  const { t } = useTranslation();
 
   const handleSwitchClick = () => {
     setAdminLayout(!adminLayout);
@@ -74,7 +77,7 @@ export default function NavbarComponent(props: NavbarPropType) {
                       <Typography textAlign={"center"}>
                         <LinkComponent
                           href={route.pathname}
-                          name={route.name}
+                          name={t(route.name)}
                         ></LinkComponent>
                       </Typography>
                     </MenuItem>
@@ -115,7 +118,7 @@ export default function NavbarComponent(props: NavbarPropType) {
                         <Typography textAlign={"center"}>
                           <LinkComponent
                             href={route.pathname}
-                            name={route.name}
+                            name={t(route.name)}
                           ></LinkComponent>
                         </Typography>
                       </MenuItem>
