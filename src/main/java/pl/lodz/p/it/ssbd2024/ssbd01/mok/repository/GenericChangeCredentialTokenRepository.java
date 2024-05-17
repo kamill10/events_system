@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractCredentialChange;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,12 @@ public interface GenericChangeCredentialTokenRepository<T extends AbstractCreden
 
     @PreAuthorize("permitAll()")
     void deleteByToken(String token);
+
+    @PreAuthorize("permitAll()")
+    void deleteByAccount(Account account);
+
+    @PreAuthorize("permitAll()")
+    void flush();
 
     @PreAuthorize("permitAll()")
     <S extends T> S saveAndFlush(S entity);
