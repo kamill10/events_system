@@ -52,7 +52,7 @@ i18next.use(initReactI18next).init({
         roles: "Role",
         role: "Rola",
         userName: "Nazwa konta",
-        firstName: "Imie",
+        firstName: "Imię",
         lastName: "Nazwisko",
         gender: "Płeć",
         isActive: "Aktywne",

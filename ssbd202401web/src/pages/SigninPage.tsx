@@ -113,7 +113,7 @@ export default function SigninPage() {
             mb: 2,
           }}
         >
-          Sign in
+          {t("signInHeading")}
         </Button>
         <Link to={Pathnames.public.login}>{t("haveAccountLabel")}</Link>
       </FormComponent>
