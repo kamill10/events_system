@@ -1,10 +1,6 @@
 import { Button, Typography } from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
-import {
-  SubmitErrorHandler,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { signInValidationSchema } from "../validation/schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Pathnames } from "../router/Pathnames";

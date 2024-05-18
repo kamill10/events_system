@@ -1,18 +1,24 @@
-import { Link } from "react-router-dom";
 import { LinkPropType } from "../types/Components";
+import { MenuItem, Typography } from "@mui/material";
 
 export default function LinkComponent(props: LinkPropType) {
   return (
-    <Link
-      style={{
-        textDecoration: "none",
-        color: "inherit",
-        fontSize: "18px",
-        fontWeight: 500,
+    <MenuItem
+      onClick={() => {
+        props.handleClose();
+        props.onClick();
       }}
-      to={props.href}
     >
-      {props.name}
-    </Link>
+      <Typography
+        textAlign={"center"}
+        sx={{
+          color: "inherit",
+          fontSize: "18px",
+          fontWeight: 500,
+        }}
+      >
+        {props.name}
+      </Typography>
+    </MenuItem>
   );
 }

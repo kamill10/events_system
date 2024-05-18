@@ -36,6 +36,9 @@ export default interface NavbarPropType {
 export interface LinkPropType {
   href: string;
   name: string;
+  onClick: () => void;
+  handleClose: () => void;
+  route?: RouteType;
 }
 
 export interface GenderListProps<T extends FieldValues> {
