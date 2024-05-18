@@ -4,7 +4,6 @@ import {
   Box,
   IconButton,
   Menu,
-  MenuItem,
   Slide,
   Switch,
   Toolbar,
@@ -15,12 +14,15 @@ import NavbarPropType from "../types/Components";
 import LinkComponent from "./LinkComponent";
 import HeadingComponent from "./HeadingComponent";
 import { MouseEvent, useState } from "react";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useAccount } from "../hooks/useAccount";
-import { useNavigate } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { useWindowWidth } from "../hooks/useWindowWidth";
 
 export default function NavbarComponent(props: NavbarPropType) {
+  const width = useWindowWidth();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const { adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
   const navigate = useNavigate();
@@ -73,14 +75,12 @@ export default function NavbarComponent(props: NavbarPropType) {
               {props.routes.map((route) => {
                 return (
                   route.renderOnNavbar && (
-                    <MenuItem key={route.name}>
-                      <Typography textAlign={"center"}>
-                        <LinkComponent
-                          href={route.pathname}
-                          name={t(route.name)}
-                        ></LinkComponent>
-                      </Typography>
-                    </MenuItem>
+                    <LinkComponent
+                      handleClose={handleDropDownClose}
+                      href={route.pathname}
+                      name={t(route.name)}
+                      onClick={() => navigate(route.pathname)}
+                    ></LinkComponent>
                   )
                 );
               })}
@@ -94,7 +94,11 @@ export default function NavbarComponent(props: NavbarPropType) {
                 ></Switch>
               )}
               <IconButton onClick={handleDropDownOpen}>
-                <Avatar></Avatar>
+                {width < 900 ? (
+                  <MenuIcon sx={{ color: "white" }}></MenuIcon>
+                ) : (
+                  <Avatar></Avatar>
+                )}
               </IconButton>
               <Menu
                 sx={{ mt: "45px" }}
@@ -112,16 +116,26 @@ export default function NavbarComponent(props: NavbarPropType) {
                 onClose={handleDropDownClose}
               >
                 {props.routes.map((route) => {
+                  if (width < 900) {
+                    return (
+                      (route.renderOnDropdown || route.renderOnNavbar) && (
+                        <LinkComponent
+                          handleClose={handleDropDownClose}
+                          href={route.pathname}
+                          name={t(route.name)}
+                          onClick={() => navigate(route.pathname)}
+                        ></LinkComponent>
+                      )
+                    );
+                  }
                   return (
                     route.renderOnDropdown && (
-                      <MenuItem key={route.name} onClick={handleDropDownClose}>
-                        <Typography textAlign={"center"}>
-                          <LinkComponent
-                            href={route.pathname}
-                            name={t(route.name)}
-                          ></LinkComponent>
-                        </Typography>
-                      </MenuItem>
+                      <LinkComponent
+                        handleClose={handleDropDownClose}
+                        href={route.pathname}
+                        name={t(route.name)}
+                        onClick={() => navigate(route.pathname)}
+                      ></LinkComponent>
                     )
                   );
                 })}

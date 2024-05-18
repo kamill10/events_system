@@ -202,7 +202,7 @@ i18next.use(initReactI18next).init({
       translation: {
         accountsLink: "Accounts",
         eventsLink: "Events",
-        logInLink: "Log In",
+        logInLink: "Log in",
         registerLink: "Sign in",
         profileLink: "Profile",
         logOutLink: "Log-out",
