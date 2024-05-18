@@ -36,7 +36,6 @@ public class MeService {
 
     private final PasswordHistoryRepository passwordHistoryRepository;
 
-    private final AccountService accountService;
 
     private final ChangeMyPasswordRepository changeMyPasswordRepository;
 
@@ -67,6 +66,8 @@ public class MeService {
         if (verifier.isPasswordInHistory(account.getId(), newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
+        changeMyPasswordRepository.deleteByAccount(account);
+        changeMyPasswordRepository.flush();
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
@@ -88,6 +89,8 @@ public class MeService {
         if (accountMokRepository.findByEmail(newEmail).isPresent()) {
             throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
+        changeEmailRepository.deleteByAccount(account);
+        changeEmailRepository.flush();
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);

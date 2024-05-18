@@ -32,7 +32,7 @@ public class AccountService {
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final ChangeMyPasswordRepository changeMyPasswordRepository;
     private final ChangeEmailRepository changeEmailRepository;
-    private final CredentialResetRepository resetMyCredentialRepository;
+    private final CredentialResetRepository resetCredentialRepository;
     private final ConfigurationProperties config;
     private final ServiceVerifier verifier;
 
@@ -177,6 +177,8 @@ public class AccountService {
         if (account.isEmpty()) {
             return null;
         }
+        resetCredentialRepository.deleteByAccount(account.get());
+        resetCredentialRepository.flush();
         CredentialReset credentialReset = verifier.saveTokenToResetCredential(account.get());
         return credentialReset;
     }
@@ -186,6 +188,8 @@ public class AccountService {
     public CredentialReset changePasswordByAdminAndSendEmail(String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        resetCredentialRepository.deleteByAccount(account);
+        resetCredentialRepository.flush();
         return verifier.saveTokenToResetCredential(account);
     }
 
@@ -197,6 +201,8 @@ public class AccountService {
         if (accountMokRepository.findByEmail(email).isPresent()) {
             throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
+        changeEmailRepository.deleteByAccount(account);
+        changeEmailRepository.flush();
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
@@ -209,14 +215,14 @@ public class AccountService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void resetPasswordWithToken(String token, String newPassword)
             throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException {
-        Account accountToUpdate = verifier.verifyCredentialReset(token, resetMyCredentialRepository);
+        Account accountToUpdate = verifier.verifyCredentialReset(token, resetCredentialRepository);
         if (verifier.isPasswordInHistory(accountToUpdate.getId(), newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
-        resetMyCredentialRepository.deleteByToken(token);
+        resetCredentialRepository.deleteByToken(token);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -233,7 +239,7 @@ public class AccountService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void deleteExpiredResetCredentialTokens() {
-        resetMyCredentialRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
+        resetCredentialRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
