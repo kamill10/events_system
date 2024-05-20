@@ -20,7 +20,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -48,14 +47,6 @@ public class AccountControllerIT {
     static String participantToken;
 
     static String managerToken;
-
-
-    public static ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper;
-    }
-
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2")
             .withDatabaseName("ssbd01")
@@ -75,7 +66,6 @@ public class AccountControllerIT {
             )
             .waitingFor(Wait.forSuccessfulCommand("pg_isready -U ssbd01admin"))
             .withReuse(true);
-
     @Container
     static GenericContainer<?> tomcat = new GenericContainer<>("tomcat:10.1.19-jre21")
             .withExposedPorts(8080)
@@ -91,6 +81,11 @@ public class AccountControllerIT {
             .withFileSystemBind("transactions.log", "/usr/local/tomcat/transactions.log", BindMode.READ_WRITE)
             .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE);
 
+    public static ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
+    }
 
     @BeforeEach
     public void initData() throws IOException, InterruptedException {
