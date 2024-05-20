@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,25 +25,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
-        final String login;
-        final String token;
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        token = authorizationHeader.substring(7);
-        login = jwtService.extractLogin(token);
-        if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            try {
-                jwtService.authenticate(login, token, request);
-            } catch (ExpiredJwtException e) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().write("Token expired");
+        try {
+            final String authorizationHeader = request.getHeader("Authorization");
+            final String login;
+            final String token;
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
                 return;
             }
+            token = authorizationHeader.substring(7);
+            login = jwtService.extractLogin(token);
+            if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                jwtService.authenticate(login, token, request);
+            }
+            filterChain.doFilter(request, response);
+        } catch (SignatureException | ExpiredJwtException e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Bad token");
         }
-        filterChain.doFilter(request, response);
+
     }
 
 
