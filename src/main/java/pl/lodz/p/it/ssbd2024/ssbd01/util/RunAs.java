@@ -6,15 +6,17 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class RunAs {
+
     @FunctionalInterface
     public interface RunAsMethod {
         default void run() {
             try {
                 runWithException();
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.getGlobal().severe(e.getMessage());
             }
         }
 

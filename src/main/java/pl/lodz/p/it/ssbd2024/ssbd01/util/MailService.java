@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
@@ -36,9 +37,8 @@ public class MailService {
             mimeMessageHelper.setTo(mail.getMailTo());
             mimeMessageHelper.setText(mail.getMailContent(), true);
             mailSender.send(mimeMessageHelper.getMimeMessage());
-        } catch (MessagingException e) {
-            //TODO: Add logging and remove stack trace
-            e.printStackTrace();
+        } catch (Exception e) {
+            Logger.getGlobal().severe(e.getMessage());
         }
     }
 

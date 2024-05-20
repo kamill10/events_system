@@ -33,9 +33,14 @@ public class TxAspect {
         log.info("Transaction {} started: {} from class: {} by user: {}", transactionId, methodName, className, username);
         log.info("Transaction {} description:\n1. Propagation: {}\n2. Isolation: {}\n3. Timeout: {}\n4. ReadOnly: {}", transactionId,
                 transactional.propagation(), transactional.isolation(), transactional.timeout(), transactional.readOnly());
+        Object[] args = joinPoint.getArgs();
+        for (int i = 0; i < args.length; i++) {
+            log.info("Transaction {} argument[{}]: {}", transactionId, i, args[i]);
+        }
         Object proceed;
         try {
             proceed = joinPoint.proceed();
+            log.info("Transaction {} returned: {}", transactionId, proceed);
             log.info("Transaction {} result: approved", transactionId);
         } catch (Exception e) {
             log.info("Transaction {} result: rejected with message: {}", transactionId, e.getMessage());
