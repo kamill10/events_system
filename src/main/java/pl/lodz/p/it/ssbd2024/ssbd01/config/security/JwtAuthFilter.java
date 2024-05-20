@@ -40,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (SignatureException | ExpiredJwtException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Bad token");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bad token");
         }
 
     }
