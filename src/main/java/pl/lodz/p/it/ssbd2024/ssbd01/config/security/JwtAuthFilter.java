@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +34,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         token = authorizationHeader.substring(7);
         login = jwtService.extractLogin(token);
         if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            jwtService.authenticate(login, token, request);
+            try {
+                jwtService.authenticate(login, token, request);
+            } catch (ExpiredJwtException e) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write("Token expired");
+                return;
+            }
         }
         filterChain.doFilter(request, response);
     }
