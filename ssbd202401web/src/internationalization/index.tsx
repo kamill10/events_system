@@ -121,7 +121,7 @@ i18next.use(initReactI18next).init({
         clickToConfPassChange:
           "Naciśnij przycisk na dole, aby potwierdzić zmiane hasła!",
         passwordHasBeenChanged: "Hasło zostało zmienione!",
-        youCanGoToLogin: "Możesz przejść samemu na strone logowania, lub&#x20;",
+        youCanGoToLogin: "Możesz samemu przejść na strone logowania, lub ",
         goBackToLoginPage: "Wróć do strony głównej",
 
         active: "Aktywne",
@@ -284,7 +284,7 @@ i18next.use(initReactI18next).init({
         clickToConfPassChange:
           "Click the button below to confirm your password change!",
         passwordHasBeenChanged: "Password has been changed!",
-        youCanGoToLogin: "You can go to login page manually, or&#x20;",
+        youCanGoToLogin: "You can go to login page manually, or ",
         goBackToLoginPage: "Go back to login page",
 
         active: "Active",

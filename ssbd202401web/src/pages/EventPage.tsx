@@ -6,7 +6,7 @@ export default function EventPage() {
   const { t } = useTranslation();
   return (
     <ContainerComponent>
-      <Typography variant="h4">{t("eventPage")}</Typography>;
+      <Typography variant="h4">{t("eventPage")}</Typography>
     </ContainerComponent>
   );
 }
