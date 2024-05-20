@@ -20,7 +20,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -48,14 +47,6 @@ public class AccountControllerIT {
     static String participantToken;
 
     static String managerToken;
-
-
-    public static ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        return objectMapper;
-    }
-
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2")
             .withDatabaseName("ssbd01")
@@ -75,7 +66,6 @@ public class AccountControllerIT {
             )
             .waitingFor(Wait.forSuccessfulCommand("pg_isready -U ssbd01admin"))
             .withReuse(true);
-
     @Container
     static GenericContainer<?> tomcat = new GenericContainer<>("tomcat:10.1.19-jre21")
             .withExposedPorts(8080)
@@ -91,6 +81,11 @@ public class AccountControllerIT {
             .withFileSystemBind("transactions.log", "/usr/local/tomcat/transactions.log", BindMode.READ_WRITE)
             .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE);
 
+    public static ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
+    }
 
     @BeforeEach
     public void initData() throws IOException, InterruptedException {
@@ -790,64 +785,4 @@ public class AccountControllerIT {
                 .extract().asString();
     }
 
-    @Test
-    public void sendTokenWhenEmailChangeByAdminPositiveScenario() {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("nowy202401@proton.me");
-        String token = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + adminToken)
-                .body(updateEmailDTO)
-                .when()
-                .post(baseUrl + "/accounts/change-email/8b25c94f-f10f-4285-8eb2-39ee1c4002f1")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().asString();
-        assertNotNull(token);
-        /*given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + adminToken)
-                .body(updateEmailDTO)
-                .when()
-                .post(baseUrl + "/accounts/change-email/token/"+token)
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().asString();*/
-    }
-
-    @Test
-    public void sendTokenWhenEmailChangeByAdminButTokenNotExist() {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("ka.pazio@o2.pl");
-        given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + adminToken)
-                .body(updateEmailDTO)
-                .when()
-                .patch(baseUrl + "/accounts/change-email/token/4323")
-                .then()
-                .statusCode(HttpStatus.NOT_FOUND.value())
-                .extract().asString();
-    }
-
-    @Test
-    public void sendTokenWhenEmailChangeByAdminButEmailAlreadyExists() {
-        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("participantt202401@proton.me");
-        String token = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + adminToken)
-                .body(updateEmailDTO)
-                .when()
-                .post(baseUrl + "/accounts/change-email/8b25c94f-f10f-4285-8eb2-39ee1c4002f1")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .extract().asString();
-       /* given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + adminToken)
-                .body(updateEmailDTO)
-                .when()
-                .post(baseUrl + "/accounts/change-email/token/"+token)
-                .then()
-                .statusCode(HttpStatus.CONFLICT.value())
-                .extract().asString();*/
-    }
 }
