@@ -167,11 +167,6 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping("/change-email/token/{token}")
-    public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
-            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
-        accountService.changeEmailByAdminWithToken(token);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
+
 
 }

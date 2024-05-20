@@ -179,8 +179,7 @@ public class AccountService {
         }
         resetCredentialRepository.deleteByAccount(account.get());
         resetCredentialRepository.flush();
-        CredentialReset credentialReset = verifier.saveTokenToResetCredential(account.get());
-        return credentialReset;
+        return verifier.saveTokenToResetCredential(account.get());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -223,17 +222,6 @@ public class AccountService {
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
         resetCredentialRepository.deleteByToken(token);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void changeEmailByAdminWithToken(String token)
-            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
-        Account accountToUpdate = verifier.verifyCredentialReset(token, changeEmailRepository);
-        var changeMyEmail = changeEmailRepository.findByToken(token)
-                .orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.EMAIL_RESET_TOKEN_NOT_FOUND));
-        accountToUpdate.setEmail(changeMyEmail.getEmail());
-        accountMokRepository.saveAndFlush(accountToUpdate);
-        changeEmailRepository.deleteByToken(token);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
