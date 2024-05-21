@@ -59,7 +59,8 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PATCH, "/api/me/change-password/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.PATCH, "/api/me/change-email/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/me").authenticated()
-                            .requestMatchers(HttpMethod.PATCH, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
+                            .requestMatchers(HttpMethod.GET, "/api/me/*").authenticated()
+                            .requestMatchers(HttpMethod.PATCH, "/api/me/**").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER");
                 });
