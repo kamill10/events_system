@@ -23,5 +23,6 @@ public class ExceptionMessages {
     public static final String INCORRECT_FIRST_NAME = "Incorrect first name";
     public static final String INCORRECT_LAST_NAME = "Incorrect last name";
     public static final String INCORRECT_LANGUAGE = "Incorrect language";
+    public static final String UNLOCK_TOKEN_NOT_FOUND = "Unlock token not found.";
 
 }

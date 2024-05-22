@@ -14,10 +14,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
-import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 @RestController
@@ -55,4 +55,13 @@ public class AuthenticationController {
         authenticationService.logout(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @PostMapping("/unblock-account/{token}")
+    public ResponseEntity<?> unlockAccount(@PathVariable String token)
+            throws AccountUnlockTokenNotFoundException {
+        Account account = authenticationService.unlockAccountThatWasNotUsed(token);
+        mailService.sendEmailToInformAboutUnblockAccount(account);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 
 @Service
@@ -32,6 +31,11 @@ public class AuthenticationSchedulerService {
     @Scheduled(fixedRate = 120000)
     public void executeUnlockAccounts() {
         RunAs.runAsSystem(authenticationService::unlockAccounts);
+    }
+
+    @Scheduled(fixedRate = 3600000)
+    public void executeLockAccountsThatAreNotUsed() {
+        RunAs.runAsSystem(authenticationService::lockAccountsThatAreNotUsed);
     }
 
 }

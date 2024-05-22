@@ -1,6 +1,5 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.util;
 
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -144,6 +143,14 @@ public class MailService {
 
     public void sendEmailToInformAboutUnblockAccount(Account account) {
         sendEmailTemplate(account, "mail.unblocked.subject", "mail.unblocked.body", null);
+    }
+
+    public void sendEmailToUnblockAccountViaLink(Account account, String token) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/unblock-account?token=");
+        sb.append(token);
+        sb.append("'>Link</a>");
+        sendEmailTemplate(account, "mail.unblock.account.subject", "mail.unblock.account.body", new Object[] {sb});
     }
 
 

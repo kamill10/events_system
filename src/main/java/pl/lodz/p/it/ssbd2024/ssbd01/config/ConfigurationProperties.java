@@ -130,4 +130,7 @@ public class ConfigurationProperties {
 
     @Value("${jwt.expiration}")
     private Integer jwtExpiration;
+
+    @Value("${auth.lock-time.unused.account.days}")
+    private Integer authLockTimeUnusedAccountDays;
 }

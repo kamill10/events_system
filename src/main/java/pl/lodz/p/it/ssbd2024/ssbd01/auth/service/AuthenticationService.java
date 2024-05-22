@@ -20,12 +20,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.MailToVerifyDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountConfirmation;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ConfirmationReminder;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
@@ -45,6 +43,7 @@ public class AuthenticationService {
     private final AccountAuthRepository accountAuthRepository;
     private final AccountConfirmationRepository accountConfirmationRepository;
     private final ConfirmationReminderRepository confirmationReminderRepository;
+    private final AccountUnlockRepository accountUnlockRepository;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
     private final JWTWhitelistRepository jwtWhitelistRepository;
@@ -139,6 +138,16 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public Account unlockAccountThatWasNotUsed(String token) throws AccountUnlockTokenNotFoundException {
+        AccountUnlock accountUnlock = accountUnlockRepository.findByToken(token)
+                .orElseThrow(() -> new AccountUnlockTokenNotFoundException(ExceptionMessages.UNLOCK_TOKEN_NOT_FOUND));
+        Account account = accountUnlock.getAccount();
+        account.setNonLocked(true);
+        accountUnlockRepository.delete(accountUnlock);
+        return accountMokRepository.saveAndFlush(account);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void deleteExpiredTokensAndAccounts() {
         LocalDateTime now = LocalDateTime.now();
@@ -168,8 +177,26 @@ public class AuthenticationService {
             account.setNonLocked(true);
             account.setFailedLoginAttempts(0);
             account.setLockedUntil(null);
-            accountMokRepository.save(account);
+            accountMokRepository.saveAndFlush(account);
             mailService.sendEmailToInformAboutUnblockAccount(account);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    public void lockAccountsThatAreNotUsed() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Account> accounts = accountMokRepository.findByNonLockedTrueAndLastSuccessfulLoginBefore(
+                now.minusDays(config.getAuthLockTimeUnusedAccountDays()));
+
+        for (Account account : accounts) {
+            account.setNonLocked(false);
+            accountMokRepository.saveAndFlush(account);
+            var token = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+            var accountUnlock = new AccountUnlock(token, account);
+            accountUnlockRepository.saveAndFlush(accountUnlock);
+            mailService.sendEmailToUnblockAccountViaLink(account, token);
         }
     }
 
