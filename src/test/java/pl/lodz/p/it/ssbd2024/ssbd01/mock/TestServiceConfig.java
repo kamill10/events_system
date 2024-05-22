@@ -118,4 +118,8 @@ public class TestServiceConfig {
         return Mockito.mock(AccountTimeZoneRepository.class);
     }
 
+    @Bean AccountUnlockRepository accountUnlockRepository() {
+        return Mockito.mock(AccountUnlockRepository.class);
+    }
+
 }

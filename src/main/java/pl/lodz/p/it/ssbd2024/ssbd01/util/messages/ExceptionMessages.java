@@ -24,6 +24,6 @@ public class ExceptionMessages {
     public static final String INCORRECT_LAST_NAME = "Incorrect last name";
     public static final String INCORRECT_LANGUAGE = "Incorrect language";
     public static final String ACCOUNT_THEME_NOT_FOUND = "Theme not found";
-
+    public static final String UNLOCK_TOKEN_NOT_FOUND = "Unlock token not found.";
     public static final String TIME_ZONE_NOT_FOUND = "Time zone not found";
 }
