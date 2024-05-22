@@ -108,6 +108,16 @@ public class TestServiceConfig {
         return Mockito.mock(PasswordEncoder.class);
     }
 
+    @Bean
+    public AccountThemeRepository accountThemeRepository() {
+        return Mockito.mock(AccountThemeRepository.class);
+    }
+
+    @Bean
+    public AccountTimeZoneRepository accountTimeZoneRepository() {
+        return Mockito.mock(AccountTimeZoneRepository.class);
+    }
+
     @Bean AccountUnlockRepository accountUnlockRepository() {
         return Mockito.mock(AccountUnlockRepository.class);
     }

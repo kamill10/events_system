@@ -8,6 +8,10 @@ GRANT SELECT, INSERT, DELETE ON TABLE public.confirmation_reminder TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE credential_reset TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE change_my_password TO ssbd01mok;
 GRANT SELECT, INSERT, DELETE ON TABLE change_email TO ssbd01mok;
+GRANT SELECT  ON TABLE account_theme TO ssbd01mok;
+GRANT SELECT ON TABLE account_time_zone TO ssbd01mok;
+GRANT SELECT  ON TABLE account_theme TO ssbd01auth;
+GRANT SELECT ON TABLE account_time_zone TO ssbd01auth;
 GRANT SELECT, INSERT, DELETE ON TABLE public.account_unlock TO ssbd01mok;
 
 GRANT SELECT, INSERT, DELETE ON TABLE public.jwt_whitelist_token TO ssbd01auth;
@@ -57,6 +61,12 @@ ALTER TABLE account_role ADD UNIQUE (account_id, roles_id);
 INSERT INTO public.role (id, version, name) VALUES ('550e8400-e29b-41d4-a716-446655440000', 0, 'ROLE_ADMIN');
 INSERT INTO public.role (id, version, name) VALUES ('4c90f86a-0d82-4c51-b72c-80e20949a3b9', 0, 'ROLE_MANAGER');
 INSERT INTO public.role (id, version, name) VALUES ('cd8ab1c1-2431-4e28-88b5-fdd54de3d92a', 0, 'ROLE_PARTICIPANT');
+
+INSERT INTO public.account_theme (id, version, theme) VALUES ('666e8400-e29b-41d4-a716-446655440000', 0, 'LIGHT');
+INSERT INTO public.account_theme (id, version, theme) VALUES ('777e8400-e29b-41d4-a716-446655440000', 0, 'DARK');
+
+INSERT INTO public.account_time_zone (id, version, timeZoneEnum) VALUES ('888e8400-e29b-41d4-a716-446655440000', 0, 'WARSAW');
+INSERT INTO public.account_time_zone (id, version, timeZoneEnum) VALUES ('999e8400-e29b-41d4-a716-446655440000', 0, 'LONDON');
 
 INSERT INTO public.account (id,username,password,active,verified, nonlocked,failedloginattempts,version,created_at,action_type, language) VALUES ('8b25c94f-f10f-4285-8eb2-39ee1c4002f1','testAdmin','$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y',true,true,true,0,0,'2021-01-01 00:00:00','CREATE', 'POLISH');
 INSERT INTO public.personal_data (account_id, firstname, lastname, email, gender) VALUES ('8b25c94f-f10f-4285-8eb2-39ee1c4002f1', 'Pudzian', 'Admin', 'admin202401@proton.me', 1);

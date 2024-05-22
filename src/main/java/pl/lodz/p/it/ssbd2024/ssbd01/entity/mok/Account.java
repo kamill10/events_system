@@ -96,6 +96,12 @@ public class Account extends ControlledEntity implements UserDetails {
     @Column(nullable = false)
     private LanguageEnum language;
 
+    @OneToOne
+    private AccountTheme accountTheme;
+
+    @OneToOne
+    private AccountTimeZone accountTimeZone;
+
 
     public Account(String username, String password, String email, Integer gender, String firstName, String lastName, LanguageEnum language) {
         this.username = username;

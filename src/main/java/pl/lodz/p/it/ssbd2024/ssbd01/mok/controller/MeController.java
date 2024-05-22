@@ -12,6 +12,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ThemeEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.TimeZoneEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyPassword;
@@ -21,6 +23,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+
+import java.util.TimeZone;
 
 
 @RestController
@@ -89,4 +93,29 @@ public class MeController {
         meService.logSwitchRole(role);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @PatchMapping("/user-data/theme/{theme}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
+    public ResponseEntity<ThemeEnum> setMyTheme(@PathVariable ThemeEnum theme) throws AccountThemeNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(meService.setAccountTheme(theme));
+    }
+
+    @PatchMapping("/user-data/time-zone/{timeZone}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
+    public ResponseEntity<String> setMyTimeZone(@PathVariable TimeZoneEnum timeZone) throws TimeZoneNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(meService.setAccountTimeZone(timeZone));
+    }
+
+    @GetMapping("/theme")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
+    public ResponseEntity<ThemeEnum> getMyTheme() {
+        return ResponseEntity.status(HttpStatus.OK).body(meService.getAccountTheme());
+    }
+
+    @GetMapping("/time-zone")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
+    public ResponseEntity<String> getMyTimeZone() {
+        return ResponseEntity.status(HttpStatus.OK).body(meService.getAccountTimeZone());
+    }
+
 }
