@@ -59,7 +59,8 @@ export default function ChangeAccountDataComponent({
     setValue("firstName", account?.firstName ?? "");
     setValue("lastName", account?.lastName ?? "");
     setValue("gender", account?.gender ?? 0);
-  }, [account]);
+    trigger();
+  }, [account, setValue, trigger]);
 
   return (
     <>
