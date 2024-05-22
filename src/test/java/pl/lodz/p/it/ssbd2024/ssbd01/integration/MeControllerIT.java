@@ -277,4 +277,13 @@ public class MeControllerIT {
 
     }
 
+    @Test
+    public void getUnauthorizedResetPasswordToken() throws JsonProcessingException {
+        given()
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString("admin202401@proton.me"))
+                .patch(baseUrl + "/me/change-unauthorized-password")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
 }

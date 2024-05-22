@@ -122,4 +122,9 @@ public class TestServiceConfig {
         return Mockito.mock(AccountUnlockRepository.class);
     }
 
+    @Bean
+    public ResetPasswordUnauthorizedTokenRepository resetPasswordUnauthorizedTokenRepository() {
+        return Mockito.mock(ResetPasswordUnauthorizedTokenRepository.class);
+    }
+
 }

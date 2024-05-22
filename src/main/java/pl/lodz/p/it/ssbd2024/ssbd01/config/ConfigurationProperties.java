@@ -133,4 +133,9 @@ public class ConfigurationProperties {
 
     @Value("${auth.lock-time.unused.account.days}")
     private Integer authLockTimeUnusedAccountDays;
+
+    @Value("${reset-password-unauthorized.token.expiration.minutes}")
+    private Integer resetPasswordUnauthorizedTokenExpiration;
+
+
 }

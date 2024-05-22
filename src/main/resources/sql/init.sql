@@ -13,6 +13,7 @@ GRANT SELECT ON TABLE account_time_zone TO ssbd01mok;
 GRANT SELECT  ON TABLE account_theme TO ssbd01auth;
 GRANT SELECT ON TABLE account_time_zone TO ssbd01auth;
 GRANT SELECT, INSERT, DELETE ON TABLE public.account_unlock TO ssbd01mok;
+GRANT SELECT, INSERT, DELETE ON TABLE public.reset_password_unauthorized_token TO ssbd01mok;
 
 GRANT SELECT, INSERT, DELETE ON TABLE public.jwt_whitelist_token TO ssbd01auth;
 GRANT SELECT, UPDATE ON TABLE public.account TO ssbd01auth;

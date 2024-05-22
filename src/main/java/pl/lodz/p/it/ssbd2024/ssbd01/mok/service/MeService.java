@@ -47,6 +47,7 @@ public class MeService {
     private final AccountThemeRepository accountThemeRepository;
 
     private final TimeZoneRepository timeZoneRepository;
+    private final ResetPasswordUnauthorizedTokenRepository resetPasswordUnauthorizedTokenRepository;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -105,7 +106,7 @@ public class MeService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void changeMyPasswordWithToken(String token)
-            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
+            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
         Account account = verifier.verifyCredentialReset(token, changeMyPasswordRepository);
         String password =
                 changeMyPasswordRepository.findByToken(token).orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND))
@@ -119,7 +120,7 @@ public class MeService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void changeMyEmailWithToken(String token)
-            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException {
+            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException, AccountLockedException, AccountNotVerifiedException {
         Account accountToUpdate = verifier.verifyCredentialReset(token, changeEmailRepository);
         var changeMyEmail = changeEmailRepository.findByToken(token)
                 .orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.EMAIL_RESET_TOKEN_NOT_FOUND));
@@ -197,6 +198,41 @@ public class MeService {
         Account account = (Account) authentication.getPrincipal();
         AccountTimeZone accountTimeZone = account.getAccountTimeZone();
         return accountTimeZone.getTimeZone().toZoneId().getId();
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public ResetPasswordUnauthorizedToken resetPasswordRequestUnauthorized(String email) throws AccountNotFoundException, AccountLockedException,
+            AccountNotVerifiedException {
+        Account account = accountMokRepository.findByEmail(email)
+                .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        if (!account.getVerified()) {
+            throw new AccountNotVerifiedException(ExceptionMessages.ACCOUNT_NOT_VERIFIED);
+        } else if (!account.getNonLocked()) {
+            throw new AccountLockedException(ExceptionMessages.ACCOUNT_LOCKED);
+        }
+        resetPasswordUnauthorizedTokenRepository.deleteByAccount(account);
+        resetPasswordUnauthorizedTokenRepository.flush();
+        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        var expiration = config.getCredentialChangeTokenExpiration();
+        var expirationDate = LocalDateTime.now().plusMinutes(expiration);
+        var newResetIssue = new ResetPasswordUnauthorizedToken(randString, account,
+                expirationDate);
+        return resetPasswordUnauthorizedTokenRepository.saveAndFlush(newResetIssue);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public void resetPasswordWithTokenUnauthorized(String token, String newPassword)
+            throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException,
+            AccountLockedException, AccountNotVerifiedException {
+        Account accountToUpdate = verifier.verifyCredentialReset(token, resetPasswordUnauthorizedTokenRepository);
+        if (verifier.isPasswordInHistory(accountToUpdate.getId(), newPassword)) {
+            throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
+        }
+        accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
+        passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
+        accountMokRepository.saveAndFlush(accountToUpdate);
+        resetPasswordUnauthorizedTokenRepository.deleteByToken(token);
     }
 
 

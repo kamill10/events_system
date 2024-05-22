@@ -10,9 +10,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.TokenExpiredException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.TokenNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.CredentialResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.GenericChangeCredentialTokenRepository;
@@ -51,7 +49,7 @@ public class ServiceVerifier {
 
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public <T extends AbstractCredentialChange> Account verifyCredentialReset(String token, GenericChangeCredentialTokenRepository<T> repo)
-            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException {
+            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException, AccountNotVerifiedException, AccountLockedException {
         Optional<T> credentialReset = repo.findByToken(token);
         if (credentialReset.isEmpty()) {
             throw new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND);
@@ -59,7 +57,13 @@ public class ServiceVerifier {
         if (credentialReset.get().getExpirationDate().isBefore(LocalDateTime.now())) {
             throw new TokenExpiredException(ExceptionMessages.TOKEN_EXPIRED);
         }
-        return accountMokRepository.findByEmail(credentialReset.get().getAccount().getEmail())
+        var account = accountMokRepository.findByEmail(credentialReset.get().getAccount().getEmail())
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+        if (!account.getVerified()) {
+            throw new AccountNotVerifiedException(ExceptionMessages.ACCOUNT_NOT_VERIFIED);
+        } else if (!account.getNonLocked()) {
+            throw new AccountLockedException(ExceptionMessages.ACCOUNT_LOCKED);
+        }
+        return account;
     }
 }

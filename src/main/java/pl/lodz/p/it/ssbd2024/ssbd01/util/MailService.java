@@ -9,10 +9,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyPassword;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -114,6 +111,17 @@ public class MailService {
         sb.append(newResetIssue.getToken());
         sb.append("'>Link</a>");
         sendEmailTemplate(newResetIssue.getAccount(), "mail.password.changed.by.you.subject",
+                "mail.password.changed.by.you.body", new Object[] {sb});
+    }
+
+    public void sendEmailToPasswordUnauthorized(ResetPasswordUnauthorizedToken resetPasswordUnauthorizedToken) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");
+        sb.append("change-my-password");
+        sb.append("?token=");
+        sb.append(resetPasswordUnauthorizedToken.getToken());
+        sb.append("'>Link</a>");
+        sendEmailTemplate(resetPasswordUnauthorizedToken.getAccount(), "mail.password.changed.by.you.subject",
                 "mail.password.changed.by.you.body", new Object[] {sb});
     }
 

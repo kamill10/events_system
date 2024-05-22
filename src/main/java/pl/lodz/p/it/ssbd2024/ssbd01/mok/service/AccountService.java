@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 
 @Service
@@ -35,6 +36,7 @@ public class AccountService {
     private final CredentialResetRepository resetCredentialRepository;
     private final ConfigurationProperties config;
     private final ServiceVerifier verifier;
+    private final ResetPasswordUnauthorizedTokenRepository resetPasswordUnauthorizedTokenRepository;
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -213,7 +215,8 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public void resetPasswordWithToken(String token, String newPassword)
-            throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException {
+            throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException,
+            AccountLockedException, AccountNotVerifiedException {
         Account accountToUpdate = verifier.verifyCredentialReset(token, resetCredentialRepository);
         if (verifier.isPasswordInHistory(accountToUpdate.getId(), newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
