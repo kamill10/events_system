@@ -42,6 +42,7 @@ export default function ChangePersonalDataComponent() {
     setValue("firstName", account?.firstName ?? "");
     setValue("lastName", account?.lastName ?? "");
     setValue("gender", account?.gender ?? 0);
+    trigger();
   }, [account, setValue]);
 
   const onSubmit: SubmitHandler<UpdatePersonalDataType> = () => {
