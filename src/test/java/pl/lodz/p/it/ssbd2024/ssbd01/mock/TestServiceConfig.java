@@ -114,8 +114,8 @@ public class TestServiceConfig {
     }
 
     @Bean
-    public AccountTimeZoneRepository accountTimeZoneRepository() {
-        return Mockito.mock(AccountTimeZoneRepository.class);
+    public TimeZoneRepository accountTimeZoneRepository() {
+        return Mockito.mock(TimeZoneRepository.class);
     }
 
 }
