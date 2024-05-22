@@ -52,19 +52,19 @@ export default function ProfileDetailsComponent() {
     >
       <Typography variant="h4">{t("changePersonalData")}</Typography>
       <Button
-            onClick={getMyAccount}
-            variant="contained"
-            startIcon={<RefreshIcon />}
-            color="secondary"
-            sx={{
-              mt: 1,
-              mb: 2,
-              width: "fit-content",
-              alignSelf: "center",
-            }}
-          >
-            {t("refreshData")}
-          </Button>
+        onClick={getMyAccount}
+        variant="contained"
+        startIcon={<RefreshIcon />}
+        color="secondary"
+        sx={{
+          mt: 1,
+          mb: 2,
+          width: "fit-content",
+          alignSelf: "center",
+        }}
+      >
+        {t("refreshData")}
+      </Button>
       <TableContainer>
         <TableHead>
           <TableCell
