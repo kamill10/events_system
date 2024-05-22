@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-public interface AccountTimeZoneRepository  extends JpaRepository<AccountTimeZone, UUID> {
+public interface TimeZoneRepository extends JpaRepository<AccountTimeZone, UUID> {
 
     @PreAuthorize("permitAll()")
     Optional<AccountTimeZone> findByTimeZoneEnum(TimeZoneEnum timeZoneEnum);

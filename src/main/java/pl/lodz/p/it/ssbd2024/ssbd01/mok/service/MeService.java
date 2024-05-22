@@ -24,7 +24,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.TimeZone;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +46,7 @@ public class MeService {
 
     private final AccountThemeRepository accountThemeRepository;
 
-    private final AccountTimeZoneRepository accountTimeZoneRepository;
+    private final TimeZoneRepository timeZoneRepository;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -175,7 +174,7 @@ public class MeService {
     public String setAccountTimeZone(TimeZoneEnum timeZoneEnum) throws TimeZoneNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        AccountTimeZone accountTimeZone = accountTimeZoneRepository.findByTimeZoneEnum(timeZoneEnum)
+        AccountTimeZone accountTimeZone = timeZoneRepository.findByTimeZoneEnum(timeZoneEnum)
                 .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
         account.setAccountTimeZone(accountTimeZone);
         accountMokRepository.saveAndFlush(account);

@@ -96,10 +96,10 @@ public class Account extends ControlledEntity implements UserDetails {
     @Column(nullable = false)
     private LanguageEnum language;
 
-    @OneToOne
+    @ManyToOne
     private AccountTheme accountTheme;
 
-    @OneToOne
+    @ManyToOne
     private AccountTimeZone accountTimeZone;
 
 
