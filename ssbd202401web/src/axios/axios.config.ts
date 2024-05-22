@@ -74,7 +74,8 @@ apiWithAuthToken.interceptors.response.use(
   },
   (error) => {
     // Handle response error
-    if (error instanceof AxiosError && error.response?.status === 403) redirect(Pathnames.participant.logout);
+    if (error instanceof AxiosError && error.response?.status === 403)
+      redirect(Pathnames.participant.logout);
     return Promise.reject(error);
   },
 );
@@ -105,7 +106,8 @@ apiWithEtag.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error instanceof AxiosError && error.response?.status === 403) redirect(Pathnames.participant.logout);
+    if (error instanceof AxiosError && error.response?.status === 403)
+      redirect(Pathnames.participant.logout);
     return Promise.reject(error);
   },
 );
