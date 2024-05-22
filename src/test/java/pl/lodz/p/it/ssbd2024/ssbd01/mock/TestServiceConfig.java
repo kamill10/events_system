@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationSchedulerService;
@@ -17,13 +18,15 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountSchedulerService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.logger.LoggingTransactionSynchronization;
 
 @Configuration
 @Import({
         BusinessConfig.class,
-        ToolsConfig.class,
         WebCoreConfig.class,
-        ConfigurationProperties.class
+        ConfigurationProperties.class,
+        ServiceVerifier.class
 })
 public class TestServiceConfig {
 
@@ -118,7 +121,8 @@ public class TestServiceConfig {
         return Mockito.mock(TimeZoneRepository.class);
     }
 
-    @Bean AccountUnlockRepository accountUnlockRepository() {
+    @Bean
+    public AccountUnlockRepository accountUnlockRepository() {
         return Mockito.mock(AccountUnlockRepository.class);
     }
 
