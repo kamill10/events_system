@@ -190,9 +190,6 @@ export const useAccount = () => {
       i18n.changeLanguage(data.language);
       localStorage.setItem("language", data.language);
     } catch (e) {
-      if (e instanceof AxiosError && e.response?.status === 403) {
-        logOut();
-      }
       console.error(e);
       sendNotification({
         description: t("getMyAccountFail"),
@@ -254,9 +251,6 @@ export const useAccount = () => {
         description: t("updateMyEmailSucc"),
       });
     } catch (e) {
-      if (e instanceof AxiosError && e.response?.status === 403) {
-        logOut();
-      }
       console.error(e);
       sendNotification({
         type: "error",
