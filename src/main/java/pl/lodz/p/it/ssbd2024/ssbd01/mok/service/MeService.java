@@ -166,18 +166,20 @@ public class MeService {
         AccountTheme accountTheme = accountThemeRepository.findByTheme(theme)
                 .orElseThrow(() -> new AccountThemeNotFoundException(ExceptionMessages.ACCOUNT_THEME_NOT_FOUND));
         account.setAccountTheme(accountTheme);
+        accountMokRepository.saveAndFlush(account);
         return accountTheme.getTheme();
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public TimeZone setAccountTimeZone(TimeZoneEnum timeZoneEnum) throws TimeZoneNotFoundException {
+    public String setAccountTimeZone(TimeZoneEnum timeZoneEnum) throws TimeZoneNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         AccountTimeZone accountTimeZone = accountTimeZoneRepository.findByTimeZoneEnum(timeZoneEnum)
                 .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
         account.setAccountTimeZone(accountTimeZone);
-        return accountTimeZone.getTimeZone();
+        accountMokRepository.saveAndFlush(account);
+        return accountTimeZone.getTimeZone().toZoneId().getId();
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")

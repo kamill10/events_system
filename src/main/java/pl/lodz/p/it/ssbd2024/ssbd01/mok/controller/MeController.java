@@ -102,7 +102,7 @@ public class MeController {
 
     @PatchMapping("/user-data/time-zone/{timeZone}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<TimeZone> setMyTimeZone(@PathVariable TimeZoneEnum timeZone) throws TimeZoneNotFoundException {
+    public ResponseEntity<String> setMyTimeZone(@PathVariable TimeZoneEnum timeZone) throws TimeZoneNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(meService.setAccountTimeZone(timeZone));
     }
 
