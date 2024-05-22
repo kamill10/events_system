@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.UUID;
 
@@ -17,7 +18,8 @@ import java.util.UUID;
 @Component
 public class TxAspect {
 
-    private static final Logger log = LoggerFactory.getLogger(TxAspect.class);
+    protected static final Logger log = LoggerFactory.getLogger(TxAspect.class);
+    private static String transactionId;
 
     @Pointcut("@annotation(transactional)")
     public void transactionalMethodPointcut(Transactional transactional) {
@@ -29,7 +31,7 @@ public class TxAspect {
         String username = (authentication != null) ? authentication.getName() : "anonymous";
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getName();
-        String transactionId = generateTransactionId();
+        generateTransactionId();
         log.info("Transaction {} started: {} from class: {} by user: {}", transactionId, methodName, className, username);
         log.info("Transaction {} description:\n1. Propagation: {}\n2. Isolation: {}\n3. Timeout: {}\n4. ReadOnly: {}", transactionId,
                 transactional.propagation(), transactional.isolation(), transactional.timeout(), transactional.readOnly());
@@ -39,12 +41,9 @@ public class TxAspect {
         }
         Object proceed;
         try {
+            TransactionSynchronizationManager.registerSynchronization(new LoggingTransactionSynchronization(transactionId));
             proceed = joinPoint.proceed();
             log.info("Transaction {} returned: {}", transactionId, proceed);
-            log.info("Transaction {} result: approved", transactionId);
-        } catch (Exception e) {
-            log.info("Transaction {} result: rejected with message: {}", transactionId, e.getMessage());
-            throw e;
         } finally {
             log.info("Transaction {} ended: {}", transactionId, methodName);
         }
@@ -53,8 +52,8 @@ public class TxAspect {
     }
 
 
-    private String generateTransactionId() {
-        return UUID.randomUUID().toString();
+    private void generateTransactionId() {
+        transactionId = UUID.randomUUID().toString();
     }
 }
 
