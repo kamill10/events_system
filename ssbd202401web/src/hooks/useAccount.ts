@@ -95,7 +95,7 @@ export const useAccount = () => {
           ? LanguageType.POLISH
           : LanguageType.ENGLISH,
       );
-      navigate(Pathnames.public.home);
+      navigate(Pathnames.public.login);
       setIsFetching(false);
     }
   };
@@ -171,9 +171,6 @@ export const useAccount = () => {
         description: t("changeEmailSucc"),
       });
     } catch (e) {
-      if (e instanceof AxiosError && e.status === 403) {
-        logOut();
-      }
       console.error(e);
       sendNotification({
         type: "error",
@@ -193,7 +190,7 @@ export const useAccount = () => {
       i18n.changeLanguage(data.language);
       localStorage.setItem("language", data.language);
     } catch (e) {
-      if (e instanceof AxiosError && e.status === 403) {
+      if (e instanceof AxiosError && e.response?.status === 403) {
         logOut();
       }
       console.error(e);
@@ -217,9 +214,6 @@ export const useAccount = () => {
         description: t("updateMyPersonalDataSucc"),
       });
     } catch (e) {
-      if (e instanceof AxiosError && e.status === 403) {
-        logOut();
-      }
       console.error(e);
       sendNotification({
         type: "error",
@@ -240,9 +234,6 @@ export const useAccount = () => {
         description: t("updateMyPasswordSucc"),
       });
     } catch (e) {
-      if (e instanceof AxiosError && e.status === 403) {
-        logOut();
-      }
       console.error(e);
       sendNotification({
         type: "error",
@@ -263,7 +254,7 @@ export const useAccount = () => {
         description: t("updateMyEmailSucc"),
       });
     } catch (e) {
-      if (e instanceof AxiosError && e.status === 403) {
+      if (e instanceof AxiosError && e.response?.status === 403) {
         logOut();
       }
       console.error(e);

@@ -58,7 +58,7 @@ export const AccountStateContextProvider = ({
 
   useEffect(() => {
     localStorage.setItem("language", account?.language ?? LanguageType.ENGLISH);
-  }, [account]);
+  }, [token]);
 
   return (
     <AccountStateContext.Provider

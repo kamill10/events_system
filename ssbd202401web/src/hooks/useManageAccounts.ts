@@ -4,11 +4,14 @@ import { useUsersState } from "../context/ManageAccountsContext";
 import { ChangeEmailType, UpdatePersonalDataType } from "../types/Account";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import useNotification from "./useNotification";
+import { AxiosError } from "axios";
+import { useAccount } from "./useAccount";
 
 export const useManageAccounts = () => {
   const sendNotification = useNotification();
   const { t } = useTranslation();
   const { accounts, setAccounts, isFetching, setIsFetching } = useUsersState();
+  const { logOut } = useAccount();
 
   const getAllAccounts = async () => {
     try {
@@ -33,6 +36,9 @@ export const useManageAccounts = () => {
       return data;
     } catch (e) {
       console.error(e);
+      if (e instanceof AxiosError && e.response?.status === 403) {
+        logOut();
+      }
       sendNotification({
         type: "error",
         description: t("getAccountByUsernameFail"),
@@ -155,6 +161,7 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
+
       sendNotification({
         type: "error",
         description: t("addRoleFail"),
