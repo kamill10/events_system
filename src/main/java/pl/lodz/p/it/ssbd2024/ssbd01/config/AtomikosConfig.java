@@ -1,6 +1,9 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.config;
 
 
+
+import com.atomikos.icatch.config.UserTransactionService;
+import com.atomikos.icatch.config.UserTransactionServiceImp;
 import com.atomikos.icatch.jta.J2eeUserTransaction;
 import com.atomikos.icatch.jta.UserTransactionManager;
 import jakarta.transaction.TransactionManager;
@@ -13,6 +16,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
+import java.util.Properties;
+
 @Configuration
 @EnableTransactionManagement
 @RequiredArgsConstructor
@@ -20,11 +25,10 @@ public class AtomikosConfig {
 
     private final ConfigurationProperties config;
 
+
     @Bean(name = "userTransaction")
     public UserTransaction userTransaction() throws Throwable {
-        J2eeUserTransaction userTransactionImp = new J2eeUserTransaction();
-        userTransactionImp.setTransactionTimeout(config.getTransactionTimeout());
-        return userTransactionImp;
+        return new J2eeUserTransaction();
     }
 
     @Bean(name = "atomikosTransactionManager", initMethod = "init", destroyMethod = "close")

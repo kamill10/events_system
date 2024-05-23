@@ -23,15 +23,11 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.TokenNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -231,6 +227,11 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    public Account getAccountByUsername(String username) {
+        return accountAuthRepository.findByUsername(username);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     public String refreshJWT(String token) throws TokenNotFoundException, AccountLockedException {
         JWTWhitelistToken jwtWhitelistToken = jwtWhitelistRepository.findByToken(token.substring(7)).orElseThrow(
@@ -240,10 +241,4 @@ public class AuthenticationService {
         jwtWhitelistRepository.flush();
         return jwtService.generateToken(account);
     }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public Account getAccountByUsername(String username) {
-        return accountAuthRepository.findByUsername(username);
-    }
-
 }
