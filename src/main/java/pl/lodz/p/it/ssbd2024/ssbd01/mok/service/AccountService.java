@@ -68,6 +68,9 @@ public class AccountService {
                 break;
             case ROLE_MANAGER, ROLE_ADMIN:
                 canAddManagerOrAdminRole(account);
+                if (!account.getVerified()) {
+                    account.setVerified(true);
+                }
                 break;
             default:
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
