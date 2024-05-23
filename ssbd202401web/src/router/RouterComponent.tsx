@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import {
   AdminRoutes,
   ManagerRoutes,
@@ -22,10 +22,18 @@ import AdminLayout from "../layouts/AdminLayout.tsx";
 import ManagerLayout from "../layouts/ManagerLayout.tsx";
 import ConfirmPasswordUpdatePage from "../pages/ConfirmPasswordUpdatePage.tsx";
 import { ConfirmEmailUpdatePage } from "../pages/ConfirmEmailUpdatePage.tsx";
+import { useEffect } from "react";
+import { setupInterceptors } from "../axios/axios.config.ts";
 
 export default function RouterComponent() {
   const { isAuthenticated, isAdmin, isParticipant, isManager, adminLayout } =
     useAccount();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setupInterceptors(navigate);
+  }, [navigate]);
+
 
   if (isAuthenticated && isAdmin && isManager) {
     return (

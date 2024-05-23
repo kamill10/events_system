@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ApiResponseType } from "../types/ApiResponse.ts";
 import {
   ChangeEmailType,
@@ -16,6 +16,8 @@ import {
   SignInCredentialsType,
 } from "../types/Authentication.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
+import { Pathnames } from "../router/Pathnames.ts";
+import { NavigateFunction } from "react-router-dom";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -53,60 +55,74 @@ const apiForAnon = axios.create({
   headers: LOGIN_HEADERS,
 });
 
-apiWithAuthToken.interceptors.request.use(
-  (config) => {
-    // Modify the request config to include the Authorization header
-    const token = localStorage.getItem("token");
-    if (token) config.headers.Authorization = "Bearer " + token;
-    return config;
-  },
-  (error) => {
-    // Handle request error
-    return Promise.reject(error);
-  },
-);
+export function setupInterceptors(navigate: NavigateFunction) {
+  apiWithAuthToken.interceptors.request.use(
+    (config) => {
+      // Modify the request config to include the Authorization header
+      const token = localStorage.getItem("token");
+      if (token) config.headers.Authorization = "Bearer " + token;
+      return config;
+    },
+    (error) => {
+      if (error instanceof AxiosError && error.response?.status === 403) {
+        navigate(Pathnames.participant.logout);
+      }
+      // Handle request error
+      return Promise.reject(error);
+    },
+  );
 
-apiWithAuthToken.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    // Handle response error
-    return Promise.reject(error);
-  },
-);
+  apiWithAuthToken.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      // Handle response error
+      if (error instanceof AxiosError && error.response?.status === 403)
+        navigate(Pathnames.participant.logout);
+      return Promise.reject(error);
+    },
+  );
 
-apiWithEtag.interceptors.request.use(
-  (config) => {
-    // Modify the request config to include the Authorization header
-    const token = localStorage.getItem("token");
-    if (token) config.headers.Authorization = "Bearer " + token;
-    const etag = localStorage.getItem("etag");
-    if (etag) config.headers["If-Match"] = etag;
-    return config;
-  },
-  (error) => {
-    // Handle request error
-    return Promise.reject(error);
-  },
-);
+  apiWithEtag.interceptors.request.use(
+    (config) => {
+      // Modify the request config to include the Authorization header
+      const token = localStorage.getItem("token");
+      if (token) config.headers.Authorization = "Bearer " + token;
+      const etag = localStorage.getItem("etag");
+      if (etag) config.headers["If-Match"] = etag;
+      return config;
+    },
+    (error) => {
+      if (error instanceof AxiosError && error.response?.status === 403) {
+        navigate(Pathnames.participant.logout);
+      }
+      return Promise.reject(error);
+    },
+  );
 
-apiWithEtag.interceptors.response.use(
-  (response) => {
-    const etag = response.headers.etag as string;
-    if (etag) {
-      localStorage.setItem(
-        "etag",
-        etag.substring(1, response.headers.etag.length - 1),
-      );
-    }
-    return response;
-  },
-  (error) => {
-    // Handle response error
-    return Promise.reject(error);
-  },
-);
+  apiWithEtag.interceptors.response.use(
+    (response) => {
+      const etag = response.headers.etag as string;
+      if (etag) {
+        localStorage.setItem(
+          "etag",
+          etag.substring(1, response.headers.etag.length - 1),
+        );
+      }
+      return response;
+    },
+    (error) => {
+      if (error instanceof AxiosError && error.response?.status === 403) {
+        navigate(Pathnames.participant.logout);
+      }
+      return Promise.reject(error);
+    },
+  );
+
+
+
+}
 
 export const api = {
   getAllAccounts: (): ApiResponseType<GetAccountType[]> =>

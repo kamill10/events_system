@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   TableBody,
   TableCell,
   TableContainer,
@@ -11,6 +12,7 @@ import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function ProfileDetailsComponent() {
   const { t, i18n } = useTranslation();
@@ -49,6 +51,20 @@ export default function ProfileDetailsComponent() {
       }}
     >
       <Typography variant="h4">{t("changePersonalData")}</Typography>
+      <Button
+        onClick={getMyAccount}
+        variant="contained"
+        startIcon={<RefreshIcon />}
+        color="secondary"
+        sx={{
+          mt: 1,
+          mb: 2,
+          width: "fit-content",
+          alignSelf: "center",
+        }}
+      >
+        {t("refreshData")}
+      </Button>
       <TableContainer>
         <TableHead>
           <TableCell
