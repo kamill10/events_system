@@ -1,9 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -78,26 +75,6 @@ public class MeController {
         meService.changeMyEmailWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    @PatchMapping("/change-unauthorized-password/token/{token}")
-    public ResponseEntity<?> changeUnauthorizedPasswordWithToken(@PathVariable String token,
-                                                                    @RequestBody
-                                                                    @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
-                                                                    @NotNull
-                                                                    String newPassword)
-            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException,
-            ThisPasswordAlreadyWasSetInHistory {
-        meService.resetPasswordWithTokenUnauthorized(token, newPassword);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PatchMapping("/change-unauthorized-password")
-    public ResponseEntity<?> changeUnauthorizedPassword(@RequestBody @Email String email)
-            throws AccountNotFoundException, AccountLockedException, AccountNotVerifiedException {
-        mailService.sendEmailToPasswordUnauthorized(meService.resetPasswordRequestUnauthorized(email));
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
 
 
     @PutMapping("/user-data")

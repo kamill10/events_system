@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 
 @Service
@@ -36,7 +35,6 @@ public class AccountService {
     private final CredentialResetRepository resetCredentialRepository;
     private final ConfigurationProperties config;
     private final ServiceVerifier verifier;
-    private final ResetPasswordUnauthorizedTokenRepository resetPasswordUnauthorizedTokenRepository;
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

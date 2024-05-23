@@ -58,8 +58,6 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/api/accounts/**").hasRole("ADMIN")
                             .requestMatchers(HttpMethod.PATCH, "/api/me/change-password/token/{token}").permitAll()
                             .requestMatchers(HttpMethod.PATCH, "/api/me/change-email/token/{token}").permitAll()
-                            .requestMatchers(HttpMethod.PATCH, "/api/me/change-unauthorized-password").permitAll()
-                            .requestMatchers(HttpMethod.PATCH, "/api/me/change-unauthorized-password/token/*").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/me").authenticated()
                             .requestMatchers(HttpMethod.GET, "/api/me/*").authenticated()
                             .requestMatchers(HttpMethod.PATCH, "/api/me/**").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")

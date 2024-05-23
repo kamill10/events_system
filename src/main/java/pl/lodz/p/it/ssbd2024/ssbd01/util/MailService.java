@@ -114,17 +114,6 @@ public class MailService {
                 "mail.password.changed.by.you.body", new Object[] {sb});
     }
 
-    public void sendEmailToPasswordUnauthorized(ResetPasswordUnauthorizedToken resetPasswordUnauthorizedToken) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");
-        sb.append("change-my-password");
-        sb.append("?token=");
-        sb.append(resetPasswordUnauthorizedToken.getToken());
-        sb.append("'>Link</a>");
-        sendEmailTemplate(resetPasswordUnauthorizedToken.getAccount(), "mail.password.changed.by.you.subject",
-                "mail.password.changed.by.you.body", new Object[] {sb});
-    }
-
     public void sendEmailToChangeMyEmail(ChangeEmail changeEmail, String email) {
         StringBuilder sb = new StringBuilder();
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/");

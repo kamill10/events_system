@@ -23,7 +23,7 @@ public class ConfigurationProperties {
     @Value("${confirmation.token.expiration.hours:24}")
     private Integer confirmationTokenExpiration;
 
-    @Value("${credential_change.token.expiration.minutes:30}")
+    @Value("${credential-change.token.expiration.minutes}")
     private Integer credentialChangeTokenExpiration;
 
     @Value("${spring.mail.host}")
@@ -134,8 +134,6 @@ public class ConfigurationProperties {
     @Value("${auth.lock-time.unused.account.days}")
     private Integer authLockTimeUnusedAccountDays;
 
-    @Value("${reset-password-unauthorized.token.expiration.minutes}")
-    private Integer resetPasswordUnauthorizedTokenExpiration;
 
 
 }
