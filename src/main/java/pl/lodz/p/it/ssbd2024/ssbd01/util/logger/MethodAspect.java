@@ -46,6 +46,9 @@ public class MethodAspect {
         try {
             proceed = joinPoint.proceed();
             log.info("Method {} returned: {}", methodName, proceed);
+        } catch (Exception e) {
+            log.info("Method {} result: rejected with message: {}", methodName, e.getMessage());
+            throw e;
         } finally {
             log.info("Method ended {}", methodName);
         }
