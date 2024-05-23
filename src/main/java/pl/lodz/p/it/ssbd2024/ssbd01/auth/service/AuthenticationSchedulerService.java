@@ -11,29 +11,28 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 public class AuthenticationSchedulerService {
 
     private final AuthenticationService authenticationService;
-    private final MailService mailService;
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRateString = "${scheduler.task.time-rate}")
     public void executeDeleteExpiredTokensAndAccounts() {
         RunAs.runAsSystem(authenticationService::deleteExpiredTokensAndAccounts);
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRateString = "${scheduler.task.time-rate}")
     public void executeDeleteExpiredJWTTokensFromWhitelist() {
         RunAs.runAsSystem(authenticationService::deleteExpiredJWTTokensFromWhitelist);
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRateString = "${scheduler.task.time-rate}")
     public void executeSendAccountConfirmationReminder() {
         RunAs.runAsSystem(authenticationService::sendAccountConfirmationReminder);
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRateString = "${scheduler.task.time-rate}")
     public void executeUnlockAccounts() {
         RunAs.runAsSystem(authenticationService::unlockAccounts);
     }
 
-    @Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRateString = "${scheduler.task.time-rate.longer}")
     public void executeLockAccountsThatAreNotUsed() {
         RunAs.runAsSystem(authenticationService::lockAccountsThatAreNotUsed);
     }

@@ -1,8 +1,11 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 
+import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,8 +26,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
@@ -56,22 +59,32 @@ public class AuthenticationService {
         return LocalDateTime.now().plusHours(expirationHours);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public MailToVerifyDTO registerUser(Account account) {
         var savedAccount = accountMokRepository.saveAndFlush(account);
         var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
         var expirationHours = config.getConfirmationTokenExpiration();
         var expirationDate = calculateExpirationDate(expirationHours);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
-        var confirmationReminder = new ConfirmationReminder(savedAccount, savedAccount.getCreatedAt()
-                .plusHours(expirationHours / 2).plusMinutes(expirationHours % 2 * 30));
+        var confirmationReminder = new ConfirmationReminder(savedAccount,
+                savedAccount.getCreatedAt().plusHours(expirationHours / 2).plusMinutes(expirationHours % 2 * 30));
         accountConfirmationRepository.saveAndFlush(newAccountConfirmation);
         confirmationReminderRepository.saveAndFlush(confirmationReminder);
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(savedAccount));
         return new MailToVerifyDTO(savedAccount, randString);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = {Exception.class},
+            noRollbackFor = {BadCredentialsException.class},
+            timeoutString = "${transaction.timeout}"
+    )
+    @Retryable(
+            retryFor = {OptimisticLockException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public String authenticate(LoginDTO loginDTO, String language) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
@@ -79,9 +92,7 @@ public class AuthenticationService {
             Account account = accountAuthRepository.findByUsername(loginDTO.username());
             account.setFailedLoginAttempts(account.getFailedLoginAttempts() + 1);
             account.setLastFailedLogin(LocalDateTime.now());
-            HttpServletRequest curRequest =
-                    ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                            .getRequest();
+            HttpServletRequest curRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
             account.setLastFailedLoginIp(
                     curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
             if (account.getFailedLoginAttempts() >= config.getAuthAttempts()) {
@@ -117,7 +128,12 @@ public class AuthenticationService {
         return jwtService.generateToken(user);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {OptimisticLockException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account verifyAccount(String token)
             throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
             RoleNotFoundException {
@@ -137,7 +153,12 @@ public class AuthenticationService {
         return account;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {OptimisticLockException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account unlockAccountThatWasNotUsed(String token) throws AccountUnlockTokenNotFoundException {
         AccountUnlock accountUnlock = accountUnlockRepository.findByToken(token)
                 .orElseThrow(() -> new AccountUnlockTokenNotFoundException(ExceptionMessages.UNLOCK_TOKEN_NOT_FOUND));
@@ -147,7 +168,7 @@ public class AuthenticationService {
         return accountMokRepository.saveAndFlush(account);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void deleteExpiredTokensAndAccounts() {
         LocalDateTime now = LocalDateTime.now();
@@ -166,7 +187,7 @@ public class AuthenticationService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void unlockAccounts() {
         LocalDateTime now = LocalDateTime.now();
@@ -182,13 +203,13 @@ public class AuthenticationService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void lockAccountsThatAreNotUsed() {
         LocalDateTime now = LocalDateTime.now();
 
-        List<Account> accounts = accountMokRepository.findByNonLockedTrueAndLastSuccessfulLoginBefore(
-                now.minusDays(config.getAuthLockTimeUnusedAccountDays()));
+        List<Account> accounts =
+                accountMokRepository.findByNonLockedTrueAndLastSuccessfulLoginBefore(now.minusDays(config.getAuthLockTimeUnusedAccountDays()));
 
         for (Account account : accounts) {
             account.setNonLocked(false);
@@ -200,13 +221,13 @@ public class AuthenticationService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void deleteExpiredJWTTokensFromWhitelist() {
         jwtWhitelistRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
     public void sendAccountConfirmationReminder() {
         confirmationReminderRepository.findByReminderDateBefore(LocalDateTime.now()).forEach(confirmationReminder -> {
@@ -216,19 +237,18 @@ public class AuthenticationService {
             sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
             sb.append(confirmation.getToken());
             sb.append("'>Link</a>");
-            mailService.sendEmailTemplate(confirmation.getAccount(), "mail.verify.account.subject",
-                    "mail.verify.account.body", new Object[] {sb});
+            mailService.sendEmailTemplate(confirmation.getAccount(), "mail.verify.account.subject", "mail.verify.account.body", new Object[] {sb});
             confirmationReminderRepository.deleteById(confirmationReminder.getId());
         });
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     public void logout(String token) {
         jwtWhitelistRepository.deleteByToken(token);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public Account getAccountByUsername(String username) {
         return accountAuthRepository.findByUsername(username);
     }
