@@ -24,7 +24,7 @@ public class MethodAspect {
             + "|| execution(* pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*.*(..)) "
             + "|| execution(* pl.lodz.p.it.ssbd2024.ssbd01.mok.controller.*.*(..))"
             + "|| execution(* pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.*.*(..)) "
-            + "|| execution(* pl.lodz.p.it.ssbd2024.ssbd01.auth.controller.*.*(..))"
+            + "|| execution(* pl.lodz.p.it.ssbd2024.ssbd01.auth.service.*.*(..))"
             + "|| execution(* pl.lodz.p.it.ssbd2024.ssbd01.auth.controller.*.*(..))"
     )
     private void methodPointcut() {
