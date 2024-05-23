@@ -26,10 +26,12 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFo
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
+import javax.security.auth.login.AccountLockedException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -72,7 +74,7 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
-    public String authenticate(LoginDTO loginDTO, String language) {
+    public String authenticate(LoginDTO loginDTO, String language) throws AccountLockedException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
         } catch (BadCredentialsException e) {
@@ -226,6 +228,17 @@ public class AuthenticationService {
     @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     public void logout(String token) {
         jwtWhitelistRepository.deleteByToken(token);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    public String refreshJWT(String token) throws TokenNotFoundException, AccountLockedException {
+        JWTWhitelistToken jwtWhitelistToken = jwtWhitelistRepository.findByToken(token.substring(7)).orElseThrow(
+                () -> new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND));
+        Account account = jwtWhitelistToken.getAccount();
+        jwtWhitelistRepository.delete(jwtWhitelistToken);
+        jwtWhitelistRepository.flush();
+        return jwtService.generateToken(account);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})

@@ -18,6 +18,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestControllerConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;
 
+import javax.security.auth.login.AccountLockedException;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,7 +38,7 @@ public class AuthenticationControllerMockTest {
     static ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setup() {
+    public void setup() throws AccountLockedException {
         mockMvcAuthentication = MockMvcBuilders.standaloneSetup(authenticationController).build();
         var adminLoginDTO = new LoginDTO("admin", "admin");
         Account account = null;
