@@ -108,7 +108,7 @@ public class MeService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public void changeMyPasswordWithToken(String token)
-            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
+            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
         Account account = verifier.verifyCredentialReset(token, changeMyPasswordRepository);
         String password =
                 changeMyPasswordRepository.findByToken(token).orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND))
@@ -122,7 +122,7 @@ public class MeService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public void changeMyEmailWithToken(String token)
-            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException {
+            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException, AccountLockedException, AccountNotVerifiedException {
         Account accountToUpdate = verifier.verifyCredentialReset(token, changeEmailRepository);
         var changeMyEmail = changeEmailRepository.findByToken(token)
                 .orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.EMAIL_RESET_TOKEN_NOT_FOUND));
@@ -201,6 +201,7 @@ public class MeService {
         AccountTimeZone accountTimeZone = account.getAccountTimeZone();
         return accountTimeZone.getTimeZone().toZoneId().getId();
     }
+
 
 
 }

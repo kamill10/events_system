@@ -68,6 +68,9 @@ public class AccountService {
                 break;
             case ROLE_MANAGER, ROLE_ADMIN:
                 canAddManagerOrAdminRole(account);
+                if (!account.getVerified()) {
+                    account.setVerified(true);
+                }
                 break;
             default:
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
@@ -213,7 +216,8 @@ public class AccountService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public void resetPasswordWithToken(String token, String newPassword)
-            throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException {
+            throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException,
+            AccountLockedException, AccountNotVerifiedException {
         Account accountToUpdate = verifier.verifyCredentialReset(token, resetCredentialRepository);
         if (verifier.isPasswordInHistory(accountToUpdate.getId(), newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
