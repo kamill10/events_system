@@ -18,7 +18,6 @@ import {
 } from "../types/Account";
 import { useTranslation } from "react-i18next";
 import { LanguageType } from "../types/enums/LanguageType.enum";
-import { AxiosError } from "axios";
 
 export const useAccount = () => {
   const { t } = useTranslation();
