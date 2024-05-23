@@ -17,8 +17,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFo
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 
 @RestController
 @RequestMapping("api/auth")
@@ -36,8 +38,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody LoginDTO request, @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language) {
+    public ResponseEntity<String> authenticate(@RequestBody LoginDTO request, @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language)
+            throws AccountLockedException {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request, language));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<String> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String token)
+            throws AccountLockedException, TokenNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.refreshJWT(token));
     }
 
     @PostMapping("/verify-account/{token}")

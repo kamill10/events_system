@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> {
                     requests
+                            .requestMatchers(HttpMethod.POST, "/api/auth/refresh-token").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/accounts/reset-password").permitAll()
                             .requestMatchers(HttpMethod.PATCH, "/api/accounts/reset-password/token/{token}").permitAll()

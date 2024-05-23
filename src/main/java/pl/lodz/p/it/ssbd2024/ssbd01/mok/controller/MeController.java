@@ -23,8 +23,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import java.util.TimeZone;
 
 
 @RestController
@@ -64,14 +64,14 @@ public class MeController {
 
     @PatchMapping("/change-password/token/{token}")
     public ResponseEntity<?> changePasswordWithToken(@PathVariable String token)
-            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException {
+            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
         meService.changeMyPasswordWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/change-email/token/{token}")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
-            throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException {
+            throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
         meService.changeMyEmailWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -117,5 +117,7 @@ public class MeController {
     public ResponseEntity<String> getMyTimeZone() {
         return ResponseEntity.status(HttpStatus.OK).body(meService.getAccountTimeZone());
     }
+
+
 
 }
