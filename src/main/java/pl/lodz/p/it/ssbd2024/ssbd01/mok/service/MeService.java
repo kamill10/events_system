@@ -35,6 +35,7 @@ public class MeService {
 
     private final PasswordHistoryRepository passwordHistoryRepository;
 
+    private final AccountMokHistoryRepository accountMokHistoryRepository;
 
     private final ChangeMyPasswordRepository changeMyPasswordRepository;
 
@@ -113,6 +114,7 @@ public class MeService {
         account.setPassword(password);
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(account));
         accountMokRepository.saveAndFlush(account);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
         changeMyPasswordRepository.deleteByToken(token);
     }
 
@@ -125,6 +127,7 @@ public class MeService {
                 .orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.EMAIL_RESET_TOKEN_NOT_FOUND));
         accountToUpdate.setEmail(changeMyEmail.getEmail());
         accountMokRepository.saveAndFlush(accountToUpdate);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(accountToUpdate));
         changeEmailRepository.deleteByToken(token);
     }
 
@@ -141,7 +144,9 @@ public class MeService {
         accountToUpdate.setFirstName(accountData.getFirstName());
         accountToUpdate.setLastName(accountData.getLastName());
         accountToUpdate.setGender(accountData.getGender());
-        return accountMokRepository.saveAndFlush(accountToUpdate);
+        var returnedAccount = accountMokRepository.saveAndFlush(accountToUpdate);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+        return returnedAccount;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
@@ -166,6 +171,7 @@ public class MeService {
                 .orElseThrow(() -> new AccountThemeNotFoundException(ExceptionMessages.ACCOUNT_THEME_NOT_FOUND));
         account.setAccountTheme(accountTheme);
         accountMokRepository.saveAndFlush(account);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
         return accountTheme.getTheme();
     }
 
@@ -178,6 +184,7 @@ public class MeService {
                 .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
         account.setAccountTimeZone(accountTimeZone);
         accountMokRepository.saveAndFlush(account);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
         return accountTimeZone.getTimeZone().toZoneId().getId();
     }
 

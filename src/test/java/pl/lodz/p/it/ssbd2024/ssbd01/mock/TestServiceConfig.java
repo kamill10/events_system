@@ -6,20 +6,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationSchedulerService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.BusinessConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.ToolsConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountSchedulerService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.logger.LoggingTransactionSynchronization;
 
 @Configuration
 @Import({
@@ -126,4 +124,13 @@ public class TestServiceConfig {
         return Mockito.mock(AccountUnlockRepository.class);
     }
 
+    @Bean
+    public AccountMokHistoryRepository accountHistoryRepository() {
+        return Mockito.mock(AccountMokHistoryRepository.class);
+    }
+
+    @Bean
+    public AccountAuthHistoryRepository accountAuthHistoryRepository() {
+        return Mockito.mock(AccountAuthHistoryRepository.class);
+    }
 }

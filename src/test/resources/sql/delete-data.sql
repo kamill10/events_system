@@ -12,3 +12,6 @@ DELETE FROM public.account;
 DELETE FROM public.role;
 DELETE FROM public.account_time_zone;
 DELETE FROM public.account_time_theme;
+DELETE FROM public.account_history;
+DELETE FROM public.account_history_role;
+DELETE FROM public.personal_data_history;

@@ -33,6 +33,7 @@ public class AccountService {
     private final ChangeMyPasswordRepository changeMyPasswordRepository;
     private final ChangeEmailRepository changeEmailRepository;
     private final CredentialResetRepository resetCredentialRepository;
+    private final AccountMokHistoryRepository accountMokHistoryRepository;
     private final ConfigurationProperties config;
     private final ServiceVerifier verifier;
 
@@ -47,6 +48,7 @@ public class AccountService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public Account addAccount(Account account) {
         Account returnedAccount = accountMokRepository.saveAndFlush(account);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(returnedAccount));
         return returnedAccount;
     }
@@ -73,7 +75,9 @@ public class AccountService {
                 throw new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND);
         }
         account.addRole(role);
-        return accountMokRepository.saveAndFlush(account);
+        var returnedAccount = accountMokRepository.saveAndFlush(account);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+        return returnedAccount;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -103,7 +107,9 @@ public class AccountService {
         for (Role roles : account.getRoles()) {
             if (roles.getName().equals(roleName)) {
                 account.removeRole(role);
-                return accountMokRepository.saveAndFlush(account);
+                var returnedAccount = accountMokRepository.saveAndFlush(account);
+                accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+                return returnedAccount;
             }
         }
         throw new RoleCanNotBeRemoved(ExceptionMessages.ACCOUNT_NOT_HAVE_THIS_ROLE);
@@ -115,7 +121,9 @@ public class AccountService {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         account.setActive(status);
-        return accountMokRepository.saveAndFlush(account);
+        var returnedAccount = accountMokRepository.saveAndFlush(account);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+        return returnedAccount;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -136,7 +144,9 @@ public class AccountService {
         accountToUpdate.setFirstName(account.getFirstName());
         accountToUpdate.setLastName(account.getLastName());
         accountToUpdate.setGender(account.getGender());
-        return accountMokRepository.saveAndFlush(accountToUpdate);
+        var returnedAccount = accountMokRepository.saveAndFlush(accountToUpdate);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+        return returnedAccount;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -222,6 +232,12 @@ public class AccountService {
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
         resetCredentialRepository.deleteByToken(token);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<AccountHistory> getAllAccountHistoryByUsername(String username) {
+        return accountMokHistoryRepository.findAllByAccount_Username(username);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
