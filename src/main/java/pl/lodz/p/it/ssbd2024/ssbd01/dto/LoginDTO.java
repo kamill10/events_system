@@ -8,4 +8,12 @@ public record LoginDTO(
         @NotNull String username,
         @Size(min = 8, max = 72)
         @NotNull String password) {
+
+    @Override
+    public String toString() {
+        return "LoginDTO{"
+                + "username='" + username + '\''
+                + ", password='********'"
+                + '}';
+    }
 }
