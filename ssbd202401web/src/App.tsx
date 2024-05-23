@@ -6,6 +6,8 @@ import LoadingScreen from "./pages/LoadingScreen.tsx";
 import { ManageAccountsStateContextProvider } from "./context/ManageAccountsContext.tsx";
 
 function App() {
+
+  
   return (
     <SnackbarProvider>
       <AccountStateContextProvider>
