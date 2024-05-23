@@ -31,7 +31,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import javax.security.auth.login.AccountLockedException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

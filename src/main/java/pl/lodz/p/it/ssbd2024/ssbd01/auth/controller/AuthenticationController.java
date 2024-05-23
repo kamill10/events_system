@@ -20,8 +20,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.TokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
-
-import javax.security.auth.login.AccountLockedException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 
 @RestController
 @RequestMapping("api/auth")

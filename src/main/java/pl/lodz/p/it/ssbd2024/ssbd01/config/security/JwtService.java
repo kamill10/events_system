@@ -19,10 +19,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import javax.crypto.SecretKey;
-import javax.security.auth.login.AccountLockedException;
 import java.util.*;
 import java.util.function.Function;
 
