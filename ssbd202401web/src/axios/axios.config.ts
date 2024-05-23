@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { ApiResponseType } from "../types/ApiResponse.ts";
 import {
   ChangeEmailType,
@@ -16,6 +16,8 @@ import {
   SignInCredentialsType,
 } from "../types/Authentication.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
+import { Pathnames } from "../router/Pathnames.ts";
+import { redirect } from "react-router-dom";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -72,6 +74,8 @@ apiWithAuthToken.interceptors.response.use(
   },
   (error) => {
     // Handle response error
+    if (error instanceof AxiosError && error.response?.status === 403)
+      redirect(Pathnames.participant.logout);
     return Promise.reject(error);
   },
 );
@@ -86,7 +90,6 @@ apiWithEtag.interceptors.request.use(
     return config;
   },
   (error) => {
-    // Handle request error
     return Promise.reject(error);
   },
 );
@@ -103,7 +106,8 @@ apiWithEtag.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Handle response error
+    if (error instanceof AxiosError && error.response?.status === 403)
+      redirect(Pathnames.participant.logout);
     return Promise.reject(error);
   },
 );

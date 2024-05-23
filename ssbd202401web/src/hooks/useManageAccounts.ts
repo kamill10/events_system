@@ -155,6 +155,7 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
+
       sendNotification({
         type: "error",
         description: t("addRoleFail"),
