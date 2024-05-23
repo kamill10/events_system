@@ -19,6 +19,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import javax.crypto.SecretKey;
 import java.util.*;
@@ -100,7 +102,10 @@ public class JwtService {
     }
 
 
-    public String generateToken(Account account) {
+    public String generateToken(Account account) throws AccountLockedException {
+        if (!account.getNonLocked()) {
+            throw new AccountLockedException(ExceptionMessages.ACCOUNT_LOCKED);
+        }
         return generateToken(new HashMap<>(), account);
     }
 

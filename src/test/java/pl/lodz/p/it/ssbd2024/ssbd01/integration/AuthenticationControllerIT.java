@@ -267,6 +267,18 @@ public class AuthenticationControllerIT {
     }
 
     @Test
+    public void refreshTokenTest() {
+        var resp = given()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                .when()
+                .post(baseUrl + "/auth/refresh-token")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String jwtToken = resp.extract().body().asString();
+        adminToken = jwtToken.substring(1, jwtToken.length() - 1);
+    }
+
+    @Test
     public void logoutTest() {
         given()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
