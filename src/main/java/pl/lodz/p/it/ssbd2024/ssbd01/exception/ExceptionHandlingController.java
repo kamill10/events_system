@@ -9,10 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.UnprocessableEntityException;
+import org.springframework.web.client.HttpClientErrorException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 
 import java.util.ArrayList;
@@ -89,6 +87,11 @@ public class ExceptionHandlingController {
     @ExceptionHandler
     public ResponseEntity<?> handleExpiredJwtException(ExpiredJwtException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleUnauthorizedException(UnauthorizedOperationException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
 }

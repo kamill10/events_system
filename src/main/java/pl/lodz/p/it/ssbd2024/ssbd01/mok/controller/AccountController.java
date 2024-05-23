@@ -145,7 +145,8 @@ public class AccountController {
 
     @PatchMapping("/reset-password/token/{token}")
     public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody UpdatePasswordDTO password)
-            throws TokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException {
+            throws TokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException,
+            AccountLockedException, AccountNotVerifiedException {
         accountService.resetPasswordWithToken(token, password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
