@@ -4,6 +4,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
@@ -11,5 +12,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Import({MailConfig.class, I18nConfig.class})
 @EnableAspectJAutoProxy
 @EnableScheduling
+@EnableRetry
 public class ToolsConfig {
 }
