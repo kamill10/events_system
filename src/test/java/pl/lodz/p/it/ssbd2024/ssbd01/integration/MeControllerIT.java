@@ -86,7 +86,8 @@ public class MeControllerIT {
             .withReuse(true)
             .withFileSystemBind("transactions.log", "/usr/local/tomcat/transactions.log", BindMode.READ_WRITE)
             .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE)
-            .withFileSystemBind("switch_role.log", "/usr/local/tomcat/switch_role.log", BindMode.READ_WRITE);
+            .withFileSystemBind("switch_role.log", "/usr/local/tomcat/switch_role.log", BindMode.READ_WRITE)
+            .withFileSystemBind("all_method.log", "/usr/local/tomcat/all_method.log", BindMode.READ_WRITE);
 
 
     @BeforeEach

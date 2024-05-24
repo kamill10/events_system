@@ -21,6 +21,13 @@
         </encoder>
     </appender>
 
+    <appender name="MethodFile" class="ch.qos.logback.core.FileAppender">
+        <file>all_method.log</file>
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <logger name="pl.lodz.p.it.ssbd2024.ssbd01.util.logger.TxAspect" level="INFO">
         <appender-ref ref="FILE"/>
     </logger>
@@ -31,6 +38,10 @@
 
     <logger name="pl.lodz.p.it.ssbd2024.ssbd01.util.logger.SwitchRoleAspect" level="INFO">
         <appender-ref ref="RoleFile"/>
+    </logger>
+
+    <logger name="pl.lodz.p.it.ssbd2024.ssbd01.util.logger.MethodAspect" level="INFO">
+        <appender-ref ref="MethodFile"/>
     </logger>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">

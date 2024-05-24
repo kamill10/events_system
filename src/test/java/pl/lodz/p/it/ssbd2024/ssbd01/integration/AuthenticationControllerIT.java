@@ -81,7 +81,8 @@ public class AuthenticationControllerIT {
             .waitingFor(Wait.forHttp("/ssbd01/api/accounts").forStatusCode(403))
             .withReuse(true)
             .withFileSystemBind("transactions.log", "/usr/local/tomcat/transactions.log", BindMode.READ_WRITE)
-            .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE);
+            .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE)
+            .withFileSystemBind("all_method.log", "/usr/local/tomcat/all_method.log", BindMode.READ_WRITE);
 
 
     @BeforeEach
