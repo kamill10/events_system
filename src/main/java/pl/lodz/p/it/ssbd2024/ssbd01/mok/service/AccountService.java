@@ -130,12 +130,9 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account updateAccountData(UUID id, Account account, String eTag) throws AccountNotFoundException, OptLockException {
+    public Account updateAccountData(UUID id, Account account) throws AccountNotFoundException, OptLockException {
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
-        if (!ETagBuilder.isETagValid(eTag, String.valueOf(accountToUpdate.getVersion()))) {
-            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
-        }
         accountToUpdate.setFirstName(account.getFirstName());
         accountToUpdate.setLastName(account.getLastName());
         accountToUpdate.setGender(account.getGender());

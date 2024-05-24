@@ -103,12 +103,12 @@ public class AccountController {
 
     @PutMapping("/{id}/user-data")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GetAccountPersonalDTO> updateAccountData(@RequestHeader("If-Match") String eTag, @PathVariable UUID id,
-                                                                   @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+    public ResponseEntity<GetAccountPersonalDTO> updateAccountData( @PathVariable UUID id,
+                                                                   @Valid @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws NotFoundException, OptLockException {
         GetAccountPersonalDTO updatedAccount =
                 accountDTOConverter.toAccountPersonalDTO(accountService.updateAccountData(id, accountDTOConverter
-                        .toAccount(updateAccountDataDTO), eTag));
+                        .toAccount(updateAccountDataDTO)));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
     }
 

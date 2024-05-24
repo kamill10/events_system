@@ -7,16 +7,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -29,6 +29,11 @@ public class ExceptionHandlingController {
     @ExceptionHandler
     ResponseEntity<String> handleBadRequestException(BadRequestException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    ResponseEntity<String> handleForbiddenException(HttpClientErrorException.Forbidden e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler
@@ -69,15 +74,9 @@ public class ExceptionHandlingController {
 
     @ExceptionHandler
     public ResponseEntity<?> handleHibernateConstraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
-        ArrayList<String> causes = new ArrayList<>();
-        Collections.addAll(causes,e.getCause().getMessage().split("Detail: ")[1].split("\\(|\\)"));
-        causes.remove(0);
-        causes.remove(1);
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new HashMap<>() {{
-            put(causes.get(1),causes.get(0) + StringUtils.chop(causes.get(2)));
-            }
-        });
-    }
+        String errorMessage = e.getCause().getMessage();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
+        }
 
     @ExceptionHandler
     public ResponseEntity<?> handleSignatureException(SignatureException e) {
@@ -92,6 +91,16 @@ public class ExceptionHandlingController {
     @ExceptionHandler
     public ResponseEntity<?> handleUnauthorizedException(UnauthorizedOperationException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        //exception handling for dto
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
+        );
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errors);
     }
 
 }
