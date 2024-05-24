@@ -10,4 +10,5 @@ public record UpdateMyPasswordDTO(
         @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
         String newPassword
 
-) {}
+) {
+}

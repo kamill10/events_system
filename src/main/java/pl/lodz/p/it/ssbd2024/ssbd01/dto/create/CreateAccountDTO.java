@@ -20,6 +20,6 @@ public record CreateAccountDTO(
         @Size(min = 2, max = 64, message = ExceptionMessages.INCORRECT_LAST_NAME)
         String lastName,
 
-        LanguageEnum  language
+        LanguageEnum language
 ) {
 }
