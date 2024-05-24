@@ -1,9 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.dto.create;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
@@ -14,7 +11,7 @@ public record CreateAccountDTO(
         @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
         @NotNull String password,
         @Email(message = ExceptionMessages.INCORRECT_EMAIL)
-        @NotNull(message = ExceptionMessages.INCORRECT_EMAIL)
+        @NotBlank(message = ExceptionMessages.INCORRECT_EMAIL)
         String email,
         @NotNull(message = ExceptionMessages.INCORRECT_GENDER)
         Integer gender,
