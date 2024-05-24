@@ -11,17 +11,17 @@ public class AccountSchedulerService {
 
     private final AccountService accountService;
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRateString = "${scheduler.task.time-rate}")
     public void executeDeleteExpiredChangeEmailTokens() {
         RunAs.runAsSystem(accountService::deleteExpiredChangeEmailTokens);
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRateString = "${scheduler.task.time-rate}")
     public void executeDeleteExpiredChangePasswordTokens() {
         RunAs.runAsSystem(accountService::deleteExpiredChangePasswordTokens);
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRateString = "${scheduler.task.time-rate}")
     public void executeDeleteExpiredResetCredentialsTokens() {
         RunAs.runAsSystem(accountService::deleteExpiredResetCredentialTokens);
     }

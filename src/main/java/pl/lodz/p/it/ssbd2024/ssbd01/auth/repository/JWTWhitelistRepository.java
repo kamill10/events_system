@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -28,4 +29,7 @@ public interface JWTWhitelistRepository extends JpaRepository<JWTWhitelistToken,
     @Override
     @PreAuthorize("permitAll()")
     JWTWhitelistToken save(JWTWhitelistToken jwtWhitelistToken);
+
+    Optional<JWTWhitelistToken> findByToken(String token);
+
 }

@@ -81,7 +81,8 @@ public class AuthenticationControllerIT {
             .waitingFor(Wait.forHttp("/ssbd01/api/accounts").forStatusCode(403))
             .withReuse(true)
             .withFileSystemBind("transactions.log", "/usr/local/tomcat/transactions.log", BindMode.READ_WRITE)
-            .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE);
+            .withFileSystemBind("auth.log", "/usr/local/tomcat/auth.log", BindMode.READ_WRITE)
+            .withFileSystemBind("all_method.log", "/usr/local/tomcat/all_method.log", BindMode.READ_WRITE);
 
 
     @BeforeEach
@@ -263,6 +264,18 @@ public class AuthenticationControllerIT {
                 .body(
                         containsString("User account is locked")
                 );
+    }
+
+    @Test
+    public void refreshTokenTest() {
+        var resp = given()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
+                .when()
+                .post(baseUrl + "/auth/refresh-token")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String jwtToken = resp.extract().body().asString();
+        adminToken = jwtToken.substring(1, jwtToken.length() - 1);
     }
 
     @Test

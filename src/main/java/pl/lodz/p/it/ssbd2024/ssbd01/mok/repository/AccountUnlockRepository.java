@@ -7,6 +7,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountUnlock;
 import java.util.Optional;
 import java.util.UUID;
 
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public interface AccountUnlockRepository extends JpaRepository<AccountUnlock, UUID> {
 
     @PreAuthorize("permitAll()")

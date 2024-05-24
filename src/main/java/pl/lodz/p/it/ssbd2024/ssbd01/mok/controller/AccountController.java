@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.AccountHistoryDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDetailedDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountHistoryDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
@@ -166,6 +168,14 @@ public class AccountController {
         ChangeEmail changeEmail = accountService.sendMailWhenEmailChangeByAdmin(id, emailDTO.email());
         mailService.sendEmailToChangeEmailByAdmin(changeEmail, emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/history")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<GetAccountHistoryDetailedDTO>> getAccountHistoryListByUsername(@RequestBody AccountHistoryDTO accountHistoryDTO) {
+        List<GetAccountHistoryDetailedDTO> accountHistoryList =
+                accountDTOConverter.accountHistoryDtoList(accountService.getAllAccountHistoryByUsername(accountHistoryDTO.username()));
+        return ResponseEntity.status(HttpStatus.OK).body(accountHistoryList);
     }
 
 

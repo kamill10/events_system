@@ -44,6 +44,9 @@ public class TxAspect {
             TransactionSynchronizationManager.registerSynchronization(new LoggingTransactionSynchronization(transactionId));
             proceed = joinPoint.proceed();
             log.info("Transaction {} returned: {}", transactionId, proceed);
+        } catch (Exception e) {
+            log.info("Transaction {} result: rejected with message: {}", transactionId, e.getMessage());
+            throw e;
         } finally {
             log.info("Transaction {} ended: {}", transactionId, methodName);
         }

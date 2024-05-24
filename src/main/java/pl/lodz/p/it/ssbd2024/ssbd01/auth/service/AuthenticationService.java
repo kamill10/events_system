@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
@@ -26,6 +27,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFo
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
@@ -50,6 +52,8 @@ public class AuthenticationService {
     private final JWTWhitelistRepository jwtWhitelistRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordHistoryRepository passwordHistoryRepository;
+    private final AccountMokHistoryRepository accountMokHistoryRepository;
+    private final AccountAuthHistoryRepository accountAuthHistoryRepository;
     private final MailService mailService;
     private final ConfigurationProperties config;
 
@@ -61,6 +65,7 @@ public class AuthenticationService {
     public MailToVerifyDTO registerUser(Account account) {
         var savedAccount = accountMokRepository.saveAndFlush(account);
         var randString = TokenGenerator.generateToken();
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(savedAccount));
         var expirationHours = config.getConfirmationTokenExpiration();
         var expirationDate = calculateExpirationDate(expirationHours);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
@@ -73,7 +78,7 @@ public class AuthenticationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {BadCredentialsException.class})
-    public String authenticate(LoginDTO loginDTO, String language) {
+    public String authenticate(LoginDTO loginDTO, String language) throws AccountLockedException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
         } catch (BadCredentialsException e) {
@@ -95,6 +100,7 @@ public class AuthenticationService {
                         new Object[]{lockTimeout.format(formatter)});
             }
             accountAuthRepository.saveAndFlush(account);
+            accountAuthHistoryRepository.saveAndFlush(new AccountHistory(account));
             throw e;
         }
 
@@ -115,6 +121,7 @@ public class AuthenticationService {
         user.setLastSuccessfulLoginIp(
                 curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
         accountAuthRepository.saveAndFlush(user);
+        accountAuthHistoryRepository.saveAndFlush(new AccountHistory(user));
         return jwtService.generateToken(user);
     }
 
@@ -133,6 +140,7 @@ public class AuthenticationService {
         account.addRole(roleRepository.findByName(AccountRoleEnum.ROLE_PARTICIPANT)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND)));
         accountMokRepository.saveAndFlush(account);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
         accountConfirmationRepository.delete(accountConfirmation);
         confirmationReminderRepository.deleteByAccount(account);
         return account;
@@ -145,7 +153,9 @@ public class AuthenticationService {
         Account account = accountUnlock.getAccount();
         account.setNonLocked(true);
         accountUnlockRepository.delete(accountUnlock);
-        return accountMokRepository.saveAndFlush(account);
+        var returnAccount = accountMokRepository.saveAndFlush(account);
+        accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnAccount));
+        return returnAccount;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
@@ -179,6 +189,7 @@ public class AuthenticationService {
             account.setFailedLoginAttempts(0);
             account.setLockedUntil(null);
             accountMokRepository.saveAndFlush(account);
+            accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
             mailService.sendEmailToInformAboutUnblockAccount(account);
         }
     }
@@ -194,6 +205,7 @@ public class AuthenticationService {
         for (Account account : accounts) {
             account.setNonLocked(false);
             accountMokRepository.saveAndFlush(account);
+            accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
             var token = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
             var accountUnlock = new AccountUnlock(token, account);
             accountUnlockRepository.saveAndFlush(accountUnlock);
@@ -234,4 +246,14 @@ public class AuthenticationService {
         return accountAuthRepository.findByUsername(username);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    public String refreshJWT(String token) throws TokenNotFoundException, AccountLockedException {
+        JWTWhitelistToken jwtWhitelistToken = jwtWhitelistRepository.findByToken(token.substring(7)).orElseThrow(
+                () -> new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND));
+        Account account = jwtWhitelistToken.getAccount();
+        jwtWhitelistRepository.delete(jwtWhitelistToken);
+        jwtWhitelistRepository.flush();
+        return jwtService.generateToken(account);
+    }
 }

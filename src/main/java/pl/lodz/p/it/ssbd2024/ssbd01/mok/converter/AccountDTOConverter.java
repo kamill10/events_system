@@ -6,9 +6,11 @@ import org.springframework.stereotype.Component;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDetailedDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountHistoryDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
 import java.time.LocalDateTime;
@@ -60,9 +62,9 @@ public class AccountDTOConverter {
                 account.getActive(),
                 account.getVerified(),
                 account.getNonLocked(),
-                account.getLastSuccessfulLogin() != null ? account.getLastSuccessfulLogin().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
-                account.getLastFailedLogin() != null ? account.getLastFailedLogin().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
-                account.getLockedUntil() != null ? account.getLockedUntil().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : null,
+                account.getLastSuccessfulLogin(),
+                account.getLastFailedLogin(),
+                account.getLockedUntil(),
                 account.getGender(),
                 account.getFirstName(),
                 account.getLastName(),
@@ -93,6 +95,39 @@ public class AccountDTOConverter {
                 account.getFirstName(),
                 account.getLastName(),
                 account.getGender());
+    }
+
+    public List<GetAccountHistoryDetailedDTO> accountHistoryDtoList(List<AccountHistory> accountHistories) {
+        return accountHistories.stream().map(this::toAccountHistoryDto).toList();
+    }
+
+    public GetAccountHistoryDetailedDTO toAccountHistoryDto(AccountHistory accountHistory) {
+        return new GetAccountHistoryDetailedDTO(
+                accountHistory.getId(),
+                accountHistory.getUsername(),
+                accountHistory.getEmail(),
+                accountHistory.getRoles().stream().map(Role::getName).toList(),
+                accountHistory.getActive(),
+                accountHistory.getVerified(),
+                accountHistory.getNonLocked(),
+                accountHistory.getFailedLoginAttempts(),
+                accountHistory.getLastFailedLoginIp(),
+                accountHistory.getLastSuccessfulLoginIp(),
+                accountHistory.getLastSuccessfulLogin(),
+                accountHistory.getLastFailedLogin(),
+                accountHistory.getLockedUntil(),
+                accountHistory.getGender(),
+                accountHistory.getFirstName(),
+                accountHistory.getLastName(),
+                accountHistory.getLanguage(),
+                accountHistory.getAccountTheme(),
+                accountHistory.getAccountTimeZone(),
+                accountHistory.getCreatedAt(),
+                accountHistory.getUpdatedAt(),
+                accountHistory.getCreatedBy(),
+                accountHistory.getUpdatedBy(),
+                accountHistory.getActionType()
+        );
     }
 
 
