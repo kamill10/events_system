@@ -46,7 +46,7 @@ public class MeController {
 
     @PostMapping("/change-password")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<?> changeMyPasswordSendEmail(@RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
+    public ResponseEntity<?> changeMyPasswordSendEmail(@Valid @RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
             throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
         ChangeMyPassword changeMyPassword = meService.changeMyPasswordSendMail(updateMyPasswordDto.oldPassword(), updateMyPasswordDto.newPassword());
         mailService.sendEmailToChangeMyPassword(changeMyPassword);
@@ -81,7 +81,7 @@ public class MeController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<GetAccountPersonalDTO> updateMyData(
             @RequestHeader("If-Match") String eTag,
-            @RequestBody UpdateAccountDataDTO updateAccountDataDTO
+            @Valid @RequestBody UpdateAccountDataDTO updateAccountDataDTO
     ) throws AccountNotFoundException, OptLockException {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountPersonalDTO(
                 meService.updateMyAccountData(accountDTOConverter.toAccount(updateAccountDataDTO), eTag)));

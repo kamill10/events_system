@@ -52,7 +52,7 @@ public class AccountController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GetAccountPersonalDTO> createUser(@RequestBody CreateAccountDTO createAccountDTO) {
+    public ResponseEntity<GetAccountPersonalDTO> createUser(@Valid @RequestBody CreateAccountDTO createAccountDTO) {
         GetAccountPersonalDTO getAccountDTO = accountDTOConverter.toAccountPersonalDTO(accountService
                 .addAccount(accountDTOConverter.toAccount(createAccountDTO)));
         return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
@@ -106,7 +106,7 @@ public class AccountController {
     @PutMapping("/{id}/user-data")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountPersonalDTO> updateAccountData(@RequestHeader("If-Match") String eTag, @PathVariable UUID id,
-                                                                   @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
+                                                                   @Valid @RequestBody UpdateAccountDataDTO updateAccountDataDTO)
             throws NotFoundException, OptLockException {
         GetAccountPersonalDTO updatedAccount =
                 accountDTOConverter.toAccountPersonalDTO(accountService.updateAccountData(id, accountDTOConverter
@@ -146,7 +146,7 @@ public class AccountController {
     }
 
     @PatchMapping("/reset-password/token/{token}")
-    public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @RequestBody UpdatePasswordDTO password)
+    public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @Valid @RequestBody UpdatePasswordDTO password)
             throws TokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException,
             AccountLockedException, AccountNotVerifiedException {
         accountService.resetPasswordWithToken(token, password.value());
@@ -172,7 +172,8 @@ public class AccountController {
 
     @GetMapping("/history")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<GetAccountHistoryDetailedDTO>> getAccountHistoryListByUsername(@RequestBody AccountHistoryDTO accountHistoryDTO) {
+    public ResponseEntity<List<GetAccountHistoryDetailedDTO>> getAccountHistoryListByUsername(
+            @Valid @RequestBody AccountHistoryDTO accountHistoryDTO) {
         List<GetAccountHistoryDetailedDTO> accountHistoryList =
                 accountDTOConverter.accountHistoryDtoList(accountService.getAllAccountHistoryByUsername(accountHistoryDTO.username()));
         return ResponseEntity.status(HttpStatus.OK).body(accountHistoryList);

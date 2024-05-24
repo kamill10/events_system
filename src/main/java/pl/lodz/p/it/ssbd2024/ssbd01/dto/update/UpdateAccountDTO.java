@@ -3,13 +3,14 @@ package pl.lodz.p.it.ssbd2024.ssbd01.dto.update;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 public record UpdateAccountDTO(
-        @Email
+        @Email(message = ExceptionMessages.INCORRECT_EMAIL)
         String email,
-        @NotNull
+        @NotNull(message = ExceptionMessages.INCORRECT_GENDER)
         Integer gender,
-        @Size(min = 8, max = 72)
+        @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
         String password
 ) {
 }
