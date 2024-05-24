@@ -1,7 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.util;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.PasswordHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.CredentialResetRepository;
@@ -17,7 +15,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.GenericChangeCredentialTokenR
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -39,7 +36,7 @@ public class ServiceVerifier {
 
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public CredentialReset saveTokenToResetCredential(Account account) {
-        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
         var newResetIssue = new CredentialReset(randString, account, expirationDate);
