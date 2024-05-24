@@ -40,7 +40,7 @@ public class AuthenticationControllerMockTest {
     @BeforeEach
     public void setup() throws AccountLockedException {
         mockMvcAuthentication = MockMvcBuilders.standaloneSetup(authenticationController).build();
-        var adminLoginDTO = new LoginDTO("admin", "admin");
+        var adminLoginDTO = new LoginDTO("admin", "adminmusibyc7znakjowxd");
         Account account = null;
         Mockito.when(authenticationService.authenticate(adminLoginDTO, "en-US")).thenReturn("secr3t_token");
     }
@@ -53,7 +53,7 @@ public class AuthenticationControllerMockTest {
 
     @Test
     void testAdminAuthentication() throws Exception {
-        var adminLoginDTO = new LoginDTO("admin", "admin");
+        var adminLoginDTO = new LoginDTO("admin", "adminmusibyc7znakjowxd");
         var tokenFromService = mockMvcAuthentication.perform(post("/api/auth/authenticate")
                         .header("Accept-Language", "en-US")
                 .contentType("application/json")
