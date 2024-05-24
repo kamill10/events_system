@@ -2,7 +2,6 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,9 +18,9 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -71,7 +70,7 @@ public class MeService {
         }
         changeMyPasswordRepository.deleteByAccount(account);
         changeMyPasswordRepository.flush();
-        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
         var newResetIssue = new ChangeMyPassword(randString, account,
@@ -94,7 +93,7 @@ public class MeService {
         }
         changeEmailRepository.deleteByAccount(account);
         changeEmailRepository.flush();
-        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
         var newResetIssue = new ChangeEmail(randString, account,
@@ -198,7 +197,6 @@ public class MeService {
         AccountTimeZone accountTimeZone = account.getAccountTimeZone();
         return accountTimeZone.getTimeZone().toZoneId().getId();
     }
-
 
 
 }

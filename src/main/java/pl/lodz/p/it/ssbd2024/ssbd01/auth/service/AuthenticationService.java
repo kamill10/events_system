@@ -23,11 +23,12 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.security.SecureRandom;
@@ -59,7 +60,7 @@ public class AuthenticationService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
     public MailToVerifyDTO registerUser(Account account) {
         var savedAccount = accountMokRepository.saveAndFlush(account);
-        var randString = RandomStringUtils.random(128, 0, 0, true, true, null, new SecureRandom());
+        var randString = TokenGenerator.generateToken();
         var expirationHours = config.getConfirmationTokenExpiration();
         var expirationDate = calculateExpirationDate(expirationHours);
         var newAccountConfirmation = new AccountConfirmation(randString, account, expirationDate);
@@ -91,7 +92,7 @@ public class AuthenticationService {
                 account.setLockedUntil(lockTimeout);
                 jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
                 mailService.sendEmailTemplate(account, "mail.locked.until.subject", "mail.locked.until.body",
-                        new Object[] {lockTimeout.format(formatter)});
+                        new Object[]{lockTimeout.format(formatter)});
             }
             accountAuthRepository.saveAndFlush(account);
             throw e;
@@ -217,7 +218,7 @@ public class AuthenticationService {
             sb.append(confirmation.getToken());
             sb.append("'>Link</a>");
             mailService.sendEmailTemplate(confirmation.getAccount(), "mail.verify.account.subject",
-                    "mail.verify.account.body", new Object[] {sb});
+                    "mail.verify.account.body", new Object[]{sb});
             confirmationReminderRepository.deleteById(confirmationReminder.getId());
         });
     }
