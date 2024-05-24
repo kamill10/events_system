@@ -6,7 +6,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 public record CreateAccountDTO(
         @Pattern(regexp = "^(?!anonymous$)[a-zA-Z0-9]{3,32}$", message = ExceptionMessages.INCORRECT_USERNAME)
-        @NotNull
+        @NotNull(message = ExceptionMessages.INCORRECT_USERNAME)
         String username,
         @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
         @NotNull String password,
@@ -19,6 +19,7 @@ public record CreateAccountDTO(
         String firstName,
         @Size(min = 2, max = 64, message = ExceptionMessages.INCORRECT_LAST_NAME)
         String lastName,
+
         LanguageEnum  language
 ) {
 }

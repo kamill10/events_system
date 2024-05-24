@@ -74,8 +74,8 @@ public class ExceptionHandlingController {
 
     @ExceptionHandler
     public ResponseEntity<?> handleHibernateConstraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
-        String errorMessage = e.getCause().getMessage();
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
+        String errorMessage = e.getConstraintName() + ":Already exist.";
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage) ;
         }
 
     @ExceptionHandler
@@ -94,13 +94,13 @@ public class ExceptionHandlingController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity <List<String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         //exception handling for dto
-        Map<String, String> errors = new HashMap<>();
+        List<String> errors = new ArrayList<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
+                errors.add(error.getField()+":" + error.getDefaultMessage())
         );
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
 }

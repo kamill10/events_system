@@ -38,7 +38,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody LoginDTO request, @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language)
+    public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDTO request, @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language)
             throws AccountLockedException {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request, language));
     }
