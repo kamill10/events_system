@@ -55,6 +55,13 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOPage).getBody();
     }
 
+    @GetMapping("/phrase")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<GetAccountDTO> searchAccountsByPhrase(@RequestParam String phrase) {
+        List<GetAccountDTO> getAccountDTOs = accountDTOConverter.accountDtoList(accountService.searchAccountsByPhrase(phrase));
+        return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOs).getBody();
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountPersonalDTO> createUser(@Valid @RequestBody CreateAccountDTO createAccountDTO) {

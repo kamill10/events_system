@@ -15,6 +15,12 @@ public record GetAccountDTO(
         String username,
         @Email
         String email,
+
+        @NotNull
+        String firstName,
+
+        @NotNull
+        String lastName,
         @NotNull
         List<AccountRoleEnum> roles,
         @NotNull

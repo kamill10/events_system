@@ -32,6 +32,8 @@ public class AccountDTOConverter {
                 account.getId(),
                 account.getUsername(),
                 account.getEmail(),
+                account.getFirstName(),
+                account.getLastName(),
                 account.getRoles().stream().map(Role::getName).toList(),
                 account.getActive(),
                 account.getVerified(),
