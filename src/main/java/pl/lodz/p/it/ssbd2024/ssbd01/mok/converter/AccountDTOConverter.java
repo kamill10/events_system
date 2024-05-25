@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.converter;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
@@ -133,6 +134,10 @@ public class AccountDTOConverter {
 
     public List<GetAccountDTO> accountDtoList(List<Account> accounts) {
         return accounts.stream().map(this::toAccountDto).toList();
+    }
+
+    public Page<GetAccountDTO> accountDTOPage(Page<Account> accountPage) {
+        return accountPage.map(this::toAccountDto);
     }
 
     private String convertAndFormatDateTime(LocalDateTime dateTime, ZoneId targetZoneId, DateTimeFormatter formatter) {
