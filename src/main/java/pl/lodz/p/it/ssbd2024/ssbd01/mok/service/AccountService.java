@@ -43,6 +43,13 @@ public class AccountService {
         return accountMokRepository.findAll();
     }
 
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    public List<Account> searchAccountsByPhrase(String phrase) {
+        return accountMokRepository.findAllByPhrase(phrase);
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public Account addAccount(Account account) {
@@ -260,7 +267,6 @@ public class AccountService {
     public void deleteExpiredChangeEmailTokens() {
         changeEmailRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
-
 
 }
 
