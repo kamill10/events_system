@@ -1,12 +1,17 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPageDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -48,6 +53,14 @@ public class AccountService {
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public List<Account> searchAccountsByPhrase(String phrase) {
         return accountMokRepository.findAllByPhrase(phrase);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    public Page<Account> getAccountsPage(GetAccountPageDTO getAccountPageDTO) {
+        Sort sort = getAccountPageDTO.buildSort();
+        Pageable plantPage = PageRequest.of(getAccountPageDTO.page(), getAccountPageDTO.elementPerPage(), sort);
+        return accountMokRepository.findAll(plantPage);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

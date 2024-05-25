@@ -133,4 +133,10 @@ public class TestServiceConfig {
     public AccountAuthHistoryRepository accountAuthHistoryRepository() {
         return Mockito.mock(AccountAuthHistoryRepository.class);
     }
+
+    @Bean
+    public AccountPaginationRepository accountPagination() {
+        return Mockito.mock(AccountPaginationRepository.class);
+    }
+
 }

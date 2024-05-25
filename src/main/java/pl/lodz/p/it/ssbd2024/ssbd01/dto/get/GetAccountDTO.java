@@ -4,7 +4,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,4 +29,5 @@ public record GetAccountDTO(
         Boolean verified,
         @NotNull
         Boolean nonLocked
-){}
+) {
+}

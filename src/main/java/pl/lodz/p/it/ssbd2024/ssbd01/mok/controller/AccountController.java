@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.AccountHistoryDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountDetailedDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountHistoryDetailedDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
@@ -48,6 +46,13 @@ public class AccountController {
     public List<GetAccountDTO> getAllUsers() {
         List<GetAccountDTO> getAccountDTOS = accountDTOConverter.accountDtoList(accountService.getAllAccounts());
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOS).getBody();
+    }
+
+    @GetMapping("/page")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Page<GetAccountDTO> getAllUsersPage(@Valid @RequestBody GetAccountPageDTO getAccountPageDTO) {
+        Page<GetAccountDTO> getAccountDTOPage = accountDTOConverter.accountDTOPage(accountService.getAccountsPage(getAccountPageDTO));
+        return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOPage).getBody();
     }
 
     @GetMapping("/phrase")
