@@ -135,8 +135,8 @@ public class TestServiceConfig {
     }
 
     @Bean
-    public AccountPagination accountPagination() {
-        return Mockito.mock(AccountPagination.class);
+    public AccountPaginationRepository accountPagination() {
+        return Mockito.mock(AccountPaginationRepository.class);
     }
 
 }

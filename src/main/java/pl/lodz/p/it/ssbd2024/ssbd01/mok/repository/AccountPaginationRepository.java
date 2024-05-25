@@ -7,6 +7,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import java.util.UUID;
 
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-public interface AccountPagination extends PagingAndSortingRepository<Account, UUID> {
+public interface AccountPaginationRepository extends PagingAndSortingRepository<Account, UUID> {
 
 }
