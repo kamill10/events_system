@@ -32,11 +32,6 @@ public class ExceptionHandlingController {
     }
 
     @ExceptionHandler
-    ResponseEntity<String> handleForbiddenException(HttpClientErrorException.Forbidden e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-    }
-
-    @ExceptionHandler
     ResponseEntity<String> handleConflictException(ConflictException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
