@@ -173,4 +173,8 @@ export const api = {
     apiWithEtag.delete("/accounts/" + id + "/remove-role?roleName=" + role),
   addRole: (role: AccountTypeEnum, id: string) =>
     apiWithEtag.post("/accounts/" + id + "/add-role?roleName=" + role),
+  switchActiveRoleToAdmin: () =>
+    apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.ADMIN}`),
+  switchActiveRoleToManager: () =>
+    apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.MANAGER}`),
 };

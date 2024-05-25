@@ -20,6 +20,7 @@ import { Pathnames } from "../router/Pathnames";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useWindowWidth } from "../hooks/useWindowWidth";
+import { api } from "../axios/axios.config";
 
 export default function NavbarComponent(props: NavbarPropType) {
   const width = useWindowWidth();
@@ -30,6 +31,13 @@ export default function NavbarComponent(props: NavbarPropType) {
   const { t } = useTranslation();
 
   const handleSwitchClick = () => {
+    // We check for layout before switching cause hook might not resolve right after click
+    // Therefore we may end with previous state and sent request with wrong role 
+    if (!adminLayout) {
+      api.switchActiveRoleToAdmin();
+   } else {
+     api.switchActiveRoleToManager();
+   }
     setAdminLayout(!adminLayout);
     navigate(Pathnames.public.home);
   };
@@ -85,14 +93,19 @@ export default function NavbarComponent(props: NavbarPropType) {
                 );
               })}
             </Box>
-            <Box sx={{ flexGrow: 0 }}>
-              {isAdmin && isManager && (
+            <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
+            {isAdmin && isManager && (
+              <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
+                <Typography sx={{ mr: 1 }}>{t("ROLE_MANAGER")}</Typography>
                 <Switch
                   color="secondary"
                   onChange={handleSwitchClick}
                   checked={adminLayout}
-                ></Switch>
-              )}
+                  sx={{ mr: 1 }}
+                />
+                <Typography>{t("ROLE_ADMIN")}</Typography>
+              </Box>
+            )}
               <IconButton onClick={handleDropDownOpen}>
                 {width < 900 ? (
                   <MenuIcon sx={{ color: "white" }}></MenuIcon>
