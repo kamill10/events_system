@@ -97,7 +97,7 @@ public class AuthenticationService {
                 account.setLockedUntil(lockTimeout);
                 jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
                 mailService.sendEmailTemplate(account, "mail.locked.until.subject", "mail.locked.until.body",
-                        new Object[]{lockTimeout.format(formatter)});
+                        new Object[] {lockTimeout.format(formatter)});
             }
             accountAuthRepository.saveAndFlush(account);
             accountAuthHistoryRepository.saveAndFlush(new AccountHistory(account));
@@ -105,6 +105,11 @@ public class AuthenticationService {
         }
 
         var user = accountAuthRepository.findByUsername(loginDTO.username());
+        HttpServletRequest curRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        var ipAddress =
+                curRequest.getHeader("X-Forwarded-For") != null
+                        ? curRequest.getHeader("X-Forwarded-For")
+                        : curRequest.getRemoteAddr();
         String[] primaryLang = {language};
         if (language.contains(",")) {
             primaryLang = language.split(",");
@@ -115,11 +120,13 @@ public class AuthenticationService {
             user.setLanguage(LanguageEnum.ENGLISH);
         }
 
+        if (user.getRoles().contains(new Role(AccountRoleEnum.ROLE_ADMIN))) {
+            mailService.sendEmailAdminNewLogin(user, ipAddress);
+        }
+
         user.setFailedLoginAttempts(0);
         user.setLastSuccessfulLogin(LocalDateTime.now());
-        HttpServletRequest curRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        user.setLastSuccessfulLoginIp(
-                curRequest.getHeader("X-Forwarded-For") != null ? curRequest.getHeader("X-Forwarded-For") : curRequest.getRemoteAddr());
+        user.setLastSuccessfulLoginIp(ipAddress);
         accountAuthRepository.saveAndFlush(user);
         accountAuthHistoryRepository.saveAndFlush(new AccountHistory(user));
         return jwtService.generateToken(user);
@@ -230,7 +237,7 @@ public class AuthenticationService {
             sb.append(confirmation.getToken());
             sb.append("'>Link</a>");
             mailService.sendEmailTemplate(confirmation.getAccount(), "mail.verify.account.subject",
-                    "mail.verify.account.body", new Object[]{sb});
+                    "mail.verify.account.body", new Object[] {sb});
             confirmationReminderRepository.deleteById(confirmationReminder.getId());
         });
     }

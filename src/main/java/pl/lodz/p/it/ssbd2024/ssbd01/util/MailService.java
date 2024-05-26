@@ -158,4 +158,10 @@ public class MailService {
                 new Object[] {lockTimeout.format(formatter)});
     }
 
+    public void sendEmailAdminNewLogin(Account account, String ipAddress) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime lockTimeout = LocalDateTime.now();
+        sendEmailTemplate(account, "mail.admin.login.subject", "mail.admin.login.body",
+                new Object[]{ipAddress, lockTimeout.format(formatter)});
+    }
 }
