@@ -21,8 +21,8 @@ public class ChangeMyPassword extends AbstractCredentialChange {
     @Size(min = 8, max = 72)
     private String password;
 
-    public ChangeMyPassword(String token, Account account, LocalDateTime expirationDate, String password) {
-        super(token, account, expirationDate);
+    public ChangeMyPassword(Account account, LocalDateTime expirationDate, String password) {
+        super(account, expirationDate);
         this.password = password;
     }
 

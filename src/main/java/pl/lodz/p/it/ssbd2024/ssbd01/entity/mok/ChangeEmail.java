@@ -20,8 +20,8 @@ public class ChangeEmail extends AbstractCredentialChange {
     @Email
     private String email;
 
-    public ChangeEmail(String token, Account account, LocalDateTime expirationDate, String email) {
-        super(token, account, expirationDate);
+    public ChangeEmail(Account account, LocalDateTime expirationDate, String email) {
+        super(account, expirationDate);
         this.email = email;
     }
 }

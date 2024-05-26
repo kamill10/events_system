@@ -774,6 +774,32 @@ public class AccountControllerIT {
     }
 
     @Test
+    public void blockAccountWhenPasswordChangeByAdmin() throws JsonProcessingException {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
+        String token = given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-password")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+        assertNotNull(token);
+
+        //account is blocked and user cannot login
+        LoginDTO loginDTO = new LoginDTO("testAdmin", "P@ssw0rd");
+        ValidatableResponse response = given()
+                .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
+                .body(objectMapper.writeValueAsString(loginDTO))
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
     public void sendTokenWhenPasswordChangeByAdminButTokenNotExist() {
         UpdatePasswordDTO password = new UpdatePasswordDTO("dsafdvcxsd");
         given()
