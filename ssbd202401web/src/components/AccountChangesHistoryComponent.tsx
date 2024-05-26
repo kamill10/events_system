@@ -31,6 +31,7 @@ export function AccountChangesHistoryComponent({
               <TableCell>{t("failedLoginAttempts")}</TableCell>
               <TableCell>{t("lastSuccLoginIP")}</TableCell>
               <TableCell>{t("lastSuccLogin")}</TableCell>
+              <TableCell>{t("lastFailedLoginIP")}</TableCell>
               <TableCell>{t("lastFailedLogin")}</TableCell>
               <TableCell>{t("lockedUntil")}</TableCell>
               <TableCell>{t("gender")}</TableCell>
@@ -57,6 +58,7 @@ export function AccountChangesHistoryComponent({
                     <TableCell>{change.failedLoginAttempts}</TableCell>
                     <TableCell>{change.lastSuccessfulLoginIp}</TableCell>
                     <TableCell>{change.lastSuccessfulLogin ? parseDate(change.lastSuccessfulLogin) : t("never")}</TableCell>
+                  <TableCell>{change.lastFailedLoginIp}</TableCell>
                     <TableCell>{change.lastFailedLogin ? parseDate(change.lastFailedLogin) : t("never")}</TableCell>
                     <TableCell>{change.lockedUntil ? parseDate(change.lockedUntil) : ""}</TableCell>
                     <TableCell>{change.gender}</TableCell>

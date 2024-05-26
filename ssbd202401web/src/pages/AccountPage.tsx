@@ -38,8 +38,13 @@ export default function AccountPage() {
 
   async function fetchAccount() {
     if (username) {
-      setAccount(await getAccountByUsername(username));
-      setAccountChanges(await getAccountChanges(username));
+        Promise.all([
+            getAccountByUsername(username),
+            getAccountChanges(username),
+        ]).then(([account, accountChanges]) => {
+            setAccount(account);
+            setAccountChanges(accountChanges);
+        });
     } else {
       sendNotification({
         type: "error",
