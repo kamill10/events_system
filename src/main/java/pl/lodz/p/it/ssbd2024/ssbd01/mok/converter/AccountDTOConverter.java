@@ -105,6 +105,12 @@ public class AccountDTOConverter {
     }
 
     public GetAccountHistoryDetailedDTO toAccountHistoryDto(AccountHistory accountHistory) {
+
+        String theme = accountHistory.getAccountTheme() != null ? accountHistory.getAccountTheme().getTheme().toString() : "";
+        String timeZone = accountHistory.getAccountTimeZone() != null ? accountHistory.getAccountTimeZone().getTimeZone().toZoneId().getId() : "";
+        String createdBy = accountHistory.getCreatedBy() != null ? accountHistory.getCreatedBy().getUsername() : "";
+        String updatedBy = accountHistory.getUpdatedBy() != null ? accountHistory.getUpdatedBy().getUsername() : "";
+
         return new GetAccountHistoryDetailedDTO(
                 accountHistory.getId(),
                 accountHistory.getUsername(),
@@ -123,12 +129,12 @@ public class AccountDTOConverter {
                 accountHistory.getFirstName(),
                 accountHistory.getLastName(),
                 accountHistory.getLanguage(),
-                accountHistory.getAccountTheme(),
-                accountHistory.getAccountTimeZone(),
+                theme,
+                timeZone,
                 accountHistory.getCreatedAt(),
                 accountHistory.getUpdatedAt(),
-                accountHistory.getCreatedBy(),
-                accountHistory.getUpdatedBy(),
+                createdBy,
+                updatedBy,
                 accountHistory.getActionType()
         );
     }
