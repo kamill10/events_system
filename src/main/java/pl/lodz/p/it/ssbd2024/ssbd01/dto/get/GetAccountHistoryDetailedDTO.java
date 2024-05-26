@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ActionTypeEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ThemeEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountTheme;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountTimeZone;
@@ -68,9 +69,9 @@ public record GetAccountHistoryDetailedDTO(
         @NotNull
         LanguageEnum language,
 
-        AccountTheme accountTheme,
+        String accountTheme,
 
-        AccountTimeZone accountTimeZone,
+        String accountTimeZone,
 
         @NotNull
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -79,9 +80,9 @@ public record GetAccountHistoryDetailedDTO(
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime updatedAt,
 
-        Account createdBy,
+        String createdBy,
 
-        Account updatedBy,
+        String updatedBy,
 
         @Enumerated(EnumType.STRING)
         ActionTypeEnum actionType
