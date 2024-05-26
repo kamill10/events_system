@@ -221,6 +221,8 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         resetCredentialRepository.deleteByAccount(account);
         resetCredentialRepository.flush();
+        account.setNonLocked(false);
+        accountMokRepository.saveAndFlush(account);
         return verifier.saveTokenToResetCredential(account);
     }
 
@@ -234,10 +236,9 @@ public class AccountService {
         }
         changeEmailRepository.deleteByAccount(account);
         changeEmailRepository.flush();
-        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeEmail(randString, account,
+        var newResetIssue = new ChangeEmail(account,
                 expirationDate, email);
         changeEmailRepository.saveAndFlush(newResetIssue);
         return newResetIssue;
@@ -252,6 +253,7 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
+        accountToUpdate.setNonLocked(true);
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
         resetCredentialRepository.deleteByToken(token);

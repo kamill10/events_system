@@ -19,8 +19,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Table(name = "credential_reset")
 public class CredentialReset extends AbstractCredentialChange {
-    public CredentialReset(String token, Account account, LocalDateTime expirationDate) {
-        super(token, account, expirationDate);
+    public CredentialReset(Account account, LocalDateTime expirationDate) {
+        super(account, expirationDate);
     }
 
 }

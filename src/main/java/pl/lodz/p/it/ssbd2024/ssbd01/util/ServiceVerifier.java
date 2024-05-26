@@ -36,10 +36,9 @@ public class ServiceVerifier {
 
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     public CredentialReset saveTokenToResetCredential(Account account) {
-        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new CredentialReset(randString, account, expirationDate);
+        var newResetIssue = new CredentialReset(account, expirationDate);
         resetMyCredentialRepository.saveAndFlush(newResetIssue);
         return newResetIssue;
     }

@@ -75,10 +75,9 @@ public class MeService {
         }
         changeMyPasswordRepository.deleteByAccount(account);
         changeMyPasswordRepository.flush();
-        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeMyPassword(randString, account,
+        var newResetIssue = new ChangeMyPassword(account,
                 expirationDate, passwordEncoder.encode(newPassword));
         changeMyPasswordRepository.saveAndFlush(newResetIssue);
         return newResetIssue;
@@ -98,10 +97,9 @@ public class MeService {
         }
         changeEmailRepository.deleteByAccount(account);
         changeEmailRepository.flush();
-        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeEmail(randString, account,
+        var newResetIssue = new ChangeEmail(account,
                 expirationDate, newEmail);
         changeEmailRepository.saveAndFlush(newResetIssue);
         return newResetIssue;
