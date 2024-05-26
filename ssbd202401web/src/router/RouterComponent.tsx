@@ -34,7 +34,6 @@ export default function RouterComponent() {
     setupInterceptors(navigate);
   }, [navigate]);
 
-
   if (isAuthenticated && isAdmin && isManager) {
     return (
       <Routes>

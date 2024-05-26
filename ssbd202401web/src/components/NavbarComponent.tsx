@@ -32,12 +32,12 @@ export default function NavbarComponent(props: NavbarPropType) {
 
   const handleSwitchClick = () => {
     // We check for layout before switching cause hook might not resolve right after click
-    // Therefore we may end with previous state and sent request with wrong role 
+    // Therefore we may end with previous state and sent request with wrong role
     if (!adminLayout) {
       api.switchActiveRoleToAdmin();
-   } else {
-     api.switchActiveRoleToManager();
-   }
+    } else {
+      api.switchActiveRoleToManager();
+    }
     setAdminLayout(!adminLayout);
     navigate(Pathnames.public.home);
   };
@@ -93,19 +93,19 @@ export default function NavbarComponent(props: NavbarPropType) {
                 );
               })}
             </Box>
-            <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center' }}>
-            {isAdmin && isManager && (
-              <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
-                <Typography sx={{ mr: 1 }}>{t("ROLE_MANAGER")}</Typography>
-                <Switch
-                  color="secondary"
-                  onChange={handleSwitchClick}
-                  checked={adminLayout}
-                  sx={{ mr: 1 }}
-                />
-                <Typography>{t("ROLE_ADMIN")}</Typography>
-              </Box>
-            )}
+            <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
+              {isAdmin && isManager && (
+                <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
+                  <Typography sx={{ mr: 1 }}>{t("ROLE_MANAGER")}</Typography>
+                  <Switch
+                    color="secondary"
+                    onChange={handleSwitchClick}
+                    checked={adminLayout}
+                    sx={{ mr: 1 }}
+                  />
+                  <Typography>{t("ROLE_ADMIN")}</Typography>
+                </Box>
+              )}
               <IconButton onClick={handleDropDownOpen}>
                 {width < 900 ? (
                   <MenuIcon sx={{ color: "white" }}></MenuIcon>

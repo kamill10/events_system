@@ -17,13 +17,18 @@ import AccountDetailsComponent from "../components/AccountDetailsComponent";
 import ChangeAccountDetails from "../components/ChangeAccountDetails";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useTranslation } from "react-i18next";
+import { AccountChangesHistoryComponent } from "../components/AccountChangesHistoryComponent.tsx";
+import { AccountChangesType } from "../types/AccountChanges.ts";
 
 export default function AccountPage() {
   const { t } = useTranslation();
   const [account, setAccount] = useState<GetDetailedAccountType | null>(null);
+  const [accountChanges, setAccountChanges] = useState<
+    AccountChangesType[] | null
+  >(null);
   const sendNotification = useNotification();
   const { username } = useParams();
-  const { getAccountByUsername } = useManageAccounts();
+  const { getAccountByUsername, getAccountChanges } = useManageAccounts();
 
   const [page, setPage] = useState(0);
 
@@ -33,7 +38,13 @@ export default function AccountPage() {
 
   async function fetchAccount() {
     if (username) {
-      setAccount(await getAccountByUsername(username));
+        Promise.all([
+            getAccountByUsername(username),
+            getAccountChanges(username),
+        ]).then(([account, accountChanges]) => {
+            setAccount(account);
+            setAccountChanges(accountChanges);
+        });
     } else {
       sendNotification({
         type: "error",
@@ -97,6 +108,7 @@ export default function AccountPage() {
       <Tabs value={page} onChange={handleChange}>
         <Tab label={t("profileDetails")}></Tab>
         <Tab label={t("changeProfileDetails")}></Tab>
+        <Tab label={t("accountChanges")}></Tab>
       </Tabs>
       <Divider></Divider>
       {page == 0 && (
@@ -107,6 +119,11 @@ export default function AccountPage() {
           account={account}
           fetchAccount={fetchAccount}
         ></ChangeAccountDetails>
+      )}
+      {page == 2 && (
+        <AccountChangesHistoryComponent
+          accountChanges={accountChanges}
+        ></AccountChangesHistoryComponent>
       )}
     </ContainerComponent>
   );

@@ -18,6 +18,7 @@ import {
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
 import { NavigateFunction } from "react-router-dom";
+import { AccountChangesType } from "../types/AccountChanges.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -119,9 +120,6 @@ export function setupInterceptors(navigate: NavigateFunction) {
       return Promise.reject(error);
     },
   );
-
-
-
 }
 
 export const api = {
@@ -131,6 +129,10 @@ export const api = {
     username: string,
   ): ApiResponseType<GetDetailedAccountType> =>
     apiWithEtag.get("/accounts/username/" + username),
+  getAccountChanges: (
+    username: string,
+  ): ApiResponseType<AccountChangesType[]> =>
+    apiWithEtag.get("/accounts/history/" + username),
   logIn: (formData: LoginCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/authenticate", formData),
   logOut: () => apiWithAuthToken.post("/auth/logout"),
