@@ -182,12 +182,11 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @GetMapping("/history")
+    @GetMapping("/history/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<GetAccountHistoryDetailedDTO>> getAccountHistoryListByUsername(
-            @Valid @RequestBody AccountHistoryDTO accountHistoryDTO) {
+    public ResponseEntity<List<GetAccountHistoryDetailedDTO>> getAccountHistoryListByUsername(@PathVariable String username) {
         List<GetAccountHistoryDetailedDTO> accountHistoryList =
-                accountDTOConverter.accountHistoryDtoList(accountService.getAllAccountHistoryByUsername(accountHistoryDTO.username()));
+                accountDTOConverter.accountHistoryDtoList(accountService.getAllAccountHistoryByUsername(username));
         return ResponseEntity.status(HttpStatus.OK).body(accountHistoryList);
     }
 
