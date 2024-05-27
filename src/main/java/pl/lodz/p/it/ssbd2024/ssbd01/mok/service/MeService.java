@@ -21,6 +21,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
@@ -52,6 +53,8 @@ public class MeService {
 
     private final TimeZoneRepository timeZoneRepository;
 
+    private final MailService mailService;
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public Account getAccount() throws AccountNotFoundException {
@@ -63,7 +66,7 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public ChangeMyPassword changeMyPasswordSendMail(String currentPassword, String newPassword)
+    public void changeMyPasswordSendMail(String currentPassword, String newPassword)
             throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
@@ -75,18 +78,17 @@ public class MeService {
         }
         changeMyPasswordRepository.deleteByAccount(account);
         changeMyPasswordRepository.flush();
-        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeMyPassword(randString, account,
+        var newResetIssue = new ChangeMyPassword(account,
                 expirationDate, passwordEncoder.encode(newPassword));
         changeMyPasswordRepository.saveAndFlush(newResetIssue);
-        return newResetIssue;
+        mailService.sendEmailToChangeMyPassword(newResetIssue);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public ChangeEmail changeMyEmailSendMail(String currentPassword, String newEmail)
+    public void changeMyEmailSendMail(String currentPassword, String newEmail)
             throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
@@ -98,13 +100,12 @@ public class MeService {
         }
         changeEmailRepository.deleteByAccount(account);
         changeEmailRepository.flush();
-        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeEmail(randString, account,
+        var newResetIssue = new ChangeEmail(account,
                 expirationDate, newEmail);
         changeEmailRepository.saveAndFlush(newResetIssue);
-        return newResetIssue;
+        mailService.sendEmailToChangeMyEmail(newResetIssue, newEmail);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")

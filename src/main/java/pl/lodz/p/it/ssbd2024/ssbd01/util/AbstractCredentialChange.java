@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 
 import java.time.LocalDateTime;
@@ -28,8 +30,9 @@ public abstract class AbstractCredentialChange extends ControlledEntity {
     @Future
     private LocalDateTime expirationDate;
 
-    public AbstractCredentialChange(String token, Account account, LocalDateTime expirationDate) {
-        this.token = token;
+
+    public AbstractCredentialChange(Account account, LocalDateTime expirationDate) {
+        this.token = TokenGenerator.generateToken();
         this.account = account;
         this.expirationDate = expirationDate;
     }

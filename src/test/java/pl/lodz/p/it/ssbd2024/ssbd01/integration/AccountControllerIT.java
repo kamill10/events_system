@@ -774,6 +774,32 @@ public class AccountControllerIT {
     }
 
     @Test
+    public void blockAccountWhenPasswordChangeByAdmin() throws JsonProcessingException {
+        UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
+        String token = given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(updateEmailDTO)
+                .when()
+                .post(baseUrl + "/accounts/change-password")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().asString();
+        assertNotNull(token);
+
+        //account is blocked and user cannot login
+        LoginDTO loginDTO = new LoginDTO("testAdmin", "P@ssw0rd");
+        ValidatableResponse response = given()
+                .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
+                .body(objectMapper.writeValueAsString(loginDTO))
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
     public void sendTokenWhenPasswordChangeByAdminButTokenNotExist() {
         UpdatePasswordDTO password = new UpdatePasswordDTO("dsafdvcxsd");
         given()
@@ -785,6 +811,45 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .extract().asString();
+    }
+
+    @Test
+    public void testUpdateAccountDataAndAddToHistory() throws Exception {
+        ValidatableResponse response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
+
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(updateAccountDataDTO))
+                .when()
+                .put(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/user-data")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("newFirstName"),
+                        containsString("newLastName")
+                );
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .when()
+                .get(baseUrl + "/accounts/history/testAdmin" )
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("newFirstName"),
+                        containsString("newLastName")
+                );
+
     }
 
 }

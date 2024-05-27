@@ -23,6 +23,8 @@ export default function AccountRowComponent({
     >
       <TableCell>{account.id}</TableCell>
       <TableCell align="right">{account.username}</TableCell>
+      <TableCell align="right">{account.firstName}</TableCell>
+      <TableCell align="right">{account.lastName}</TableCell>
       <TableCell align="right">{account.email}</TableCell>
       <TableCell align="right">{mapRolesToString(account.roles)}</TableCell>
       <TableCell

@@ -17,8 +17,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
@@ -40,6 +40,7 @@ public class AccountService {
     private final AccountMokHistoryRepository accountMokHistoryRepository;
     private final ConfigurationProperties config;
     private final ServiceVerifier verifier;
+    private final MailService mailService;
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -48,19 +49,18 @@ public class AccountService {
         return accountMokRepository.findAll();
     }
 
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public List<Account> searchAccountsByPhrase(String phrase) {
-        return accountMokRepository.findAllByPhrase(phrase);
-    }
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public Page<Account> getAccountsPage(GetAccountPageDTO getAccountPageDTO) {
         Sort sort = getAccountPageDTO.buildSort();
-        Pageable plantPage = PageRequest.of(getAccountPageDTO.page(), getAccountPageDTO.elementPerPage(), sort);
-        return accountMokRepository.findAll(plantPage);
+        Pageable pageable = PageRequest.of(getAccountPageDTO.page(), getAccountPageDTO.elementPerPage(), sort);
+
+        if (getAccountPageDTO.phrase() != null && !getAccountPageDTO.phrase().isEmpty()) {
+            String phrase = "%" + getAccountPageDTO.phrase().toLowerCase() + "%";
+            return accountMokRepository.findAllByPhrase(phrase, pageable);
+        }
+
+        return accountMokRepository.findAll(pageable);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -102,6 +102,7 @@ public class AccountService {
         account.addRole(role);
         var returnedAccount = accountMokRepository.saveAndFlush(account);
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+        mailService.sendEmailToAddRoleToAccount(returnedAccount, roleName.name());
         return returnedAccount;
     }
 
@@ -137,6 +138,7 @@ public class AccountService {
                 account.removeRole(role);
                 var returnedAccount = accountMokRepository.saveAndFlush(account);
                 accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+                mailService.sendEmailToRemoveRoleFromAccount(account, roleName.name());
                 return returnedAccount;
             }
         }
@@ -154,6 +156,11 @@ public class AccountService {
         account.setActive(status);
         var returnedAccount = accountMokRepository.saveAndFlush(account);
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+        if (status) {
+            mailService.sendEmailToSetActiveAccount(returnedAccount);
+        } else {
+            mailService.sendEmailToSetInactiveAccount(returnedAccount);
+        }
         return returnedAccount;
     }
 
@@ -213,29 +220,33 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public CredentialReset resetPasswordAndSendEmail(String email) {
+    public void resetPasswordAndSendEmail(String email) {
         Optional<Account> account = accountMokRepository.findByEmail(email);
         if (account.isEmpty()) {
-            return null;
+            return;
         }
         resetCredentialRepository.deleteByAccount(account.get());
         resetCredentialRepository.flush();
-        return verifier.saveTokenToResetCredential(account.get());
+        CredentialReset credentialReset = verifier.saveTokenToResetCredential(account.get());
+        mailService.sendEmailToResetPassword(credentialReset);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public CredentialReset changePasswordByAdminAndSendEmail(String email) throws AccountNotFoundException {
+    public void changePasswordByAdminAndSendEmail(String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         resetCredentialRepository.deleteByAccount(account);
         resetCredentialRepository.flush();
-        return verifier.saveTokenToResetCredential(account);
+        account.setNonLocked(false);
+        accountMokRepository.saveAndFlush(account);
+        CredentialReset credentialReset = verifier.saveTokenToResetCredential(account);
+        mailService.sendEmailToChangePasswordByAdmin(credentialReset);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public ChangeEmail sendMailWhenEmailChangeByAdmin(UUID id, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
+    public void sendMailWhenEmailChangeByAdmin(UUID id, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (accountMokRepository.findByEmail(email).isPresent()) {
@@ -243,13 +254,12 @@ public class AccountService {
         }
         changeEmailRepository.deleteByAccount(account);
         changeEmailRepository.flush();
-        var randString = TokenGenerator.generateToken();
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeEmail(randString, account,
+        var newResetIssue = new ChangeEmail(account,
                 expirationDate, email);
         changeEmailRepository.saveAndFlush(newResetIssue);
-        return newResetIssue;
+        mailService.sendEmailToChangeEmailByAdmin(newResetIssue, email);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
@@ -261,6 +271,7 @@ public class AccountService {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
         accountToUpdate.setPassword(passwordEncoder.encode(newPassword));
+        accountToUpdate.setNonLocked(true);
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(accountToUpdate));
         accountMokRepository.saveAndFlush(accountToUpdate);
         resetCredentialRepository.deleteByToken(token);

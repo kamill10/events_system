@@ -7,6 +7,7 @@ import {
   GetAccountType,
   GetDetailedAccountType,
   GetPersonalAccountType,
+  PaginationResponse,
   UpdatePersonalDataType,
 } from "../types/Account.ts";
 import {
@@ -18,6 +19,8 @@ import {
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
 import { NavigateFunction } from "react-router-dom";
+import { SortingRequestParams } from "../types/SortingRequestParams.ts";
+import { AccountChangesType } from "../types/AccountChanges.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -119,9 +122,6 @@ export function setupInterceptors(navigate: NavigateFunction) {
       return Promise.reject(error);
     },
   );
-
-
-
 }
 
 export const api = {
@@ -131,6 +131,10 @@ export const api = {
     username: string,
   ): ApiResponseType<GetDetailedAccountType> =>
     apiWithEtag.get("/accounts/username/" + username),
+  getAccountChanges: (
+    username: string,
+  ): ApiResponseType<AccountChangesType[]> =>
+    apiWithEtag.get("/accounts/history/" + username),
   logIn: (formData: LoginCredentialsType): ApiResponseType<string> =>
     apiForAnon.post("/auth/authenticate", formData),
   logOut: () => apiWithAuthToken.post("/auth/logout"),
@@ -177,4 +181,30 @@ export const api = {
     apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.ADMIN}`),
   switchActiveRoleToManager: () =>
     apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.MANAGER}`),
+  getAccountsWithPagination: (
+    params: SortingRequestParams,
+  ): ApiResponseType<PaginationResponse> => {
+    let url = "/accounts/page";
+    let char = "?";
+    if (params.phrase) {
+      url += `?phrase=${params.phrase}`;
+      char = "&";
+    }
+    if (params.page) {
+      url += `${char}page=${params.page}`;
+      char = "&";
+    }
+    if (params.size) {
+      url += `${char}size=${params.size}`;
+      char = "&";
+    }
+    if (params.direction) {
+      url += `${char}direction=${params.direction}`;
+      char = "&";
+    }
+    if (params.key) {
+      url += `${char}key=${params.key}`;
+    }
+    return apiWithAuthToken.get(url);
+  },
 };
