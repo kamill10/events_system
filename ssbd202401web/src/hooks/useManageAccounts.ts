@@ -28,6 +28,23 @@ export const useManageAccounts = () => {
     }
   };
 
+  const getAccountChanges = async (username: string) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getAccountChanges(username);
+      return data;
+    } catch (e) {
+      console.error(e);
+      sendNotification({
+        type: "error",
+        description: t("getAccountChangesFail"),
+      });
+      return null;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const updateAccountData = async (
     id: string,
     data: UpdatePersonalDataType,
@@ -195,6 +212,7 @@ export const useManageAccounts = () => {
     setIsFetching,
     setAccounts,
     getAccountByUsername,
+    getAccountChanges,
     updateAccountData,
     updateAccountPassword,
     updateAccountEmail,

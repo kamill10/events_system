@@ -59,13 +59,24 @@ i18next.use(initReactI18next).init({
         isVerified: "Zweryfikowe",
         isUnlocked: "Odblokowane",
         verify: "Potwierdź",
+        theme: "Motyw",
+        timeZone: "Strefa czasowa",
+        createdAt: "Data utworzenia",
+        updatedAt: "Data aktualizacji",
+        createdBy: "Utworzone przez",
+        updatedBy: "Zaktualizowane przez",
+        actionType: "Typ akcji",
+        eventPage: "Strona wydarzenia",
 
         tableKey: "Klucz",
         tableValue: "Wartość",
         eventsHeading: "Wydarzenia",
         languagePref: "Preferencje językowe",
         lastSuccLogin: "Ostatnie poprawne logowanie",
+        lastSuccLoginIP: "Adres IP ostatniego poprawnego logowania",
         lastFailedLogin: "Ostatnie niepoprawne logowanie",
+        lastFailedLoginIP: "Adres IP ostatniego niepoprawnego logowania",
+        failedLoginAttempts:"Nieudane próby logowania",
         lockedUntil: "Zablokowane do",
         notLocked: "Nie zablokowane",
 
@@ -92,6 +103,9 @@ i18next.use(initReactI18next).init({
         ROLE_PARTICIPANT: "Uczestnik",
         ROLE_MANAGER: "Zarządca",
 
+        UPDATE: "Aktualizacja",
+        CREATE: "Utworzenie",
+
         changePersonalData: "Zmień dane personalne",
         changePassword: "Zmień hasło",
         changeEmail: "Zmień adres e-mail",
@@ -114,6 +128,7 @@ i18next.use(initReactI18next).init({
         confirmChange: "Potwierdź zmiane",
         profileDetails: "Dane konta",
         changeProfileDetails: "Zmień dane konta",
+        accountChanges: "Zmiany konta",
         manageAccounts: "Zarządzaj kontami",
         somethingHappened: "Stało się coś złego :((",
         errorConfPassword:
@@ -181,6 +196,7 @@ i18next.use(initReactI18next).init({
 
         getAllAccountFail: "Nie udało się pobrać wszystkich kont :(",
         getAccountByUsernameFail: "Nie udało się pobrać użytkownika :(",
+        getAccountChangesFail: "Nie udało się pobrać zmian konta :(",
         updateAccountDataSucc: "Dane zaktualizowane pomyślnie!",
         updateAccountDataFail: "Nie udało się zaktualizować danych :(",
         updateAccountPasswordSucc: "Pomyślne rozpoczęcie resetu hasła!",
@@ -221,6 +237,13 @@ i18next.use(initReactI18next).init({
         isVerified: "Is Verified",
         isUnlocked: "Is Unlocked",
         verify: "Verify",
+        theme: "Theme",
+        timeZone: "Time zone",
+        createdAt: "Creation date",
+        updatedAt: "Update date",
+        createdBy: "Created by",
+        updatedBy: "Updated by",
+        actionType: "Action type",
         eventPage: "Event Page",
 
         tableKey: "Key",
@@ -228,7 +251,10 @@ i18next.use(initReactI18next).init({
         eventsHeading: "Events",
         languagePref: "Language preference",
         lastSuccLogin: "Last successful login",
+        lastSuccLoginIP: "Last successful login IP",
         lastFailedLogin: "Last failed login",
+        lastFailedLoginIP: "Last failed login IP",
+        failedLoginAttempts: "Failed login attempts",
         lockedUntil: "Locked until",
         notLocked: "Not Locked",
 
@@ -256,6 +282,9 @@ i18next.use(initReactI18next).init({
         ROLE_PARTICIPANT: "Participant",
         ROLE_MANAGER: "Manager",
 
+        UPDATE: "Update",
+        CREATE: "Create",
+
         changePersonalData: "Change personal data",
         changePassword: "Change password",
         changeEmail: "Change e-mail",
@@ -278,6 +307,7 @@ i18next.use(initReactI18next).init({
         confirmChange: "Confirm change",
         profileDetails: "Profile details",
         changeProfileDetails: "Change personal data",
+        accountChanges: "Account changes",
         manageAccounts: "Manage accounts",
         somethingHappened: "Something bad happened :((",
         errorConfPassword:
@@ -342,6 +372,7 @@ i18next.use(initReactI18next).init({
 
         getAllAccountFail: "Failed to fetch all users :(",
         getAccountByUsernameFail: "Failed to fetch user :(",
+        getAccountChangesFail: "Failed to fetch account changes :(",
         updateAccountDataSucc: "Data updated successfully!",
         updateAccountDataFail: "Failed to update data :(",
         updateAccountPasswordSucc: "Password reset started successfully!",

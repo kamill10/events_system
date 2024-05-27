@@ -1,7 +1,10 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,6 @@ public interface AccountMokRepository extends JpaRepository<Account, UUID> {
     List<Account> findByNonLockedTrueAndLastSuccessfulLoginBefore(LocalDateTime dateTime);
 
 
-    @Query("SELECT a FROM Account a WHERE lower(a.firstName) LIKE %:phrase% OR lower(a.lastName) LIKE %:phrase%")
-    List<Account> findAllByPhrase(String phrase);
+    @Query("SELECT a FROM Account a WHERE lower(a.firstName) LIKE :phrase OR lower(a.lastName) LIKE :phrase")
+    Page<Account> findAllByPhrase(@Param("phrase") String phrase, Pageable pageable);
 }
