@@ -1,11 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 
-import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,17 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ThemeEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.TimeZoneEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -181,10 +177,10 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public String setAccountTimeZone(TimeZoneEnum timeZoneEnum) throws TimeZoneNotFoundException {
+    public String setAccountTimeZone(String timeZone) throws TimeZoneNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        AccountTimeZone accountTimeZone = timeZoneRepository.findByTimeZoneEnum(timeZoneEnum)
+        AccountTimeZone accountTimeZone = timeZoneRepository.findByTimeZone(timeZone)
                 .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
         account.setAccountTimeZone(accountTimeZone);
         accountMokRepository.saveAndFlush(account);
@@ -203,13 +199,25 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public String getAccountTimeZone() {
+    public String getAccountTimeZone() throws TimeZoneNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        AccountTimeZone accountTimeZone = account.getAccountTimeZone();
-        return accountTimeZone.getTimeZone().toZoneId().getId();
+        if (account.getAccountTimeZone() == null) {
+            throw new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND);
+        }
+        return account.getAccountTimeZone().getTimeZone().toZoneId().getId();
     }
 
-
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    public String addTimeZone(String timeZone) throws TimeZoneNotFoundException {
+        try {
+            ZoneId zoneId = ZoneId.of(timeZone);
+            AccountTimeZone timeZone1 = new AccountTimeZone(timeZone);
+            timeZoneRepository.saveAndFlush(timeZone1);
+            return zoneId.getId();
+        } catch (DateTimeException e) {
+            throw new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND);
+        }
+    }
 }
