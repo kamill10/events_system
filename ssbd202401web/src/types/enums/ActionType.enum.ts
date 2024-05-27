@@ -1,4 +1,4 @@
 export enum ActionTypeEnum {
-    CREATE = "CREATE",
-    UPDATE = "UPDATE",
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
 }

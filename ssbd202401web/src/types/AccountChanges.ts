@@ -1,6 +1,6 @@
 import { AccountTypeEnum } from "./enums/AccountType.enum.ts";
 import { LanguageType } from "./enums/LanguageType.enum.ts";
-import {ActionTypeEnum} from "./enums/ActionType.enum.ts";
+import { ActionTypeEnum } from "./enums/ActionType.enum.ts";
 
 export interface AccountChangesType {
   id: string;

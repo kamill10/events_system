@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { api } from "../axios/axios.config";
 import { useUsersState } from "../context/ManageAccountsContext";
-import {ChangeEmailType, UpdatePersonalDataType} from "../types/Account";
+import { ChangeEmailType, UpdatePersonalDataType } from "../types/Account";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import useNotification from "./useNotification";
-import {SortingRequestParams} from "../types/SortingRequestParams.ts";
+import { SortingRequestParams } from "../types/SortingRequestParams.ts";
 
 export const useManageAccounts = () => {
   const sendNotification = useNotification();
@@ -188,11 +188,16 @@ export const useManageAccounts = () => {
     }
   };
 
-  const getAccountsWithPagination = async (requestParams : SortingRequestParams) => {
+  const getAccountsWithPagination = async (
+    requestParams: SortingRequestParams,
+  ) => {
     try {
       setIsFetching(true);
       const { data } = await api.getAccountsWithPagination(requestParams);
-      setAccounts({accounts : data.content, totalElements : data.totalElements});
+      setAccounts({
+        accounts: data.content,
+        totalElements: data.totalElements,
+      });
       return data.content;
     } catch (e) {
       console.error(e);
