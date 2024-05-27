@@ -813,4 +813,43 @@ public class AccountControllerIT {
                 .extract().asString();
     }
 
+    @Test
+    public void testUpdateAccountDataAndAddToHistory() throws Exception {
+        ValidatableResponse response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
+
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
+                .contentType("application/json")
+                .body(objectMapper.writeValueAsString(updateAccountDataDTO))
+                .when()
+                .put(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/user-data")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("newFirstName"),
+                        containsString("newLastName")
+                );
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .contentType("application/json")
+                .when()
+                .get(baseUrl + "/history/testAdmin" )
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("newFirstName"),
+                        containsString("newLastName")
+                );
+
+    }
+
 }
