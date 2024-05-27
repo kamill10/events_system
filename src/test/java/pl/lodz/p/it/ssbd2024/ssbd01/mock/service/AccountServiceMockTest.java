@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,13 +112,15 @@ public class AccountServiceMockTest {
         Assertions.assertEquals(admins.getFirst(), accountThree);
     }
 
-//    @Test
-//    void testSetAccountStatus() throws Exception {
-//        var account = accountService.setAccountStatus(accountOne.getId(), true);
-//        Assertions.assertTrue(account.getActive());
-//        account = accountService.setAccountStatus(accountOne.getId(), false);
-//        Assertions.assertFalse(account.getActive());
-//    }
+    @Test
+    void testSetAccountStatus() throws Exception {
+        Account mock = Mockito.mock(Account.class);
+        Mockito.when(mock.getVersion()).thenReturn(2L);
+        var account = accountService.setAccountStatus(accountOne.getId(), true, ETagBuilder.buildETag(String.valueOf(accountOne.getVersion())));
+        Assertions.assertTrue(account.getActive());
+        account = accountService.setAccountStatus(accountTwo.getId(), false, ETagBuilder.buildETag(String.valueOf(accountTwo.getVersion())));
+        Assertions.assertFalse(account.getActive());
+    }
 
     @Test
     void testGetAccountByUsername() throws Exception {

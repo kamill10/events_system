@@ -151,7 +151,7 @@ public class AccountService {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(account.getVersion()))) {
-            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION + "etag: " + eTag + " version: " + account.getVersion());
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
         account.setActive(status);
         var returnedAccount = accountMokRepository.saveAndFlush(account);
