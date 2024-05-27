@@ -6,7 +6,8 @@ import {
   ChangeMyPasswordType,
   GetAccountType,
   GetDetailedAccountType,
-  GetPersonalAccountType, PaginationResponse,
+  GetPersonalAccountType,
+  PaginationResponse,
   UpdatePersonalDataType,
 } from "../types/Account.ts";
 import {
@@ -18,7 +19,7 @@ import {
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
 import { NavigateFunction } from "react-router-dom";
-import {SortingRequestParams} from "../types/SortingRequestParams.ts";
+import { SortingRequestParams } from "../types/SortingRequestParams.ts";
 import { AccountChangesType } from "../types/AccountChanges.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
@@ -180,28 +181,30 @@ export const api = {
     apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.ADMIN}`),
   switchActiveRoleToManager: () =>
     apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.MANAGER}`),
-  getAccountsWithPagination: (params: SortingRequestParams): ApiResponseType<PaginationResponse> => {
+  getAccountsWithPagination: (
+    params: SortingRequestParams,
+  ): ApiResponseType<PaginationResponse> => {
     let url = "/accounts/page";
-    let char = '?';
+    let char = "?";
     if (params.phrase) {
       url += `?phrase=${params.phrase}`;
-      char = '&';
+      char = "&";
     }
     if (params.page) {
       url += `${char}page=${params.page}`;
-      char = '&';
+      char = "&";
     }
     if (params.size) {
       url += `${char}size=${params.size}`;
-      char = '&';
+      char = "&";
     }
     if (params.direction) {
       url += `${char}direction=${params.direction}`;
-      char = '&';
+      char = "&";
     }
     if (params.key) {
       url += `${char}key=${params.key}`;
     }
     return apiWithAuthToken.get(url);
-  }
+  },
 };

@@ -12,6 +12,7 @@ import {
   ForgotPasswordType,
   ResetPasswordType,
 } from "../types/Authentication";
+import { SortingRequestParams } from "../types/SortingRequestParams";
 
 export const signInValidationSchema = yup
   .object<SignInCredentialsType>()
@@ -95,3 +96,23 @@ export const ManageAccountValidationSchema = yup
 export const ChangeEmailSchema = yup.object<ChangeEmailType>().shape({
   email: yup.string().min(8).max(72).required(),
 });
+
+export const SortingRequestParamsSchema = yup
+  .object<SortingRequestParams>()
+  .shape({
+    page: yup.number(),
+    size: yup.number(),
+    direction: yup.string().oneOf(["asc", "desc"]),
+    key: yup
+      .string()
+      .oneOf([
+        "id",
+        "username",
+        "firstName",
+        "lastName",
+        "email",
+        "roles",
+        "active",
+      ]),
+    phrase: yup.string().max(64),
+  });
