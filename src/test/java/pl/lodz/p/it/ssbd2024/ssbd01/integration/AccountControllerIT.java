@@ -842,7 +842,7 @@ public class AccountControllerIT {
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType("application/json")
                 .when()
-                .get(baseUrl + "/history/testAdmin" )
+                .get(baseUrl + "/accounts/history/testAdmin" )
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body(
