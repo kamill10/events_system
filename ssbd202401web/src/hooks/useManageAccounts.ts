@@ -1,30 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { api } from "../axios/axios.config";
 import { useUsersState } from "../context/ManageAccountsContext";
-import { ChangeEmailType, UpdatePersonalDataType } from "../types/Account";
+import {ChangeEmailType, UpdatePersonalDataType} from "../types/Account";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import useNotification from "./useNotification";
+import {SortingRequestParams} from "../types/SortingRequestParams.ts";
 
 export const useManageAccounts = () => {
   const sendNotification = useNotification();
   const { t } = useTranslation();
   const { accounts, setAccounts, isFetching, setIsFetching } = useUsersState();
-
-  const getAllAccounts = async () => {
-    try {
-      setIsFetching(true);
-      const { data } = await api.getAllAccounts();
-      setAccounts(data);
-    } catch (e) {
-      console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("getAllAccountFail"),
-      });
-    } finally {
-      setIsFetching(false);
-    }
-  };
 
   const getAccountByUsername = async (username: string) => {
     try {
@@ -203,12 +188,29 @@ export const useManageAccounts = () => {
     }
   };
 
+  const getAccountsWithPagination = async (requestParams : SortingRequestParams) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getAccountsWithPagination(requestParams);
+      setAccounts({accounts : data.content, totalElements : data.totalElements});
+      return data.content;
+    } catch (e) {
+      console.error(e);
+      sendNotification({
+        type: "error",
+        description: t("getAccountsFail"),
+      });
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return {
     accounts,
     isFetching,
     setIsFetching,
     setAccounts,
-    getAllAccounts,
     getAccountByUsername,
     getAccountChanges,
     updateAccountData,
@@ -218,5 +220,6 @@ export const useManageAccounts = () => {
     deactivateAccount,
     addRole,
     removeRole,
+    getAccountsWithPagination,
   };
 };

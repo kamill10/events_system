@@ -212,6 +212,7 @@ i18next.use(initReactI18next).init({
         removeRoleSucc: "Rola odebrana pomyślnie!",
         removeRoleFail: "Nie udało się odebrać roli :(",
         signInHeading: "Zarejestruj się!",
+        searchPhrase: "Szukaj frazy po imieniu lub nazwisku",
       },
     },
     ENGLISH: {
@@ -387,6 +388,7 @@ i18next.use(initReactI18next).init({
         removeRoleSucc: "Role removed successfully!",
         removeRoleFail: "Failed to remove role :(",
         signInHeading: "Sign in!",
+        searchPhrase: "Search phrase by first or last name",
       },
     },
   },
