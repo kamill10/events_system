@@ -176,8 +176,16 @@ public class AccountControllerIT {
 
     @Test
     public void addManagerRoleToAdmin() throws Exception {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
@@ -187,8 +195,16 @@ public class AccountControllerIT {
 
     @Test
     public void addAdminRoleToManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/add-role")
@@ -198,8 +214,16 @@ public class AccountControllerIT {
 
     @Test
     public void addParticipantRoleToManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_PARTICIPANT.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/add-role")
@@ -209,8 +233,16 @@ public class AccountControllerIT {
 
     @Test
     public void addManagerRoleToParticipant() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testParticipant")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", "MANAGER")
                 .when()
                 .post(baseUrl + "/accounts/" + "a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6" + "/add-role")
@@ -220,8 +252,16 @@ public class AccountControllerIT {
 
     @Test
     public void addParticipantRoleToAdmin() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", "PARTICIPANT")
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
@@ -231,8 +271,16 @@ public class AccountControllerIT {
 
     @Test
     public void addAdminRoleToParticipant() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testParticipant")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", "ADMIN")
                 .when()
                 .post(baseUrl + "/accounts/" + "a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6" + "/add-role")
@@ -242,8 +290,16 @@ public class AccountControllerIT {
 
     @Test
     public void addParticipantRoleToParticipant() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testParticipant")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_PARTICIPANT.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6" + "/add-role")
@@ -253,8 +309,16 @@ public class AccountControllerIT {
 
     @Test
     public void addManagerRoleToManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/add-role")
@@ -264,8 +328,16 @@ public class AccountControllerIT {
 
     @Test
     public void addAdminRoleToAdmin() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
@@ -275,8 +347,16 @@ public class AccountControllerIT {
 
     @Test
     public void addNonExistentRole() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", "CLIENT")
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
@@ -286,8 +366,16 @@ public class AccountControllerIT {
 
     @Test
     public void addRoleToNonExistentAccount() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + UUID.randomUUID() + "/add-role")
@@ -297,8 +385,16 @@ public class AccountControllerIT {
 
     @Test
     public void addRoleAsManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + managerToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
@@ -308,8 +404,16 @@ public class AccountControllerIT {
 
     @Test
     public void addRoleAsParticipant() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + participantToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .post(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/add-role")
@@ -319,8 +423,16 @@ public class AccountControllerIT {
 
     @Test
     public void removeAdminRoleFromAdmin() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/remove-role")
@@ -330,8 +442,16 @@ public class AccountControllerIT {
 
     @Test
     public void removeManagerRoleFromManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_MANAGER.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/remove-role")
@@ -341,8 +461,16 @@ public class AccountControllerIT {
 
     @Test
     public void removeParticipantRoleFromParticipant() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testParticipant")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_PARTICIPANT.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6" + "/remove-role")
@@ -352,8 +480,16 @@ public class AccountControllerIT {
 
     @Test
     public void removeAdminRoleFromManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/remove-role")
@@ -363,8 +499,16 @@ public class AccountControllerIT {
 
     @Test
     public void removeNonExistentRole() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", "CLIENT")
                 .when()
                 .delete(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/remove-role")
@@ -374,8 +518,16 @@ public class AccountControllerIT {
 
     @Test
     public void removeRoleFromNonExistentAccount() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + UUID.randomUUID() + "/remove-role")
@@ -385,8 +537,16 @@ public class AccountControllerIT {
 
     @Test
     public void removeRoleAsManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + managerToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/remove-role")
@@ -396,8 +556,16 @@ public class AccountControllerIT {
 
     @Test
     public void removeRoleAsParticipant() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + participantToken)
+                .header("If-Match", eTag)
                 .param("roleName", AccountRoleEnum.ROLE_ADMIN.toString())
                 .when()
                 .delete(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/remove-role")
@@ -407,8 +575,16 @@ public class AccountControllerIT {
 
     @Test
     public void setActiveAccountEndpoint() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/set-active")
                 .then()
@@ -416,6 +592,7 @@ public class AccountControllerIT {
 
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + UUID.randomUUID() + "/set-active")
                 .then()
@@ -424,8 +601,16 @@ public class AccountControllerIT {
 
     @Test
     public void setActiveAccountEndpointAsParticipant() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + participantToken)
+                .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/set-active")
                 .then()
@@ -434,8 +619,16 @@ public class AccountControllerIT {
 
     @Test
     public void setActiveAccountEndpointAsManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + managerToken)
+                .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/set-active")
                 .then()
@@ -444,8 +637,16 @@ public class AccountControllerIT {
 
     @Test
     public void setInactiveAccountEndpoint() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/set-inactive")
                 .then()
@@ -453,6 +654,7 @@ public class AccountControllerIT {
 
         given()
                 .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + UUID.randomUUID() + "/set-inactive")
                 .then()
@@ -461,8 +663,16 @@ public class AccountControllerIT {
 
     @Test
     public void setInactiveAccountEndpointAsParticipant() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + participantToken)
+                .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/set-inactive")
                 .then()
@@ -471,8 +681,16 @@ public class AccountControllerIT {
 
     @Test
     public void setInactiveAccountEndpointAsManager() {
+        var response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testAdmin")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
         given()
                 .header("Authorization", "Bearer " + managerToken)
+                .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + "8b25c94f-f10f-4285-8eb2-39ee1c4002f1" + "/set-inactive")
                 .then()
