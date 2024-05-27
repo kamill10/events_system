@@ -1,9 +1,9 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { GetAccountType } from "../types/Account";
+import {AccountsWithNumberOfElements} from "../types/Account";
 
 interface ManageAccounts {
-  accounts: GetAccountType[] | null;
-  setAccounts: (accounts: GetAccountType[]) => void;
+  accounts: AccountsWithNumberOfElements | null;
+  setAccounts: (accounts: AccountsWithNumberOfElements) => void;
   isFetching: boolean;
   setIsFetching: (state: boolean) => void;
 }
@@ -15,7 +15,7 @@ export const ManageAccountsStateContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [accounts, setAccounts] = useState<GetAccountType[] | null>(null);
+  const [accounts, setAccounts] = useState<AccountsWithNumberOfElements | null>(null);
   const [isFetching, setIsFetching] = useState(false);
 
   return (

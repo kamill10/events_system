@@ -4,6 +4,8 @@ import { LanguageType } from "./enums/LanguageType.enum.ts";
 export interface GetAccountType {
   id: string;
   username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   roles: AccountTypeEnum[];
   active: boolean;
@@ -51,4 +53,38 @@ export interface ManageAccountType {
 
 export interface ChangeEmailType {
   email: string;
+}
+
+export interface Sort {
+  empty: boolean;
+  sorted: boolean;
+  unsorted: boolean;
+}
+
+export interface Pageable {
+  pageNumber: number;
+  pageSize: number;
+  sort: Sort;
+  offset: number;
+  paged: boolean;
+  unpaged: boolean;
+}
+
+export interface PaginationResponse {
+  content: GetAccountType[];
+  pageable: Pageable;
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  sort: Sort;
+  first: boolean;
+  numberOfElements: number;
+  empty: boolean;
+}
+
+export interface AccountsWithNumberOfElements {
+  accounts: GetAccountType[];
+  totalElements: number;
 }
