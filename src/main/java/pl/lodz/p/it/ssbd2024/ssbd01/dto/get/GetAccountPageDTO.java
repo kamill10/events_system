@@ -16,7 +16,9 @@ public record GetAccountPageDTO(
         @Pattern(regexp = "asc|desc")
         String direction,
         @NotNull
-        String key
+        String key,
+        @NotNull
+        String phrase
 ) {
 
     public Sort buildSort() {

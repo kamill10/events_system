@@ -18,7 +18,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
@@ -48,19 +47,18 @@ public class AccountService {
         return accountMokRepository.findAll();
     }
 
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public List<Account> searchAccountsByPhrase(String phrase) {
-        return accountMokRepository.findAllByPhrase(phrase);
-    }
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public Page<Account> getAccountsPage(GetAccountPageDTO getAccountPageDTO) {
         Sort sort = getAccountPageDTO.buildSort();
-        Pageable plantPage = PageRequest.of(getAccountPageDTO.page(), getAccountPageDTO.elementPerPage(), sort);
-        return accountMokRepository.findAll(plantPage);
+        Pageable pageable = PageRequest.of(getAccountPageDTO.page(), getAccountPageDTO.elementPerPage(), sort);
+
+        if (getAccountPageDTO.phrase() != null && !getAccountPageDTO.phrase().isEmpty()) {
+            String phrase = "%" + getAccountPageDTO.phrase().toLowerCase() + "%";
+            return accountMokRepository.findAllByPhrase(phrase, pageable);
+        }
+
+        return accountMokRepository.findAll(pageable);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
