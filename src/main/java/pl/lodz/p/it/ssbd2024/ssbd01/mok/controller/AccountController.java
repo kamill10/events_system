@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.AccountHistoryDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
@@ -50,16 +49,16 @@ public class AccountController {
 
     @GetMapping("/page")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Page<GetAccountDTO> getAllUsersPage(@Valid @RequestBody GetAccountPageDTO getAccountPageDTO) {
+    public ResponseEntity<Page<GetAccountDTO>> getFilteredAccounts(
+            @RequestParam(required = false) String phrase,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(defaultValue = "id") String key
+    ) {
+        GetAccountPageDTO getAccountPageDTO = new GetAccountPageDTO(page, size, direction, key, phrase);
         Page<GetAccountDTO> getAccountDTOPage = accountDTOConverter.accountDTOPage(accountService.getAccountsPage(getAccountPageDTO));
-        return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOPage).getBody();
-    }
-
-    @GetMapping("/phrase")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<GetAccountDTO> searchAccountsByPhrase(@RequestParam String phrase) {
-        List<GetAccountDTO> getAccountDTOs = accountDTOConverter.accountDtoList(accountService.searchAccountsByPhrase(phrase));
-        return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOs).getBody();
+        return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOPage);
     }
 
     @PostMapping
