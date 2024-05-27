@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
@@ -39,6 +40,7 @@ public class AccountService {
     private final AccountMokHistoryRepository accountMokHistoryRepository;
     private final ConfigurationProperties config;
     private final ServiceVerifier verifier;
+    private final MailService mailService;
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -97,6 +99,7 @@ public class AccountService {
         account.addRole(role);
         var returnedAccount = accountMokRepository.saveAndFlush(account);
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+        mailService.sendEmailToAddRoleToAccount(returnedAccount, roleName.name());
         return returnedAccount;
     }
 
@@ -129,6 +132,7 @@ public class AccountService {
                 account.removeRole(role);
                 var returnedAccount = accountMokRepository.saveAndFlush(account);
                 accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+                mailService.sendEmailToRemoveRoleFromAccount(account, roleName.name());
                 return returnedAccount;
             }
         }
@@ -143,6 +147,11 @@ public class AccountService {
         account.setActive(status);
         var returnedAccount = accountMokRepository.saveAndFlush(account);
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
+        if (status) {
+            mailService.sendEmailToSetActiveAccount(returnedAccount);
+        } else {
+            mailService.sendEmailToSetInactiveAccount(returnedAccount);
+        }
         return returnedAccount;
     }
 
@@ -202,31 +211,33 @@ public class AccountService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public CredentialReset resetPasswordAndSendEmail(String email) {
+    public void resetPasswordAndSendEmail(String email) {
         Optional<Account> account = accountMokRepository.findByEmail(email);
         if (account.isEmpty()) {
-            return null;
+            return;
         }
         resetCredentialRepository.deleteByAccount(account.get());
         resetCredentialRepository.flush();
-        return verifier.saveTokenToResetCredential(account.get());
+        CredentialReset credentialReset = verifier.saveTokenToResetCredential(account.get());
+        mailService.sendEmailToResetPassword(credentialReset);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public CredentialReset changePasswordByAdminAndSendEmail(String email) throws AccountNotFoundException {
+    public void changePasswordByAdminAndSendEmail(String email) throws AccountNotFoundException {
         Account account = accountMokRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         resetCredentialRepository.deleteByAccount(account);
         resetCredentialRepository.flush();
         account.setNonLocked(false);
         accountMokRepository.saveAndFlush(account);
-        return verifier.saveTokenToResetCredential(account);
+        CredentialReset credentialReset = verifier.saveTokenToResetCredential(account);
+        mailService.sendEmailToChangePasswordByAdmin(credentialReset);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public ChangeEmail sendMailWhenEmailChangeByAdmin(UUID id, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
+    public void sendMailWhenEmailChangeByAdmin(UUID id, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (accountMokRepository.findByEmail(email).isPresent()) {
@@ -239,7 +250,7 @@ public class AccountService {
         var newResetIssue = new ChangeEmail(account,
                 expirationDate, email);
         changeEmailRepository.saveAndFlush(newResetIssue);
-        return newResetIssue;
+        mailService.sendEmailToChangeEmailByAdmin(newResetIssue, email);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
