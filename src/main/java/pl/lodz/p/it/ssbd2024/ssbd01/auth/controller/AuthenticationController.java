@@ -9,18 +9,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.MailToVerifyDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountUnlockTokenNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.RoleNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.TokenNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 
 @RestController
 @RequestMapping("api/auth")
@@ -28,12 +21,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final AccountDTOConverter accountDTOConverter;
-    private final MailService mailService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody CreateAccountDTO request) throws AccountNotFoundException {
-        MailToVerifyDTO mailToVerifyDTO = authenticationService.registerUser(accountDTOConverter.toAccount(request));
-        mailService.sendEmailToVerifyAccount(mailToVerifyDTO.account(), mailToVerifyDTO.token());
+        authenticationService.registerUser(accountDTOConverter.toAccount(request));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -53,8 +44,7 @@ public class AuthenticationController {
     public ResponseEntity<?> verifyAccount(@PathVariable String token)
             throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
             RoleNotFoundException {
-        Account account = authenticationService.verifyAccount(token);
-        mailService.sendEmailToInformAboutVerification(account);
+        authenticationService.verifyAccount(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -68,8 +58,7 @@ public class AuthenticationController {
     @PostMapping("/unblock-account/{token}")
     public ResponseEntity<?> unlockAccount(@PathVariable String token)
             throws AccountUnlockTokenNotFoundException {
-        Account account = authenticationService.unlockAccountThatWasNotUsed(token);
-        mailService.sendEmailToInformAboutUnblockAccount(account);
+        authenticationService.unlockAccountThatWasNotUsed(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

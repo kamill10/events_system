@@ -33,7 +33,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 public class MeController {
     private final MeService meService;
     private final AccountDTOConverter accountDTOConverter;
-    private final MailService mailService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
@@ -48,8 +47,7 @@ public class MeController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<?> changeMyPasswordSendEmail(@Valid @RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
             throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
-        ChangeMyPassword changeMyPassword = meService.changeMyPasswordSendMail(updateMyPasswordDto.oldPassword(), updateMyPasswordDto.newPassword());
-        mailService.sendEmailToChangeMyPassword(changeMyPassword);
+        meService.changeMyPasswordSendMail(updateMyPasswordDto.oldPassword(), updateMyPasswordDto.newPassword());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -57,8 +55,7 @@ public class MeController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<?> changeMyEmailSendEmail(@Valid @RequestBody UpdateMyEmailDTO updateMyEmailDTO)
             throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
-        ChangeEmail changeEmail = meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
-        mailService.sendEmailToChangeMyEmail(changeEmail, updateMyEmailDTO.newEmail());
+        meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
