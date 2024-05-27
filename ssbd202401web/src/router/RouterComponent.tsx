@@ -7,10 +7,11 @@ import {
 } from "./Routes.ts";
 import PublicLayout from "../layouts/PublicLayout.tsx";
 import {
-  AdminTheme,
-  ManagerTheme,
-  ParticipantTheme,
-  PublicTheme,
+    AdminDarkTheme,
+    AdminTheme, ManagerDarkTheme,
+    ManagerTheme, ParticipantDarkTheme,
+    ParticipantTheme, PublicDarkTheme,
+    PublicTheme,
 } from "../themes/themes.ts";
 import { ThemeProvider } from "@mui/material";
 import { useAccount } from "../hooks/useAccount.ts";
@@ -22,19 +23,21 @@ import AdminLayout from "../layouts/AdminLayout.tsx";
 import ManagerLayout from "../layouts/ManagerLayout.tsx";
 import ConfirmPasswordUpdatePage from "../pages/ConfirmPasswordUpdatePage.tsx";
 import { ConfirmEmailUpdatePage } from "../pages/ConfirmEmailUpdatePage.tsx";
-import { useEffect } from "react";
-import { setupInterceptors } from "../axios/axios.config.ts";
+import {useEffect, useState} from "react";
+import {setupInterceptors} from "../axios/axios.config.ts";
 
 export default function RouterComponent() {
-  const { isAuthenticated, isAdmin, isParticipant, isManager, adminLayout } =
+  const {theme , isAuthenticated, isAdmin, isParticipant, isManager, adminLayout } =
     useAccount();
   const navigate = useNavigate();
-
+  const [isDarkMode, setIsDarkMode] = useState(theme === "DARK");
   useEffect(() => {
     setupInterceptors(navigate);
-  }, [navigate]);
+    setIsDarkMode(theme === "DARK");
+  }, [navigate, theme]);
 
-  if (isAuthenticated && isAdmin && isManager) {
+
+    if (isAuthenticated && isAdmin && isManager) {
     return (
       <Routes>
         {adminLayout &&
@@ -44,7 +47,7 @@ export default function RouterComponent() {
                 key={key}
                 path={route.pathname}
                 element={
-                  <ThemeProvider theme={AdminTheme}>
+                  <ThemeProvider theme={isDarkMode ? AdminDarkTheme : AdminTheme}>
                     <AdminLayout page={route.page}></AdminLayout>
                   </ThemeProvider>
                 }
@@ -58,7 +61,7 @@ export default function RouterComponent() {
                 key={key}
                 path={route.pathname}
                 element={
-                  <ThemeProvider theme={ManagerTheme}>
+                  <ThemeProvider theme={isDarkMode ? ManagerDarkTheme : ManagerTheme}>
                     <ManagerLayout page={route.page}></ManagerLayout>
                   </ThemeProvider>
                 }
@@ -68,7 +71,7 @@ export default function RouterComponent() {
         <Route
           path={Pathnames.public.verifyAccount}
           element={
-            <ThemeProvider theme={PublicTheme}>
+            <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
               <ConfirmSignInPage></ConfirmSignInPage>
             </ThemeProvider>
           }
@@ -76,7 +79,7 @@ export default function RouterComponent() {
         <Route
           path={Pathnames.public.resetPassword}
           element={
-            <ThemeProvider theme={PublicTheme}>
+            <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
               <ResetPasswordPage></ResetPasswordPage>
             </ThemeProvider>
           }
@@ -84,7 +87,7 @@ export default function RouterComponent() {
         <Route
           path={Pathnames.public.confirmPasswordUpdate}
           element={
-            <ThemeProvider theme={PublicTheme}>
+            <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
               <ConfirmPasswordUpdatePage></ConfirmPasswordUpdatePage>
             </ThemeProvider>
           }
@@ -92,7 +95,7 @@ export default function RouterComponent() {
         <Route
           path={Pathnames.public.confirmEmailUpdate}
           element={
-            <ThemeProvider theme={PublicTheme}>
+            <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
               <ConfirmEmailUpdatePage></ConfirmEmailUpdatePage>
             </ThemeProvider>
           }
@@ -114,7 +117,7 @@ export default function RouterComponent() {
               key={key}
               path={route.pathname}
               element={
-                <ThemeProvider theme={PublicTheme}>
+                <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
                   <PublicLayout page={route.page}></PublicLayout>
                 </ThemeProvider>
               }
@@ -129,7 +132,7 @@ export default function RouterComponent() {
               key={key}
               path={route.pathname}
               element={
-                <ThemeProvider theme={ParticipantTheme}>
+                <ThemeProvider theme={isDarkMode ? ParticipantDarkTheme : ParticipantTheme}>
                   <ParticipantLayout page={route.page}></ParticipantLayout>
                 </ThemeProvider>
               }
@@ -144,7 +147,7 @@ export default function RouterComponent() {
               key={key}
               path={route.pathname}
               element={
-                <ThemeProvider theme={AdminTheme}>
+                <ThemeProvider theme={isDarkMode ? AdminDarkTheme : AdminTheme}>
                   <AdminLayout page={route.page}></AdminLayout>
                 </ThemeProvider>
               }
@@ -159,7 +162,7 @@ export default function RouterComponent() {
               key={key}
               path={route.pathname}
               element={
-                <ThemeProvider theme={ManagerTheme}>
+                <ThemeProvider theme={isDarkMode ? ManagerDarkTheme : ManagerTheme}>
                   <ManagerLayout page={route.page}></ManagerLayout>
                 </ThemeProvider>
               }
@@ -169,7 +172,7 @@ export default function RouterComponent() {
       <Route
         path={Pathnames.public.verifyAccount}
         element={
-          <ThemeProvider theme={PublicTheme}>
+          <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
             <ConfirmSignInPage></ConfirmSignInPage>
           </ThemeProvider>
         }
@@ -177,7 +180,7 @@ export default function RouterComponent() {
       <Route
         path={Pathnames.public.resetPassword}
         element={
-          <ThemeProvider theme={PublicTheme}>
+          <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
             <ResetPasswordPage></ResetPasswordPage>
           </ThemeProvider>
         }
@@ -185,7 +188,7 @@ export default function RouterComponent() {
       <Route
         path={Pathnames.public.confirmPasswordUpdate}
         element={
-          <ThemeProvider theme={PublicTheme}>
+          <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
             <ConfirmPasswordUpdatePage></ConfirmPasswordUpdatePage>
           </ThemeProvider>
         }
@@ -193,7 +196,7 @@ export default function RouterComponent() {
       <Route
         path={Pathnames.public.confirmEmailUpdate}
         element={
-          <ThemeProvider theme={PublicTheme}>
+          <ThemeProvider theme={isDarkMode ? PublicDarkTheme : PublicTheme}>
             <ConfirmEmailUpdatePage></ConfirmEmailUpdatePage>
           </ThemeProvider>
         }

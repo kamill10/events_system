@@ -228,6 +228,7 @@ i18next.use(initReactI18next).init({
         sortDataDirBody: "Wybierz kolejność sortowania",
         filterData: "Filtruj dane w tabeli",
         filterKey: "Klucz",
+        getMyThemeFail: "Nie udało się pobrać motywu :(",
       },
     },
     ENGLISH: {
@@ -419,6 +420,7 @@ i18next.use(initReactI18next).init({
         sortDataDirBody: "Choose sort direction",
         filterData: "Filter data in a table",
         filterKey: "Key",
+        getMyThemeFail: "Failed to fetch theme :(",
       },
     },
   },

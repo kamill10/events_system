@@ -27,6 +27,8 @@ export const useAccount = () => {
     account,
     parsedToken,
     setAccount,
+    theme,
+    setTheme,
     token,
     setToken,
     isLogging,
@@ -188,6 +190,7 @@ export const useAccount = () => {
       setAccount(data);
       i18n.changeLanguage(data.language);
       localStorage.setItem("language", data.language);
+      await getMyTheme();
     } catch (e) {
       console.error(e);
       sendNotification({
@@ -303,8 +306,39 @@ export const useAccount = () => {
     }
   };
 
+  const getMyTheme = async () => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getMyTheme();
+      if (data === "DARK" || data === "LIGHT") {
+        setTheme(data);
+        return data;
+      }
+    } finally {
+        setIsFetching(false);
+    }
+  };
+
+  const setMyTheme = async (theme: string) => {
+    try {
+      setIsFetching(true);
+      await api.setMyTheme(theme);
+      setTheme(theme);
+    } catch (e) {
+        console.error(e);
+        sendNotification({
+            description: t("setMyThemeFail"),
+            type: "error",
+        });
+        return e;
+    } finally {
+        setIsFetching(false);
+    }
+  }
+
   return {
     account,
+    theme,
     parsedToken,
     isLogging,
     isFetching,
@@ -320,6 +354,8 @@ export const useAccount = () => {
     confirmEmailUpdate,
     getMyAccount,
     updateMyPersonalData,
+    getMyTheme,
+    setMyTheme,
     updateMyPassword,
     updateMyEmail,
     requestPasswordReset,
