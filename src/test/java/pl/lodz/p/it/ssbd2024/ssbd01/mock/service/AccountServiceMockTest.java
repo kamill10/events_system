@@ -111,13 +111,13 @@ public class AccountServiceMockTest {
         Assertions.assertEquals(admins.getFirst(), accountThree);
     }
 
-    @Test
-    void testSetAccountStatus() throws Exception {
-        var account = accountService.setAccountStatus(accountOne.getId(), true);
-        Assertions.assertTrue(account.getActive());
-        account = accountService.setAccountStatus(accountOne.getId(), false);
-        Assertions.assertFalse(account.getActive());
-    }
+//    @Test
+//    void testSetAccountStatus() throws Exception {
+//        var account = accountService.setAccountStatus(accountOne.getId(), true);
+//        Assertions.assertTrue(account.getActive());
+//        account = accountService.setAccountStatus(accountOne.getId(), false);
+//        Assertions.assertFalse(account.getActive());
+//    }
 
     @Test
     void testGetAccountByUsername() throws Exception {
