@@ -8,23 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetTimeZoneDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ThemeEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.TimeZoneEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyPassword;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
-
 
 
 @RestController
@@ -97,10 +92,10 @@ public class MeController {
         return ResponseEntity.status(HttpStatus.OK).body(meService.setAccountTheme(theme));
     }
 
-    @PatchMapping("/user-data/time-zone/{timeZone}")
+    @PatchMapping("/user-data/time-zone")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<String> setMyTimeZone(@PathVariable TimeZoneEnum timeZone) throws TimeZoneNotFoundException {
-        return ResponseEntity.status(HttpStatus.OK).body(meService.setAccountTimeZone(timeZone));
+    public ResponseEntity<String> setMyTimeZone(@RequestBody GetTimeZoneDTO timeZone) throws TimeZoneNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(meService.setAccountTimeZone(timeZone.timeZone()));
     }
 
     @GetMapping("/theme")
@@ -111,10 +106,15 @@ public class MeController {
 
     @GetMapping("/time-zone")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<String> getMyTimeZone() {
+    public ResponseEntity<String> getMyTimeZone() throws TimeZoneNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(meService.getAccountTimeZone());
     }
 
+    @PostMapping("time-zone")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
+    public ResponseEntity<String> addTimeZone(@RequestBody GetTimeZoneDTO timeZone) throws TimeZoneNotFoundException {
+        return ResponseEntity.status(HttpStatus.OK).body(meService.addTimeZone(timeZone.timeZone()));
+    }
 
 
 }
