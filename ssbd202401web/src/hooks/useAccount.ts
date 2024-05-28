@@ -233,7 +233,7 @@ export const useAccount = () => {
       setAccount(data);
       i18n.changeLanguage(data.language);
       localStorage.setItem("language", data.language);
-      getMyTheme()
+      setTheme(data.accountTheme);
     } catch (e) {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
@@ -391,27 +391,6 @@ export const useAccount = () => {
     }
   };
 
-  const getMyTheme = async () => {
-    try {
-      setIsFetching(true);
-      const { data } = await api.getMyTheme();
-      if (data === "DARK" || data === "LIGHT") {
-        setTheme(data);
-        return data;
-      }
-    } catch (e) {
-        console.error(e);
-        sendNotification({
-            description: t("getMyThemeFail"),
-            type: "info",
-        });
-        return e;
-    }
-    finally {
-        setIsFetching(false);
-    }
-  };
-
   const setMyTheme = async (theme: string) => {
     try {
       setIsFetching(true);
@@ -448,7 +427,6 @@ export const useAccount = () => {
     confirmEmailUpdate,
     getMyAccount,
     updateMyPersonalData,
-    getMyTheme,
     setMyTheme,
     updateMyPassword,
     updateMyEmail,

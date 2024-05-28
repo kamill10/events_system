@@ -30,11 +30,14 @@ export default function RouterComponent() {
   const {theme , isAuthenticated, isAdmin, isParticipant, isManager, adminLayout } =
     useAccount();
   const navigate = useNavigate();
-  const [isDarkMode, setIsDarkMode] = useState(theme === "DARK");
+  const [isDarkMode, setIsDarkMode] = useState(theme === "Dark");
   useEffect(() => {
     setupInterceptors(navigate);
-    setIsDarkMode(theme === "DARK");
-  }, [navigate, theme]);
+  }, [navigate]);
+
+  useEffect(() => {
+    setIsDarkMode(theme === "Dark");
+  }, [theme]);
 
 
     if (isAuthenticated && isAdmin && isManager) {

@@ -29,22 +29,20 @@ export default function NavbarComponent(props: NavbarPropType) {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const {theme ,setMyTheme, setTheme, isAuthenticated, adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
   const navigate = useNavigate();
-  const [isDarkMode, setIsDarkMode] = useState(theme === 'DARK');
   const { t } = useTranslation();
 
   const handleDarkModeToggle = () => {
-    setIsDarkMode(!isDarkMode);
-    if (isDarkMode) {
+    if (theme === 'Dark') {
       if (isAuthenticated) {
-        setMyTheme("LIGHT")
+        setMyTheme("Light")
       } else {
-        setTheme("LIGHT");
+        setTheme("Light");
       }
     } else {
       if (isAuthenticated) {
-        setMyTheme("DARK")
+        setMyTheme("Dark")
       }
-      setTheme("DARK");
+      setTheme("Dark");
     }
   };
 
@@ -127,7 +125,7 @@ export default function NavbarComponent(props: NavbarPropType) {
               )}
               <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
                 <IconButton onClick={handleDarkModeToggle}>
-                  {theme === 'DARK' ? <Brightness4 /> : <Brightness7 />}
+                  {theme === 'Dark' ? <Brightness4 /> : <Brightness7 />}
                 </IconButton>
               </Box>
               <IconButton onClick={handleDropDownOpen}>
