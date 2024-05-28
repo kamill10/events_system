@@ -92,9 +92,12 @@ i18next.use(initReactI18next).init({
         accountDetails: "Szczegóły konta",
         gotoHomePage: "Wróć do strony głównej",
         confEmailChange: "Potwierdź swoją zmiane adresu email!",
+        confUnblockAccount: "Potwierdź odblokowanie konta!",
         clickToConfEmail:
           "Naciśnij przycisk poniżej, aby potwierdzić zmiane email!",
+        clickToConfUnblockAccount: "Naciśnij przycisk poniżej, aby potwierdzić odblokowanie konta!",
         emailHasBeenChanged: "Adres email został zmieniony!",
+        accountHasBeenUnblocked: "Konto zostało odblokowane",
 
         POLISH: "Polski",
         ENGLISH: "Angielski",
@@ -134,6 +137,8 @@ i18next.use(initReactI18next).init({
         somethingHappened: "Stało się coś złego :((",
         errorConfPassword:
           "Wystąpił błąd podczas potwierdzania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
+        errorConfUnblockAccount:
+            "Wystąpił błąd podczas potwierdzania odblokowania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
         clickToConfPassChange:
           "Naciśnij przycisk na dole, aby potwierdzić zmiane hasła!",
         passwordHasBeenChanged: "Hasło zostało zmienione!",
@@ -180,7 +185,9 @@ i18next.use(initReactI18next).init({
         changePasswordSucc: "Hasło zmienione pomyślnie!",
         changePasswordFail: "Nie udało się zmienić hasła :(",
         changeEmailSucc: "E-mail zmieniony pomyślnie!",
+        confirmUnblockAccSucc: "Konto odblokowane pomyślnie!",
         changeEmailFail: "Nie udało się zmienić maila :(",
+        confirmUnblockAccFail: "Nie udało się odblokować konta",
         getMyAccountFail: "Nie udało się zaktualizować konta :(",
         updateMyPersonalDataSucc: "Dane personalne zmienione pomyślnie!",
         updateMyPersonalDataFail:
@@ -300,10 +307,13 @@ i18next.use(initReactI18next).init({
         accountDetails: "Account details",
         gotoHomePage: "Go to home page",
         confEmailChange: "Confirm your email change!",
+        confUnblockAccount: "Confirm unblocking account!",
         confPassChange: "Confirm your password change!",
         clickToConfEmail:
           "Click the button below to confirm your email change!",
+        clickToConfUnblockAccount: "Click the button below to confirm unblocking account!",
         emailHasBeenChanged: "Email has been changed!",
+        accountHasBeenUnblocked: "Account has been unblocked",
 
         POLISH: "Polish",
         ENGLISH: "English",
@@ -343,6 +353,8 @@ i18next.use(initReactI18next).init({
         somethingHappened: "Something bad happened :((",
         errorConfPassword:
           "There was an error while confirming your email change. If you think this is a mistake, contact support.",
+        errorConfUnblockAccount:
+            "There was an error while confirming unblocking account. If you think this is a mistake, contact support.",
         clickToConfPassChange:
           "Click the button below to confirm your password change!",
         passwordHasBeenChanged: "Password has been changed!",
@@ -388,7 +400,9 @@ i18next.use(initReactI18next).init({
         changePasswordSucc: "Password has been changed!",
         changePasswordFail: "Failed to change a password :(",
         changeEmailSucc: "Email has been verified!",
+        confirmUnblockAccSucc: "Account has been unblocked",
         changeEmailFail: "Failed to verify email :(",
+        confirmUnblockAccFail: "Failed to unblock account",
         getMyAccountFail: "Failed to fetch an account :(",
         updateMyPersonalDataSucc: "Account has been updated!",
         updateMyPersonalDataFail: "Account update failed :(",

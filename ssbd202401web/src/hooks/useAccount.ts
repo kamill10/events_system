@@ -225,6 +225,33 @@ export const useAccount = () => {
     }
   };
 
+  const confirmUnblockAccount = async (key: string) => {
+    try {
+      setIsFetching(true);
+      await api.confirmUnblockAccount(key);
+      sendNotification({
+        type: "success",
+        description: t("confirmUnblockAccSucc"),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("confirmUnblockAccFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const getMyAccount = async () => {
     try {
       setIsFetching(true);
@@ -424,6 +451,7 @@ export const useAccount = () => {
     verifyAccount,
     confirmPasswordUpdate,
     confirmEmailUpdate,
+    confirmUnblockAccount,
     getMyAccount,
     updateMyPersonalData,
     setMyTheme,
