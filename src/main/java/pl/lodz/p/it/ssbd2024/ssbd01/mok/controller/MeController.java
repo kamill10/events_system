@@ -7,11 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.ThemeDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -82,6 +83,13 @@ public class MeController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<?> logSwitchRole(@RequestParam AccountRoleEnum role) throws AccountNotFoundException, RoleNotAssignedToAccount {
         meService.logSwitchRole(role);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PatchMapping("/user-data/theme")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
+    public ResponseEntity<?> setMyTheme(@Valid @RequestBody ThemeDTO theme) throws AccountThemeNotFoundException {
+        meService.setAccountTheme(theme.theme());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

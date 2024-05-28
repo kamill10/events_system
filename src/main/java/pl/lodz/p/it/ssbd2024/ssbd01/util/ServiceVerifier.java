@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.util;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -29,12 +30,14 @@ public class ServiceVerifier {
     private final ConfigurationProperties config;
 
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
+    @PreAuthorize("permitAll()")
     public boolean isPasswordInHistory(UUID accountId, String password) {
         return passwordHistoryRepository.findPasswordHistoryByAccount_Id(accountId)
                 .stream().anyMatch(passwordHistory -> passwordEncoder.matches(password, passwordHistory.getPassword()));
     }
 
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
+    @PreAuthorize("permitAll()")
     public CredentialReset saveTokenToResetCredential(Account account) {
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
@@ -44,6 +47,7 @@ public class ServiceVerifier {
     }
 
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
+    @PreAuthorize("permitAll()")
     public <T extends AbstractCredentialChange> Account verifyCredentialReset(String token, GenericChangeCredentialTokenRepository<T> repo)
             throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException, AccountNotVerifiedException, AccountLockedException {
         Optional<T> credentialReset = repo.findByToken(token);

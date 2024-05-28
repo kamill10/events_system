@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;

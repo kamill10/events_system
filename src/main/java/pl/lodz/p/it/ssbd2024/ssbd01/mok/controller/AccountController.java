@@ -13,7 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.TimeZoneDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
@@ -35,7 +35,7 @@ public class AccountController {
 
     private final AccountService accountService;
     private final AccountDTOConverter accountDTOConverter;
-    private final MailService mailService;
+//    private final MailService mailService;
 
 
     @GetMapping
@@ -74,7 +74,7 @@ public class AccountController {
             throws BadRequestException, NotFoundException, ConflictException, OptLockException {
         var account = accountService.addRoleToAccount(id, roleName,eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-        mailService.sendEmailToAddRoleToAccount(account, roleName.name());
+//        mailService.sendEmailToAddRoleToAccount(account, roleName.name());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -87,7 +87,7 @@ public class AccountController {
             throws BadRequestException, NotFoundException, OptLockException {
         var account = accountService.removeRoleFromAccount(id, roleName,eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-        mailService.sendEmailToRemoveRoleFromAccount(account, roleName.name());
+//        mailService.sendEmailToRemoveRoleFromAccount(account, roleName.name());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -99,7 +99,7 @@ public class AccountController {
                                                    @PathVariable UUID id) throws NotFoundException, OptLockException {
         var account = accountService.setAccountStatus(id, true, eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-        mailService.sendEmailToSetActiveAccount(accountService.getAccountById(id));
+//        mailService.sendEmailToSetActiveAccount(accountService.getAccountById(id));
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -111,7 +111,7 @@ public class AccountController {
                                                      @PathVariable UUID id) throws NotFoundException, OptLockException {
         var account = accountService.setAccountStatus(id, false, eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-        mailService.sendEmailToSetInactiveAccount(accountService.getAccountById(id));
+//        mailService.sendEmailToSetInactiveAccount(accountService.getAccountById(id));
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));

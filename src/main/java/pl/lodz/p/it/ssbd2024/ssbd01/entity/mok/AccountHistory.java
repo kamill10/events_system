@@ -3,15 +3,14 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entity.mok;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ActionTypeEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.ActionTypeEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter

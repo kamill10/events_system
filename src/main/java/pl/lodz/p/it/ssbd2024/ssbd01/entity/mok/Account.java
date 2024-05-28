@@ -6,7 +6,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.time.LocalDateTime;
@@ -27,7 +27,7 @@ public class Account extends ControlledEntity implements UserDetails {
     @Column(unique = true, updatable = false, nullable = false, length = 32)
     @Size(min = 3, max = 32)
     @NotBlank
-    @Pattern(regexp = "^(?!anonymous$)[a-zA-Z0-9]{3,32}$")
+    @Pattern(regexp = "^(?!system$)(?!anonymous$)[a-zA-Z0-9]{3,32}$")
     private String username;
 
     @ToString.Exclude

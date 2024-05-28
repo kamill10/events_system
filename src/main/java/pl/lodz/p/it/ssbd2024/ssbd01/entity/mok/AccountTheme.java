@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ThemeEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 
 import java.util.Objects;
