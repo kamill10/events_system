@@ -70,10 +70,10 @@ export default function RefreshToken() {
                 setOpen(false);
               }}
             >
-              Refresh
+              {t("refresh")}
             </Button>
             <Button variant="contained" onClick={() => setOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
           </Box>
         </Box>

@@ -6,28 +6,33 @@ import { Pathnames } from "../router/Pathnames";
 export default function RedirectPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAdmin, isManager, isParticipant } = useAccount();
+  const { isAuthenticated, isAdmin, isManager, isParticipant } = useAccount();
 
   useEffect(() => {
     if (
+      !isAuthenticated &&
+      !Object.values(Pathnames.public).includes(location.pathname)
+    ) {
+      navigate(Pathnames.public.home);
+    } else if (
       isParticipant &&
       !Object.values(Pathnames.participant).includes(location.pathname)
     ) {
-      navigate(Pathnames.public.home);
+      navigate(Pathnames.participant.home);
     } else if (
       isManager &&
       !Object.values(Pathnames.manager).includes(location.pathname)
     ) {
-      navigate(Pathnames.public.home);
+      navigate(Pathnames.manager.home);
     } else if (
       isAdmin &&
       !Object.values(Pathnames.admin).includes(location.pathname)
     ) {
-      navigate(Pathnames.public.home);
+      navigate(Pathnames.admin.home);
     } else {
       navigate(location.pathname);
     }
-  }, []);
+  }, [isAuthenticated, isAdmin, isManager, isParticipant]);
 
   return <></>;
 }

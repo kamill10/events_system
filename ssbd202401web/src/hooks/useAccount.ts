@@ -43,9 +43,11 @@ export const useAccount = () => {
   const { i18n } = useTranslation();
 
   const isAuthenticated = !!token;
-  const isManager = parsedToken?.role.includes(AccountTypeEnum.MANAGER);
-  const isAdmin = parsedToken?.role.includes(AccountTypeEnum.ADMIN);
-  const isParticipant = parsedToken?.role.includes(AccountTypeEnum.PARTICIPANT);
+  const isManager =
+    parsedToken?.role.includes(AccountTypeEnum.MANAGER) ?? false;
+  const isAdmin = parsedToken?.role.includes(AccountTypeEnum.ADMIN) ?? false;
+  const isParticipant =
+    parsedToken?.role.includes(AccountTypeEnum.PARTICIPANT) ?? false;
 
   const logIn = async (formData: LoginCredentialsType) => {
     try {
@@ -116,16 +118,18 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
-        sendNotification({
-          type: "error",
-          description: t(e.response?.data),
-        });
-      } else {
-        sendNotification({
-          type: "error",
-          description: t("logOutFail"),
-        });
+      if (e instanceof AxiosError && e.response?.status !== 403) {
+        if (t(e.response?.data) != e.response?.data) {
+          sendNotification({
+            type: "error",
+            description: t(e.response?.data),
+          });
+        } else {
+          sendNotification({
+            type: "error",
+            description: t("logOutFail"),
+          });
+        }
       }
       return e;
     } finally {

@@ -47,18 +47,12 @@ export default function AccountDetailsComponent({
     },
     {
       [t("lastFailedLogin")]: account?.lastFailedLogin
-        ? parseDate(
-            account.lastSuccessfulLogin,
-            myAccount.account?.accountTimeZone,
-          )
+        ? parseDate(account.lastFailedLogin, myAccount.account?.accountTimeZone)
         : [t("never")],
     },
     {
       [t("lockedUntil")]: account?.lockedUntil
-        ? parseDate(
-            account.lastSuccessfulLogin,
-            myAccount.account?.accountTimeZone,
-          )
+        ? parseDate(account.lockedUntil, myAccount.account?.accountTimeZone)
         : [t("notLocked")],
     },
     {
