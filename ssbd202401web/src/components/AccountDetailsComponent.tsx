@@ -39,25 +39,34 @@ export default function AccountDetailsComponent({
     { [t("languagePref")]: [t(account?.language ?? "")] },
     {
       [t("lastSuccLogin")]: account?.lastSuccessfulLogin
-        ? parseDate(account.lastSuccessfulLogin, myAccount.account?.accountTimeZone)
+        ? parseDate(
+            account.lastSuccessfulLogin,
+            myAccount.account?.accountTimeZone,
+          )
         : [t("never")],
     },
     {
       [t("lastFailedLogin")]: account?.lastFailedLogin
-        ? parseDate(account.lastSuccessfulLogin, myAccount.account?.accountTimeZone)
+        ? parseDate(
+            account.lastSuccessfulLogin,
+            myAccount.account?.accountTimeZone,
+          )
         : [t("never")],
     },
     {
       [t("lockedUntil")]: account?.lockedUntil
-        ? parseDate(account.lastSuccessfulLogin, myAccount.account?.accountTimeZone)
+        ? parseDate(
+            account.lastSuccessfulLogin,
+            myAccount.account?.accountTimeZone,
+          )
         : [t("notLocked")],
     },
     {
-      [t("timeZone")]: account?.accountTimeZone ?? t("notSpecified")
+      [t("timeZone")]: account?.accountTimeZone ?? t("notSpecified"),
     },
     {
-      [t("theme")]: account?.accountTheme ?? t("notSpecified")
-    }
+      [t("theme")]: account?.accountTheme ?? t("notSpecified"),
+    },
   ];
 
   return (

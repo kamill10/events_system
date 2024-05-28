@@ -19,7 +19,6 @@ const colors = {
   },
 };
 
-
 export const ParticipantTheme = createTheme({
   palette: {
     primary: {
@@ -32,15 +31,15 @@ export const ParticipantTheme = createTheme({
 });
 
 export const ParticipantDarkTheme = createTheme({
-    palette: {
-        mode: "dark",
-        primary: {
-          main: colors.participant.primary,
-        },
-        secondary: {
-          main: colors.participant.secondary,
-        },
+  palette: {
+    mode: "dark",
+    primary: {
+      main: colors.participant.primary,
     },
+    secondary: {
+      main: colors.participant.secondary,
+    },
+  },
 });
 
 export const AdminTheme = createTheme({
@@ -55,15 +54,15 @@ export const AdminTheme = createTheme({
 });
 
 export const AdminDarkTheme = createTheme({
-    palette: {
-        mode: "dark",
-        primary: {
-          main: colors.admin.secondary,
-        },
-        secondary: {
-          main: colors.admin.primary,
-        },
+  palette: {
+    mode: "dark",
+    primary: {
+      main: colors.admin.secondary,
     },
+    secondary: {
+      main: colors.admin.primary,
+    },
+  },
 });
 
 export const ManagerTheme = createTheme({
@@ -78,16 +77,15 @@ export const ManagerTheme = createTheme({
 });
 
 export const ManagerDarkTheme = createTheme({
-    palette: {
-        mode: "dark",
-        primary: {
-          main: colors.manager.primary,
-        },
-        secondary: {
-          main: colors.manager.secondary,
-        },
+  palette: {
+    mode: "dark",
+    primary: {
+      main: colors.manager.primary,
     },
-    
+    secondary: {
+      main: colors.manager.secondary,
+    },
+  },
 });
 
 export const PublicTheme = createTheme({
@@ -102,13 +100,13 @@ export const PublicTheme = createTheme({
 });
 
 export const PublicDarkTheme = createTheme({
-    palette: {
-        mode: "dark",
-        primary: {
-          main: colors.public.secondary,
-        },
-        secondary: {
-          main: colors.public.primary,
-        },
+  palette: {
+    mode: "dark",
+    primary: {
+      main: colors.public.secondary,
     },
+    secondary: {
+      main: colors.public.primary,
+    },
+  },
 });

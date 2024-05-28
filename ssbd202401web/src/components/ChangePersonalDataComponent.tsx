@@ -1,5 +1,10 @@
 import { Box, Button, MenuItem, TextField, Typography } from "@mui/material";
-import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitErrorHandler,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SaveIcon from "@mui/icons-material/Save";
 import { useAccount } from "../hooks/useAccount";
@@ -31,7 +36,7 @@ export default function ChangePersonalDataComponent() {
       lastName: account ? account.lastName : "",
       gender: account ? account.gender : 0,
       timeZone: account?.accountTimeZone ?? " ",
-      theme: account?.accountTheme ?? " "
+      theme: account?.accountTheme ?? " ",
     },
     resolver: yupResolver(changePersonalDataSchema),
   });
@@ -68,18 +73,18 @@ export default function ChangePersonalDataComponent() {
         <Typography variant="h4">{t("changePersonalDataTitle")}</Typography>
         <Typography variant="body1">{t("changePersonalDataBody")}</Typography>
         <Button
-            onClick={getMyAccount}
-            variant="contained"
-            startIcon={<RefreshIcon />}
-            color="secondary"
-            sx={{
-              mt: 1,
-              mb: 2,
-              width: "fit-content",
-            }}
-          >
-            {t("refreshData")}
-          </Button>
+          onClick={getMyAccount}
+          variant="contained"
+          startIcon={<RefreshIcon />}
+          color="secondary"
+          sx={{
+            mt: 1,
+            mb: 2,
+            width: "fit-content",
+          }}
+        >
+          {t("refreshData")}
+        </Button>
         <TextFieldComponent
           control={control}
           errors={errors}
@@ -106,7 +111,7 @@ export default function ChangePersonalDataComponent() {
                 select
                 label={t("timeZone")}
                 value={field.value}
-                onChange={e => {
+                onChange={(e) => {
                   field.onChange(e);
                 }}
                 id={field.name}
@@ -114,17 +119,11 @@ export default function ChangePersonalDataComponent() {
                 name={field.name}
                 autoComplete=""
               >
-                <MenuItem value=" ">
-                  {t("notSpecified")}
-                </MenuItem>
-                <MenuItem value="Europe/Warsaw">
-                  {t("Europe/Warsaw")}
-                </MenuItem>
-                <MenuItem value="Europe/London">
-                  {t("Europe/London")}
-                </MenuItem>
+                <MenuItem value=" ">{t("notSpecified")}</MenuItem>
+                <MenuItem value="Europe/Warsaw">{t("Europe/Warsaw")}</MenuItem>
+                <MenuItem value="Europe/London">{t("Europe/London")}</MenuItem>
               </TextField>
-            )
+            );
           }}
         ></Controller>
         <Controller
@@ -136,7 +135,7 @@ export default function ChangePersonalDataComponent() {
                 select
                 label={t("theme")}
                 value={field.value}
-                onChange={e => {
+                onChange={(e) => {
                   field.onChange(e);
                 }}
                 id={field.name}
@@ -144,17 +143,11 @@ export default function ChangePersonalDataComponent() {
                 name={field.name}
                 autoComplete=""
               >
-                <MenuItem value=" ">
-                  {t("notSpecified")}
-                </MenuItem>
-                <MenuItem value="Light">
-                  {t("Light")}
-                </MenuItem>
-                <MenuItem value="Dark">
-                  {t("Dark")}
-                </MenuItem>
+                <MenuItem value=" ">{t("notSpecified")}</MenuItem>
+                <MenuItem value="Light">{t("Light")}</MenuItem>
+                <MenuItem value="Dark">{t("Dark")}</MenuItem>
               </TextField>
-            )
+            );
           }}
         ></Controller>
         <Box

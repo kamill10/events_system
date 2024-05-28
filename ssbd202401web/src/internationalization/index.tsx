@@ -232,11 +232,12 @@ i18next.use(initReactI18next).init({
         OPTLCKE: "Wczytane dane są nieaktualne. Odśwież je!",
         "Europe/London": "Europa/Londyn",
         "Europe/Warsaw": "Europa/Warszawa",
-        getMyThemeFail: "W prawym górnym rogu możesz zmienić motyw, jeśli potrzebujesz :)",
+        getMyThemeFail:
+          "W prawym górnym rogu możesz zmienić motyw, jeśli potrzebujesz :)",
         setMyThemeFail: "Nie udało się ustawić motywu :(",
         notSpecified: "Nie określono",
         Light: "Jasny",
-        Dark: "Ciemny"
+        Dark: "Ciemny",
       },
     },
     ENGLISH: {
@@ -432,11 +433,12 @@ i18next.use(initReactI18next).init({
         OPTLCKE: "Data you try to update is out of date. Refresh it!",
         "Europe/London": "Europe/London",
         "Europe/Warsaw": "Europe/Warsaw",
-        getMyThemeFail: "You can change your theme in the top right corner if you need :)",
+        getMyThemeFail:
+          "You can change your theme in the top right corner if you need :)",
         setMyThemeFail: "Failed to set theme :(",
         notSpecified: "Not specified",
         Light: "Light",
-        Dark: "Dark"
+        Dark: "Dark",
       },
     },
   },

@@ -1,11 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, SubmitHandler, SubmitErrorHandler, Controller } from "react-hook-form";
+import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
 import {
   GetPersonalAccountType,
   UpdatePersonalDataType,
 } from "../types/Account";
 import { changePersonalDataSchema } from "../validation/schemas";
-import { Typography, Divider, Button, MenuItem, TextField } from "@mui/material";
+import { Typography, Divider, Button } from "@mui/material";
 import FormComponent from "./FormComponent";
 import GenderListComponent from "./GenderListComponent";
 import TextFieldComponent from "./TextFieldComponent";
@@ -37,7 +37,7 @@ export default function ChangeAccountDataComponent({
       lastName: account?.lastName,
       gender: account?.gender,
       timeZone: account?.accountTimeZone ?? " ",
-      theme: account?.accountTheme ?? " "
+      theme: account?.accountTheme ?? " ",
     },
     resolver: yupResolver(changePersonalDataSchema),
   });

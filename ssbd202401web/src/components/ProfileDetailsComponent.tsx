@@ -43,11 +43,11 @@ export default function ProfileDetailsComponent() {
     { [t("isUnlocked")]: account?.nonLocked ? [t("yes")] : [t("no")] },
     { [t("languagePref")]: [t(account?.language ?? "")] },
     {
-      [t("timeZone")]: t(account?.accountTimeZone ?? "notSpecified")
+      [t("timeZone")]: t(account?.accountTimeZone ?? "notSpecified"),
     },
     {
-      [t("theme")]: t(account?.accountTheme ?? "notSpecified")
-    }
+      [t("theme")]: t(account?.accountTheme ?? "notSpecified"),
+    },
   ];
   return (
     <Box
