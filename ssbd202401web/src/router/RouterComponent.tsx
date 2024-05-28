@@ -29,6 +29,7 @@ import { ConfirmEmailUpdatePage } from "../pages/ConfirmEmailUpdatePage.tsx";
 import { useEffect, useState } from "react";
 import { setupInterceptors } from "../axios/axios.config.ts";
 import { ConfirmUnblockAccountPage } from "../pages/ConfirmUnblockAccountPage.tsx";
+import RedirectPage from "../pages/RedirectPage.tsx";
 
 export default function RouterComponent() {
   const {
@@ -246,10 +247,7 @@ export default function RouterComponent() {
           </ThemeProvider>
         }
       ></Route>
-      <Route
-        path="*"
-        element={<Navigate to={Pathnames.public.home}></Navigate>}
-      ></Route>
+      <Route path="*" element={<RedirectPage></RedirectPage>}></Route>
     </Routes>
   );
 }

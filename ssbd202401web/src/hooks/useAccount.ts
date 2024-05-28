@@ -78,6 +78,34 @@ export const useAccount = () => {
     }
   };
 
+  const refreshToken = async () => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.refreshToken();
+      setToken(data);
+      localStorage.setItem("token", data);
+      sendNotification({
+        type: "success",
+        description: t("refreshSucc"),
+      });
+    } catch (e) {
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("refreshFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const logOut = async () => {
     try {
       setIsFetching(true);
@@ -102,9 +130,11 @@ export const useAccount = () => {
       return e;
     } finally {
       localStorage.removeItem("token");
+      localStorage.removeItem("theme");
       localStorage.removeItem("etag");
       setAccount(null);
       setToken(null);
+      setTheme("light");
       i18n.changeLanguage(
         navigator.language === "pl"
           ? LanguageType.POLISH
@@ -258,7 +288,6 @@ export const useAccount = () => {
       const { data } = await api.getMyAccount();
       setAccount(data);
       i18n.changeLanguage(data.language);
-      localStorage.setItem("language", data.language);
       setTheme(data.accountTheme);
     } catch (e) {
       console.error(e);
@@ -461,5 +490,7 @@ export const useAccount = () => {
     resetMyPassword,
     adminLayout,
     setAdminLayout,
+    refreshToken,
+    token,
   };
 };

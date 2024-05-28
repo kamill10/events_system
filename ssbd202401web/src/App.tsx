@@ -4,6 +4,7 @@ import { AccountStateContextProvider } from "./context/AccountContext.tsx";
 import { SnackbarProvider } from "notistack";
 import LoadingScreen from "./pages/LoadingScreen.tsx";
 import { ManageAccountsStateContextProvider } from "./context/ManageAccountsContext.tsx";
+import RefreshToken from "./pages/RefreshToken.tsx";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <BrowserRouter>
             <RouterComponent></RouterComponent>
             <LoadingScreen></LoadingScreen>
+            <RefreshToken></RefreshToken>
           </BrowserRouter>
         </ManageAccountsStateContextProvider>
       </AccountStateContextProvider>

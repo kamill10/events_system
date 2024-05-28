@@ -96,7 +96,7 @@ export default function AccountsPage() {
           {t("home")}
         </Link>
         <Link
-          to="/admin/accounts"
+          to="/accounts"
           style={{
             textDecoration: "none",
             color: "black",
@@ -136,8 +136,8 @@ export default function AccountsPage() {
             onSubmit={onSubmit}
             align="start"
           >
-            <Typography variant="h4">{t("filterByPhraseTitle")}</Typography>
-            <Typography variant="body1">{t("filterByPhraseBody")}</Typography>
+            <Typography variant="h6">{t("filterByPhraseTitle")}</Typography>
+            <Typography variant="body2">{t("filterByPhraseBody")}</Typography>
             <TextFieldComponent
               control={control}
               errors={errors}
@@ -146,8 +146,10 @@ export default function AccountsPage() {
               trigger={trigger}
               type="text"
             ></TextFieldComponent>
-            <Typography variant="h4">{t("sortDataKeyTitle")}</Typography>
-            <Typography variant="body1">{t("sortDataKeyBody")}</Typography>
+            <Typography variant="h6" marginTop={3}>
+              {t("sortDataKeyTitle")}
+            </Typography>
+            <Typography variant="body2">{t("sortDataKeyBody")}</Typography>
             <Controller
               name="key"
               control={control}
@@ -177,8 +179,10 @@ export default function AccountsPage() {
                 );
               }}
             ></Controller>
-            <Typography variant="h4">{t("sortDataDirTitle")}</Typography>
-            <Typography variant="body1">{t("sortDataDirBody")}</Typography>
+            <Typography variant="h6" marginTop={3}>
+              {t("sortDataDirTitle")}
+            </Typography>
+            <Typography variant="body2">{t("sortDataDirBody")}</Typography>
             <Controller
               name="direction"
               control={control}
@@ -205,7 +209,7 @@ export default function AccountsPage() {
               type="submit"
               variant="contained"
               sx={{
-                marginY: 2,
+                marginY: 3,
               }}
               startIcon={<FilterAltIcon />}
             >

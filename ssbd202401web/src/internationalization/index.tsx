@@ -246,6 +246,9 @@ i18next.use(initReactI18next).init({
         notSpecified: "Nie określono",
         Light: "Jasny",
         Dark: "Ciemny",
+        refreshModalTitle: "Twoja sesja niedługo wygaśnie!",
+        refreshModalBody:
+          "Twoja sesja wygaśnie w mniej niż 60 sekund. Odśwież ją lub zignoruj tę informację przy pomocy jedenego z przycisków!",
 
         "0": "Nie określona",
         "1": "Mężczyzna",
@@ -460,6 +463,9 @@ i18next.use(initReactI18next).init({
         notSpecified: "Not specified",
         Light: "Light",
         Dark: "Dark",
+        refreshModalTitle: "Your session is ending!",
+        refreshModalBody:
+          "Your session will expire in less than 60 seconds. Refresh it of ignore this message using one of those buttons!",
 
         "0": "Not Known",
         "1": "Male",
