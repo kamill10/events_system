@@ -248,6 +248,8 @@ i18next.use(initReactI18next).init({
         "9": "Nie podano",
         refresh: "Odśwież",
         cancel: "Anuluj",
+        refreshSucc: "Sesja została odswieżona!",
+        refreshFail: "Nie udało się odświeżyć sesji :(",
       },
     },
     ENGLISH: {
@@ -459,6 +461,8 @@ i18next.use(initReactI18next).init({
         "9": "Not Specified",
         refresh: "Refresh",
         cancel: "Cancel",
+        refreshSucc: "Session has been refreshed!",
+        refreshFail: "Failed to refresh the session :(",
       },
     },
   },

@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import {
   AdminRoutes,
   ManagerRoutes,
@@ -122,10 +122,7 @@ export default function RouterComponent() {
             </ThemeProvider>
           }
         ></Route>
-        <Route
-          path="*"
-          element={<Navigate to={Pathnames.public.home}></Navigate>}
-        ></Route>
+        <Route path="*" element={<RedirectPage></RedirectPage>}></Route>
       </Routes>
     );
   }
