@@ -238,6 +238,11 @@ i18next.use(initReactI18next).init({
         notSpecified: "Nie określono",
         Light: "Jasny",
         Dark: "Ciemny",
+
+        0: "Nie określona",
+        1: "Mężczyzna",
+        2: "Kobieta",
+        3: "Nie podano",
       },
     },
     ENGLISH: {
@@ -439,6 +444,12 @@ i18next.use(initReactI18next).init({
         notSpecified: "Not specified",
         Light: "Light",
         Dark: "Dark",
+
+
+        "0": "Not Known",
+        "1": "Male",
+        "2": "Female",
+        "3": "Not Specified",
       },
     },
   },
