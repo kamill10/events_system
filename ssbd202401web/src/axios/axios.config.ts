@@ -164,7 +164,7 @@ export const api = {
   confirmEmailUpdate: (key: string): ApiResponseType<void> =>
     apiWithEtag.patch(`/me/change-email/token/${key}`),
   confirmUnblockAccount: (key: string): ApiResponseType<void> =>
-      apiWithEtag.post(`/auth/unblock-account/${key}`),
+    apiWithEtag.post(`/auth/unblock-account/${key}`),
   updateAccountData: (id: string, data: UpdatePersonalDataType) =>
     apiWithEtag.put("/accounts/" + id + "/user-data", data),
   updateAccountPassword: (data: ChangeEmailType) =>

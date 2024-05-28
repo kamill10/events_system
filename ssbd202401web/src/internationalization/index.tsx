@@ -95,7 +95,8 @@ i18next.use(initReactI18next).init({
         confUnblockAccount: "Potwierdź odblokowanie konta!",
         clickToConfEmail:
           "Naciśnij przycisk poniżej, aby potwierdzić zmiane email!",
-        clickToConfUnblockAccount: "Naciśnij przycisk poniżej, aby potwierdzić odblokowanie konta!",
+        clickToConfUnblockAccount:
+          "Naciśnij przycisk poniżej, aby potwierdzić odblokowanie konta!",
         emailHasBeenChanged: "Adres email został zmieniony!",
         accountHasBeenUnblocked: "Konto zostało odblokowane",
 
@@ -138,7 +139,7 @@ i18next.use(initReactI18next).init({
         errorConfPassword:
           "Wystąpił błąd podczas potwierdzania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
         errorConfUnblockAccount:
-            "Wystąpił błąd podczas potwierdzania odblokowania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
+          "Wystąpił błąd podczas potwierdzania odblokowania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
         clickToConfPassChange:
           "Naciśnij przycisk na dole, aby potwierdzić zmiane hasła!",
         passwordHasBeenChanged: "Hasło zostało zmienione!",
@@ -246,7 +247,7 @@ i18next.use(initReactI18next).init({
         Light: "Jasny",
         Dark: "Ciemny",
 
-        '0': "Nie określona",
+        "0": "Nie określona",
         "1": "Mężczyzna",
         "2": "Kobieta",
         "9": "Nie podano",
@@ -311,7 +312,8 @@ i18next.use(initReactI18next).init({
         confPassChange: "Confirm your password change!",
         clickToConfEmail:
           "Click the button below to confirm your email change!",
-        clickToConfUnblockAccount: "Click the button below to confirm unblocking account!",
+        clickToConfUnblockAccount:
+          "Click the button below to confirm unblocking account!",
         emailHasBeenChanged: "Email has been changed!",
         accountHasBeenUnblocked: "Account has been unblocked",
 
@@ -354,7 +356,7 @@ i18next.use(initReactI18next).init({
         errorConfPassword:
           "There was an error while confirming your email change. If you think this is a mistake, contact support.",
         errorConfUnblockAccount:
-            "There was an error while confirming unblocking account. If you think this is a mistake, contact support.",
+          "There was an error while confirming unblocking account. If you think this is a mistake, contact support.",
         clickToConfPassChange:
           "Click the button below to confirm your password change!",
         passwordHasBeenChanged: "Password has been changed!",
@@ -458,7 +460,6 @@ i18next.use(initReactI18next).init({
         notSpecified: "Not specified",
         Light: "Light",
         Dark: "Dark",
-
 
         "0": "Not Known",
         "1": "Male",
