@@ -13,7 +13,7 @@ public class ExceptionMessages {
     public static final String CONFIRMATION_TOKEN_EXPIRED = "Confirmation token has expired.";
     public static final String CONFIRMATION_TOKEN_NOT_FOUND = "Confirmation token not found.";
     public static final String THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY = "This password already was set in history.";
-    public static final String OPTIMISTIC_LOCK_EXCEPTION = "Optimistic lock exception.";
+    public static final String OPTIMISTIC_LOCK_EXCEPTION = "OPTLCKE";
     public static final String WRONG_OLD_PASSWORD = "Old password is not correct";
     public static final String EMAIL_RESET_TOKEN_NOT_FOUND = "Email reset token not found.";
     public static final String INCORRECT_EMAIL = "Incorrect email.";

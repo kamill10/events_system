@@ -7,24 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.ThemeDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.TimeZoneDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ThemeEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.TimeZoneEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyPassword;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
-
 
 
 @RestController
@@ -91,29 +84,20 @@ public class MeController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping("/user-data/theme/{theme}")
+    @PatchMapping("/user-data/theme")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<ThemeEnum> setMyTheme(@PathVariable ThemeEnum theme) throws AccountThemeNotFoundException {
-        return ResponseEntity.status(HttpStatus.OK).body(meService.setAccountTheme(theme));
+    public ResponseEntity<?> setMyTheme(@Valid @RequestBody ThemeDTO theme) throws AccountThemeNotFoundException {
+        meService.setAccountTheme(theme.theme());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping("/user-data/time-zone/{timeZone}")
+    @PatchMapping("/user-data/time-zone")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<String> setMyTimeZone(@PathVariable TimeZoneEnum timeZone) throws TimeZoneNotFoundException {
-        return ResponseEntity.status(HttpStatus.OK).body(meService.setAccountTimeZone(timeZone));
+    public ResponseEntity<?> setMyTimeZone(@Valid @RequestBody TimeZoneDTO timeZone) throws TimeZoneNotFoundException {
+        meService.setAccountTimeZone(timeZone.timeZone());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @GetMapping("/theme")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<ThemeEnum> getMyTheme() {
-        return ResponseEntity.status(HttpStatus.OK).body(meService.getAccountTheme());
-    }
-
-    @GetMapping("/time-zone")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<String> getMyTimeZone() {
-        return ResponseEntity.status(HttpStatus.OK).body(meService.getAccountTimeZone());
-    }
 
 
 
