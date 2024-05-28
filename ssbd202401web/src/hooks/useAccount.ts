@@ -58,6 +58,7 @@ export const useAccount = () => {
       });
       navigate(Pathnames.public.home);
       getMyAccount();
+      getMyTheme()
     } catch (e) {
       console.error(e);
       sendNotification({
@@ -190,7 +191,6 @@ export const useAccount = () => {
       setAccount(data);
       i18n.changeLanguage(data.language);
       localStorage.setItem("language", data.language);
-      await getMyTheme();
     } catch (e) {
       console.error(e);
       sendNotification({
@@ -314,7 +314,15 @@ export const useAccount = () => {
         setTheme(data);
         return data;
       }
-    } finally {
+    } catch (e) {
+        console.error(e);
+        sendNotification({
+            description: t("getMyThemeFail"),
+            type: "info",
+        });
+        return e;
+    }
+    finally {
         setIsFetching(false);
     }
   };
@@ -338,6 +346,7 @@ export const useAccount = () => {
 
   return {
     account,
+    setTheme,
     theme,
     parsedToken,
     isLogging,

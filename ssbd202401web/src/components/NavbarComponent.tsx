@@ -27,7 +27,7 @@ import { api } from "../axios/axios.config";
 export default function NavbarComponent(props: NavbarPropType) {
   const width = useWindowWidth();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const {theme ,setMyTheme , adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
+  const {theme ,setMyTheme, setTheme, isAuthenticated, adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
   const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(theme === 'DARK');
   const { t } = useTranslation();
@@ -35,9 +35,16 @@ export default function NavbarComponent(props: NavbarPropType) {
   const handleDarkModeToggle = () => {
     setIsDarkMode(!isDarkMode);
     if (isDarkMode) {
-      setMyTheme("LIGHT")
+      if (isAuthenticated) {
+        setMyTheme("LIGHT")
+      } else {
+        setTheme("LIGHT");
+      }
     } else {
-      setMyTheme("DARK");
+      if (isAuthenticated) {
+        setMyTheme("DARK")
+      }
+      setTheme("DARK");
     }
   };
 
