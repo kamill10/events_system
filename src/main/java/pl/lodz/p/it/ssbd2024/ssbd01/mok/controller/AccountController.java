@@ -8,11 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.ThemeDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.TimeZoneDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
@@ -200,5 +200,17 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountHistoryList);
     }
 
+    @PostMapping("time-zone")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<TimeZoneDTO> addTimeZone(@RequestBody TimeZoneDTO timeZone) throws TimeZoneNotFoundException {
+        accountService.addTimeZone(timeZone.timeZone());
+        return ResponseEntity.status(HttpStatus.OK).body(timeZone);
+    }
 
+    @PostMapping("theme")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<ThemeDTO> addTheme(@RequestBody ThemeDTO theme) {
+        accountService.addTheme(theme.theme());
+        return ResponseEntity.status(HttpStatus.OK).body(theme);
+    }
 }

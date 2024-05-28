@@ -21,7 +21,9 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,6 +43,8 @@ public class AccountService {
     private final ConfigurationProperties config;
     private final ServiceVerifier verifier;
     private final MailService mailService;
+    private final TimeZoneRepository timeZoneRepository;
+    private final ThemeRepository themeRepository;
 
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -281,6 +285,25 @@ public class AccountService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<AccountHistory> getAllAccountHistoryByUsername(String username) {
         return accountMokHistoryRepository.findAllByAccount_Username(username);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    public void addTimeZone(String timeZone) throws TimeZoneNotFoundException {
+        try {
+            ZoneId zoneId = ZoneId.of(timeZone);
+            AccountTimeZone timeZone1 = new AccountTimeZone(timeZone);
+            timeZoneRepository.saveAndFlush(timeZone1);
+        } catch (DateTimeException e) {
+            throw new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND);
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    public void addTheme(String theme) {
+        AccountTheme accountTheme = new AccountTheme(theme);
+        themeRepository.saveAndFlush(accountTheme);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")

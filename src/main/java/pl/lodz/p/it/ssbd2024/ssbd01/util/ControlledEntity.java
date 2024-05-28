@@ -26,10 +26,12 @@ public abstract class ControlledEntity extends AbstractEntity {
     private LocalDateTime updatedAt;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "created_by", updatable = false)
     private Account createdBy;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "updated_by")
     private Account updatedBy;
 

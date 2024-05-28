@@ -110,8 +110,8 @@ public class TestServiceConfig {
     }
 
     @Bean
-    public AccountThemeRepository accountThemeRepository() {
-        return Mockito.mock(AccountThemeRepository.class);
+    public ThemeRepository accountThemeRepository() {
+        return Mockito.mock(ThemeRepository.class);
     }
 
     @Bean
