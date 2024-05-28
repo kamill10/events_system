@@ -51,7 +51,7 @@ export default function LoginPage() {
           name="username"
           trigger={trigger}
           type="text"
-          label={t("usernameLabel")}
+          label={t("usernameLabel") + "*"}
         />
         <TextFieldComponent
           control={control}
@@ -59,7 +59,7 @@ export default function LoginPage() {
           name="password"
           trigger={trigger}
           type="password"
-          label={t("passwordLabel")}
+          label={t("passwordLabel") + "*"}
         />
         <Button
           type="submit"

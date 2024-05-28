@@ -59,7 +59,7 @@ export default function ChangeEmailComponent() {
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("currentPassword")}
+          label={t("currentPassword") + "*"}
           name="password"
           trigger={trigger}
           type="password"
@@ -67,7 +67,7 @@ export default function ChangeEmailComponent() {
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("newEmail")}
+          label={t("newEmail") + "*"}
           name="newEmail"
           trigger={trigger}
           type="text"

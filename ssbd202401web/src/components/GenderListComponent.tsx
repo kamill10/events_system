@@ -18,7 +18,7 @@ export default function GenderListComponent<T extends FieldValues>(
           return (
             <TextField
               select
-              label={t("gender")}
+              label={t("gender") + "*"}
               value={field.value}
               onChange={(e) => {
                 field.onChange(e);
