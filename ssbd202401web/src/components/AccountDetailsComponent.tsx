@@ -8,6 +8,8 @@ import {
 import { GetDetailedAccountType } from "../types/Account";
 import { useTranslation } from "react-i18next";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
+import { useAccount } from "../hooks/useAccount";
+import parseDate from "../validation/parseDate";
 
 export default function AccountDetailsComponent({
   account,
@@ -15,6 +17,7 @@ export default function AccountDetailsComponent({
   account: GetDetailedAccountType | null;
 }) {
   const { t } = useTranslation();
+  const myAccount = useAccount();
   const mapRolesToString = (rolesArray: AccountTypeEnum[]): string => {
     return rolesArray.map((role) => t(role)).join(", ");
   };
@@ -36,19 +39,25 @@ export default function AccountDetailsComponent({
     { [t("languagePref")]: [t(account?.language ?? "")] },
     {
       [t("lastSuccLogin")]: account?.lastSuccessfulLogin
-        ? account.lastSuccessfulLogin
+        ? parseDate(account.lastSuccessfulLogin, myAccount.account?.accountTimeZone)
         : [t("never")],
     },
     {
       [t("lastFailedLogin")]: account?.lastFailedLogin
-        ? account?.lastFailedLogin
+        ? parseDate(account.lastSuccessfulLogin, myAccount.account?.accountTimeZone)
         : [t("never")],
     },
     {
       [t("lockedUntil")]: account?.lockedUntil
-        ? account.lockedUntil
+        ? parseDate(account.lastSuccessfulLogin, myAccount.account?.accountTimeZone)
         : [t("notLocked")],
     },
+    {
+      [t("timeZone")]: account?.accountTimeZone ?? t("notSpecified")
+    },
+    {
+      [t("theme")]: account?.accountTheme ?? t("notSpecified")
+    }
   ];
 
   return (
@@ -74,7 +83,7 @@ export default function AccountDetailsComponent({
       <TableBody>
         {data.map((_, value) => {
           return (
-            <TableRow hover>
+            <TableRow hover key={value}>
               <TableCell>{Object.keys(data[value])}</TableCell>
               <TableCell>{Object.values(data[value])}</TableCell>
             </TableRow>

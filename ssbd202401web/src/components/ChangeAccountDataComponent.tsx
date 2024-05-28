@@ -1,11 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form";
+import { useForm, SubmitHandler, SubmitErrorHandler, Controller } from "react-hook-form";
 import {
   GetPersonalAccountType,
   UpdatePersonalDataType,
 } from "../types/Account";
 import { changePersonalDataSchema } from "../validation/schemas";
-import { Typography, Divider, Button } from "@mui/material";
+import { Typography, Divider, Button, MenuItem, TextField } from "@mui/material";
 import FormComponent from "./FormComponent";
 import GenderListComponent from "./GenderListComponent";
 import TextFieldComponent from "./TextFieldComponent";
@@ -36,6 +36,8 @@ export default function ChangeAccountDataComponent({
       firstName: account?.firstName,
       lastName: account?.lastName,
       gender: account?.gender,
+      timeZone: account?.accountTimeZone ?? " ",
+      theme: account?.accountTheme ?? " "
     },
     resolver: yupResolver(changePersonalDataSchema),
   });
@@ -59,6 +61,8 @@ export default function ChangeAccountDataComponent({
     setValue("firstName", account?.firstName ?? "");
     setValue("lastName", account?.lastName ?? "");
     setValue("gender", account?.gender ?? 0);
+    setValue("timeZone", account?.accountTimeZone ?? " ");
+    setValue("theme", account?.accountTheme ?? " ");
     trigger();
   }, [account, setValue, trigger]);
 
@@ -70,7 +74,7 @@ export default function ChangeAccountDataComponent({
         onSubmit={onSubmit}
         align="start"
       >
-        <Typography variant="h4">{t("changePersonalData")}</Typography>
+        <Typography variant="h4">{t("changePersonalDataTitle")}</Typography>
         <Typography variant="body1">{t("enterNewPersonalData")}</Typography>
         <Divider
           sx={{
@@ -94,6 +98,66 @@ export default function ChangeAccountDataComponent({
           type="text"
         />
         <GenderListComponent control={control} errors={errors} name="gender" />
+        {/* <Controller
+          name="timeZone"
+          control={control}
+          render={({ field }) => {
+            return (
+              <TextField
+                select
+                label={t("timeZone")}
+                value={field.value}
+                onChange={e => {
+                  field.onChange(e);
+                }}
+                id={field.name}
+                sx={{ marginTop: "1rem" }}
+                name={field.name}
+                autoComplete=""
+              >
+                <MenuItem value=" ">
+                  {t("notSpecified")}
+                </MenuItem>
+                <MenuItem value="Europe/Warsaw">
+                  {t("europeWarsaw")}
+                </MenuItem>
+                <MenuItem value="Europe/London">
+                  {t("europeLondon")}
+                </MenuItem>
+              </TextField>
+            )
+          }}
+        ></Controller>
+        <Controller
+          name="theme"
+          control={control}
+          render={({ field }) => {
+            return (
+              <TextField
+                select
+                label={t("theme")}
+                value={field.value}
+                onChange={e => {
+                  field.onChange(e);
+                }}
+                id={field.name}
+                sx={{ marginTop: "1rem" }}
+                name={field.name}
+                autoComplete=""
+              >
+                <MenuItem value=" ">
+                  {t("notSpecified")}
+                </MenuItem>
+                <MenuItem value="Light">
+                  {t("light")}
+                </MenuItem>
+                <MenuItem value="Dark">
+                  {t("dark")}
+                </MenuItem>
+              </TextField>
+            )
+          }}
+        ></Controller> */}
         <Button
           type="submit"
           variant="contained"

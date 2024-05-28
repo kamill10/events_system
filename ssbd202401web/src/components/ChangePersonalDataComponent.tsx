@@ -30,7 +30,8 @@ export default function ChangePersonalDataComponent() {
       firstName: account ? account.firstName : "",
       lastName: account ? account.lastName : "",
       gender: account ? account.gender : 0,
-      accountTimeZone: account?.accountTimeZone ?? "Europe/Warsaw"
+      timeZone: account?.accountTimeZone ?? " ",
+      theme: account?.accountTheme ?? " "
     },
     resolver: yupResolver(changePersonalDataSchema),
   });
@@ -43,7 +44,8 @@ export default function ChangePersonalDataComponent() {
     setValue("firstName", account?.firstName ?? "");
     setValue("lastName", account?.lastName ?? "");
     setValue("gender", account?.gender ?? 0);
-    setValue("accountTimeZone", account?.accountTimeZone ?? "Europe/Warsaw");
+    setValue("timeZone", account?.accountTimeZone ?? " ");
+    setValue("theme", account?.accountTheme ?? " ");
     trigger();
   }, [account, setValue]);
 
@@ -96,13 +98,13 @@ export default function ChangePersonalDataComponent() {
         />
         <GenderListComponent control={control} errors={errors} name="gender" />
         <Controller
-          name="accountTimeZone"
+          name="timeZone"
           control={control}
           render={({ field }) => {
             return (
               <TextField
                 select
-                label={t("timeZone") + "*"}
+                label={t("timeZone")}
                 value={field.value}
                 onChange={e => {
                   field.onChange(e);
@@ -112,11 +114,44 @@ export default function ChangePersonalDataComponent() {
                 name={field.name}
                 autoComplete=""
               >
+                <MenuItem value=" ">
+                  {t("notSpecified")}
+                </MenuItem>
                 <MenuItem value="Europe/Warsaw">
-                  {t("europeWarsaw")}
+                  {t("Europe/Warsaw")}
                 </MenuItem>
                 <MenuItem value="Europe/London">
-                  {t("europeLondon")}
+                  {t("Europe/London")}
+                </MenuItem>
+              </TextField>
+            )
+          }}
+        ></Controller>
+        <Controller
+          name="theme"
+          control={control}
+          render={({ field }) => {
+            return (
+              <TextField
+                select
+                label={t("theme")}
+                value={field.value}
+                onChange={e => {
+                  field.onChange(e);
+                }}
+                id={field.name}
+                sx={{ marginTop: "1rem" }}
+                name={field.name}
+                autoComplete=""
+              >
+                <MenuItem value=" ">
+                  {t("notSpecified")}
+                </MenuItem>
+                <MenuItem value="Light">
+                  {t("Light")}
+                </MenuItem>
+                <MenuItem value="Dark">
+                  {t("Dark")}
                 </MenuItem>
               </TextField>
             )

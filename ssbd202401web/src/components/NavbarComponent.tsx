@@ -100,6 +100,7 @@ export default function NavbarComponent(props: NavbarPropType) {
                 return (
                   route.renderOnNavbar && (
                     <LinkComponent
+                      key={route.pathname}
                       handleClose={handleDropDownClose}
                       href={route.pathname}
                       name={t(route.name)}
@@ -155,6 +156,7 @@ export default function NavbarComponent(props: NavbarPropType) {
                     return (
                       (route.renderOnDropdown || route.renderOnNavbar) && (
                         <LinkComponent
+                          key={route.pathname}
                           handleClose={handleDropDownClose}
                           href={route.pathname}
                           name={t(route.name)}
@@ -166,6 +168,7 @@ export default function NavbarComponent(props: NavbarPropType) {
                   return (
                     route.renderOnDropdown && (
                       <LinkComponent
+                        key={route.pathname}
                         handleClose={handleDropDownClose}
                         href={route.pathname}
                         name={t(route.name)}

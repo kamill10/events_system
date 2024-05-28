@@ -7,7 +7,7 @@ export default function ContainerWithPictureComponent({
   children: ReactNode;
 }) {
   return (
-    <Grid container component="main" sx={{ height: "85vh" }}>
+    <Grid container component="main" sx={{ minHeight: "85vh" }}>
       <CssBaseline />
       <Grid
         item
@@ -15,7 +15,7 @@ export default function ContainerWithPictureComponent({
         sm={4}
         md={7}
         sx={{
-          backgroundImage: "url(https://source.unsplash.com/random?wallpapers)",
+          backgroundImage: "url(https://unsplash.it/1920/1080?random)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "center",

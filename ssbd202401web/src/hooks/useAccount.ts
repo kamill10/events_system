@@ -231,7 +231,6 @@ export const useAccount = () => {
       const { data } = await api.getMyAccount();
       setAccount(data);
       i18n.changeLanguage(data.language);
-      console.log(data);
       localStorage.setItem("language", data.language);
       setTheme(data.accountTheme);
     } catch (e) {

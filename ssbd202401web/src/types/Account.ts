@@ -32,7 +32,8 @@ export interface UpdatePersonalDataType {
   firstName: string;
   lastName: string;
   gender: number;
-  accountTimeZone: string;
+  theme: string;
+  timeZone: string;
 }
 
 export interface ChangeMyPasswordType {

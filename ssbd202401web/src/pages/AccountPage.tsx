@@ -123,7 +123,6 @@ export default function AccountPage() {
       {page == 2 && (
         <AccountChangesHistoryComponent
           accountChanges={accountChanges}
-          accountTimeZone={account?.accountTimeZone}
         ></AccountChangesHistoryComponent>
       )}
     </ContainerComponent>

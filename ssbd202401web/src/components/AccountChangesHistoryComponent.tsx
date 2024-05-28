@@ -9,16 +9,15 @@ import {
 import { useTranslation } from "react-i18next";
 import { AccountChangesType } from "../types/AccountChanges.ts";
 import parseDate from "../validation/parseDate.ts";
+import { useAccount } from "../hooks/useAccount.ts";
 
 export function AccountChangesHistoryComponent({
-  accountChanges,
-  accountTimeZone
+  accountChanges
 }: {
   accountChanges: AccountChangesType[] | null,
-  accountTimeZone?: string
 }) {
   const { t } = useTranslation();
-
+  const { account } = useAccount();
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -63,29 +62,29 @@ export function AccountChangesHistoryComponent({
             <TableCell>{change.lastSuccessfulLoginIp}</TableCell>
             <TableCell>
               {change.lastSuccessfulLogin
-                ? parseDate(change.lastSuccessfulLogin, accountTimeZone)
+                ? parseDate(change.lastSuccessfulLogin, account?.accountTimeZone)
                 : t("never")}
             </TableCell>
             <TableCell>{change.lastFailedLoginIp}</TableCell>
             <TableCell>
               {change.lastFailedLogin
-                ? parseDate(change.lastFailedLogin, accountTimeZone)
+                ? parseDate(change.lastFailedLogin, account?.accountTimeZone)
                 : t("never")}
             </TableCell>
             <TableCell>
-              {change.lockedUntil ? parseDate(change.lockedUntil, accountTimeZone) : ""}
+              {change.lockedUntil ? parseDate(change.lockedUntil, account?.accountTimeZone) : ""}
             </TableCell>
             <TableCell>{change.gender}</TableCell>
             <TableCell>{change.firstName}</TableCell>
             <TableCell>{change.lastName}</TableCell>
             <TableCell>{t(change.language)}</TableCell>
-            <TableCell>{change.accountTheme}</TableCell>
-            <TableCell>{change.accountTimeZone}</TableCell>
+            <TableCell>{t(change.accountTheme)}</TableCell>
+            <TableCell>{t(change.accountTimeZone)}</TableCell>
             <TableCell>
-              {change.createdAt ? parseDate(change.createdAt, accountTimeZone) : ""}
+              {change.createdAt ? parseDate(change.createdAt, account?.accountTimeZone) : ""}
             </TableCell>
             <TableCell>
-              {change.updatedAt ? parseDate(change.updatedAt, accountTimeZone) : t("never")}
+              {change.updatedAt ? parseDate(change.updatedAt, account?.accountTimeZone) : t("never")}
             </TableCell>
             <TableCell>{change.createdBy}</TableCell>
             <TableCell>{change.updatedBy}</TableCell>
