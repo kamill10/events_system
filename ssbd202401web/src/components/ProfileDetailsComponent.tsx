@@ -50,7 +50,7 @@ export default function ProfileDetailsComponent() {
         marginLeft: 5,
       }}
     >
-      <Typography variant="h4">{t("changePersonalData")}</Typography>
+      <Typography variant="h4">{t("profileDetails")}</Typography>
       <Button
         onClick={getMyAccount}
         variant="contained"

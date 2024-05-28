@@ -41,5 +41,5 @@ public record GetAccountDetailedDTO(
 
         String theme,
 
-        String timeZone
+        String accountTimeZone
 ) {}

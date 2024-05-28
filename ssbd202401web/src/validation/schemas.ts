@@ -47,6 +47,7 @@ export const changePersonalDataSchema = yup
     gender: yup.number().required(),
     firstName: yup.string().min(2).max(32).matches(/[\w+]/).required(),
     lastName: yup.string().min(2).max(64).matches(/[\w+]/).required(),
+    accountTimeZone: yup.string().required()
   });
 
 export const ForgotPasswordSchema = yup.object<ForgotPasswordType>().shape({

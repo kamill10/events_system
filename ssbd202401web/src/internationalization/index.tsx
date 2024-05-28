@@ -106,7 +106,8 @@ i18next.use(initReactI18next).init({
         UPDATE: "Aktualizacja",
         CREATE: "Utworzenie",
 
-        changePersonalData: "Zmień dane personalne",
+        changePersonalDataTitle: "Zmień dane personalne",
+        changePersonalDataBody: "Zmień swoje dane personalne!",
         changePassword: "Zmień hasło",
         changeEmail: "Zmień adres e-mail",
         enterNewMail: "Wprowadź nowy adres e-mail poniżej",
@@ -228,7 +229,9 @@ i18next.use(initReactI18next).init({
         sortDataDirBody: "Wybierz kolejność sortowania",
         filterData: "Filtruj dane w tabeli",
         filterKey: "Klucz",
-        OPTLCKE: "Wczytane dane są nieaktualne. Odśwież je!"
+        OPTLCKE: "Wczytane dane są nieaktualne. Odśwież je!",
+        europeLondon: "Europa/Londyn",
+        europeWarsaw: "Europa/Warszawa"
       },
     },
     ENGLISH: {
@@ -301,7 +304,8 @@ i18next.use(initReactI18next).init({
         UPDATE: "Update",
         CREATE: "Create",
 
-        changePersonalData: "Change personal data",
+        changePersonalDataTitle: "Change personal data",
+        changePersonalDataBody: "Change your personal data!",
         changePassword: "Change password",
         changeEmail: "Change e-mail",
         enterNewMail: "Enter new e-mail address below!",
@@ -420,7 +424,9 @@ i18next.use(initReactI18next).init({
         sortDataDirBody: "Choose sort direction",
         filterData: "Filter data in a table",
         filterKey: "Key",
-        OPTLCKE: "Data you try to update is out of date. Refresh it!"
+        OPTLCKE: "Data you try to update is out of date. Refresh it!",
+        europeLondon: "Europe/London",
+        europeWarsaw: "Europe/Warsaw"
       },
     },
   },

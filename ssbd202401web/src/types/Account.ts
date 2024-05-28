@@ -18,6 +18,7 @@ export interface GetPersonalAccountType extends GetAccountType {
   lastName: string;
   language: LanguageType;
   gender: number;
+  accountTimeZone: string;
 }
 
 export interface GetDetailedAccountType extends GetPersonalAccountType {
@@ -30,6 +31,7 @@ export interface UpdatePersonalDataType {
   firstName: string;
   lastName: string;
   gender: number;
+  accountTimeZone: string;
 }
 
 export interface ChangeMyPasswordType {

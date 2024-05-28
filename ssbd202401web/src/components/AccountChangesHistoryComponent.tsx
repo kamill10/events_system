@@ -12,8 +12,10 @@ import parseDate from "../validation/parseDate.ts";
 
 export function AccountChangesHistoryComponent({
   accountChanges,
+  accountTimeZone
 }: {
-  accountChanges: AccountChangesType[] | null;
+  accountChanges: AccountChangesType[] | null,
+  accountTimeZone?: string
 }) {
   const { t } = useTranslation();
 
@@ -61,17 +63,17 @@ export function AccountChangesHistoryComponent({
             <TableCell>{change.lastSuccessfulLoginIp}</TableCell>
             <TableCell>
               {change.lastSuccessfulLogin
-                ? parseDate(change.lastSuccessfulLogin)
+                ? parseDate(change.lastSuccessfulLogin, accountTimeZone)
                 : t("never")}
             </TableCell>
             <TableCell>{change.lastFailedLoginIp}</TableCell>
             <TableCell>
               {change.lastFailedLogin
-                ? parseDate(change.lastFailedLogin)
+                ? parseDate(change.lastFailedLogin, accountTimeZone)
                 : t("never")}
             </TableCell>
             <TableCell>
-              {change.lockedUntil ? parseDate(change.lockedUntil) : ""}
+              {change.lockedUntil ? parseDate(change.lockedUntil, accountTimeZone) : ""}
             </TableCell>
             <TableCell>{change.gender}</TableCell>
             <TableCell>{change.firstName}</TableCell>
@@ -80,10 +82,10 @@ export function AccountChangesHistoryComponent({
             <TableCell>{change.accountTheme}</TableCell>
             <TableCell>{change.accountTimeZone}</TableCell>
             <TableCell>
-              {change.createdAt ? parseDate(change.createdAt) : ""}
+              {change.createdAt ? parseDate(change.createdAt, accountTimeZone) : ""}
             </TableCell>
             <TableCell>
-              {change.updatedAt ? parseDate(change.updatedAt) : t("never")}
+              {change.updatedAt ? parseDate(change.updatedAt, accountTimeZone) : t("never")}
             </TableCell>
             <TableCell>{change.createdBy}</TableCell>
             <TableCell>{change.updatedBy}</TableCell>

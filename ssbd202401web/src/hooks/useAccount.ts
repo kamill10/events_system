@@ -100,7 +100,6 @@ export const useAccount = () => {
       return e;
     } finally {
       localStorage.removeItem("token");
-      localStorage.removeItem("language");
       localStorage.removeItem("etag");
       setAccount(null);
       setToken(null);
@@ -230,7 +229,7 @@ export const useAccount = () => {
       const { data } = await api.getMyAccount();
       setAccount(data);
       i18n.changeLanguage(data.language);
-      localStorage.setItem("language", data.language);
+      console.log(data);
     } catch (e) {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
