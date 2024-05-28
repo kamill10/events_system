@@ -33,6 +33,10 @@ public record GetAccountPersonalDTO(
         @NotNull
         LanguageEnum language,
         @PositiveOrZero
-        Integer gender
+        Integer gender,
+
+        String accountTheme,
+
+        String accountTimeZone
 ) {
 }

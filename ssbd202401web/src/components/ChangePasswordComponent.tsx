@@ -60,7 +60,7 @@ export default function ChangePasswordComponent() {
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("currentPassword")}
+          label={t("currentPassword") + "*"}
           name="oldPassword"
           trigger={trigger}
           type="password"
@@ -68,7 +68,7 @@ export default function ChangePasswordComponent() {
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("newPassword")}
+          label={t("newPassword") + "*"}
           name="newPassword"
           trigger={trigger}
           type="password"
@@ -76,7 +76,7 @@ export default function ChangePasswordComponent() {
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("confirmNewPassword")}
+          label={t("confirmNewPassword") + "*"}
           name="confirmNewPassword"
           trigger={trigger}
           type="password"

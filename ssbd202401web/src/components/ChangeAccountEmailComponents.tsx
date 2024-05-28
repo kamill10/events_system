@@ -71,7 +71,7 @@ export default function ChangeAccountEmailComponent({
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("newEmail")}
+          label={t("newEmail") + "*"}
           name="email"
           trigger={trigger}
           type="text"

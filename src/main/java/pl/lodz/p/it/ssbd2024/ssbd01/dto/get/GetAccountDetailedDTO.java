@@ -37,5 +37,9 @@ public record GetAccountDetailedDTO(
         @NotNull
         String lastName,
         @NotNull
-        LanguageEnum language
+        LanguageEnum language,
+
+        String theme,
+
+        String timeZone
 ) {}

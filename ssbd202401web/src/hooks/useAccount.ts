@@ -18,6 +18,7 @@ import {
 } from "../types/Account";
 import { useTranslation } from "react-i18next";
 import { LanguageType } from "../types/enums/LanguageType.enum";
+import { AxiosError } from "axios";
 
 export const useAccount = () => {
   const { t } = useTranslation();
@@ -60,10 +61,17 @@ export const useAccount = () => {
       getMyAccount();
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("logInFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("logInFail"),
+        });
+      }
       return e;
     } finally {
       setIsLogging(false);
@@ -80,10 +88,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("logOutFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("logOutFail"),
+        });
+      }
       return e;
     } finally {
       localStorage.removeItem("token");
@@ -113,10 +128,17 @@ export const useAccount = () => {
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
-      sendNotification({
-        description: t("signInFail"),
-        type: "error",
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("signInFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -133,10 +155,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        description: t("verifyAccountFail"),
-        type: "error",
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("verifyAccountFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -153,10 +182,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        description: t("changePasswordFail"),
-        type: "error",
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("changePasswordFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -173,10 +209,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("changeEmailFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("changeEmailFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -193,10 +236,17 @@ export const useAccount = () => {
       getMyTheme()
     } catch (e) {
       console.error(e);
-      sendNotification({
-        description: t("getMyAccountFail"),
-        type: "error",
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getMyAccountFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -214,10 +264,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateMyPersonalDataFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateMyPersonalDataFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -234,10 +291,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateMyPasswordFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateMyPasswordFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -254,10 +318,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateMyEmailFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateMyEmailFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -275,10 +346,17 @@ export const useAccount = () => {
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("requestPasswordResetFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("requestPasswordResetFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -296,10 +374,17 @@ export const useAccount = () => {
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("requestPasswordResetFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("requestPasswordResetFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
