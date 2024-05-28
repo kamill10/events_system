@@ -59,7 +59,7 @@ public class AuthenticationService {
 
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
-    public void registerUser(Account account) {
+    public void registerAccount(Account account) {
         var savedAccount = accountMokRepository.saveAndFlush(account);
         var randString = TokenGenerator.generateToken();
 

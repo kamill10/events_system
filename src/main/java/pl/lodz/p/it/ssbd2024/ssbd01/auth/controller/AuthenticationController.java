@@ -23,8 +23,8 @@ public class AuthenticationController {
     private final AccountDTOConverter accountDTOConverter;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody CreateAccountDTO request) throws AccountNotFoundException {
-        authenticationService.registerUser(accountDTOConverter.toAccount(request));
+    public ResponseEntity<?> registerAccount(@Valid @RequestBody CreateAccountDTO request) {
+        authenticationService.registerAccount(accountDTOConverter.toAccount(request));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

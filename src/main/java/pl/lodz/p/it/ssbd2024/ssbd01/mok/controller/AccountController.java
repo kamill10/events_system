@@ -35,12 +35,10 @@ public class AccountController {
 
     private final AccountService accountService;
     private final AccountDTOConverter accountDTOConverter;
-//    private final MailService mailService;
-
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<GetAccountDTO> getAllUsers() {
+    public List<GetAccountDTO> getAllAccounts() {
         List<GetAccountDTO> getAccountDTOS = accountDTOConverter.accountDtoList(accountService.getAllAccounts());
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOS).getBody();
     }
@@ -59,14 +57,6 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOPage);
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GetAccountPersonalDTO> createUser(@Valid @RequestBody CreateAccountDTO createAccountDTO) {
-        GetAccountPersonalDTO getAccountDTO = accountDTOConverter.toAccountPersonalDTO(accountService
-                .addAccount(accountDTOConverter.toAccount(createAccountDTO)));
-        return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
-    }
-
     @PostMapping("/{id}/add-role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived,
@@ -74,7 +64,6 @@ public class AccountController {
             throws BadRequestException, NotFoundException, ConflictException, OptLockException {
         var account = accountService.addRoleToAccount(id, roleName,eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-//        mailService.sendEmailToAddRoleToAccount(account, roleName.name());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -87,7 +76,6 @@ public class AccountController {
             throws BadRequestException, NotFoundException, OptLockException {
         var account = accountService.removeRoleFromAccount(id, roleName,eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-//        mailService.sendEmailToRemoveRoleFromAccount(account, roleName.name());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -99,7 +87,6 @@ public class AccountController {
                                                    @PathVariable UUID id) throws NotFoundException, OptLockException {
         var account = accountService.setAccountStatus(id, true, eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-//        mailService.sendEmailToSetActiveAccount(accountService.getAccountById(id));
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -111,7 +98,6 @@ public class AccountController {
                                                      @PathVariable UUID id) throws NotFoundException, OptLockException {
         var account = accountService.setAccountStatus(id, false, eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-//        mailService.sendEmailToSetInactiveAccount(accountService.getAccountById(id));
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
