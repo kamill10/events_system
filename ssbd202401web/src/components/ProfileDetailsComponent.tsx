@@ -15,7 +15,7 @@ import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function ProfileDetailsComponent() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { account, getMyAccount } = useAccount();
   const mapRolesToString = (rolesArray: AccountTypeEnum[]): string => {
     return rolesArray.map((role) => t(role)).join(", ");
@@ -23,7 +23,6 @@ export default function ProfileDetailsComponent() {
 
   useEffect(() => {
     getMyAccount();
-    i18n.changeLanguage("ENGLISH");
   }, []);
 
   const data = [
