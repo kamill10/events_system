@@ -1,4 +1,4 @@
-import { Button, Divider, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { useAccount } from "../hooks/useAccount.ts";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -50,12 +50,6 @@ export default function ChangeEmailComponent() {
         align="start"
       >
         <Typography variant="h4">{t("changeEmail")}</Typography>
-        <Divider
-          sx={{
-            marginTop: "3rem",
-            marginBottom: "3rem",
-          }}
-        ></Divider>
         <TextFieldComponent
           control={control}
           errors={errors}

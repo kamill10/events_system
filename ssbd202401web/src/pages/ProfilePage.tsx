@@ -17,7 +17,13 @@ export default function ProfilePage() {
 
   return (
     <ContainerComponent>
-      <Tabs value={page} onChange={handleChange}>
+      <Tabs
+        value={page}
+        onChange={handleChange}
+        sx={{
+          flexWrap: "wrap",
+        }}
+      >
         <Tab label={t("profileDetails")}></Tab>
         <Tab label={t("changeProfileDetails")}></Tab>
         <Tab label={t("changePassword")}></Tab>

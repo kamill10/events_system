@@ -102,7 +102,6 @@ export const useAccount = () => {
       return e;
     } finally {
       localStorage.removeItem("token");
-      localStorage.removeItem("language");
       localStorage.removeItem("etag");
       setAccount(null);
       setToken(null);
@@ -397,16 +396,16 @@ export const useAccount = () => {
       await api.setMyTheme(theme);
       setTheme(theme);
     } catch (e) {
-        console.error(e);
-        sendNotification({
-            description: t("setMyThemeFail"),
-            type: "error",
-        });
-        return e;
+      console.error(e);
+      sendNotification({
+        description: t("setMyThemeFail"),
+        type: "error",
+      });
+      return e;
     } finally {
-        setIsFetching(false);
+      setIsFetching(false);
     }
-  }
+  };
 
   return {
     account,

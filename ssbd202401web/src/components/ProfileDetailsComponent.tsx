@@ -42,6 +42,12 @@ export default function ProfileDetailsComponent() {
     { [t("isVerified")]: account?.verified ? [t("yes")] : [t("no")] },
     { [t("isUnlocked")]: account?.nonLocked ? [t("yes")] : [t("no")] },
     { [t("languagePref")]: [t(account?.language ?? "")] },
+    {
+      [t("timeZone")]: t(account?.accountTimeZone ?? "notSpecified"),
+    },
+    {
+      [t("theme")]: t(account?.accountTheme ?? "notSpecified"),
+    },
   ];
   return (
     <Box
@@ -50,7 +56,7 @@ export default function ProfileDetailsComponent() {
         marginLeft: 5,
       }}
     >
-      <Typography variant="h4">{t("changePersonalData")}</Typography>
+      <Typography variant="h4">{t("profileDetails")}</Typography>
       <Button
         onClick={getMyAccount}
         variant="contained"

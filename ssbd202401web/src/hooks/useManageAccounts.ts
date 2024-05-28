@@ -143,7 +143,7 @@ export const useManageAccounts = () => {
       setIsFetching(false);
     }
   };
-  
+
   const activateAccount = async (id: string) => {
     try {
       setIsFetching(true);

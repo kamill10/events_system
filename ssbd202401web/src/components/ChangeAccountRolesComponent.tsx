@@ -78,7 +78,6 @@ export default function ChangeAccountRolesComponent({
             </TableHead>
             <TableBody>
               {Object.values(AccountTypeEnum).map((val, key) => {
-                console.log(val);
                 if (account?.roles.includes(AccountTypeEnum.PARTICIPANT))
                   return;
                 if (

@@ -11,9 +11,9 @@ export default function ContainerComponent({
       component={Paper}
       elevation={6}
       minHeight={"80vh"}
-      maxHeight={"80vh"}
       overflow={"auto"}
       padding={2}
+      marginBottom={5}
     >
       {children}
     </Box>

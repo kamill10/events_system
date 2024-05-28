@@ -7,7 +7,6 @@ import {
 } from "react";
 import { GetPersonalAccountType } from "../types/Account";
 import { jwtDecode } from "jwt-decode";
-import { LanguageType } from "../types/enums/LanguageType.enum";
 
 interface AccountState {
   account: GetPersonalAccountType | null;
@@ -55,13 +54,8 @@ export const AccountStateContextProvider = ({
     if (token) {
       localStorage.setItem("token", token);
       setParsedToken(jwtDecode(token));
-      console.log(jwtDecode(token));
     }
   }, [token]);
-
-  useEffect(() => {
-    localStorage.setItem("language", account?.language ?? LanguageType.ENGLISH);
-  }, [account]);
 
   return (
     <AccountStateContext.Provider
