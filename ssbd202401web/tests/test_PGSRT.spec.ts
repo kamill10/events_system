@@ -14,6 +14,7 @@ test('sorting_by_name_surname-test', async ({ page }) => {
     await page.locator('button.MuiButtonBase-root:nth-child(11)').click();
     const containsTestString = await page.waitForSelector('//td[contains(.,"Morawski")]');
     expect(containsTestString).not.toBeNull();
+    await page.locator('xpath=/html/body/div[1]/div[2]/div/div/div[1]/div[1]/div[1]/h5').click();
     await page.locator('#phrase').fill('Majer');
     await page.locator('button.MuiButtonBase-root:nth-child(11)').click();
     const containsParticipant = await page.waitForSelector('//td[contains(.,"Majer")]');
