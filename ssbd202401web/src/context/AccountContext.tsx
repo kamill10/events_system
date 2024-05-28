@@ -12,6 +12,8 @@ import { LanguageType } from "../types/enums/LanguageType.enum";
 interface AccountState {
   account: GetPersonalAccountType | null;
   setAccount: (account: GetPersonalAccountType | null) => void;
+  theme: string;
+  setTheme: (theme: string) => void;
   token: string | null;
   setToken: (token: string | null) => void;
   parsedToken: TokenType | null;
@@ -42,6 +44,7 @@ export const AccountStateContextProvider = ({
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
+  const [theme, setTheme] = useState<string>("LIGHT");
   const [parsedToken, setParsedToken] = useState<TokenType | null>(null);
   const [account, setAccount] = useState<GetPersonalAccountType | null>(null);
   const [isLogging, setIsLogging] = useState(false);
@@ -65,6 +68,8 @@ export const AccountStateContextProvider = ({
       value={{
         account,
         setAccount,
+        theme,
+        setTheme,
         token,
         setToken,
         parsedToken,
