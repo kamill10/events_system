@@ -6,9 +6,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 
 import java.time.LocalDateTime;
@@ -18,11 +21,14 @@ import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
+@Transactional(propagation = Propagation.MANDATORY)
+@PreAuthorize("hasRole('ROLE_SYSTEM')")
 public class MailService {
 
     private JavaMailSender mailSender;
     private MessageSource messageSource;
     private final ConfigurationProperties config;
+
 
     private void sendEmail(Mail mail) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -37,6 +43,7 @@ public class MailService {
             Logger.getGlobal().severe(e.getMessage());
         }
     }
+
 
     public void sendEmailTemplate(Account mailTo, String mailSubject, String mailContent, Object[] contentArgs) {
         Locale locale = Locale.forLanguageTag(mailTo.getLanguage().getLanguageCode());
@@ -59,6 +66,7 @@ public class MailService {
 
         sendEmail(mail);
     }
+
 
     public void sendEmailToAddRoleToAccount(Account mailTo, String roleName) {
         sendEmailTemplate(mailTo, "mail.role.added.subject", "mail.role.added.body", new Object[] {roleName});
@@ -163,5 +171,14 @@ public class MailService {
         LocalDateTime lockTimeout = LocalDateTime.now();
         sendEmailTemplate(account, "mail.admin.login.subject", "mail.admin.login.body",
                 new Object[]{ipAddress, lockTimeout.format(formatter)});
+    }
+
+    public void sendEmailConfirmationReminder(Account account, String token) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
+        sb.append(token);
+        sb.append("'>Link</a>");
+        sendEmailTemplate(account, "mail.verify.account.subject",
+                "mail.verify.account.body", new Object[] {sb});
     }
 }

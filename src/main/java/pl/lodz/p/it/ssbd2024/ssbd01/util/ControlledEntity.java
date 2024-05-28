@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ActionTypeEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.ActionTypeEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 
 import java.time.LocalDateTime;

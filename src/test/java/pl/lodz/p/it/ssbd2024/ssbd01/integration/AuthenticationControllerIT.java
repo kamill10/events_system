@@ -17,7 +17,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.LanguageEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 
 import java.io.IOException;
 
