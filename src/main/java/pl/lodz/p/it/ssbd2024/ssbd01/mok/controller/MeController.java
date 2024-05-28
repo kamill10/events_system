@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.ThemeDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.TimeZoneDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -72,9 +72,10 @@ public class MeController {
     public ResponseEntity<GetAccountPersonalDTO> updateMyData(
             @RequestHeader("If-Match") String eTag,
             @Valid @RequestBody UpdateAccountDataDTO updateAccountDataDTO
-    ) throws AccountNotFoundException, OptLockException {
+    ) throws AccountNotFoundException, OptLockException, AccountThemeNotFoundException, TimeZoneNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountPersonalDTO(
-                meService.updateMyAccountData(accountDTOConverter.toAccount(updateAccountDataDTO), eTag)));
+                meService.updateMyAccountData(accountDTOConverter.toAccount(updateAccountDataDTO), eTag, updateAccountDataDTO.theme(),
+                        updateAccountDataDTO.timeZone())));
     }
 
     @PostMapping("/switch-role")
@@ -83,22 +84,6 @@ public class MeController {
         meService.logSwitchRole(role);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    @PatchMapping("/user-data/theme")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<?> setMyTheme(@Valid @RequestBody ThemeDTO theme) throws AccountThemeNotFoundException {
-        meService.setAccountTheme(theme.theme());
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PatchMapping("/user-data/time-zone")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<?> setMyTimeZone(@Valid @RequestBody TimeZoneDTO timeZone) throws TimeZoneNotFoundException {
-        meService.setAccountTimeZone(timeZone.timeZone());
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-
 
 
 }
