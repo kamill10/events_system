@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.AccountHistory;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.RoleRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
@@ -18,6 +20,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @SpringJUnitWebConfig(classes = {TestServiceConfig.class})
 public class AccountServiceMockTest {
@@ -27,6 +30,9 @@ public class AccountServiceMockTest {
 
     @Autowired
     private AccountMokRepository accountMokRepository;
+
+    @Autowired
+    private AccountMokHistoryRepository accountMokHistoryRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -40,6 +46,10 @@ public class AccountServiceMockTest {
         accountOne = new Account("admin", "admin", 1);
         accountTwo = new Account("admin2", "admin2", 1);
         accountThree = new Account("admin3", "admin3", 1);
+        accountOne.setVerified(true);
+
+        Account mock = Mockito.mock(Account.class);
+        Mockito.when(mock.getVersion()).thenReturn(2L);
 
         var accountOneRoles = new ArrayList<Role>();
         accountOneRoles.add(new Role(AccountRoleEnum.ROLE_ADMIN));
@@ -72,7 +82,16 @@ public class AccountServiceMockTest {
             add(accountTwo);
             add(accountThree);
         }};
-
+        List<AccountHistory> accountHistoryList = new ArrayList<>();
+        Function<Account, AccountHistory> function1 =
+                invocation -> {
+                AccountHistory accountHistory = new AccountHistory(accountOne);
+                accountHistoryList.add(accountHistory);
+                return accountHistory;
+        };
+        Mockito.when(accountMokHistoryRepository.saveAndFlush(new AccountHistory(accountOne)))
+                .thenReturn(function1.apply(accountOne));
+        Mockito.when(accountMokHistoryRepository.findAll()).thenReturn(accountHistoryList);
         Mockito.when(accountMokRepository.findAll()).thenReturn(accountList);
         Mockito.when(accountMokRepository.findById(accountOne.getId())).thenReturn(Optional.of(accountOne));
         Mockito.when(accountMokRepository.saveAndFlush(accountOne)).thenReturn(accountOne);
@@ -114,8 +133,6 @@ public class AccountServiceMockTest {
 
     @Test
     void testSetAccountStatus() throws Exception {
-        Account mock = Mockito.mock(Account.class);
-        Mockito.when(mock.getVersion()).thenReturn(2L);
         var account = accountService.setAccountStatus(accountOne.getId(), true, ETagBuilder.buildETag(String.valueOf(accountOne.getVersion())));
         Assertions.assertTrue(account.getActive());
         account = accountService.setAccountStatus(accountTwo.getId(), false, ETagBuilder.buildETag(String.valueOf(accountTwo.getVersion())));
@@ -128,4 +145,30 @@ public class AccountServiceMockTest {
         Assertions.assertEquals(account, accountOne);
     }
 
+    @Test
+    public void addRoleAccountMokHistoryTest() throws Exception {
+        accountMokHistoryRepository.findAll().size();
+        accountService.addRoleToAccount(accountOne.getId(), AccountRoleEnum.ROLE_MANAGER,ETagBuilder.buildETag(String.valueOf(accountOne.getVersion())));
+        accountMokHistoryRepository.findAll().size();
+        Assertions.assertEquals(1, accountMokHistoryRepository.findAll().size());
+    }
+
+    @Test
+    public void removeRoleFromAccountMokHistoryTest() throws Exception {
+        accountService.removeRoleFromAccount(accountOne.getId(), AccountRoleEnum.ROLE_ADMIN,ETagBuilder.buildETag(String.valueOf(accountOne.getVersion())));
+        Assertions.assertEquals(1, accountMokHistoryRepository.findAll().size());
+
+    }
+
+    @Test
+    public void setAccountStatusTrueMokHistoryTest() throws Exception{
+        accountService.setAccountStatus(accountOne.getId(), true, ETagBuilder.buildETag(String.valueOf(accountOne.getVersion())));
+        Assertions.assertEquals(1, accountMokHistoryRepository.findAll().size());
+    }
+
+    @Test
+    public void updateAccountDataMokHistoryTest() throws Exception{
+        accountService.updateAccountData(accountOne.getId(), accountOne, ETagBuilder.buildETag(String.valueOf(accountOne.getVersion())));
+        Assertions.assertEquals(1, accountMokHistoryRepository.findAll().size());
+    }
 }
