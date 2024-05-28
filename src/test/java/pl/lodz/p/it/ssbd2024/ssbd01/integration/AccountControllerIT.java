@@ -16,18 +16,21 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountHistoryDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @Testcontainers
@@ -1070,4 +1073,51 @@ public class AccountControllerIT {
 
     }
 
+    @Test
+    public void testAddRoleToAccountAndCheckHistoryEntry() throws Exception {
+        ValidatableResponse response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        var historyResponse = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/history/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .asString();
+
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
+                .contentType("application/json")
+                .when()
+                .post(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/add-role?roleName=ROLE_ADMIN")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                     containsString("ROLE_ADMIN")
+                );
+
+        var historyResponseAfter = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/history/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("testAdmin"),
+                        containsString("ROLE_ADMIN")
+                )
+                .extract()
+                .body()
+                .asString();
+        assertTrue(historyResponseAfter.length() > historyResponse.length());
+    }
 }
