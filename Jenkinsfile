@@ -6,13 +6,13 @@ pipeline {
     }
 
     stages {
-        stage('Compose down') {
-            steps {
-                dir("${WORKSPACE}/docker-test") {
-                    sh('docker compose down')
-                }
-            }
-        }
+//         stage('Compose down') {
+//             steps {
+//                 dir("${WORKSPACE}/docker-test") {
+//                     sh('docker compose down')
+//                 }
+//             }
+//         }
 
         stage('Maven tests') {
             steps {
@@ -22,32 +22,32 @@ pipeline {
             }
         }
 
-        stage('Infrastructure setup') {
-            steps {
-                dir("${WORKSPACE}/docker-test") {
-                    sh('cd ../ssbd202401web/ && npm install && npm run build')
-                    sh('rm -rf ./html/')
-                    sh('cp -r ../ssbd202401web/dist/ html/')
-                    sh('docker compose up -d --build')
-                }
-            }
-        }
+//         stage('Infrastructure setup') {
+//             steps {
+//                 dir("${WORKSPACE}/docker-test") {
+//                     sh('cd ../ssbd202401web/ && npm install && npm run build')
+//                     sh('rm -rf ./html/')
+//                     sh('cp -r ../ssbd202401web/dist/ html/')
+//                     sh('docker compose up -d --build')
+//                 }
+//             }
+//         }
 
-        stage('End-to-end tests') {
-            steps {
-              dir("${WORKSPACE}") {
-                    echo 'Doing end to end test'
-                    echo 'Finished end to end test'
-                }
-            }
-        }
+//         stage('End-to-end tests') {
+//             steps {
+//               dir("${WORKSPACE}") {
+//                     echo 'Doing end to end test'
+//                     echo 'Finished end to end test'
+//                 }
+//             }
+//         }
 
-        stage('Infrastructure down') {
-            steps {
-                dir("${WORKSPACE}/docker-test") {
-                     sh('docker compose down')
-                }
-            }
-        }
+//         stage('Infrastructure down') {
+//             steps {
+//                 dir("${WORKSPACE}/docker-test") {
+//                      sh('docker compose down')
+//                 }
+//             }
+//         }
     }
 }
