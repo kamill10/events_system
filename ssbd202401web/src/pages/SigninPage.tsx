@@ -58,7 +58,7 @@ export default function SigninPage() {
           name="firstName"
           trigger={trigger}
           type="text"
-          label={t("firstName")}
+          label={t("firstName") + "*"}
         />
         <TextFieldComponent
           control={control}
@@ -66,7 +66,7 @@ export default function SigninPage() {
           name="lastName"
           trigger={trigger}
           type="text"
-          label={t("lastName")}
+          label={t("lastName") + "*"}
         />
         <TextFieldComponent
           control={control}
@@ -74,7 +74,7 @@ export default function SigninPage() {
           name="email"
           trigger={trigger}
           type="text"
-          label="E-mail"
+          label="E-mail*"
         />
         <TextFieldComponent
           control={control}
@@ -82,7 +82,7 @@ export default function SigninPage() {
           name="username"
           trigger={trigger}
           type="text"
-          label={t("usernameLabel")}
+          label={t("usernameLabel") + "*"}
         />
         <TextFieldComponent
           control={control}
@@ -90,7 +90,7 @@ export default function SigninPage() {
           name="password"
           trigger={trigger}
           type="password"
-          label={t("passwordLabel")}
+          label={t("passwordLabel") + "*"}
         />
         <TextFieldComponent
           control={control}
@@ -98,7 +98,7 @@ export default function SigninPage() {
           name="confirmPassword"
           trigger={trigger}
           type="password"
-          label={t("confirmPasswordLabel")}
+          label={t("confirmPasswordLabel") + "*"}
         />
         <GenderListComponent control={control} errors={errors} name="gender" />
         <Button
