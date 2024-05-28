@@ -10,8 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 
 @Aspect

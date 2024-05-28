@@ -24,4 +24,21 @@ public class AccountTimeZone extends AbstractEntity {
     public TimeZone getTimeZone() {
         return TimeZone.getTimeZone(timeZone);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof AccountTimeZone that)) {
+            return false;
+        }
+
+        return getTimeZone().equals(that.getTimeZone());
+    }
+
+    @Override
+    public int hashCode() {
+        return getTimeZone().hashCode();
+    }
 }

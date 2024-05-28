@@ -7,17 +7,15 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.domain.Sort;
 
 public record GetAccountPageDTO(
-        @NotNull
-        @PositiveOrZero
+
         Integer page,
-        @NotNull
-        @Positive
+
         int elementPerPage,
-        @Pattern(regexp = "asc|desc")
+
         String direction,
-        @NotNull
+
         String key,
-        @NotNull
+
         String phrase
 ) {
 
