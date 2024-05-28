@@ -242,10 +242,10 @@ i18next.use(initReactI18next).init({
         refreshModalBody:
           "Twoja sesja wygaśnie w mniej niż 60 sekund. Odśwież ją lub zignoruj tę informację przy pomocy jedenego z przycisków!",
 
-        0: "Nie określona",
-        1: "Mężczyzna",
-        2: "Kobieta",
-        3: "Nie podano",
+        '0': "Nie określona",
+        "1": "Mężczyzna",
+        "2": "Kobieta",
+        "9": "Nie podano",
       },
     },
     ENGLISH: {
@@ -455,7 +455,7 @@ i18next.use(initReactI18next).init({
         "0": "Not Known",
         "1": "Male",
         "2": "Female",
-        "3": "Not Specified",
+        "9": "Not Specified",
       },
     },
   },
