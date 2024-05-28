@@ -209,4 +209,5 @@ export const api = {
     }
     return apiWithAuthToken.get(url);
   },
+  refreshToken: () => apiWithAuthToken.post("/auth/refresh-token"),
 };

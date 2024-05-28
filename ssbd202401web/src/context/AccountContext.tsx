@@ -43,7 +43,7 @@ export const AccountStateContextProvider = ({
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
-  const [theme, setTheme] = useState<string>("LIGHT");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") ?? "Light");
   const [parsedToken, setParsedToken] = useState<TokenType | null>(null);
   const [account, setAccount] = useState<GetPersonalAccountType | null>(null);
   const [isLogging, setIsLogging] = useState(false);
@@ -54,8 +54,16 @@ export const AccountStateContextProvider = ({
     if (token) {
       localStorage.setItem("token", token);
       setParsedToken(jwtDecode(token));
+    } else {
+      setParsedToken(null);
     }
   }, [token]);
+
+  useEffect(() => {
+    if (theme) {
+      localStorage.setItem("theme", theme);
+    }
+  }, [theme]);
 
   return (
     <AccountStateContext.Provider
