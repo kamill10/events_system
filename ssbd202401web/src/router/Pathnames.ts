@@ -9,6 +9,7 @@ export const Pathnames = {
     resetPassword: "/login/reset-password",
     confirmPasswordUpdate: "/change-my-password",
     confirmEmailUpdate: "/confirm-email",
+    confirmUnblockAccount: "/unblock-account",
   },
   participant: {
     home: "/",

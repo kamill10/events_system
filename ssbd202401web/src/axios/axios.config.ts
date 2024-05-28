@@ -163,6 +163,8 @@ export const api = {
     apiForAnon.patch(`/me/change-password/token/${key}`),
   confirmEmailUpdate: (key: string): ApiResponseType<void> =>
     apiWithEtag.patch(`/me/change-email/token/${key}`),
+  confirmUnblockAccount: (key: string): ApiResponseType<void> =>
+    apiWithEtag.post(`/auth/unblock-account/${key}`),
   updateAccountData: (id: string, data: UpdatePersonalDataType) =>
     apiWithEtag.put("/accounts/" + id + "/user-data", data),
   updateAccountPassword: (data: ChangeEmailType) =>
