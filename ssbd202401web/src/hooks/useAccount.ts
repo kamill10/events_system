@@ -28,6 +28,8 @@ export const useAccount = () => {
     account,
     parsedToken,
     setAccount,
+    theme,
+    setTheme,
     token,
     setToken,
     isLogging,
@@ -230,6 +232,8 @@ export const useAccount = () => {
       setAccount(data);
       i18n.changeLanguage(data.language);
       console.log(data);
+      localStorage.setItem("language", data.language);
+      setTheme(data.accountTheme);
     } catch (e) {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
@@ -387,8 +391,27 @@ export const useAccount = () => {
     }
   };
 
+  const setMyTheme = async (theme: string) => {
+    try {
+      setIsFetching(true);
+      await api.setMyTheme(theme);
+      setTheme(theme);
+    } catch (e) {
+        console.error(e);
+        sendNotification({
+            description: t("setMyThemeFail"),
+            type: "error",
+        });
+        return e;
+    } finally {
+        setIsFetching(false);
+    }
+  }
+
   return {
     account,
+    setTheme,
+    theme,
     parsedToken,
     isLogging,
     isFetching,
@@ -404,6 +427,7 @@ export const useAccount = () => {
     confirmEmailUpdate,
     getMyAccount,
     updateMyPersonalData,
+    setMyTheme,
     updateMyPassword,
     updateMyEmail,
     requestPasswordReset,

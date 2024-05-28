@@ -19,6 +19,7 @@ export interface GetPersonalAccountType extends GetAccountType {
   language: LanguageType;
   gender: number;
   accountTimeZone: string;
+  accountTheme: string;
 }
 
 export interface GetDetailedAccountType extends GetPersonalAccountType {

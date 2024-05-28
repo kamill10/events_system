@@ -15,6 +15,8 @@ import LinkComponent from "./LinkComponent";
 import HeadingComponent from "./HeadingComponent";
 import { MouseEvent, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
+import {Brightness4} from "@mui/icons-material";
+import {Brightness7} from "@mui/icons-material";
 import { useAccount } from "../hooks/useAccount";
 import { Pathnames } from "../router/Pathnames";
 import { useTranslation } from "react-i18next";
@@ -25,10 +27,24 @@ import { api } from "../axios/axios.config";
 export default function NavbarComponent(props: NavbarPropType) {
   const width = useWindowWidth();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const { adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
+  const {theme ,setMyTheme, setTheme, isAuthenticated, adminLayout, setAdminLayout, isAdmin, isManager } = useAccount();
   const navigate = useNavigate();
-
   const { t } = useTranslation();
+
+  const handleDarkModeToggle = () => {
+    if (theme === 'Dark') {
+      if (isAuthenticated) {
+        setMyTheme("Light")
+      } else {
+        setTheme("Light");
+      }
+    } else {
+      if (isAuthenticated) {
+        setMyTheme("Dark")
+      }
+      setTheme("Dark");
+    }
+  };
 
   const handleSwitchClick = () => {
     // We check for layout before switching cause hook might not resolve right after click
@@ -93,6 +109,7 @@ export default function NavbarComponent(props: NavbarPropType) {
                 );
               })}
             </Box>
+
             <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
               {isAdmin && isManager && (
                 <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
@@ -106,6 +123,11 @@ export default function NavbarComponent(props: NavbarPropType) {
                   <Typography>{t("ROLE_ADMIN")}</Typography>
                 </Box>
               )}
+              <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
+                <IconButton onClick={handleDarkModeToggle}>
+                  {theme === 'Dark' ? <Brightness4 /> : <Brightness7 />}
+                </IconButton>
+              </Box>
               <IconButton onClick={handleDropDownOpen}>
                 {width < 900 ? (
                   <MenuIcon sx={{ color: "white" }}></MenuIcon>

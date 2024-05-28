@@ -181,6 +181,8 @@ export const api = {
     apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.ADMIN}`),
   switchActiveRoleToManager: () =>
     apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.MANAGER}`),
+  setMyTheme: (theme: string) =>
+    apiWithEtag.patch("/me/user-data/theme", { theme }),
   getAccountsWithPagination: (
     params: SortingRequestParams,
   ): ApiResponseType<PaginationResponse> => {
