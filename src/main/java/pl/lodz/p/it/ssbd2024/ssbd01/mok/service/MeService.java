@@ -139,12 +139,12 @@ public class MeService {
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(accountToUpdate.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
-        if (!timeZone.isEmpty()) {
+        if (!timeZone.isBlank()) {
             AccountTimeZone accountTimeZone = timeZoneRepository.findByTimeZone(timeZone)
                     .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
             accountToUpdate.setAccountTimeZone(accountTimeZone);
         }
-        if (!theme.isEmpty()) {
+        if (!theme.isBlank()) {
             AccountTheme accountTheme = themeRepository.findByTheme(theme)
                     .orElseThrow(() -> new AccountThemeNotFoundException(ExceptionMessages.ACCOUNT_THEME_NOT_FOUND));
             accountToUpdate.setAccountTheme(accountTheme);
