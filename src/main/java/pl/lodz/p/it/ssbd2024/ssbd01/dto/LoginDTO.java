@@ -16,8 +16,6 @@ public record LoginDTO(
     @Override
     public String toString() {
         return "LoginDTO{"
-                + "username='" + username + '\''
-                + ", password='********'"
-                + '}';
+                + "username='" + username + '}';
     }
 }
