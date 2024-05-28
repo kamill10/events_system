@@ -241,6 +241,11 @@ i18next.use(initReactI18next).init({
         refreshModalTitle: "Twoja sesja niedługo wygaśnie!",
         refreshModalBody:
           "Twoja sesja wygaśnie w mniej niż 60 sekund. Odśwież ją lub zignoruj tę informację przy pomocy jedenego z przycisków!",
+
+        0: "Nie określona",
+        1: "Mężczyzna",
+        2: "Kobieta",
+        3: "Nie podano",
       },
     },
     ENGLISH: {
@@ -445,6 +450,12 @@ i18next.use(initReactI18next).init({
         refreshModalTitle: "Your session is ending!",
         refreshModalBody:
           "Your session will expire in less than 60 seconds. Refresh it of ignore this message using one of those buttons!",
+
+
+        "0": "Not Known",
+        "1": "Male",
+        "2": "Female",
+        "3": "Not Specified",
       },
     },
   },

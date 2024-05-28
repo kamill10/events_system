@@ -32,7 +32,7 @@ export default function AccountDetailsComponent({
     { "E-mail": account?.email },
     { [t("firstName")]: account?.firstName },
     { [t("lastName")]: account?.lastName },
-    { [t("gender")]: account?.gender },
+    { [t("gender")]: [t(account?.gender.toString() ?? "0")] },
     { [t("isActive")]: account?.active ? [t("yes")] : [t("no")] },
     { [t("isVerified")]: account?.verified ? [t("yes")] : [t("no")] },
     { [t("isUnlocked")]: account?.nonLocked ? [t("yes")] : [t("no")] },
