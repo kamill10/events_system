@@ -130,13 +130,24 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account updateMyAccountData(Account accountData, String eTag) throws AccountNotFoundException, OptLockException {
+    public Account updateMyAccountData(Account accountData, String eTag, String theme, String timeZone)
+            throws AccountNotFoundException, OptLockException, TimeZoneNotFoundException, AccountThemeNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         Account accountToUpdate = accountMokRepository.findById(account.getId())
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(accountToUpdate.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
+        if (!timeZone.isEmpty()) {
+            AccountTimeZone accountTimeZone = timeZoneRepository.findByTimeZone(timeZone)
+                    .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
+            accountToUpdate.setAccountTimeZone(accountTimeZone);
+        }
+        if (!theme.isEmpty()) {
+            AccountTheme accountTheme = themeRepository.findByTheme(theme)
+                    .orElseThrow(() -> new AccountThemeNotFoundException(ExceptionMessages.ACCOUNT_THEME_NOT_FOUND));
+            accountToUpdate.setAccountTheme(accountTheme);
         }
         accountToUpdate.setFirstName(accountData.getFirstName());
         accountToUpdate.setLastName(accountData.getLastName());
@@ -159,47 +170,4 @@ public class MeService {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public void setAccountTheme(String theme) throws AccountThemeNotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        AccountTheme accountTheme = themeRepository.findByTheme(theme)
-                .orElseThrow(() -> new AccountThemeNotFoundException(ExceptionMessages.ACCOUNT_THEME_NOT_FOUND));
-        account.setAccountTheme(accountTheme);
-        accountMokRepository.saveAndFlush(account);
-        accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public void setAccountTimeZone(String timeZone) throws TimeZoneNotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        AccountTimeZone accountTimeZone = timeZoneRepository.findByTimeZone(timeZone)
-                .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
-        account.setAccountTimeZone(accountTimeZone);
-        accountMokRepository.saveAndFlush(account);
-        accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
-    }
-
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-//    public String getAccountTheme() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Account account = (Account) authentication.getPrincipal();
-//        AccountTheme accountTheme = account.getAccountTheme();
-//        return accountTheme.getTheme();
-//    }
-//
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-//    public String getAccountTimeZone() throws TimeZoneNotFoundException {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Account account = (Account) authentication.getPrincipal();
-//        if (account.getAccountTimeZone() == null) {
-//            throw new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND);
-//        }
-//        return account.getAccountTimeZone().getTimeZone().toZoneId().getId();
-//    }
 }

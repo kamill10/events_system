@@ -98,17 +98,11 @@ public class AccountDTOConverter {
     }
 
     public Account toAccount(UpdateAccountDataDTO updateAccountDataDTO) {
+
         return new Account(
                 updateAccountDataDTO.firstName(),
                 updateAccountDataDTO.lastName(),
                 updateAccountDataDTO.gender());
-    }
-
-    public UpdateAccountDataDTO toUpdateAccountDataDTO(Account account) {
-        return new UpdateAccountDataDTO(
-                account.getFirstName(),
-                account.getLastName(),
-                account.getGender());
     }
 
     public List<GetAccountHistoryDetailedDTO> accountHistoryDtoList(List<AccountHistory> accountHistories) {

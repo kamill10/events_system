@@ -18,7 +18,6 @@ import org.testcontainers.utility.MountableFile;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
 
 import java.io.IOException;
@@ -185,7 +184,7 @@ public class MeControllerIT {
                 );
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
 
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1, "Europe/Warsaw", "Light");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
@@ -204,7 +203,7 @@ public class MeControllerIT {
 
     @Test
     public void testUpdateMyAccountDataWithInvalidETag() {
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1, "Europe/Warsaw", "Light");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", UUID.randomUUID().toString())
@@ -218,7 +217,7 @@ public class MeControllerIT {
 
     @Test
     public void testUpdateMyAccountDataUnAuthorized() {
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newName", "newSurname", 1, "Europe/Warsaw", "Light");
         given()
                 .contentType("application/json")
                 .body(updateAccountDataDTO)
