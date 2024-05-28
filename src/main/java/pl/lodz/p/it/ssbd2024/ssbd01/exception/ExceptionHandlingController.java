@@ -4,15 +4,21 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -97,5 +103,6 @@ public class ExceptionHandlingController {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
 
 }

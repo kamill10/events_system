@@ -259,7 +259,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
-        given()
+        var respon = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
                 .param("roleName", "PARTICIPANT")
@@ -278,7 +278,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
-        given()
+        var respon = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
                 .param("roleName", "ADMIN")
@@ -506,7 +506,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
-        given()
+        var respon = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
                 .param("roleName", "CLIENT")
@@ -514,6 +514,7 @@ public class AccountControllerIT {
                 .delete(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/remove-role")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+
     }
 
     @Test

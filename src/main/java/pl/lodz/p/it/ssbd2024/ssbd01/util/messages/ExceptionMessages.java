@@ -1,5 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.util.messages;
 
+import org.springframework.http.HttpStatusCode;
+
 public class ExceptionMessages {
     public static final String ROLE_NOT_FOUND = "Role with given name does not exist.";
     public static final String ROLE_ALREADY_ASSIGNED = "Role  is already assigned.";
@@ -27,5 +29,12 @@ public class ExceptionMessages {
     public static final String UNLOCK_TOKEN_NOT_FOUND = "Unlock token not found.";
     public static final String TIME_ZONE_NOT_FOUND = "Time zone not found";
     public static final String ACCOUNT_LOCKED = "Account is locked.";
+
+    public static final String SOMETHING_WENT_WRONG = "Something went wrong.";
     public static final String ACCOUNT_NOT_VERIFIED = "Account is not verified.";
+    public static final String RESOURCE_NOT_FOUND = "Resource not found.";
+    public static final String BAD_REQUEST = "Bad request.";
+    public static final String UNPROCESSABLE_ENTITY = "Unprocessable entity.";
+    public static final String FORBIDDEN = "Forbidden.";
+    public static final String PRECONDITION_FAILED = "Precondition failed.";
 }
