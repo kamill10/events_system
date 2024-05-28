@@ -58,7 +58,6 @@ export const useAccount = () => {
       });
       navigate(Pathnames.public.home);
       getMyAccount();
-      getMyTheme()
     } catch (e) {
       console.error(e);
       sendNotification({
@@ -191,6 +190,7 @@ export const useAccount = () => {
       setAccount(data);
       i18n.changeLanguage(data.language);
       localStorage.setItem("language", data.language);
+      getMyTheme()
     } catch (e) {
       console.error(e);
       sendNotification({
