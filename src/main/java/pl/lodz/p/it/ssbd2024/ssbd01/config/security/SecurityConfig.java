@@ -63,7 +63,37 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/me/*").authenticated()
                             .requestMatchers(HttpMethod.PATCH, "/api/me/**").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
-                            .requestMatchers(HttpMethod.POST, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER");
+                            .requestMatchers(HttpMethod.POST, "/api/me/*").hasAnyRole("ADMIN", "PARTICIPANT", "MANAGER")
+
+
+                            .requestMatchers(HttpMethod.GET, "/api/events").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/events/sessions/{id}").permitAll()
+                            .requestMatchers(HttpMethod.PUT, "/api/events/session/{id}").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.POST, "/api/events/session").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.DELETE, "/api/events/session/{id}").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.PUT, "/api/events/{id}").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.POST, "/api/events").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.DELETE, "/api/events/{id}").hasRole("MANAGER")
+
+
+                            .requestMatchers(HttpMethod.GET, "/api/location").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.DELETE, "/api/location/{id}").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.POST, "/api/location").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.PUT, "/api/location/{id}").hasRole("MANAGER")
+
+
+                            .requestMatchers(HttpMethod.GET, "/api/speakers").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.POST, "/api/speakers").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.PUT, "/api/speakers/{id}").hasRole("MANAGER")
+
+
+                            .requestMatchers(HttpMethod.GET, "/api/events/me/sessions").hasRole("PARTICIPANT")
+                            .requestMatchers(HttpMethod.GET, "/api/events/me/historical-events").hasRole("PARTICIPANT")
+                            .requestMatchers(HttpMethod.GET, "/api/events/me/historical-sessions").hasRole("PARTICIPANT")
+                            .requestMatchers(HttpMethod.POST, "/api/events/me/session/{id}").hasRole("PARTICIPANT")
+                            .requestMatchers(HttpMethod.DELETE, "/api/events/me/session/{id}").hasRole("PARTICIPANT");
+
+
                 });
         return http.build();
     }

@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractCredentialChange;
 
@@ -13,6 +15,7 @@ import java.util.UUID;
 
 
 @NoRepositoryBean
+@Transactional(propagation = Propagation.MANDATORY)
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public interface GenericChangeCredentialTokenRepository<T extends AbstractCredentialChange> extends JpaRepository<T, UUID> {
 

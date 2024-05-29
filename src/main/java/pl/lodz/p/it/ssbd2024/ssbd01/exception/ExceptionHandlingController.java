@@ -3,27 +3,18 @@ package pl.lodz.p.it.ssbd2024.ssbd01.exception;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.ConstraintViolationException;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @RestControllerAdvice
 public class ExceptionHandlingController {
@@ -104,5 +95,10 @@ public class ExceptionHandlingController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
+
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ResponseEntity<String> handleUnsupportedOperationException(UnsupportedOperationException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 
 }
