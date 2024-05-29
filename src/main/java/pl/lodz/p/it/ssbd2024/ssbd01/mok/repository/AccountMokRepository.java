@@ -40,6 +40,9 @@ public interface AccountMokRepository extends JpaRepository<Account, UUID> {
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
     List<Account> findByNonLockedTrueAndLastSuccessfulLoginBefore(LocalDateTime dateTime);
 
+    @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Override
+    void delete(Account account);
 
     @Query("SELECT a FROM Account a WHERE lower(a.firstName) LIKE :phrase OR lower(a.lastName) LIKE :phrase")
     Page<Account> findAllByPhrase(@Param("phrase") String phrase, Pageable pageable);

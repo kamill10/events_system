@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.util;
+package pl.lodz.p.it.ssbd2024.ssbd01.util.mail;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

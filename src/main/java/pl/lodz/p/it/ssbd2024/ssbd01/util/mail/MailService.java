@@ -1,23 +1,18 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.util;
+package pl.lodz.p.it.ssbd2024.ssbd01.util.mail;
 
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeEmail;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.ChangeMyPassword;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
-import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
@@ -25,63 +20,23 @@ import java.util.logging.Logger;
 @PreAuthorize("hasRole('ROLE_SYSTEM')")
 public class MailService {
 
-    private JavaMailSender mailSender;
-    private MessageSource messageSource;
-    private final ConfigurationProperties config;
-
-
-    private void sendEmail(Mail mail) {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            mimeMessageHelper.setSubject(mail.getMailSubject());
-            mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom()));
-            mimeMessageHelper.setTo(mail.getMailTo());
-            mimeMessageHelper.setText(mail.getMailContent(), true);
-            mailSender.send(mimeMessageHelper.getMimeMessage());
-        } catch (Exception e) {
-            Logger.getGlobal().severe(e.getMessage());
-        }
-    }
-
-
-    public void sendEmailTemplate(Account mailTo, String mailSubject, String mailContent, Object[] contentArgs) {
-        Locale locale = Locale.forLanguageTag(mailTo.getLanguage().getLanguageCode());
-        String subject = messageSource.getMessage(mailSubject, null, locale);
-        String mailBody = messageSource.getMessage(mailContent, contentArgs, locale);
-        String name = messageSource.getMessage("mail.hello", new Object[] {mailTo.getFirstName()}, locale);
-        String mailText = "<html> <body> <h2> " + name + "</h2>" + "<p> " + mailBody + " </p> </body> </html>";
-        Mail mail = new Mail(mailTo.getEmail(), subject, mailText);
-
-        sendEmail(mail);
-    }
-
-    public void sendEmailOnNewMail(Account mailTo, String mailSubject, String mailContent, Object[] contentArgs, String newEmail) {
-        Locale locale = Locale.forLanguageTag(mailTo.getLanguage().getLanguageCode());
-        String subject = messageSource.getMessage(mailSubject, null, locale);
-        String mailBody = messageSource.getMessage(mailContent, contentArgs, locale);
-        String name = messageSource.getMessage("mail.hello", new Object[] {mailTo.getFirstName()}, locale);
-        String mailText = "<html> <body> <h2> " + name + "</h2>" + "<p> " + mailBody + " </p> </body> </html>";
-        Mail mail = new Mail(newEmail, subject, mailText);
-
-        sendEmail(mail);
-    }
+    private final MailTemplateService mailTemplateService;
 
 
     public void sendEmailToAddRoleToAccount(Account mailTo, String roleName) {
-        sendEmailTemplate(mailTo, "mail.role.added.subject", "mail.role.added.body", new Object[] {roleName});
+        mailTemplateService.sendEmailTemplate(mailTo, "mail.role.added.subject", "mail.role.added.body", new Object[] {roleName});
     }
 
     public void sendEmailToRemoveRoleFromAccount(Account mailTo, String roleName) {
-        sendEmailTemplate(mailTo, "mail.role.removed.subject", "mail.role.removed.body", new Object[] {roleName});
+        mailTemplateService.sendEmailTemplate(mailTo, "mail.role.removed.subject", "mail.role.removed.body", new Object[] {roleName});
     }
 
     public void sendEmailToSetActiveAccount(Account mailTo) {
-        sendEmailTemplate(mailTo, "mail.unblocked.subject", "mail.unblocked.body", null);
+        mailTemplateService.sendEmailTemplate(mailTo, "mail.unblocked.subject", "mail.unblocked.body", null);
     }
 
     public void sendEmailToSetInactiveAccount(Account mailTo) {
-        sendEmailTemplate(mailTo, "mail.blocked.subject", "mail.blocked.body", null);
+        mailTemplateService.sendEmailTemplate(mailTo, "mail.blocked.subject", "mail.blocked.body", null);
     }
 
     public void sendEmailToResetPassword(CredentialReset credentialReset) {
@@ -89,7 +44,7 @@ public class MailService {
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
         sb.append(credentialReset.getToken());
         sb.append("'>Link</a>");
-        sendEmailTemplate(credentialReset.getAccount(), "mail.password.reset.subject",
+        mailTemplateService.sendEmailTemplate(credentialReset.getAccount(), "mail.password.reset.subject",
                 "mail.password.reset.body", new Object[] {sb});
     }
 
@@ -98,7 +53,7 @@ public class MailService {
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/login/reset-password?token=");
         sb.append(credentialReset.getToken());
         sb.append("'>Link</a>");
-        sendEmailTemplate(credentialReset.getAccount(), "mail.password.changed.by.admin.subject",
+        mailTemplateService.sendEmailTemplate(credentialReset.getAccount(), "mail.password.changed.by.admin.subject",
                 "mail.password.changed.by.admin.body", new Object[] {sb});
     }
 
@@ -107,7 +62,7 @@ public class MailService {
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/confirm-email?token=");
         sb.append(changeEmail.getToken());
         sb.append("'>Link</a>");
-        sendEmailOnNewMail(changeEmail.getAccount(), "mail.email.changed.by.admin.subject",
+        mailTemplateService.sendEmailOnNewMail(changeEmail.getAccount(), "mail.email.changed.by.admin.subject",
                 "mail.email.changed.by.admin.body", new Object[] {sb}, email);
     }
 
@@ -118,7 +73,7 @@ public class MailService {
         sb.append("?token=");
         sb.append(newResetIssue.getToken());
         sb.append("'>Link</a>");
-        sendEmailTemplate(newResetIssue.getAccount(), "mail.password.changed.by.you.subject",
+        mailTemplateService.sendEmailTemplate(newResetIssue.getAccount(), "mail.password.changed.by.you.subject",
                 "mail.password.changed.by.you.body", new Object[] {sb});
     }
 
@@ -129,7 +84,7 @@ public class MailService {
         sb.append("?token=");
         sb.append(changeEmail.getToken());
         sb.append("'>Link</a>");
-        sendEmailOnNewMail(changeEmail.getAccount(), "mail.email.changed.by.you.subject",
+        mailTemplateService.sendEmailOnNewMail(changeEmail.getAccount(), "mail.email.changed.by.you.subject",
                 "mail.email.changed.by.you.body", new Object[] {sb}, email);
     }
 
@@ -138,16 +93,17 @@ public class MailService {
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
         sb.append(randString);
         sb.append("'>Link</a>");
-        sendEmailTemplate(account, "mail.verify.account.subject",
+        mailTemplateService.sendEmailTemplate(account, "mail.verify.account.subject",
                 "mail.verify.account.body", new Object[] {sb});
     }
 
     public void sendEmailToInformAboutVerification(Account account) {
-        sendEmailTemplate(account, "mail.after.verify.subject", "mail.after.verify.body", new Object[] {AccountRoleEnum.ROLE_PARTICIPANT});
+        mailTemplateService.sendEmailTemplate(account, "mail.after.verify.subject", "mail.after.verify.body",
+                new Object[] {AccountRoleEnum.ROLE_PARTICIPANT});
     }
 
     public void sendEmailToInformAboutUnblockAccount(Account account) {
-        sendEmailTemplate(account, "mail.unblocked.subject", "mail.unblocked.body", null);
+        mailTemplateService.sendEmailTemplate(account, "mail.unblocked.subject", "mail.unblocked.body", null);
     }
 
     public void sendEmailToUnblockAccountViaLink(Account account, String token) {
@@ -155,22 +111,24 @@ public class MailService {
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/unblock-account?token=");
         sb.append(token);
         sb.append("'>Link</a>");
-        sendEmailTemplate(account, "mail.unblock.account.subject", "mail.unblock.account.body", new Object[] {sb});
+        mailTemplateService.sendEmailTemplate(account, "mail.unblock.account.subject", "mail.unblock.account.body", new Object[] {sb});
     }
 
-
-    public void sendEmailToInformAboutAccountBlocked(Account account) {
+    public void sendEmailAfterFailedLoginAttempts(Account account, LocalDateTime lockTimeout) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(config.getAuthLockTime());
-        sendEmailTemplate(account, "mail.locked.until.subject", "mail.locked.until.body",
+        mailTemplateService.sendEmailTemplate(account, "mail.locked.until.subject", "mail.locked.until.body",
                 new Object[] {lockTimeout.format(formatter)});
+    }
+
+    public void sendEmailOnDeleteUnverifiedAccount(Account account) {
+        mailTemplateService.sendEmailTemplate(account, "mail.delete.account.subject", "mail.delete.account.body", null);
     }
 
     public void sendEmailAdminNewLogin(Account account, String ipAddress) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime lockTimeout = LocalDateTime.now();
-        sendEmailTemplate(account, "mail.admin.login.subject", "mail.admin.login.body",
-                new Object[]{ipAddress, lockTimeout.format(formatter)});
+        mailTemplateService.sendEmailTemplate(account, "mail.admin.login.subject", "mail.admin.login.body",
+                new Object[] {ipAddress, lockTimeout.format(formatter)});
     }
 
     public void sendEmailConfirmationReminder(Account account, String token) {
@@ -178,7 +136,7 @@ public class MailService {
         sb.append("<a href='https://team-1.proj-sum.it.p.lodz.pl/verify-account?token=");
         sb.append(token);
         sb.append("'>Link</a>");
-        sendEmailTemplate(account, "mail.verify.account.subject",
+        mailTemplateService.sendEmailTemplate(account, "mail.verify.account.subject",
                 "mail.verify.account.body", new Object[] {sb});
     }
 }

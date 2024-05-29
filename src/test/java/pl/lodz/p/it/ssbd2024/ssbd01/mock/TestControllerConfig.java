@@ -5,14 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.BusinessConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.ToolsConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 
 @Configuration
 @Import({

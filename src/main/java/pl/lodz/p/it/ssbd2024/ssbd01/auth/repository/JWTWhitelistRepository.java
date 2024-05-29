@@ -28,7 +28,7 @@ public interface JWTWhitelistRepository extends JpaRepository<JWTWhitelistToken,
 
     @Override
     @PreAuthorize("permitAll()")
-    JWTWhitelistToken save(JWTWhitelistToken jwtWhitelistToken);
+    JWTWhitelistToken saveAndFlush(JWTWhitelistToken jwtWhitelistToken);
 
     Optional<JWTWhitelistToken> findByToken(String token);
 

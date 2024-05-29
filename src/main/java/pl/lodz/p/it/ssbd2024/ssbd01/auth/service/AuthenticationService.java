@@ -23,7 +23,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpir
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
@@ -32,7 +32,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,12 +94,10 @@ public class AuthenticationService {
             if (account.getFailedLoginAttempts() >= config.getAuthAttempts()) {
                 account.setNonLocked(false);
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime lockTimeout = LocalDateTime.now().plusSeconds(config.getAuthLockTime());
                 account.setLockedUntil(lockTimeout);
                 jwtWhitelistRepository.deleteAllByAccount_Id(account.getId());
-                RunAs.runAsSystem(() -> mailService.sendEmailTemplate(account, "mail.locked.until.subject", "mail.locked.until.body",
-                        new Object[] {lockTimeout.format(formatter)}));
+                RunAs.runAsSystem(() -> mailService.sendEmailAfterFailedLoginAttempts(account, lockTimeout));
             }
 
             accountAuthRepository.saveAndFlush(account);
@@ -134,7 +132,7 @@ public class AuthenticationService {
         accountAuthRepository.saveAndFlush(account);
         accountAuthHistoryRepository.saveAndFlush(new AccountHistory(account));
 
-        return jwtService.generateToken(account);
+        return jwtService.generateToken(new HashMap<>(), account);
     }
 
     @PreAuthorize("permitAll()")
@@ -195,7 +193,7 @@ public class AuthenticationService {
                 Account account = optionalAccount.get();
                 accountMokRepository.delete(account);
 
-                mailService.sendEmailTemplate(account, "mail.delete.account.subject", "mail.delete.account.body", null);
+                mailService.sendEmailOnDeleteUnverifiedAccount(account);
                 passwordHistoryRepository.deletePasswordHistoriesByAccount(account);
             }
         }
@@ -276,6 +274,6 @@ public class AuthenticationService {
         jwtWhitelistRepository.delete(jwtWhitelistToken);
         jwtWhitelistRepository.flush();
 
-        return jwtService.generateToken(account);
+        return jwtService.generateToken(new HashMap<>(), account);
     }
 }
