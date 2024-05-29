@@ -11,6 +11,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.JWTUtils;
 
 import java.io.IOException;
