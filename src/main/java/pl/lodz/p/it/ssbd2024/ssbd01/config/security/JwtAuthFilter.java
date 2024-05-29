@@ -11,6 +11,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.JWTUtils;
 
 import java.io.IOException;
 
@@ -34,7 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
             token = authorizationHeader.substring(7);
-            login = jwtService.extractLogin(token);
+            login = JWTUtils.extractLogin(token, KeyGenerator.getSecretKey());
             if (login != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 jwtService.authenticate(login, token, request);
             }

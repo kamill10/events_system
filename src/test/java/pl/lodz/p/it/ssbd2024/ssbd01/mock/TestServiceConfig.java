@@ -17,7 +17,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountSchedulerService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
 
 @Configuration

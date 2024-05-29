@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.ThemeDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.TimeZoneDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
@@ -22,7 +21,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.util.List;
 import java.util.UUID;
