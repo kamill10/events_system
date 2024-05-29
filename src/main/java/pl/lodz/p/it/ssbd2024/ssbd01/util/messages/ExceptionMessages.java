@@ -37,4 +37,9 @@ public class ExceptionMessages {
     public static final String UNPROCESSABLE_ENTITY = "Unprocessable entity.";
     public static final String FORBIDDEN = "Forbidden.";
     public static final String PRECONDITION_FAILED = "Precondition failed.";
+    public static final String MAPPING_ERROR = "Entity mapping error .";
+    public static final String ANNOTATION_EXCEPTION = "Entity annotation error";
+    public static final String HIBERNATE_EXCEPTION = "Problem with hibernate";
+    public static final String JDBC_CONNECTION_ERROR = "DB connection error";
+    public static final String LAZY_INITIALIZATION_ERROR = "Entity lazy initialization error";
 }
