@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
@@ -132,6 +133,11 @@ public class TestServiceConfig {
     @Bean
     public AccountAuthHistoryRepository accountAuthHistoryRepository() {
         return Mockito.mock(AccountAuthHistoryRepository.class);
+    }
+
+    @Bean
+    public HandlerExceptionResolver handlerExceptionResolver() {
+        return Mockito.mock(HandlerExceptionResolver.class);
     }
 
 }
