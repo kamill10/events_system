@@ -65,5 +65,11 @@ public class EventService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public void sendMail(String placeHolder) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
 }

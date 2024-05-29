@@ -70,6 +70,13 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @PostMapping("/mail")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<?> sendMail(@RequestBody String placeHolder) {
+        eventService.sendMail(placeHolder);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
 
 
