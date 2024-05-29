@@ -54,6 +54,7 @@ public class MeController {
     }
 
     @PatchMapping("/change-password/token/{token}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> changePasswordWithToken(@PathVariable String token)
             throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
         meService.changeMyPasswordWithToken(token);
@@ -61,6 +62,7 @@ public class MeController {
     }
 
     @PatchMapping("/change-email/token/{token}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
             throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
         meService.changeMyEmailWithToken(token);

@@ -23,24 +23,28 @@ public class AuthenticationController {
     private final AccountDTOConverter accountDTOConverter;
 
     @PostMapping("/register")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> registerAccount(@Valid @RequestBody CreateAccountDTO request) {
         authenticationService.registerAccount(accountDTOConverter.toAccount(request));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/authenticate")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDTO request, @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language)
             throws AccountLockedException {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request, language));
     }
 
     @PostMapping("/refresh-token")
+    @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     public ResponseEntity<String> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String token)
             throws AccountLockedException, TokenNotFoundException {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.refreshJWT(token));
     }
 
     @PostMapping("/verify-account/{token}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> verifyAccount(@PathVariable String token)
             throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
             RoleNotFoundException {
@@ -56,6 +60,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/unblock-account/{token}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> unlockAccount(@PathVariable String token)
             throws AccountUnlockTokenNotFoundException {
         authenticationService.unlockAccountThatWasNotUsed(token);

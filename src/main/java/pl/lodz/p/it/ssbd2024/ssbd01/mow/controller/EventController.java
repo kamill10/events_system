@@ -17,12 +17,14 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> getAllEvents() {
         eventService.getAllEvents();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/sessions/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> getEventSessions(@PathVariable UUID id) {
         eventService.getEventSessions(id);
         return ResponseEntity.status(HttpStatus.OK).build();
