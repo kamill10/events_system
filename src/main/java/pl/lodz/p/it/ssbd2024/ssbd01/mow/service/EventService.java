@@ -20,11 +20,13 @@ public class EventService {
     private final TicketRepository ticketRepository;
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("permitAll()")
     public void getAllEvents() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("permitAll()")
     public void getEventSessions(UUID id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -62,6 +64,12 @@ public class EventService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void cancelEvent(UUID id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public void sendMail(String placeHolder) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

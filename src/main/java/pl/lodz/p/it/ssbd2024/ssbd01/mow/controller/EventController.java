@@ -17,12 +17,14 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> getAllEvents() {
         eventService.getAllEvents();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/sessions/{id}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> getEventSessions(@PathVariable UUID id) {
         eventService.getEventSessions(id);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -67,6 +69,13 @@ public class EventController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> cancelEvent(@PathVariable UUID id) {
         eventService.cancelEvent(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/mail")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<?> sendMail(@RequestBody String placeHolder) {
+        eventService.sendMail(placeHolder);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
