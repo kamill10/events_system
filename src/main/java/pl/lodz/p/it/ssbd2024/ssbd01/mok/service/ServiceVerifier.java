@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.util;
+package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +14,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.CredentialResetRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.GenericChangeCredentialTokenRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.PasswordHistoryRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractCredentialChange;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;

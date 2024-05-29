@@ -1,11 +1,8 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.config.security;
+package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,15 +15,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.security.KeyGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.JWTUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import javax.crypto.SecretKey;
 import java.util.*;
-import java.util.function.Function;
 
 
 @Service
@@ -71,7 +67,7 @@ public class JwtService {
         return token;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class})
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public void authenticate(String login, String token, HttpServletRequest request) {
         Account account = (Account) userDetailsService.loadUserByUsername(login);
 
