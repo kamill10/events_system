@@ -307,6 +307,7 @@ i18next.use(initReactI18next).init({
         no: "No",
         never: "Never",
         save: "save",
+        welcome: "Welcome",
         saveChanges: "Save changes",
         action: "Action",
         refreshData: "Refresh Data",
