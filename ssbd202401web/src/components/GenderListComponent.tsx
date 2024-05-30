@@ -21,6 +21,7 @@ export default function GenderListComponent<T extends FieldValues>(
               label={t("gender") + "*"}
               value={field.value}
               onChange={(e) => {
+                console.log(e);
                 field.onChange(e);
               }}
               id={field.name}
@@ -29,9 +30,12 @@ export default function GenderListComponent<T extends FieldValues>(
               autoComplete=""
               disabled={disabled}
             >
-              {Object.keys(GenderEnum).map((key, value) => {
+              {Object.keys(GenderEnum).map((key, _) => {
                 return (
-                  <MenuItem key={key} value={value}>
+                  <MenuItem
+                    key={key}
+                    value={GenderEnum[key as keyof typeof GenderEnum].value}
+                  >
                     {t(GenderEnum[key as keyof typeof GenderEnum].info)}
                   </MenuItem>
                 );
