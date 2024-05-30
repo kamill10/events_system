@@ -34,8 +34,10 @@ export default function NavbarComponent(props: NavbarPropType) {
     isAuthenticated,
     adminLayout,
     setAdminLayout,
+    isParticipant,
     isAdmin,
     isManager,
+    account,
   } = useAccount();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -119,18 +121,42 @@ export default function NavbarComponent(props: NavbarPropType) {
                 );
               })}
             </Box>
-
+            {isAuthenticated && (
+              <Typography sx={{ display: "flex", alignItems: "center", mr: 2 }}>
+                {t("Welcome")} {account?.username}
+              </Typography>
+            )}
+            {isAuthenticated && (
+              <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
+                <Typography sx={{ mr: 1 }}>{t("roles")}:</Typography>
+                {isAdmin && (
+                  <Typography sx={{ ml: 1 }}>{t("ROLE_ADMIN")}</Typography>
+                )}
+                {isParticipant && (
+                  <Typography sx={{ ml: 1 }}>
+                    {t("ROLE_PARTICIPANT")}
+                  </Typography>
+                )}
+                {isManager && (
+                  <Typography sx={{ ml: 1 }}>{t("ROLE_MANAGER")}</Typography>
+                )}
+              </Box>
+            )}
             <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
               {isAdmin && isManager && (
                 <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-                  <Typography sx={{ mr: 1 }}>{t("ROLE_MANAGER")}</Typography>
+                  <Typography sx={{ mr: 1, color: "red" }}>
+                    {t("ROLE_MANAGER")}
+                  </Typography>
                   <Switch
                     color="secondary"
                     onChange={handleSwitchClick}
                     checked={adminLayout}
                     sx={{ mr: 1 }}
                   />
-                  <Typography>{t("ROLE_ADMIN")}</Typography>
+                  <Typography sx={{ mr: 1, color: "green" }}>
+                    {t("ROLE_ADMIN")}
+                  </Typography>
                 </Box>
               )}
               <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
