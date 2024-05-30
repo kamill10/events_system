@@ -2,6 +2,7 @@ import { Typography } from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import ContainerComponent from "../components/ContainerComponent";
 
 export default function HomePage() {
   const { getMyAccount, isAuthenticated } = useAccount();
@@ -11,5 +12,9 @@ export default function HomePage() {
     if (isAuthenticated) getMyAccount();
   }, []);
 
-  return <Typography variant={"h4"}>{t("home")}</Typography>;
+  return (
+    <ContainerComponent>
+      <Typography variant={"h4"}>{t("home")}</Typography>
+    </ContainerComponent>
+  );
 }
