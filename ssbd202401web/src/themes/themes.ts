@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 
-const colors = {
+export const colors = {
   public: {
     primary: "#1C1678",
     secondary: "#8576FF",
