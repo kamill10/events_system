@@ -6,12 +6,12 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 public record UpdatePasswordDTO(
 
         @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
-        String password
+        String value
 ) {
     @Override
     public String toString() {
         return "UpdatePasswordDTO{"
-                + "password='********'"
+                + "value='********'"
                 + '}';
     }
 }
