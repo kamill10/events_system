@@ -8,10 +8,10 @@ public record UpdatePasswordDTO(
         @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
         String password
 ) {
-        @Override
-        public String toString() {
-                return "UpdatePasswordDTO{" +
-                        "password='********'" +
-                        '}';
-        }
+    @Override
+    public String toString() {
+        return "UpdatePasswordDTO{"
+                + "password='********'"
+                + '}';
+    }
 }

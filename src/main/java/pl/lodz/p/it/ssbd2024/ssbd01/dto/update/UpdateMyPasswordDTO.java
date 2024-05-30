@@ -11,11 +11,11 @@ public record UpdateMyPasswordDTO(
         String newPassword
 
 ) {
-        @Override
-        public String toString() {
-                return "UpdateMyPasswordDTO{" +
-                        "oldPassword='********'" +
-                        ", newPassword='********'" +
-                        '}';
-        }
+    @Override
+    public String toString() {
+        return "UpdateMyPasswordDTO{"
+                + "oldPassword='********'"
+                + ", newPassword='********'"
+                + '}';
+    }
 }
