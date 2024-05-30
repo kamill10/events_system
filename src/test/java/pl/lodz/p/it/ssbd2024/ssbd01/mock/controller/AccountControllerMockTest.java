@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -52,7 +53,7 @@ class AccountControllerMockTest {
     }
 
     @BeforeEach
-    public void setup() throws AccountNotFoundException, NoSuchFieldException, IllegalAccessException, RoleNotFoundException {
+    public void setup() throws AppException, NoSuchFieldException, IllegalAccessException {
         mockMvcAccount = MockMvcBuilders.standaloneSetup(accountController).build();
         adminAccount =
                 new Account("admin", "$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y", "admin@email.com", 1, "Jan", "Kowalski",

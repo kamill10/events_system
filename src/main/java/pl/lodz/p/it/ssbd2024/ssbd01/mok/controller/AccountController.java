@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.ThemeDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.TimeZoneDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
@@ -60,7 +61,7 @@ public class AccountController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived,
                                                           @PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
-            throws BadRequestException, NotFoundException, ConflictException, OptLockException {
+            throws AppException {
         var account = accountService.addRoleToAccount(id, roleName,eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
@@ -72,7 +73,7 @@ public class AccountController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> removeRole(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived,
                                                     @PathVariable UUID id, @RequestParam AccountRoleEnum roleName)
-            throws BadRequestException, NotFoundException, OptLockException {
+            throws AppException {
         var account = accountService.removeRoleFromAccount(id, roleName,eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
@@ -83,7 +84,7 @@ public class AccountController {
     @PatchMapping("/{id}/set-active")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> setActive(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived,
-                                                   @PathVariable UUID id) throws NotFoundException, OptLockException {
+                                                   @PathVariable UUID id) throws AppException {
         var account = accountService.setAccountStatus(id, true, eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
@@ -94,7 +95,7 @@ public class AccountController {
     @PatchMapping("/{id}/set-inactive")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> setInactive(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived,
-                                                     @PathVariable UUID id) throws NotFoundException, OptLockException {
+                                                     @PathVariable UUID id) throws AppException {
         var account = accountService.setAccountStatus(id, false, eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
@@ -105,7 +106,7 @@ public class AccountController {
     @GetMapping("/username/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDetailedDTO> getAccountByUsername(@PathVariable String username)
-            throws NotFoundException {
+            throws AppException {
         Account account = accountService.getAccountByUsername(username);
         GetAccountDetailedDTO accountDto = accountDTOConverter.toAccountDetailedDTO(account);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
@@ -121,7 +122,7 @@ public class AccountController {
             @RequestHeader("If-Match") String eTag,
             @PathVariable UUID id,
             @Valid @RequestBody UpdateAccountDataDTO updateAccountDataDTO
-    ) throws NotFoundException, OptLockException {
+    ) throws AppException {
         GetAccountPersonalDTO updatedAccount = accountDTOConverter.toAccountPersonalDTO(
                 accountService.updateAccountData(id, accountDTOConverter.toAccount(updateAccountDataDTO), eTag));
         return ResponseEntity.status(HttpStatus.OK).body(updatedAccount);
@@ -129,21 +130,21 @@ public class AccountController {
 
     @GetMapping("/participants")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<GetAccountDTO>> getParticipants() throws NotFoundException {
+    public ResponseEntity<List<GetAccountDTO>> getParticipants() throws AppException {
         List<GetAccountDTO> participants = accountDTOConverter.accountDtoList(accountService.getParticipants());
         return ResponseEntity.status(HttpStatus.OK).body(participants);
     }
 
     @GetMapping("/administrators")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws NotFoundException {
+    public ResponseEntity<List<GetAccountDTO>> getAdministrators() throws AppException {
         List<GetAccountDTO> administrators = accountDTOConverter.accountDtoList(accountService.getAdmins());
         return ResponseEntity.status(HttpStatus.OK).body(administrators);
     }
 
     @GetMapping("/managers")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<GetAccountDTO>> getManagers() throws NotFoundException {
+    public ResponseEntity<List<GetAccountDTO>> getManagers() throws AppException {
         List<GetAccountDTO> managers = accountDTOConverter.accountDtoList(accountService.getManagers());
         return ResponseEntity.status(HttpStatus.OK).body(managers);
     }
@@ -158,15 +159,14 @@ public class AccountController {
     @PatchMapping("/reset-password/token/{token}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @Valid @RequestBody UpdatePasswordDTO password)
-            throws TokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException,
-            AccountLockedException, AccountNotVerifiedException {
+            throws AppException {
         accountService.resetPasswordWithToken(token, password.value());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/change-password")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody UpdateEmailDTO emailDTO) throws AccountNotFoundException {
+    public ResponseEntity<?> changePassword(@Valid @RequestBody UpdateEmailDTO emailDTO) throws AppException {
         accountService.changePasswordByAdminAndSendEmail(emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -174,7 +174,7 @@ public class AccountController {
     @PostMapping("/change-email/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changeEmail(@PathVariable UUID id, @Valid @RequestBody UpdateEmailDTO emailDTO)
-            throws AccountNotFoundException, EmailAlreadyExistsException {
+            throws AppException {
         accountService.sendMailWhenEmailChangeByAdmin(id, emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -189,7 +189,7 @@ public class AccountController {
 
     @PostMapping("time-zone")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    public ResponseEntity<TimeZoneDTO> addTimeZone(@RequestBody TimeZoneDTO timeZone) throws TimeZoneNotFoundException {
+    public ResponseEntity<TimeZoneDTO> addTimeZone(@RequestBody TimeZoneDTO timeZone) throws AppException {
         accountService.addTimeZone(timeZone.timeZone());
         return ResponseEntity.status(HttpStatus.OK).body(timeZone);
     }

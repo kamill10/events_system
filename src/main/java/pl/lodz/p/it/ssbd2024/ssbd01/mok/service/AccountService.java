@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPageDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
@@ -83,8 +84,7 @@ public class AccountService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public Account addRoleToAccount(UUID id, AccountRoleEnum roleName, String eTag)
-            throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException,
-            AccountNotFoundException, OptLockException {
+            throws AppException {
         Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
         Account account = accountMokRepository.findById(id).orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         List<Role> accountRoles = account.getRoles();
@@ -124,7 +124,7 @@ public class AccountService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public Account removeRoleFromAccount(UUID id, AccountRoleEnum roleName, String eTag)
-            throws RoleNotFoundException, AccountNotFoundException, RoleCanNotBeRemoved, OptLockException {
+            throws AppException {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
 
@@ -150,7 +150,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account setAccountStatus(UUID id, boolean status, String eTag) throws AccountNotFoundException, OptLockException {
+    public Account setAccountStatus(UUID id, boolean status, String eTag) throws AppException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
 
@@ -173,14 +173,14 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account getAccountByUsername(String username) throws AccountNotFoundException {
+    public Account getAccountByUsername(String username) throws AppException {
         return accountMokRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account updateAccountData(UUID id, Account account, String eTag) throws AccountNotFoundException, OptLockException {
+    public Account updateAccountData(UUID id, Account account, String eTag) throws AppException {
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
 
@@ -200,7 +200,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public List<Account> getParticipants() throws RoleNotFoundException {
+    public List<Account> getParticipants() throws AppException {
         Role role = roleRepository.findByName(AccountRoleEnum.ROLE_PARTICIPANT)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
 
@@ -209,7 +209,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public List<Account> getManagers() throws RoleNotFoundException {
+    public List<Account> getManagers() throws AppException {
         Role role = roleRepository.findByName(AccountRoleEnum.ROLE_MANAGER)
                 .orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
 
@@ -218,7 +218,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public List<Account> getAdmins() throws RoleNotFoundException {
+    public List<Account> getAdmins() throws AppException {
         Role role =
                 roleRepository.findByName(AccountRoleEnum.ROLE_ADMIN).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
 
@@ -227,7 +227,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account getAccountById(UUID id) throws AccountNotFoundException {
+    public Account getAccountById(UUID id) throws AppException {
         return accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
@@ -255,7 +255,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public void changePasswordByAdminAndSendEmail(String email) throws AccountNotFoundException {
+    public void changePasswordByAdminAndSendEmail(String email) throws AppException {
         Account account = accountMokRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
 
@@ -274,7 +274,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public void sendMailWhenEmailChangeByAdmin(UUID id, String email) throws AccountNotFoundException, EmailAlreadyExistsException {
+    public void sendMailWhenEmailChangeByAdmin(UUID id, String email) throws AppException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
 
@@ -296,8 +296,7 @@ public class AccountService {
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public void resetPasswordWithToken(String token, String newPassword)
-            throws AccountNotFoundException, TokenExpiredException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException,
-            AccountLockedException, AccountNotVerifiedException {
+            throws AppException {
         Account accountToUpdate = verifier.verifyCredentialReset(token, resetCredentialRepository);
 
         if (verifier.isPasswordInHistory(accountToUpdate.getId(), newPassword)) {
@@ -320,7 +319,7 @@ public class AccountService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public void addTimeZone(String timeZone) throws TimeZoneNotFoundException {
+    public void addTimeZone(String timeZone) throws AppException {
         try {
             ZoneId zoneId = ZoneId.of(timeZone);
             AccountTimeZone timeZone1 = new AccountTimeZone(timeZone);

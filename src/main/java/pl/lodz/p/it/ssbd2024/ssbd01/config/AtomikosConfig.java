@@ -27,12 +27,12 @@ public class AtomikosConfig {
 
 
     @Bean(name = "userTransaction")
-    public UserTransaction userTransaction() throws Throwable {
+    public UserTransaction userTransaction() {
         return new J2eeUserTransaction();
     }
 
     @Bean(name = "atomikosTransactionManager", initMethod = "init", destroyMethod = "close")
-    public UserTransactionManager atomikosTransactionManager() throws Throwable {
+    public UserTransactionManager atomikosTransactionManager() {
         UserTransactionManager userTransactionManager = new UserTransactionManager();
         userTransactionManager.setForceShutdown(true);
 
@@ -43,7 +43,7 @@ public class AtomikosConfig {
 
     @Bean(name = "transactionManager")
     @DependsOn({"userTransaction", "atomikosTransactionManager"})
-    public PlatformTransactionManager transactionManager() throws Throwable {
+    public PlatformTransactionManager transactionManager() {
         UserTransaction userTransaction = userTransaction();
 
         AtomikosJtaPlatform.transaction = userTransaction;

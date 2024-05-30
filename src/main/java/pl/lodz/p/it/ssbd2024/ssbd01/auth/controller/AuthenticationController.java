@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -32,22 +33,21 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     @PreAuthorize("permitAll()")
     public ResponseEntity<String> authenticate(@Valid @RequestBody LoginDTO request, @RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language)
-            throws AccountLockedException {
+            throws AppException {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.authenticate(request, language));
     }
 
     @PostMapping("/refresh-token")
     @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     public ResponseEntity<String> refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) String token)
-            throws AccountLockedException, TokenNotFoundException {
+            throws AppException {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.refreshJWT(token));
     }
 
     @PostMapping("/verify-account/{token}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> verifyAccount(@PathVariable String token)
-            throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
-            RoleNotFoundException {
+            throws AppException {
         authenticationService.verifyAccount(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -62,7 +62,7 @@ public class AuthenticationController {
     @PostMapping("/unblock-account/{token}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> unlockAccount(@PathVariable String token)
-            throws AccountUnlockTokenNotFoundException {
+            throws AppException {
         authenticationService.unlockAccountThatWasNotUsed(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

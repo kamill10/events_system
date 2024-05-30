@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.CredentialReset;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.AccountMokRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.CredentialResetRepository;
@@ -50,7 +51,7 @@ public class ServiceVerifier {
     @Transactional(propagation = Propagation.MANDATORY, rollbackFor = {Exception.class})
     @PreAuthorize("permitAll()")
     public <T extends AbstractCredentialChange> Account verifyCredentialReset(String token, GenericChangeCredentialTokenRepository<T> repo)
-            throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException, AccountNotVerifiedException, AccountLockedException {
+            throws AppException {
         Optional<T> credentialReset = repo.findByToken(token);
         if (credentialReset.isEmpty()) {
             throw new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND);
