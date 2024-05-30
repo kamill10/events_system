@@ -354,7 +354,7 @@ i18next
 
           roles: "Roles",
           role: "Role",
-          userName: "UserName",
+          userName: "Username",
           firstName: "First Name",
           lastName: "Last Name",
           gender: "Gender",
