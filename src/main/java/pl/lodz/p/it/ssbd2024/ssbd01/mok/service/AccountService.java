@@ -225,6 +225,9 @@ public class AccountService {
         if (account.isEmpty()) {
             return;
         }
+        if (!account.get().getActive() || !account.get().getVerified()|| !account.get().isAccountNonLocked()) {
+            return;
+        }
         resetCredentialRepository.deleteByAccount(account.get());
         resetCredentialRepository.flush();
         CredentialReset credentialReset = verifier.saveTokenToResetCredential(account.get());
