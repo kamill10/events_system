@@ -142,7 +142,7 @@ public class AuthenticationControllerIT {
 
     @Test
     public void testRegisterAccount() {
-        CreateAccountDTO createAccountDTO = new CreateAccountDTO("user", "password", "isrpgrupa1@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("user", "P@ssw0rd", "isrpgrupa1@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
         given()
                 .contentType("application/json")
                 .body(createAccountDTO)
@@ -161,7 +161,7 @@ public class AuthenticationControllerIT {
 
     @Test
     public void testRegisterAccountWithAnonymousUserName() {
-        CreateAccountDTO createAccountDTO = new CreateAccountDTO("anonymous", "password", "isrpgrupa2@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("anonymous", "P@ssw0rd", "isrpgrupa2@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
         given()
                 .contentType("application/json")
                 .body(createAccountDTO)
@@ -187,7 +187,7 @@ public class AuthenticationControllerIT {
 
     @Test
     public void testRegisterAccountWithNotUniqueUsername() {
-        CreateAccountDTO createAccountDTO = new CreateAccountDTO("testAdmin", "password", "isrpgrupa1@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("testAdmin", "P@ssw0rd", "isrpgrupa1@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
         given()
                 .contentType("application/json")
                 .body(createAccountDTO)
@@ -199,7 +199,7 @@ public class AuthenticationControllerIT {
 
     @Test
     public void testRegisterAccountWithNotUniqueEmail() {
-        CreateAccountDTO createAccountDTO = new CreateAccountDTO("testAdmin", "password"
+        CreateAccountDTO createAccountDTO = new CreateAccountDTO("testAdmin", "P@ssw0rd"
                 , "admin202401@proton.me", 1, "firstName", "lastName", LanguageEnum.POLISH);
         given()
                 .contentType("application/json")
