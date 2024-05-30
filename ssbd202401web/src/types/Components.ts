@@ -15,6 +15,7 @@ export interface TextFieldProps<T extends FieldValues> {
   trigger: UseFormTrigger<T>;
   name: Path<T>;
   label: string;
+  focused?: boolean;
 }
 
 export interface RouteType {

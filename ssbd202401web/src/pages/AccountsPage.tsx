@@ -145,6 +145,7 @@ export default function AccountsPage() {
               name="phrase"
               trigger={trigger}
               type="text"
+              focused
             ></TextFieldComponent>
             <Typography variant="h6" marginTop={3}>
               {t("sortDataKeyTitle")}
