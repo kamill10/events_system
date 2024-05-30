@@ -56,10 +56,6 @@ CREATE INDEX account_history_role_role_idx ON account_history_role USING btree (
 CREATE INDEX account_role_account_idx ON account_role USING btree (account_id);
 CREATE INDEX account_role_role_idx ON account_role USING btree (roles_id);
 
-CREATE INDEX account_unlock_account_id_idx ON account_unlock USING btree (account_id);
-
-CREATE INDEX account_confirmation_account_id_idx ON accountconfirmation USING btree (account_id);
-
 CREATE INDEX change_email_created_by_idx ON change_email USING btree (created_by);
 CREATE INDEX change_email_updated_by_idx ON change_email USING btree (updated_by);
 
