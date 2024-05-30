@@ -48,6 +48,8 @@ public class MeService {
 
     private final MailService mailService;
 
+    private final CredentialResetRepository resetCredentialRepository;
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public Account getAccount() throws AccountNotFoundException {
@@ -75,6 +77,8 @@ public class MeService {
 
         changeMyPasswordRepository.deleteByAccount(account);
         changeMyPasswordRepository.flush();
+        resetCredentialRepository.deleteByAccount(account);
+        resetCredentialRepository.flush();
 
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);

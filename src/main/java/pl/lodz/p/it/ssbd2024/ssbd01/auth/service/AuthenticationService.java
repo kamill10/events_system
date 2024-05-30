@@ -1,8 +1,11 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.auth.service;
 
+import jakarta.persistence.OptimisticLockException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -77,8 +80,17 @@ public class AuthenticationService {
     }
 
     @PreAuthorize("permitAll()")
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, noRollbackFor = {
-            BadCredentialsException.class}, timeoutString = "${transaction.timeout}")
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = {Exception.class},
+            noRollbackFor = {BadCredentialsException.class},
+            timeoutString = "${transaction.timeout}"
+    )
+    @Retryable(
+            retryFor = {OptimisticLockException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public String authenticate(LoginDTO loginDTO, String language) throws AccountLockedException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
@@ -137,6 +149,11 @@ public class AuthenticationService {
 
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {OptimisticLockException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void verifyAccount(String token)
             throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
             RoleNotFoundException {
@@ -164,6 +181,11 @@ public class AuthenticationService {
 
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {OptimisticLockException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void unlockAccountThatWasNotUsed(String token) throws AccountUnlockTokenNotFoundException {
         AccountUnlock accountUnlock = accountUnlockRepository.findByToken(token)
                 .orElseThrow(() -> new AccountUnlockTokenNotFoundException(ExceptionMessages.UNLOCK_TOKEN_NOT_FOUND));
