@@ -8,7 +8,6 @@ public record CreateAccountDTO(
         @Pattern(regexp = "^(?!system$)(?!anonymous$)[a-zA-Z0-9]{3,32}$", message = ExceptionMessages.INCORRECT_USERNAME)
         @NotNull(message = ExceptionMessages.INCORRECT_USERNAME)
         String username,
-//        @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
         @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,72}$", message = ExceptionMessages.INCORRECT_PASSWORD)
         @NotNull(message = ExceptionMessages.INCORRECT_PASSWORD)
         String password,
