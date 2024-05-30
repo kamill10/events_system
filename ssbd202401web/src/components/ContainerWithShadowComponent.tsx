@@ -9,7 +9,6 @@ export default function ContainerWithShadowComponent({
   return (
     <Box
       component={"div"}
-      minHeight={"80vh"}
       sx={{
         boxShadow: 6,
         padding: "3rem",
