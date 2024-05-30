@@ -23,4 +23,16 @@ public record CreateAccountDTO(
 
         LanguageEnum language
 ) {
+    @Override
+    public String toString() {
+        return "CreateAccountDTO{"
+                + "username='" + username + '\''
+                + ", password='********'"
+                + ", email='" + email + '\''
+                + ", gender=" + gender
+                + ", firstName='" + firstName + '\''
+                + ", lastName='" + lastName + '\''
+                + ", language=" + language
+                + '}';
+    }
 }
