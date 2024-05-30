@@ -2,18 +2,18 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.LazyInitializationException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.create.CreateAccountDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.ThemeDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.TimeZoneDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.BadRequestException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.ConflictException;
@@ -22,7 +22,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.converter.AccountDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
 
 import java.util.List;
 import java.util.UUID;
@@ -35,12 +34,10 @@ public class AccountController {
 
     private final AccountService accountService;
     private final AccountDTOConverter accountDTOConverter;
-    private final MailService mailService;
-
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<GetAccountDTO> getAllUsers() {
+    public List<GetAccountDTO> getAllAccounts() {
         List<GetAccountDTO> getAccountDTOS = accountDTOConverter.accountDtoList(accountService.getAllAccounts());
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOS).getBody();
     }
@@ -59,14 +56,6 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(getAccountDTOPage);
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<GetAccountPersonalDTO> createUser(@Valid @RequestBody CreateAccountDTO createAccountDTO) {
-        GetAccountPersonalDTO getAccountDTO = accountDTOConverter.toAccountPersonalDTO(accountService
-                .addAccount(accountDTOConverter.toAccount(createAccountDTO)));
-        return ResponseEntity.status(HttpStatus.CREATED).body(getAccountDTO);
-    }
-
     @PostMapping("/{id}/add-role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GetAccountDTO> addRoleToAccount(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived,
@@ -74,7 +63,6 @@ public class AccountController {
             throws BadRequestException, NotFoundException, ConflictException, OptLockException {
         var account = accountService.addRoleToAccount(id, roleName,eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-        mailService.sendEmailToAddRoleToAccount(account, roleName.name());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -87,7 +75,6 @@ public class AccountController {
             throws BadRequestException, NotFoundException, OptLockException {
         var account = accountService.removeRoleFromAccount(id, roleName,eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-        mailService.sendEmailToRemoveRoleFromAccount(account, roleName.name());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -99,7 +86,6 @@ public class AccountController {
                                                    @PathVariable UUID id) throws NotFoundException, OptLockException {
         var account = accountService.setAccountStatus(id, true, eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-        mailService.sendEmailToSetActiveAccount(accountService.getAccountById(id));
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -111,7 +97,6 @@ public class AccountController {
                                                      @PathVariable UUID id) throws NotFoundException, OptLockException {
         var account = accountService.setAccountStatus(id, false, eTagReceived);
         String eTag = ETagBuilder.buildETag(account.getVersion().toString());
-        mailService.sendEmailToSetInactiveAccount(accountService.getAccountById(id));
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(accountDTOConverter.toAccountDto(account));
@@ -164,12 +149,14 @@ public class AccountController {
     }
 
     @PostMapping("/reset-password")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody UpdateEmailDTO emailDTO) {
         accountService.resetPasswordAndSendEmail(emailDTO.email());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/reset-password/token/{token}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> resetPasswordWithToken(@PathVariable String token, @Valid @RequestBody UpdatePasswordDTO password)
             throws TokenExpiredException, AccountNotFoundException, ThisPasswordAlreadyWasSetInHistory, TokenNotFoundException,
             AccountLockedException, AccountNotVerifiedException {
@@ -200,5 +187,17 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(accountHistoryList);
     }
 
+    @PostMapping("time-zone")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<TimeZoneDTO> addTimeZone(@RequestBody TimeZoneDTO timeZone) throws TimeZoneNotFoundException {
+        accountService.addTimeZone(timeZone.timeZone());
+        return ResponseEntity.status(HttpStatus.OK).body(timeZone);
+    }
 
+    @PostMapping("theme")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<ThemeDTO> addTheme(@RequestBody ThemeDTO theme) {
+        accountService.addTheme(theme.theme());
+        return ResponseEntity.status(HttpStatus.OK).body(theme);
+    }
 }

@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ThemeEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 
 import java.util.Objects;
@@ -22,8 +20,7 @@ public class AccountTheme extends AbstractEntity {
     @Column(nullable = false, unique = true, updatable = false, length = 15)
     @NotBlank
     @Size(max = 15)
-    @Enumerated(EnumType.STRING)
-    private ThemeEnum theme;
+    private String theme;
 
 
     @Override
@@ -35,7 +32,7 @@ public class AccountTheme extends AbstractEntity {
             return false;
         }
         AccountTheme accountTheme1 = (AccountTheme) o;
-        return theme == accountTheme1.theme;
+        return Objects.equals(theme, accountTheme1.theme);
     }
 
     @Override

@@ -18,6 +18,7 @@ import {
 } from "../types/Account";
 import { useTranslation } from "react-i18next";
 import { LanguageType } from "../types/enums/LanguageType.enum";
+import { AxiosError } from "axios";
 
 export const useAccount = () => {
   const { t } = useTranslation();
@@ -27,6 +28,8 @@ export const useAccount = () => {
     account,
     parsedToken,
     setAccount,
+    theme,
+    setTheme,
     token,
     setToken,
     isLogging,
@@ -40,9 +43,11 @@ export const useAccount = () => {
   const { i18n } = useTranslation();
 
   const isAuthenticated = !!token;
-  const isManager = parsedToken?.role.includes(AccountTypeEnum.MANAGER);
-  const isAdmin = parsedToken?.role.includes(AccountTypeEnum.ADMIN);
-  const isParticipant = parsedToken?.role.includes(AccountTypeEnum.PARTICIPANT);
+  const isManager =
+    parsedToken?.role.includes(AccountTypeEnum.MANAGER) ?? false;
+  const isAdmin = parsedToken?.role.includes(AccountTypeEnum.ADMIN) ?? false;
+  const isParticipant =
+    parsedToken?.role.includes(AccountTypeEnum.PARTICIPANT) ?? false;
 
   const logIn = async (formData: LoginCredentialsType) => {
     try {
@@ -58,13 +63,48 @@ export const useAccount = () => {
       getMyAccount();
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("logInFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("logInFail"),
+        });
+      }
       return e;
     } finally {
       setIsLogging(false);
+    }
+  };
+
+  const refreshToken = async () => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.refreshToken();
+      setToken(data);
+      localStorage.setItem("token", data);
+      sendNotification({
+        type: "success",
+        description: t("refreshSucc"),
+      });
+    } catch (e) {
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("refreshFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
     }
   };
 
@@ -78,17 +118,27 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("logOutFail"),
-      });
+      if (e instanceof AxiosError && e.response?.status !== 403) {
+        if (t(e.response?.data) != e.response?.data) {
+          sendNotification({
+            type: "error",
+            description: t(e.response?.data),
+          });
+        } else {
+          sendNotification({
+            type: "error",
+            description: t("logOutFail"),
+          });
+        }
+      }
       return e;
     } finally {
       localStorage.removeItem("token");
-      localStorage.removeItem("language");
+      localStorage.removeItem("theme");
       localStorage.removeItem("etag");
       setAccount(null);
       setToken(null);
+      setTheme("light");
       i18n.changeLanguage(
         navigator.language === "pl"
           ? LanguageType.POLISH
@@ -111,10 +161,17 @@ export const useAccount = () => {
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
-      sendNotification({
-        description: t("signInFail"),
-        type: "error",
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("signInFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -131,10 +188,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        description: t("verifyAccountFail"),
-        type: "error",
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("verifyAccountFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -151,10 +215,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        description: t("changePasswordFail"),
-        type: "error",
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("changePasswordFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -171,10 +242,44 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("changeEmailFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const confirmUnblockAccount = async (key: string) => {
+    try {
+      setIsFetching(true);
+      await api.confirmUnblockAccount(key);
       sendNotification({
-        type: "error",
-        description: t("changeEmailFail"),
+        type: "success",
+        description: t("confirmUnblockAccSucc"),
       });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("confirmUnblockAccFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -187,13 +292,20 @@ export const useAccount = () => {
       const { data } = await api.getMyAccount();
       setAccount(data);
       i18n.changeLanguage(data.language);
-      localStorage.setItem("language", data.language);
+      setTheme(data.accountTheme);
     } catch (e) {
       console.error(e);
-      sendNotification({
-        description: t("getMyAccountFail"),
-        type: "error",
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getMyAccountFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -211,10 +323,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateMyPersonalDataFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateMyPersonalDataFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -231,10 +350,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateMyPasswordFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateMyPasswordFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -251,10 +377,17 @@ export const useAccount = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateMyEmailFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateMyEmailFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -272,10 +405,17 @@ export const useAccount = () => {
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("requestPasswordResetFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("requestPasswordResetFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -293,9 +433,33 @@ export const useAccount = () => {
       navigate(Pathnames.public.login);
     } catch (e) {
       console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("requestPasswordResetFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const setMyTheme = async (theme: string) => {
+    try {
+      setIsFetching(true);
+      await api.setMyTheme(theme);
+      setTheme(theme);
+    } catch (e) {
+      console.error(e);
       sendNotification({
+        description: t("setMyThemeFail"),
         type: "error",
-        description: t("requestPasswordResetFail"),
       });
       return e;
     } finally {
@@ -305,6 +469,8 @@ export const useAccount = () => {
 
   return {
     account,
+    setTheme,
+    theme,
     parsedToken,
     isLogging,
     isFetching,
@@ -318,13 +484,17 @@ export const useAccount = () => {
     verifyAccount,
     confirmPasswordUpdate,
     confirmEmailUpdate,
+    confirmUnblockAccount,
     getMyAccount,
     updateMyPersonalData,
+    setMyTheme,
     updateMyPassword,
     updateMyEmail,
     requestPasswordReset,
     resetMyPassword,
     adminLayout,
     setAdminLayout,
+    refreshToken,
+    token,
   };
 };

@@ -30,6 +30,18 @@ export const ParticipantTheme = createTheme({
   },
 });
 
+export const ParticipantDarkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: colors.participant.primary,
+    },
+    secondary: {
+      main: colors.participant.secondary,
+    },
+  },
+});
+
 export const AdminTheme = createTheme({
   palette: {
     primary: {
@@ -41,8 +53,32 @@ export const AdminTheme = createTheme({
   },
 });
 
+export const AdminDarkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: colors.admin.secondary,
+    },
+    secondary: {
+      main: colors.admin.primary,
+    },
+  },
+});
+
 export const ManagerTheme = createTheme({
   palette: {
+    primary: {
+      main: colors.manager.primary,
+    },
+    secondary: {
+      main: colors.manager.secondary,
+    },
+  },
+});
+
+export const ManagerDarkTheme = createTheme({
+  palette: {
+    mode: "dark",
     primary: {
       main: colors.manager.primary,
     },
@@ -59,6 +95,18 @@ export const PublicTheme = createTheme({
     },
     secondary: {
       main: colors.public.secondary,
+    },
+  },
+});
+
+export const PublicDarkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    primary: {
+      main: colors.public.secondary,
+    },
+    secondary: {
+      main: colors.public.primary,
     },
   },
 });

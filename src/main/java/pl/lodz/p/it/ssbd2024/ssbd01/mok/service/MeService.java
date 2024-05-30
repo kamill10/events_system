@@ -1,11 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 
-import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,16 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.ThemeEnum;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.TimeZoneEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.TokenGenerator;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
@@ -49,7 +42,7 @@ public class MeService {
 
     private final ServiceVerifier verifier;
 
-    private final AccountThemeRepository accountThemeRepository;
+    private final ThemeRepository themeRepository;
 
     private final TimeZoneRepository timeZoneRepository;
 
@@ -60,6 +53,7 @@ public class MeService {
     public Account getAccount() throws AccountNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
+
         return accountMokRepository.findById(account.getId())
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
     }
@@ -70,52 +64,63 @@ public class MeService {
             throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
+
         if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
             throw new WrongOldPasswordException(ExceptionMessages.WRONG_OLD_PASSWORD);
         }
+
         if (verifier.isPasswordInHistory(account.getId(), newPassword)) {
             throw new ThisPasswordAlreadyWasSetInHistory(ExceptionMessages.THIS_PASSWORD_ALREADY_WAS_SET_IN_HISTORY);
         }
+
         changeMyPasswordRepository.deleteByAccount(account);
         changeMyPasswordRepository.flush();
+
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeMyPassword(account,
-                expirationDate, passwordEncoder.encode(newPassword));
+        var newResetIssue = new ChangeMyPassword(account, expirationDate, passwordEncoder.encode(newPassword));
         changeMyPasswordRepository.saveAndFlush(newResetIssue);
-        mailService.sendEmailToChangeMyPassword(newResetIssue);
+
+        RunAs.runAsSystem(() -> mailService.sendEmailToChangeMyPassword(newResetIssue));
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public void changeMyEmailSendMail(String currentPassword, String newEmail)
-            throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
+            throws WrongOldPasswordException, EmailAlreadyExistsException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
+
         if (!passwordEncoder.matches(currentPassword, account.getPassword())) {
             throw new WrongOldPasswordException(ExceptionMessages.WRONG_OLD_PASSWORD);
         }
+
         if (accountMokRepository.findByEmail(newEmail).isPresent()) {
             throw new EmailAlreadyExistsException(ExceptionMessages.EMAIL_ALREADY_EXISTS);
         }
+
         changeEmailRepository.deleteByAccount(account);
         changeEmailRepository.flush();
+
         var expiration = config.getCredentialChangeTokenExpiration();
         var expirationDate = LocalDateTime.now().plusMinutes(expiration);
-        var newResetIssue = new ChangeEmail(account,
-                expirationDate, newEmail);
+        var newResetIssue = new ChangeEmail(account, expirationDate, newEmail);
         changeEmailRepository.saveAndFlush(newResetIssue);
-        mailService.sendEmailToChangeMyEmail(newResetIssue, newEmail);
+
+        RunAs.runAsSystem(() -> mailService.sendEmailToChangeMyEmail(newResetIssue, newEmail));
     }
 
+    @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public void changeMyPasswordWithToken(String token)
             throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
         Account account = verifier.verifyCredentialReset(token, changeMyPasswordRepository);
+
         String password =
                 changeMyPasswordRepository.findByToken(token).orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND))
                         .getPassword();
         account.setPassword(password);
+
         passwordHistoryRepository.saveAndFlush(new PasswordHistory(account));
         accountMokRepository.saveAndFlush(account);
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
@@ -123,6 +128,7 @@ public class MeService {
     }
 
 
+    @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     public void changeMyEmailWithToken(String token)
             throws AccountNotFoundException, TokenNotFoundException, TokenExpiredException, AccountLockedException, AccountNotVerifiedException {
@@ -130,6 +136,7 @@ public class MeService {
         var changeMyEmail = changeEmailRepository.findByToken(token)
                 .orElseThrow(() -> new TokenNotFoundException(ExceptionMessages.EMAIL_RESET_TOKEN_NOT_FOUND));
         accountToUpdate.setEmail(changeMyEmail.getEmail());
+
         accountMokRepository.saveAndFlush(accountToUpdate);
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(accountToUpdate));
         changeEmailRepository.deleteByToken(token);
@@ -137,18 +144,34 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account updateMyAccountData(Account accountData, String eTag) throws AccountNotFoundException, OptLockException {
+    public Account updateMyAccountData(Account accountData, String eTag, String theme, String timeZone)
+            throws AccountNotFoundException, OptLockException, TimeZoneNotFoundException, AccountThemeNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
         Account accountToUpdate = accountMokRepository.findById(account.getId())
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(accountToUpdate.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
+
+        if (!timeZone.isBlank()) {
+            AccountTimeZone accountTimeZone = timeZoneRepository.findByTimeZone(timeZone)
+                    .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
+            accountToUpdate.setAccountTimeZone(accountTimeZone);
+        }
+
+        if (!theme.isBlank()) {
+            AccountTheme accountTheme = themeRepository.findByTheme(theme)
+                    .orElseThrow(() -> new AccountThemeNotFoundException(ExceptionMessages.ACCOUNT_THEME_NOT_FOUND));
+            accountToUpdate.setAccountTheme(accountTheme);
+        }
+
         accountToUpdate.setFirstName(accountData.getFirstName());
         accountToUpdate.setLastName(accountData.getLastName());
         accountToUpdate.setGender(accountData.getGender());
         var returnedAccount = accountMokRepository.saveAndFlush(accountToUpdate);
+
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
         return returnedAccount;
     }
@@ -160,7 +183,9 @@ public class MeService {
         Account account = (Account) authentication.getPrincipal();
         Account accountToLog = accountMokRepository.findById(account.getId())
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
+
         List<Role> accountRoles = accountToLog.getRoles();
+
         if (!accountRoles.contains(new Role(roleEnum))) {
             throw new RoleNotAssignedToAccount(ExceptionMessages.ACCOUNT_NOT_HAVE_THIS_ROLE);
         }
@@ -168,48 +193,16 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public ThemeEnum setAccountTheme(ThemeEnum theme) throws AccountThemeNotFoundException {
+    public void setAccountTheme(String theme) throws AccountThemeNotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
-        AccountTheme accountTheme = accountThemeRepository.findByTheme(theme)
+
+        AccountTheme accountTheme = themeRepository.findByTheme(theme)
                 .orElseThrow(() -> new AccountThemeNotFoundException(ExceptionMessages.ACCOUNT_THEME_NOT_FOUND));
         account.setAccountTheme(accountTheme);
+
         accountMokRepository.saveAndFlush(account);
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
-        return accountTheme.getTheme();
     }
-
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public String setAccountTimeZone(TimeZoneEnum timeZoneEnum) throws TimeZoneNotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        AccountTimeZone accountTimeZone = timeZoneRepository.findByTimeZoneEnum(timeZoneEnum)
-                .orElseThrow(() -> new TimeZoneNotFoundException(ExceptionMessages.TIME_ZONE_NOT_FOUND));
-        account.setAccountTimeZone(accountTimeZone);
-        accountMokRepository.saveAndFlush(account);
-        accountMokHistoryRepository.saveAndFlush(new AccountHistory(account));
-        return accountTimeZone.getTimeZone().toZoneId().getId();
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public ThemeEnum getAccountTheme() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        AccountTheme accountTheme = account.getAccountTheme();
-        return accountTheme.getTheme();
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public String getAccountTimeZone() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        AccountTimeZone accountTimeZone = account.getAccountTimeZone();
-        return accountTimeZone.getTimeZone().toZoneId().getId();
-    }
-
-
 
 }

@@ -5,6 +5,7 @@ import { ChangeEmailType, UpdatePersonalDataType } from "../types/Account";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import useNotification from "./useNotification";
 import { SortingRequestParams } from "../types/SortingRequestParams.ts";
+import { AxiosError } from "axios";
 
 export const useManageAccounts = () => {
   const sendNotification = useNotification();
@@ -18,10 +19,17 @@ export const useManageAccounts = () => {
       return data;
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("getAccountByUsernameFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getAccountByUsernameFail"),
+        });
+      }
       return null;
     } finally {
       setIsFetching(false);
@@ -35,10 +43,17 @@ export const useManageAccounts = () => {
       return data;
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("getAccountChangesFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getAccountChangesFail"),
+        });
+      }
       return null;
     } finally {
       setIsFetching(false);
@@ -58,10 +73,17 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateAccountDataFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateAccountDataFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -78,10 +100,17 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateAccountPasswordFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateAccountPasswordFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -98,15 +127,23 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("updateAccountEmailFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("updateAccountEmailFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
     }
   };
+
   const activateAccount = async (id: string) => {
     try {
       setIsFetching(true);
@@ -117,10 +154,17 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("activateAccountFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("activateAccountFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -137,10 +181,17 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("activateDeaccountFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("activateDeaccountFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -157,11 +208,17 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
-
-      sendNotification({
-        type: "error",
-        description: t("addRoleFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("addRoleFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -178,10 +235,17 @@ export const useManageAccounts = () => {
       });
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("removeRoleFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("removeRoleFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);
@@ -201,10 +265,17 @@ export const useManageAccounts = () => {
       return data.content;
     } catch (e) {
       console.error(e);
-      sendNotification({
-        type: "error",
-        description: t("getAccountsFail"),
-      });
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getAccountsFail"),
+        });
+      }
       return e;
     } finally {
       setIsFetching(false);

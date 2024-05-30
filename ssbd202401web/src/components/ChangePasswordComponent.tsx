@@ -1,4 +1,4 @@
-import { Button, Divider, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import { useAccount } from "../hooks/useAccount";
@@ -51,16 +51,10 @@ export default function ChangePasswordComponent() {
         align="start"
       >
         <Typography variant="h4">{t("changePassword")}</Typography>
-        <Divider
-          sx={{
-            marginTop: "3rem",
-            marginBottom: "3rem",
-          }}
-        ></Divider>
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("currentPassword")}
+          label={t("currentPassword") + "*"}
           name="oldPassword"
           trigger={trigger}
           type="password"
@@ -68,7 +62,7 @@ export default function ChangePasswordComponent() {
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("newPassword")}
+          label={t("newPassword") + "*"}
           name="newPassword"
           trigger={trigger}
           type="password"
@@ -76,7 +70,7 @@ export default function ChangePasswordComponent() {
         <TextFieldComponent
           control={control}
           errors={errors}
-          label={t("confirmNewPassword")}
+          label={t("confirmNewPassword") + "*"}
           name="confirmNewPassword"
           trigger={trigger}
           type="password"

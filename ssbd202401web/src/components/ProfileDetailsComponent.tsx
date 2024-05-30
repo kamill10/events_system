@@ -15,7 +15,7 @@ import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function ProfileDetailsComponent() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { account, getMyAccount } = useAccount();
   const mapRolesToString = (rolesArray: AccountTypeEnum[]): string => {
     return rolesArray.map((role) => t(role)).join(", ");
@@ -23,7 +23,6 @@ export default function ProfileDetailsComponent() {
 
   useEffect(() => {
     getMyAccount();
-    i18n.changeLanguage("ENGLISH");
   }, []);
 
   const data = [
@@ -37,11 +36,17 @@ export default function ProfileDetailsComponent() {
     { "E-mail": account?.email },
     { [t("firstName")]: account?.firstName },
     { [t("lastName")]: account?.lastName },
-    { [t("gender")]: account?.gender },
+    { [t("gender")]: [t(account?.gender.toString() ?? "0")] },
     { [t("isActive")]: account?.active ? [t("yes")] : [t("no")] },
     { [t("isVerified")]: account?.verified ? [t("yes")] : [t("no")] },
     { [t("isUnlocked")]: account?.nonLocked ? [t("yes")] : [t("no")] },
     { [t("languagePref")]: [t(account?.language ?? "")] },
+    {
+      [t("timeZone")]: t(account?.accountTimeZone ?? "notSpecified"),
+    },
+    {
+      [t("theme")]: t(account?.accountTheme ?? "notSpecified"),
+    },
   ];
   return (
     <Box
@@ -50,7 +55,7 @@ export default function ProfileDetailsComponent() {
         marginLeft: 5,
       }}
     >
-      <Typography variant="h4">{t("changePersonalData")}</Typography>
+      <Typography variant="h4">{t("profileDetails")}</Typography>
       <Button
         onClick={getMyAccount}
         variant="contained"

@@ -84,6 +84,7 @@ i18next.use(initReactI18next).init({
         no: "Nie",
         never: "Nigdy",
         save: "zapisz",
+        welcome: "Witaj",
         saveChanges: "zapisz zmiany",
         action: "Akcja",
         refreshData: "Odśwież Dane",
@@ -92,9 +93,13 @@ i18next.use(initReactI18next).init({
         accountDetails: "Szczegóły konta",
         gotoHomePage: "Wróć do strony głównej",
         confEmailChange: "Potwierdź swoją zmiane adresu email!",
+        confUnblockAccount: "Potwierdź odblokowanie konta!",
         clickToConfEmail:
           "Naciśnij przycisk poniżej, aby potwierdzić zmiane email!",
+        clickToConfUnblockAccount:
+          "Naciśnij przycisk poniżej, aby potwierdzić odblokowanie konta!",
         emailHasBeenChanged: "Adres email został zmieniony!",
+        accountHasBeenUnblocked: "Konto zostało odblokowane",
 
         POLISH: "Polski",
         ENGLISH: "Angielski",
@@ -106,7 +111,8 @@ i18next.use(initReactI18next).init({
         UPDATE: "Aktualizacja",
         CREATE: "Utworzenie",
 
-        changePersonalData: "Zmień dane personalne",
+        changePersonalDataTitle: "Zmień dane personalne",
+        changePersonalDataBody: "Zmień swoje dane personalne!",
         changePassword: "Zmień hasło",
         changeEmail: "Zmień adres e-mail",
         enterNewMail: "Wprowadź nowy adres e-mail poniżej",
@@ -133,6 +139,8 @@ i18next.use(initReactI18next).init({
         somethingHappened: "Stało się coś złego :((",
         errorConfPassword:
           "Wystąpił błąd podczas potwierdzania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
+        errorConfUnblockAccount:
+          "Wystąpił błąd podczas potwierdzania odblokowania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
         clickToConfPassChange:
           "Naciśnij przycisk na dole, aby potwierdzić zmiane hasła!",
         passwordHasBeenChanged: "Hasło zostało zmienione!",
@@ -179,7 +187,9 @@ i18next.use(initReactI18next).init({
         changePasswordSucc: "Hasło zmienione pomyślnie!",
         changePasswordFail: "Nie udało się zmienić hasła :(",
         changeEmailSucc: "E-mail zmieniony pomyślnie!",
+        confirmUnblockAccSucc: "Konto odblokowane pomyślnie!",
         changeEmailFail: "Nie udało się zmienić maila :(",
+        confirmUnblockAccFail: "Nie udało się odblokować konta",
         getMyAccountFail: "Nie udało się zaktualizować konta :(",
         updateMyPersonalDataSucc: "Dane personalne zmienione pomyślnie!",
         updateMyPersonalDataFail:
@@ -228,6 +238,27 @@ i18next.use(initReactI18next).init({
         sortDataDirBody: "Wybierz kolejność sortowania",
         filterData: "Filtruj dane w tabeli",
         filterKey: "Klucz",
+        OPTLCKE: "Wczytane dane są nieaktualne. Odśwież je!",
+        "Europe/London": "Europa/Londyn",
+        "Europe/Warsaw": "Europa/Warszawa",
+        getMyThemeFail:
+          "W prawym górnym rogu możesz zmienić motyw, jeśli potrzebujesz :)",
+        setMyThemeFail: "Nie udało się ustawić motywu :(",
+        notSpecified: "Nie określono",
+        Light: "Jasny",
+        Dark: "Ciemny",
+        refreshModalTitle: "Twoja sesja niedługo wygaśnie!",
+        refreshModalBody:
+          "Twoja sesja wygaśnie w mniej niż 60 sekund. Odśwież ją lub zignoruj tę informację przy pomocy jedenego z przycisków!",
+
+        "0": "Nie określona",
+        "1": "Mężczyzna",
+        "2": "Kobieta",
+        "9": "Nie podano",
+        refresh: "Odśwież",
+        cancel: "Anuluj",
+        refreshSucc: "Sesja została odswieżona!",
+        refreshFail: "Nie udało się odświeżyć sesji :(",
       },
     },
     ENGLISH: {
@@ -277,6 +308,7 @@ i18next.use(initReactI18next).init({
         no: "No",
         never: "Never",
         save: "save",
+        welcome: "Welcome",
         saveChanges: "Save changes",
         action: "Action",
         refreshData: "Refresh Data",
@@ -285,10 +317,14 @@ i18next.use(initReactI18next).init({
         accountDetails: "Account details",
         gotoHomePage: "Go to home page",
         confEmailChange: "Confirm your email change!",
+        confUnblockAccount: "Confirm unblocking account!",
         confPassChange: "Confirm your password change!",
         clickToConfEmail:
           "Click the button below to confirm your email change!",
+        clickToConfUnblockAccount:
+          "Click the button below to confirm unblocking account!",
         emailHasBeenChanged: "Email has been changed!",
+        accountHasBeenUnblocked: "Account has been unblocked",
 
         POLISH: "Polish",
         ENGLISH: "English",
@@ -300,7 +336,8 @@ i18next.use(initReactI18next).init({
         UPDATE: "Update",
         CREATE: "Create",
 
-        changePersonalData: "Change personal data",
+        changePersonalDataTitle: "Change personal data",
+        changePersonalDataBody: "Change your personal data!",
         changePassword: "Change password",
         changeEmail: "Change e-mail",
         enterNewMail: "Enter new e-mail address below!",
@@ -327,6 +364,8 @@ i18next.use(initReactI18next).init({
         somethingHappened: "Something bad happened :((",
         errorConfPassword:
           "There was an error while confirming your email change. If you think this is a mistake, contact support.",
+        errorConfUnblockAccount:
+          "There was an error while confirming unblocking account. If you think this is a mistake, contact support.",
         clickToConfPassChange:
           "Click the button below to confirm your password change!",
         passwordHasBeenChanged: "Password has been changed!",
@@ -372,7 +411,9 @@ i18next.use(initReactI18next).init({
         changePasswordSucc: "Password has been changed!",
         changePasswordFail: "Failed to change a password :(",
         changeEmailSucc: "Email has been verified!",
+        confirmUnblockAccSucc: "Account has been unblocked",
         changeEmailFail: "Failed to verify email :(",
+        confirmUnblockAccFail: "Failed to unblock account",
         getMyAccountFail: "Failed to fetch an account :(",
         updateMyPersonalDataSucc: "Account has been updated!",
         updateMyPersonalDataFail: "Account update failed :(",
@@ -419,6 +460,27 @@ i18next.use(initReactI18next).init({
         sortDataDirBody: "Choose sort direction",
         filterData: "Filter data in a table",
         filterKey: "Key",
+        OPTLCKE: "Data you try to update is out of date. Refresh it!",
+        "Europe/London": "Europe/London",
+        "Europe/Warsaw": "Europe/Warsaw",
+        getMyThemeFail:
+          "You can change your theme in the top right corner if you need :)",
+        setMyThemeFail: "Failed to set theme :(",
+        notSpecified: "Not specified",
+        Light: "Light",
+        Dark: "Dark",
+        refreshModalTitle: "Your session is ending!",
+        refreshModalBody:
+          "Your session will expire in less than 60 seconds. Refresh it of ignore this message using one of those buttons!",
+
+        "0": "Not Known",
+        "1": "Male",
+        "2": "Female",
+        "9": "Not Specified",
+        refresh: "Refresh",
+        cancel: "Cancel",
+        refreshSucc: "Session has been refreshed!",
+        refreshFail: "Failed to refresh the session :(",
       },
     },
   },

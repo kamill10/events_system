@@ -16,18 +16,21 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountHistoryDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity._enum.AccountRoleEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @Testcontainers
@@ -145,7 +148,7 @@ public class AccountControllerIT {
     }
 
     @Test
-    public void testGetAllAccountsEndpoint() throws Exception {
+    public void testGetAllAccountsEndpoint() {
         assertNotNull(adminToken);
         given()
                 .header("Authorization", "Bearer " + adminToken)
@@ -175,7 +178,7 @@ public class AccountControllerIT {
     }
 
     @Test
-    public void addManagerRoleToAdmin() throws Exception {
+    public void addManagerRoleToAdmin() {
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
@@ -259,7 +262,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
-        given()
+        var respon = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
                 .param("roleName", "PARTICIPANT")
@@ -278,7 +281,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
-        given()
+        var respon = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
                 .param("roleName", "ADMIN")
@@ -506,7 +509,7 @@ public class AccountControllerIT {
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
-        given()
+        var respon = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
                 .param("roleName", "CLIENT")
@@ -514,6 +517,7 @@ public class AccountControllerIT {
                 .delete(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/remove-role")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
+
     }
 
     @Test
@@ -725,7 +729,7 @@ public class AccountControllerIT {
 
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
 
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0, "Europe/Warsaw", "Light");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
@@ -743,7 +747,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountDataEndpointWithInvalidEtag() throws Exception {
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0, "Europe/Warsaw", "Light");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", UUID.randomUUID().toString())
@@ -757,7 +761,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateNonExistentAccountDataEndpoint() throws Exception {
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0, "Europe/Warsaw", "Light");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", UUID.randomUUID().toString())
@@ -771,7 +775,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountDataEndpointAsParticipant() throws Exception {
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0, "Europe/Warsaw", "Light");
         given()
                 .header("Authorization", "Bearer " + participantToken)
                 .contentType("application/json")
@@ -784,7 +788,7 @@ public class AccountControllerIT {
 
     @Test
     public void testUpdateAccountDataEndpointAsManager() throws Exception {
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0, "Europe/Warsaw", "Light");
         given()
                 .header("Authorization", "Bearer " + managerToken)
                 .contentType("application/json")
@@ -902,7 +906,7 @@ public class AccountControllerIT {
     }
 
     @Test
-    public void sendEmailWhenEmailChange() throws JsonProcessingException {
+    public void sendEmailWhenEmailChange() {
         UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("jeszczeniema202401@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
@@ -915,7 +919,7 @@ public class AccountControllerIT {
     }
 
     @Test
-    public void sendEmailWhenPasswordReset() throws JsonProcessingException {
+    public void sendEmailWhenPasswordReset() {
         UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
         given()
                 .contentType("application/json")
@@ -927,7 +931,7 @@ public class AccountControllerIT {
     }
 
     @Test
-    public void sendEmailWhenPasswordChange() throws JsonProcessingException {
+    public void sendEmailWhenPasswordChange() {
         UpdateEmailDTO updateEmailDTO = new UpdateEmailDTO("admin202401@proton.me");
         given()
                 .header("Authorization", "Bearer " + adminToken)
@@ -940,7 +944,7 @@ public class AccountControllerIT {
     }
 
     @Test
-    public void testResetAccountPasswordTokenEndpointNotFound() throws Exception {
+    public void testResetAccountPasswordTokenEndpointNotFound() {
         UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO("newPassword123@");
         given()
                 .header("Authorization", "Bearer " + adminToken)
@@ -1005,7 +1009,7 @@ public class AccountControllerIT {
                 .extract().asString();
         assertNotNull(token);
 
-        //account is blocked and user cannot login
+        //account is blocked and user cannot log in
         LoginDTO loginDTO = new LoginDTO("testAdmin", "P@ssw0rd");
         ValidatableResponse response = given()
                 .contentType("application/json")
@@ -1042,7 +1046,7 @@ public class AccountControllerIT {
 
         String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
 
-        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0);
+        UpdateAccountDataDTO updateAccountDataDTO = new UpdateAccountDataDTO("newFirstName", "newLastName", 0, "Europe/Warsaw", "Light");
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .header("If-Match", eTag)
@@ -1070,4 +1074,51 @@ public class AccountControllerIT {
 
     }
 
+    @Test
+    public void testAddRoleToAccountAndCheckHistoryEntry() throws Exception {
+        ValidatableResponse response = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/username/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        var historyResponse = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/history/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .asString();
+
+        String eTag = response.extract().header("ETag").substring(1, response.extract().header("ETag").length() - 1);
+        given()
+                .header("Authorization", "Bearer " + adminToken)
+                .header("If-Match", eTag)
+                .contentType("application/json")
+                .when()
+                .post(baseUrl + "/accounts/" + "5454d58c-6ae2-4eee-8980-a49a1664f157" + "/add-role?roleName=ROLE_ADMIN")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                     containsString("ROLE_ADMIN")
+                );
+
+        var historyResponseAfter = given()
+                .header("Authorization", "Bearer " + adminToken)
+                .when()
+                .get(baseUrl + "/accounts/history/testManager")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(
+                        containsString("testAdmin"),
+                        containsString("ROLE_ADMIN")
+                )
+                .extract()
+                .body()
+                .asString();
+        assertTrue(historyResponseAfter.length() > historyResponse.length());
+    }
 }

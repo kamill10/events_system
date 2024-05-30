@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthHistoryRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
@@ -13,11 +14,11 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationSchedulerService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.BusinessConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.security.JwtService;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountSchedulerService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.MailService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.ServiceVerifier;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.ServiceVerifier;
 
 @Configuration
 @Import({
@@ -110,8 +111,8 @@ public class TestServiceConfig {
     }
 
     @Bean
-    public AccountThemeRepository accountThemeRepository() {
-        return Mockito.mock(AccountThemeRepository.class);
+    public ThemeRepository accountThemeRepository() {
+        return Mockito.mock(ThemeRepository.class);
     }
 
     @Bean
@@ -132,6 +133,11 @@ public class TestServiceConfig {
     @Bean
     public AccountAuthHistoryRepository accountAuthHistoryRepository() {
         return Mockito.mock(AccountAuthHistoryRepository.class);
+    }
+
+    @Bean
+    public HandlerExceptionResolver handlerExceptionResolver() {
+        return Mockito.mock(HandlerExceptionResolver.class);
     }
 
 }

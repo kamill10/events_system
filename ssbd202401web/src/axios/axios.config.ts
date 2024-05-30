@@ -163,6 +163,8 @@ export const api = {
     apiForAnon.patch(`/me/change-password/token/${key}`),
   confirmEmailUpdate: (key: string): ApiResponseType<void> =>
     apiWithEtag.patch(`/me/change-email/token/${key}`),
+  confirmUnblockAccount: (key: string): ApiResponseType<void> =>
+    apiWithEtag.post(`/auth/unblock-account/${key}`),
   updateAccountData: (id: string, data: UpdatePersonalDataType) =>
     apiWithEtag.put("/accounts/" + id + "/user-data", data),
   updateAccountPassword: (data: ChangeEmailType) =>
@@ -181,6 +183,8 @@ export const api = {
     apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.ADMIN}`),
   switchActiveRoleToManager: () =>
     apiWithEtag.post(`/me/switch-role?role=${AccountTypeEnum.MANAGER}`),
+  setMyTheme: (theme: string) =>
+    apiWithEtag.patch("/me/user-data/theme", { theme }),
   getAccountsWithPagination: (
     params: SortingRequestParams,
   ): ApiResponseType<PaginationResponse> => {
@@ -207,4 +211,5 @@ export const api = {
     }
     return apiWithAuthToken.get(url);
   },
+  refreshToken: () => apiWithAuthToken.post("/auth/refresh-token"),
 };

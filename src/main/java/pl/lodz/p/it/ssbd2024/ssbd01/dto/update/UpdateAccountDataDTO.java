@@ -11,6 +11,10 @@ public record UpdateAccountDataDTO(
         @Size(min = 2, max = 64, message = ExceptionMessages.INCORRECT_LAST_NAME)
         String lastName,
         @NotNull(message = ExceptionMessages.INCORRECT_GENDER)
-        Integer gender
+        Integer gender,
+        @Size(max = 32)
+        String timeZone,
+        @Size(max = 32)
+        String theme
 ) {
 }

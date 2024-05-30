@@ -13,4 +13,12 @@ public record UpdateAccountDTO(
         @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
         String password
 ) {
+    @Override
+    public String toString() {
+        return "UpdateAccountDTO{"
+                + "email='" + email + '\''
+                + ", gender=" + gender
+                + ", password='********'"
+                + '}';
+    }
 }

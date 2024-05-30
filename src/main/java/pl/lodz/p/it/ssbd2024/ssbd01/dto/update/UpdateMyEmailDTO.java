@@ -10,4 +10,11 @@ public record UpdateMyEmailDTO(
         @Email(message = ExceptionMessages.INCORRECT_EMAIL)
         String newEmail
 ) {
+    @Override
+    public String toString() {
+        return "UpdateMyEmailDTO{"
+                + "password='********'"
+                + ", newEmail='" + newEmail + '\''
+                + '}';
+    }
 }
