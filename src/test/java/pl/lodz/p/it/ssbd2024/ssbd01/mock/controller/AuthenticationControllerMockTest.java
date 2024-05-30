@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestControllerConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestServiceConfig;
 
@@ -38,7 +39,7 @@ public class AuthenticationControllerMockTest {
     static ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setup() throws AccountLockedException {
+    public void setup() throws AppException {
         mockMvcAuthentication = MockMvcBuilders.standaloneSetup(authenticationController).build();
         var adminLoginDTO = new LoginDTO("admin", "adminmusibyc7znakjowxd");
         Account account = null;

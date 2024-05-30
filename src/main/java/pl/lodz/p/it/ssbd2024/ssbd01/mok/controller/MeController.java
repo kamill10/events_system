@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPersonalDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateMyPasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.NotFoundException;
@@ -30,7 +31,7 @@ public class MeController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<GetAccountPersonalDTO> getMyAccount() throws NotFoundException {
+    public ResponseEntity<GetAccountPersonalDTO> getMyAccount() throws AppException {
         Account accountToReturn = meService.getAccount();
         String eTag = ETagBuilder.buildETag(accountToReturn.getVersion().toString());
         GetAccountPersonalDTO accountDto = accountDTOConverter.toAccountPersonalDTO(accountToReturn);
@@ -40,7 +41,7 @@ public class MeController {
     @PostMapping("/change-password")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<?> changeMyPasswordSendEmail(@Valid @RequestBody UpdateMyPasswordDTO updateMyPasswordDto)
-            throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
+            throws AppException {
         meService.changeMyPasswordSendMail(updateMyPasswordDto.oldPassword(), updateMyPasswordDto.newPassword());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -48,7 +49,7 @@ public class MeController {
     @PostMapping("/email")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     public ResponseEntity<?> changeMyEmailSendEmail(@Valid @RequestBody UpdateMyEmailDTO updateMyEmailDTO)
-            throws AccountNotFoundException, WrongOldPasswordException, EmailAlreadyExistsException {
+            throws AppException {
         meService.changeMyEmailSendMail(updateMyEmailDTO.password(), updateMyEmailDTO.newEmail());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -56,7 +57,7 @@ public class MeController {
     @PatchMapping("/change-password/token/{token}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> changePasswordWithToken(@PathVariable String token)
-            throws TokenExpiredException, AccountNotFoundException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
+            throws AppException {
         meService.changeMyPasswordWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -64,7 +65,7 @@ public class MeController {
     @PatchMapping("/change-email/token/{token}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> changeEmailWithToken(@PathVariable String token)
-            throws AccountNotFoundException, TokenExpiredException, TokenNotFoundException, AccountLockedException, AccountNotVerifiedException {
+            throws AppException {
         meService.changeMyEmailWithToken(token);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -75,7 +76,7 @@ public class MeController {
     public ResponseEntity<GetAccountPersonalDTO> updateMyData(
             @RequestHeader("If-Match") String eTag,
             @Valid @RequestBody UpdateAccountDataDTO updateAccountDataDTO
-    ) throws AccountNotFoundException, OptLockException, AccountThemeNotFoundException, TimeZoneNotFoundException {
+    ) throws AppException {
         return ResponseEntity.status(HttpStatus.OK).body(accountDTOConverter.toAccountPersonalDTO(
                 meService.updateMyAccountData(accountDTOConverter.toAccount(updateAccountDataDTO), eTag, updateAccountDataDTO.theme(),
                         updateAccountDataDTO.timeZone())));
@@ -83,14 +84,14 @@ public class MeController {
 
     @PostMapping("/switch-role")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<?> logSwitchRole(@RequestParam AccountRoleEnum role) throws AccountNotFoundException, RoleNotAssignedToAccount {
+    public ResponseEntity<?> logSwitchRole(@RequestParam AccountRoleEnum role) throws AppException {
         meService.logSwitchRole(role);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/user-data/theme")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
-    public ResponseEntity<?> setMyTheme(@Valid @RequestBody ThemeDTO theme) throws AccountThemeNotFoundException {
+    public ResponseEntity<?> setMyTheme(@Valid @RequestBody ThemeDTO theme) throws AppException {
         meService.setAccountTheme(theme.theme());
         return ResponseEntity.status(HttpStatus.OK).build();
     }

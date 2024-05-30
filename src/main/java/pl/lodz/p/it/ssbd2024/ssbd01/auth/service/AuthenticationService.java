@@ -21,6 +21,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
@@ -91,7 +92,7 @@ public class AuthenticationService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public String authenticate(LoginDTO loginDTO, String language) throws AccountLockedException {
+    public String authenticate(LoginDTO loginDTO, String language) throws AppException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
         } catch (BadCredentialsException e) {
@@ -155,8 +156,7 @@ public class AuthenticationService {
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
     public void verifyAccount(String token)
-            throws AccountConfirmationTokenNotFoundException, AccountConfirmationTokenExpiredException, AccountNotFoundException,
-            RoleNotFoundException {
+            throws AppException {
         var accountConfirmation = accountConfirmationRepository.findByToken(token)
                 .orElseThrow(() -> new AccountConfirmationTokenNotFoundException(ExceptionMessages.CONFIRMATION_TOKEN_NOT_FOUND));
 
@@ -186,7 +186,7 @@ public class AuthenticationService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void unlockAccountThatWasNotUsed(String token) throws AccountUnlockTokenNotFoundException {
+    public void unlockAccountThatWasNotUsed(String token) throws AppException {
         AccountUnlock accountUnlock = accountUnlockRepository.findByToken(token)
                 .orElseThrow(() -> new AccountUnlockTokenNotFoundException(ExceptionMessages.UNLOCK_TOKEN_NOT_FOUND));
 
@@ -288,7 +288,7 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
-    public String refreshJWT(String token) throws TokenNotFoundException, AccountLockedException {
+    public String refreshJWT(String token) throws AppException {
         JWTWhitelistToken jwtWhitelistToken = jwtWhitelistRepository.findByToken(token.substring(7)).orElseThrow(
                 () -> new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND));
 

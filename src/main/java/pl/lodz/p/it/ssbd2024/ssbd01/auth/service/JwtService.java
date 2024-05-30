@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.security.KeyGenerator;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.JWTWhitelistToken;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.AccountLockedException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.JWTUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
@@ -46,7 +47,7 @@ public class JwtService {
 
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.MANDATORY)
-    public String generateToken(Map<String, Object> claims, Account account) throws AccountLockedException {
+    public String generateToken(Map<String, Object> claims, Account account) throws AppException {
         if (!account.getNonLocked()) {
             throw new AccountLockedException(ExceptionMessages.ACCOUNT_LOCKED);
         }
