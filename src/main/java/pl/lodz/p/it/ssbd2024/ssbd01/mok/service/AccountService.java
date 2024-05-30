@@ -74,7 +74,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account addRoleToAccount(UUID id, AccountRoleEnum roleName,String eTag)
+    public Account addRoleToAccount(UUID id, AccountRoleEnum roleName, String eTag)
             throws RoleAlreadyAssignedException, WrongRoleToAccountException, RoleNotFoundException,
             AccountNotFoundException, OptLockException {
         Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
@@ -147,7 +147,7 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account setAccountStatus(UUID id, boolean status,String eTag) throws AccountNotFoundException, OptLockException {
+    public Account setAccountStatus(UUID id, boolean status, String eTag) throws AccountNotFoundException, OptLockException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(account.getVersion()))) {
@@ -225,7 +225,7 @@ public class AccountService {
         if (account.isEmpty()) {
             return;
         }
-        if (!account.get().getActive() || !account.get().getVerified()|| !account.get().isAccountNonLocked()) {
+        if (!account.get().getActive() || !account.get().getVerified() || !account.get().isAccountNonLocked()) {
             return;
         }
         resetCredentialRepository.deleteByAccount(account.get());
