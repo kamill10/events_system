@@ -1,11 +1,11 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.dto.update;
 
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 public record UpdatePasswordDTO(
 
-        @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
+        @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,72}$", message = ExceptionMessages.INCORRECT_PASSWORD)
         String value
 ) {
     @Override

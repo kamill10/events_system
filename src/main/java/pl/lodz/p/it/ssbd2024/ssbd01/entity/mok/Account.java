@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class Account extends ControlledEntity implements UserDetails {
 
     @ToString.Exclude
     @Column(nullable = false, length = 72)
-    @Size(min = 8, max = 72)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,72}$")
     @NotNull
     private String password;
 

@@ -245,6 +245,8 @@ public class AccountService {
         }
         resetCredentialRepository.deleteByAccount(account.get());
         resetCredentialRepository.flush();
+        changeMyPasswordRepository.deleteByAccount(account.get());
+        changeMyPasswordRepository.flush();
 
         CredentialReset credentialReset = verifier.saveTokenToResetCredential(account.get());
 
@@ -259,6 +261,8 @@ public class AccountService {
 
         resetCredentialRepository.deleteByAccount(account);
         resetCredentialRepository.flush();
+        changeMyPasswordRepository.deleteByAccount(account);
+        changeMyPasswordRepository.flush();
 
         account.setNonLocked(false);
         accountMokRepository.saveAndFlush(account);

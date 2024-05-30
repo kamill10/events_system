@@ -2,6 +2,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Divider,
   IconButton,
   Menu,
   Slide,
@@ -23,6 +24,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 import { api } from "../axios/axios.config";
+import { colors } from "../themes/themes";
 
 export default function NavbarComponent(props: NavbarPropType) {
   const width = useWindowWidth();
@@ -34,7 +36,6 @@ export default function NavbarComponent(props: NavbarPropType) {
     isAuthenticated,
     adminLayout,
     setAdminLayout,
-    isParticipant,
     isAdmin,
     isManager,
     account,
@@ -121,31 +122,11 @@ export default function NavbarComponent(props: NavbarPropType) {
                 );
               })}
             </Box>
-            {isAuthenticated && (
-              <Typography sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-                {t("Welcome")} {account?.username}
-              </Typography>
-            )}
-            {isAuthenticated && (
-              <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-                <Typography sx={{ mr: 1 }}>{t("roles")}:</Typography>
-                {isAdmin && (
-                  <Typography sx={{ ml: 1 }}>{t("ROLE_ADMIN")}</Typography>
-                )}
-                {isParticipant && (
-                  <Typography sx={{ ml: 1 }}>
-                    {t("ROLE_PARTICIPANT")}
-                  </Typography>
-                )}
-                {isManager && (
-                  <Typography sx={{ ml: 1 }}>{t("ROLE_MANAGER")}</Typography>
-                )}
-              </Box>
-            )}
+
             <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
-              {isAdmin && isManager && (
+              {width >= 900 && isAdmin && isManager && (
                 <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
-                  <Typography sx={{ mr: 1, color: "red" }}>
+                  <Typography sx={{ mr: 1, color: colors.manager.secondary }}>
                     {t("ROLE_MANAGER")}
                   </Typography>
                   <Switch
@@ -154,7 +135,7 @@ export default function NavbarComponent(props: NavbarPropType) {
                     checked={adminLayout}
                     sx={{ mr: 1 }}
                   />
-                  <Typography sx={{ mr: 1, color: "green" }}>
+                  <Typography sx={{ mr: 1, color: colors.admin.secondary }}>
                     {t("ROLE_ADMIN")}
                   </Typography>
                 </Box>
@@ -186,6 +167,35 @@ export default function NavbarComponent(props: NavbarPropType) {
                 open={Boolean(anchorElUser)}
                 onClose={handleDropDownClose}
               >
+                {isAuthenticated && (
+                  <Box
+                    sx={{
+                      marginX: 2,
+                    }}
+                  >
+                    <Typography variant="h6">
+                      {t("welcome") + ", " + account?.username}
+                    </Typography>
+                    {account?.roles.length === 2 ? (
+                      /*Nie wiem jak to naprawić, jak się komuś chce to zapraszam*/
+                      <Typography variant="body2">
+                        {t("roles")}:{" "}
+                        {account?.roles.reduce(
+                          (previous, current) =>
+                            /*@ts-ignore*/
+                            t(previous) + ", " + t(current),
+                        )}
+                      </Typography>
+                    ) : (
+                      <Typography variant="body2">
+                        {/*@ts-ignore*/}
+                        {t("roles")}: {t(account?.roles[0])}
+                      </Typography>
+                    )}
+
+                    <Divider sx={{ marginTop: 2 }}></Divider>
+                  </Box>
+                )}
                 {props.routes.map((route) => {
                   if (width < 900) {
                     return (
@@ -213,6 +223,22 @@ export default function NavbarComponent(props: NavbarPropType) {
                   );
                 })}
               </Menu>
+              {width < 900 && isAdmin && isManager && (
+                <Box sx={{ display: "flex", alignItems: "center", mr: 2 }}>
+                  <Typography sx={{ mr: 1, color: colors.manager.secondary }}>
+                    {t("ROLE_MANAGER")}
+                  </Typography>
+                  <Switch
+                    color="secondary"
+                    onChange={handleSwitchClick}
+                    checked={adminLayout}
+                    sx={{ mr: 1 }}
+                  />
+                  <Typography sx={{ mr: 1, color: colors.admin.secondary }}>
+                    {t("ROLE_ADMIN")}
+                  </Typography>
+                </Box>
+              )}
             </Box>
           </Toolbar>
         </AppBar>
