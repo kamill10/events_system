@@ -21,6 +21,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class ExceptionHandlingController {
@@ -56,24 +57,19 @@ public class ExceptionHandlingController {
 
     @ExceptionHandler
     public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException e) {
-        var violations = e.getConstraintViolations();
-        HashMap<String, String> errors = new HashMap<>();
-        violations.forEach(violation ->
-                errors.put(
-                        violation.getPropertyPath().toString(),
-                        violation.getMessage()));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        var violation = e.getConstraintViolations().iterator().next();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(violation.getMessage());
     }
 
     @ExceptionHandler
     public ResponseEntity<?> handleUnexpectedRollbackException(org.springframework.transaction.UnexpectedRollbackException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Transaction failed");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Transaction failed");
     }
 
     @ExceptionHandler
     public ResponseEntity<?> handleHibernateConstraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
-        String errorMessage = e.getConstraintName() + ":Already exist.";
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
+        var array = Objects.requireNonNull(e.getConstraintName()).split("_");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(array[array.length - 2] + " exists.");
     }
 
     @ExceptionHandler
@@ -92,13 +88,9 @@ public class ExceptionHandlingController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        //exception handling for dto
-        List<String> errors = new ArrayList<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.add(error.getField() + ":" + error.getDefaultMessage())
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        var error = ex.getBindingResult().getFieldErrors().getFirst();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getDefaultMessage());
     }
 
 
@@ -131,7 +123,4 @@ public class ExceptionHandlingController {
     public ResponseEntity<String> handleHibernateException(HibernateException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.HIBERNATE_EXCEPTION);
     }
-
-
-
 }
