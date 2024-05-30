@@ -84,6 +84,7 @@ i18next.use(initReactI18next).init({
         no: "Nie",
         never: "Nigdy",
         save: "zapisz",
+        welcome: "Witaj",
         saveChanges: "zapisz zmiany",
         action: "Akcja",
         refreshData: "Odśwież Dane",
