@@ -33,13 +33,7 @@ export default function ProfilePage() {
           {t("profileLink")}
         </Link>
       </Breadcrumbs>
-      <Tabs
-        value={page}
-        onChange={handleChange}
-        sx={{
-          flexWrap: "wrap",
-        }}
-      >
+      <Tabs value={page} onChange={handleChange}>
         <Tab label={t("profileDetails")}></Tab>
         <Tab label={t("changeProfileDetails")}></Tab>
         <Tab label={t("changePassword")}></Tab>

@@ -59,7 +59,7 @@ export default function FooterComponent() {
                 textAlign: "center",
                 color: "grey",
               }}
-              to={Pathnames.public.login}
+              to={Pathnames.unauth.login}
             >
               Log in
             </Link>
@@ -70,7 +70,7 @@ export default function FooterComponent() {
                 textAlign: "center",
                 color: "grey",
               }}
-              to={Pathnames.public.signIn}
+              to={Pathnames.unauth.signIn}
             >
               Sign in
             </Link>
@@ -103,7 +103,7 @@ export default function FooterComponent() {
                 textAlign: "center",
                 color: "grey",
               }}
-              to={Pathnames.participant.home}
+              to={Pathnames.public.home}
             >
               Home page
             </Link>
@@ -147,7 +147,7 @@ export default function FooterComponent() {
                 textAlign: "center",
                 color: "grey",
               }}
-              to={Pathnames.admin.home}
+              to={Pathnames.public.home}
             >
               Home page
             </Link>
@@ -180,7 +180,7 @@ export default function FooterComponent() {
                 textAlign: "center",
                 color: "grey",
               }}
-              to={Pathnames.manager.home}
+              to={Pathnames.public.home}
             >
               Home page
             </Link>
@@ -191,7 +191,7 @@ export default function FooterComponent() {
                 textAlign: "center",
                 color: "grey",
               }}
-              to={Pathnames.manager.events}
+              to={Pathnames.public.events}
             >
               Events
             </Link>

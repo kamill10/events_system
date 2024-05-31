@@ -132,7 +132,7 @@ export default function SigninPage() {
         >
           {t("signInHeading")}
         </Button>
-        <Link to={Pathnames.public.login}>{t("haveAccountLabel")}</Link>
+        <Link to={Pathnames.unauth.login}>{t("haveAccountLabel")}</Link>
       </FormComponent>
       <ModalComponent onClose={() => setOpen(false)} open={open}>
         <Box

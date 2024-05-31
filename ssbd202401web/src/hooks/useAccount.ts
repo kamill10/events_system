@@ -144,7 +144,7 @@ export const useAccount = () => {
           ? LanguageType.POLISH
           : LanguageType.ENGLISH,
       );
-      navigate(Pathnames.public.login);
+      navigate(Pathnames.unauth.login);
       setIsFetching(false);
     }
   };
@@ -158,7 +158,7 @@ export const useAccount = () => {
         type: "success",
         description: t("signInSucc"),
       });
-      navigate(Pathnames.public.login);
+      navigate(Pathnames.unauth.login);
     } catch (e) {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
@@ -402,7 +402,7 @@ export const useAccount = () => {
         type: "success",
         description: t("requestPasswordResetSucc"),
       });
-      navigate(Pathnames.public.login);
+      navigate(Pathnames.unauth.login);
     } catch (e) {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
@@ -430,7 +430,7 @@ export const useAccount = () => {
         type: "success",
         description: t("resetMyPasswordSucc"),
       });
-      navigate(Pathnames.public.login);
+      navigate(Pathnames.unauth.login);
     } catch (e) {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {

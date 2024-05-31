@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
         >
           {t("changePassword")}
         </Button>
-        <Link to={Pathnames.public.login}>{t("goBackToLoginPage")}</Link>
+        <Link to={Pathnames.unauth.login}>{t("goBackToLoginPage")}</Link>
       </FormComponent>
     </ContainerWithPictureComponent>
   );

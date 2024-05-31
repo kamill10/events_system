@@ -1,47 +1,34 @@
 export const Pathnames = {
-  public: {
-    home: "/",
+  unauth: {
     login: "/login",
     signIn: "/signin",
-    events: "/events",
     forgotPassword: "/login/forgot-password",
+  },
+  public: {
+    home: "/",
+    events: "/events",
+    event: "/events/:id",
     verifyAccount: "/verify-account",
     resetPassword: "/login/reset-password",
     confirmPasswordUpdate: "/change-my-password",
     confirmEmailUpdate: "/confirm-email",
     confirmUnblockAccount: "/unblock-account",
   },
-  participant: {
-    home: "/",
-    events: "/events",
-    event: "/events/:id",
+  auth: {
     profile: "/profile",
-    myEvents: "/profile/events",
     logout: "/logout",
-    confirmPasswordUpdate: "/change-my-password",
-    confirmEmailUpdate: "/change-my-email",
+  },
+  participant: {
+    myEvents: "/profile/events",
   },
   manager: {
-    home: "/",
-    events: "/events",
-    event: "/events/:id",
-    profile: "/profile",
-    myEvents: "/profile/events",
     locations: "/locations",
     location: "/location/:id",
     speakers: "/speakers",
     speaker: "/speakers/:id",
-    logout: "/logout",
-    confirmPasswordUpdate: "/change-my-password",
-    confirmEmailUpdate: "/change-my-email",
   },
   admin: {
-    home: "/",
-    profile: "/profile",
     accounts: "/accounts",
     account: "/accounts/:username",
-    logout: "/logout",
-    confirmPasswordUpdate: "/change-my-password",
-    confirmEmailUpdate: "/change-my-email",
   },
 };

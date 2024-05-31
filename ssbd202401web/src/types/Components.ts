@@ -48,3 +48,9 @@ export interface GenderListProps<T extends FieldValues> {
   errors: FieldErrors<T>;
   name: Path<T>;
 }
+
+export interface MenuProps {
+  routes: RouteType[];
+  anchorElUser: HTMLElement | null;
+  setAnchorElUser: (element: null | HTMLElement) => void;
+}

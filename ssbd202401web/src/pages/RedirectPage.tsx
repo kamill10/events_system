@@ -18,17 +18,17 @@ export default function RedirectPage() {
       isParticipant &&
       !Object.values(Pathnames.participant).includes(location.pathname)
     ) {
-      navigate(Pathnames.participant.home);
+      navigate(Pathnames.public.home);
     } else if (
       isManager &&
       !Object.values(Pathnames.manager).includes(location.pathname)
     ) {
-      navigate(Pathnames.manager.home);
+      navigate(Pathnames.public.home);
     } else if (
       isAdmin &&
       !Object.values(Pathnames.admin).includes(location.pathname)
     ) {
-      navigate(Pathnames.admin.home);
+      navigate(Pathnames.public.home);
     } else {
       navigate(location.pathname);
     }
