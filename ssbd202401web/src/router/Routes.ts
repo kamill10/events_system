@@ -16,6 +16,34 @@ import Logout from "../pages/Logout.tsx";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "../pages/ResetPasswordPage.tsx";
 import { RouteType } from "../types/Components.ts";
+import VerifyAccountPage from "../pages/VerifyAccountPage.tsx";
+import ConfirmPasswordUpdatePage from "../pages/ConfirmPasswordUpdatePage.tsx";
+import { ConfirmEmailUpdatePage } from "../pages/ConfirmEmailUpdatePage.tsx";
+import { ConfirmUnblockAccountPage } from "../pages/ConfirmUnblockAccountPage.tsx";
+
+export const UnauthRoutes: RouteType[] = [
+  {
+    pathname: Pathnames.unauth.login,
+    page: LoginPage,
+    name: "logInLink",
+    renderOnNavbar: true,
+    renderOnDropdown: true,
+  },
+  {
+    pathname: Pathnames.unauth.signIn,
+    page: SigninPage,
+    name: "registerLink",
+    renderOnNavbar: true,
+    renderOnDropdown: true,
+  },
+  {
+    pathname: Pathnames.unauth.forgotPassword,
+    page: ForgotPasswordPage,
+    name: "Forgot password",
+    renderOnNavbar: false,
+    renderOnDropdown: false,
+  },
+];
 
 export const PublicRoutes: RouteType[] = [
   {
@@ -33,66 +61,59 @@ export const PublicRoutes: RouteType[] = [
     renderOnDropdown: false,
   },
   {
-    pathname: Pathnames.public.login,
-    page: LoginPage,
-    name: "logInLink",
-    renderOnNavbar: true,
-    renderOnDropdown: true,
-  },
-  {
-    pathname: Pathnames.public.signIn,
-    page: SigninPage,
-    name: "registerLink",
-    renderOnNavbar: true,
-    renderOnDropdown: true,
-  },
-  {
-    pathname: Pathnames.public.forgotPassword,
-    page: ForgotPasswordPage,
-    name: "Forgot password",
+    pathname: Pathnames.public.event,
+    page: EventPage,
+    name: "Event",
     renderOnNavbar: false,
     renderOnDropdown: false,
+  },
+  {
+    pathname: Pathnames.public.verifyAccount,
+    page: VerifyAccountPage,
+    name: "Verify account",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+  {
+    pathname: Pathnames.public.resetPassword,
+    page: ResetPasswordPage,
+    name: "Reset password",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+  {
+    pathname: Pathnames.public.confirmPasswordUpdate,
+    page: ConfirmPasswordUpdatePage,
+    name: "Confirm password update",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+  {
+    pathname: Pathnames.public.confirmEmailUpdate,
+    page: ConfirmEmailUpdatePage,
+    name: "Confirm email update",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+  {
+    pathname: Pathnames.public.confirmUnblockAccount,
+    page: ConfirmUnblockAccountPage,
+    name: "Confrim ublock account",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
   },
 ];
 
-export const ParticipantRoutes: RouteType[] = [
+export const AuthRoutes: RouteType[] = [
   {
-    pathname: Pathnames.participant.home,
-    page: HomePage,
-    name: "Home",
-    renderOnNavbar: false,
-    renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.participant.events,
-    page: EventsPage,
-    name: "eventsLink",
-    renderOnNavbar: true,
-    renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.participant.event,
-    page: EventPage,
-    name: "eventsLink",
-    renderOnNavbar: false,
-    renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.participant.profile,
+    pathname: Pathnames.auth.profile,
     page: ProfilePage,
     name: "profileLink",
     renderOnNavbar: false,
     renderOnDropdown: true,
   },
   {
-    pathname: Pathnames.participant.myEvents,
-    page: MyEventsPage,
-    name: "myEventsLink",
-    renderOnNavbar: false,
-    renderOnDropdown: true,
-  },
-  {
-    pathname: Pathnames.manager.logout,
+    pathname: Pathnames.auth.logout,
     page: Logout,
     name: "logOutLink",
     renderOnNavbar: false,
@@ -100,28 +121,17 @@ export const ParticipantRoutes: RouteType[] = [
   },
 ];
 
+export const ParticipantRoutes: RouteType[] = [
+  {
+    pathname: Pathnames.participant.myEvents,
+    page: MyEventsPage,
+    name: "myEventsLink",
+    renderOnNavbar: false,
+    renderOnDropdown: true,
+  },
+];
+
 export const ManagerRoutes: RouteType[] = [
-  {
-    pathname: Pathnames.manager.home,
-    page: HomePage,
-    name: "Home",
-    renderOnNavbar: false,
-    renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.manager.events,
-    page: EventsPage,
-    name: "eventsLink",
-    renderOnNavbar: true,
-    renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.manager.event,
-    page: EventPage,
-    name: "Event",
-    renderOnNavbar: false,
-    renderOnDropdown: false,
-  },
   {
     pathname: Pathnames.manager.locations,
     page: LocationsPage,
@@ -150,44 +160,9 @@ export const ManagerRoutes: RouteType[] = [
     renderOnNavbar: false,
     renderOnDropdown: false,
   },
-  {
-    pathname: Pathnames.manager.profile,
-    page: ProfilePage,
-    name: "profileLink",
-    renderOnNavbar: false,
-    renderOnDropdown: true,
-  },
-  {
-    pathname: Pathnames.manager.myEvents,
-    page: MyEventsPage,
-    name: "myEventsLink",
-    renderOnNavbar: false,
-    renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.manager.logout,
-    page: Logout,
-    name: "logOutLink",
-    renderOnNavbar: false,
-    renderOnDropdown: true,
-  },
 ];
 
 export const AdminRoutes: RouteType[] = [
-  {
-    pathname: Pathnames.admin.home,
-    page: HomePage,
-    name: "Home",
-    renderOnNavbar: false,
-    renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.admin.profile,
-    page: ProfilePage,
-    name: "profileLink",
-    renderOnNavbar: false,
-    renderOnDropdown: true,
-  },
   {
     pathname: Pathnames.admin.accounts,
     page: AccountsPage,
@@ -199,20 +174,6 @@ export const AdminRoutes: RouteType[] = [
     pathname: Pathnames.admin.account,
     page: AccountPage,
     name: "Account",
-    renderOnNavbar: false,
-    renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.manager.logout,
-    page: Logout,
-    name: "logOutLink",
-    renderOnNavbar: false,
-    renderOnDropdown: true,
-  },
-  {
-    pathname: Pathnames.public.resetPassword,
-    page: ResetPasswordPage,
-    name: "Reset password",
     renderOnNavbar: false,
     renderOnDropdown: false,
   },

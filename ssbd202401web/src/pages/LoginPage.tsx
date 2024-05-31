@@ -72,10 +72,10 @@ export default function LoginPage() {
         >
           {t("logInLink")}
         </Button>
-        <Link to={Pathnames.public.forgotPassword}>
+        <Link to={Pathnames.unauth.forgotPassword}>
           {t("forgotPasswordLabel")}
         </Link>
-        <Link to={Pathnames.public.signIn}>{t("signInLabel")}</Link>
+        <Link to={Pathnames.unauth.signIn}>{t("signInLabel")}</Link>
       </FormComponent>
     </ContainerWithPictureComponent>
   );

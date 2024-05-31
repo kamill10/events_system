@@ -68,7 +68,7 @@ export function setupInterceptors(navigate: NavigateFunction) {
     },
     (error) => {
       if (error instanceof AxiosError && error.response?.status === 403) {
-        navigate(Pathnames.participant.logout);
+        navigate(Pathnames.auth.logout);
       }
       // Handle request error
       return Promise.reject(error);
@@ -82,7 +82,7 @@ export function setupInterceptors(navigate: NavigateFunction) {
     (error) => {
       // Handle response error
       if (error instanceof AxiosError && error.response?.status === 403)
-        navigate(Pathnames.participant.logout);
+        navigate(Pathnames.auth.logout);
       return Promise.reject(error);
     },
   );
@@ -98,7 +98,7 @@ export function setupInterceptors(navigate: NavigateFunction) {
     },
     (error) => {
       if (error instanceof AxiosError && error.response?.status === 403) {
-        navigate(Pathnames.participant.logout);
+        navigate(Pathnames.auth.logout);
       }
       return Promise.reject(error);
     },
@@ -117,7 +117,7 @@ export function setupInterceptors(navigate: NavigateFunction) {
     },
     (error) => {
       if (error instanceof AxiosError && error.response?.status === 403) {
-        navigate(Pathnames.participant.logout);
+        navigate(Pathnames.auth.logout);
       }
       return Promise.reject(error);
     },
