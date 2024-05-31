@@ -30,7 +30,7 @@ export function initValidation() {
   signInValidationSchema = yup.object<SignInCredentialsType>().shape({
     username: yup
       .string()
-      .min(2, i18next.t("usernameTooShort"))
+      .min(3, i18next.t("usernameTooShort"))
       .max(32, i18next.t("usernameTooLong"))
       .matches(/[\w+]/, i18next.t("usernameWrongFormat"))
       .notOneOf(["anonymous"], i18next.t("usernameWrongFormat"))
@@ -71,7 +71,7 @@ export function initValidation() {
   LogInSchema = yup.object<LoginCredentialsType>().shape({
     username: yup
       .string()
-      .min(2, i18next.t("usernameTooShort"))
+      .min(3, i18next.t("usernameTooShort"))
       .max(32, i18next.t("usernameTooLong"))
       .matches(/[\w+]/, i18next.t("usernameWrongFormat"))
       .required(i18next.t("usernameRequired")),
@@ -115,7 +115,7 @@ export function initValidation() {
       .required(i18next.t("passwordRequired")),
     confirmNewPassword: yup
       .string()
-      .oneOf([yup.ref("password")], i18next.t("passwordsDontMatch"))
+      .oneOf([yup.ref("newPassword")], i18next.t("passwordsDontMatch"))
       .required(i18next.t("confirmPasswordRequired")),
     token: yup.string(),
   });

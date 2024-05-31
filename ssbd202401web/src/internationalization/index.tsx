@@ -242,7 +242,7 @@ i18next
           sortDataDirBody: "Wybierz kolejność sortowania",
           filterData: "Filtruj dane w tabeli",
           filterKey: "Klucz",
-          OPTLCKE: "Wczytane dane są nieaktualne. Odśwież je!",
+          "OPTLCKE.": "Wczytane dane są nieaktualne. Odśwież je!",
           "Role with given name does not exist.":
             "Rola o tej nazwie nie istnieje",
           "Role  is already assigned.": "Konto już posiada tę rolę",
@@ -287,7 +287,7 @@ i18next
           "DB connection error.": "Wystąpił błąd po stronie serwera",
           "Entity lazy initialization error.":
             "Wystąpił błąd po stronie serwera",
-          usernameTooShort: "Nazwa użytkownika musi mieć minimum 2 znaki",
+          usernameTooShort: "Nazwa użytkownika musi mieć minimum 3 znaki",
           usernameTooLong:
             "Nazwa użytkownika nie może być dłuższa niż 32 znaki",
           usernameWrongFormat:
@@ -338,6 +338,8 @@ i18next
           confirm: "Potwierdź",
           deny: "Odrzuć",
           confPassChange: "Potwierdź zmianę hasła",
+          confirmSignIn: "Potwierdź rejestrację",
+          signInSummary: "Podsumowanie rejestracji",
         },
       },
       ENGLISH: {
@@ -437,7 +439,7 @@ i18next
           areYouSure: "Are you sure you want to procceed?",
           confirmChange: "Confirm change",
           profileDetails: "Profile details",
-          changeProfileDetails: "Change personal data",
+          changeProfileDetails: "Change profile details",
           accountChanges: "Account changes",
           manageAccounts: "Manage accounts",
           somethingHappened: "Something bad happened :((",
@@ -485,7 +487,7 @@ i18next
           signInSucc:
             "Successfully signed in! Check your e-mail box and verify your account!",
           signInFail: "Signing in failed :(",
-          verifyAccountSucc: "Konto potwierdzone pomyślnie!",
+          verifyAccountSucc: "Account has been confirmed successfully!",
           verifyAccountFail: "Failed to verify an account :(",
           changePasswordSucc: "Password has been changed!",
           changePasswordFail: "Failed to change a password :(",
@@ -539,7 +541,7 @@ i18next
           sortDataDirBody: "Choose sort direction",
           filterData: "Filter data in a table",
           filterKey: "Key",
-          OPTLCKE: "Data you try to update is out of date. Refresh it!",
+          "OPTLCKE.": "Data you try to update is out of date. Refresh it!",
           "Role with given name does not exist.":
             "Role with given name does not exist",
           "Role  is already assigned.": "Role is already assigned",
@@ -570,7 +572,7 @@ i18next
           "Unlock token not found.": "Unlock token not found",
           "Time zone not found.": "Time zone doesn't exist",
           "Account is locked.": "Account is locked",
-          "User account is locked": "Konto jest zablokowane",
+          "User account is locked": "Account is locked",
           "Account is not verified.": "Account is not verified",
           "Resource not found.": "Resource not found",
           "Bad request.": "Bad request",
@@ -582,11 +584,11 @@ i18next
           "Problem with hibernate.": "Internal server error",
           "DB connection error.": "Internal server error",
           "Entity lazy initialization error.": "Internal server error",
-          usernameTooShort: "Username must be at least 2 characters long",
+          usernameTooShort: "Username must be at least 3 characters long",
           usernameTooLong: "Username can be a maximum of 32 characters",
           usernameWrongFormat: "Username can contain only alphanumeric values",
           usernameRequired: "Username is required",
-          passwordTooShort: "Password must be at least 2 characters long",
+          passwordTooShort: "Password must be at least 8 characters long",
           passwordTooLong: "Password can be a maximum of 32 characters",
           passwordRequired: "Password is required",
           passwordWrongFormat:
@@ -631,6 +633,8 @@ i18next
           language: "Language",
           confirm: "Confrim",
           deny: "Deny",
+          confirmSignIn: "Confirm Sign in",
+          signInSummary: "Sign in summary",
         },
       },
     },

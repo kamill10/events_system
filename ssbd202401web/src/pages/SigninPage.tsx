@@ -145,8 +145,8 @@ export default function SigninPage() {
             alignItems: "center",
           }}
         >
-          <Typography variant="h4">Potwierdź rejestrację</Typography>
-          <Typography>Podsumowanie rejestracji</Typography>
+          <Typography variant="h4">{t("confirmSignIn")}</Typography>
+          <Typography>{t("signInSummary")}</Typography>
           <TableContainer>
             <TableHead>
               <TableCell
