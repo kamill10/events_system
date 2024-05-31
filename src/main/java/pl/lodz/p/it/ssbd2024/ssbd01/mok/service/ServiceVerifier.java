@@ -63,8 +63,6 @@ public class ServiceVerifier {
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
         if (!account.getVerified()) {
             throw new AccountNotVerifiedException(ExceptionMessages.ACCOUNT_NOT_VERIFIED);
-        } else if (!account.getNonLocked()) {
-            throw new AccountLockedException(ExceptionMessages.ACCOUNT_LOCKED);
         }
         return account;
     }
