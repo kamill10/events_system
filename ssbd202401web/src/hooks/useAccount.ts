@@ -134,11 +134,10 @@ export const useAccount = () => {
       return e;
     } finally {
       localStorage.removeItem("token");
-      localStorage.removeItem("theme");
       localStorage.removeItem("etag");
       setAccount(null);
       setToken(null);
-      setTheme("light");
+      setTheme(localStorage.getItem("theme") ?? "Light");
       i18n.changeLanguage(
         navigator.language === "pl"
           ? LanguageType.POLISH
@@ -467,6 +466,56 @@ export const useAccount = () => {
     }
   };
 
+  const switchRoleToAdmin = async () => {
+    try {
+      setIsFetching(true);
+      await api.switchActiveRoleToAdmin();
+      setAdminLayout(true);
+      navigate(Pathnames.public.home);
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("requestPasswordResetFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const switchRoleToManager = async () => {
+    try {
+      setIsFetching(true);
+      await api.switchActiveRoleToManager();
+      setAdminLayout(false);
+      navigate(Pathnames.public.home);
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("requestPasswordResetFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return {
     account,
     setTheme,
@@ -496,5 +545,7 @@ export const useAccount = () => {
     setAdminLayout,
     refreshToken,
     token,
+    switchRoleToAdmin,
+    switchRoleToManager,
   };
 };

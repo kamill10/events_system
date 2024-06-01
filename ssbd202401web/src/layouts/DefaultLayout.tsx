@@ -42,16 +42,30 @@ export default function DefaultLayout({
       return isDarkMode ? PublicDarkTheme : PublicTheme;
     } else if (isAuthenticated && isParticipant) {
       return isDarkMode ? ParticipantDarkTheme : ParticipantTheme;
-    } else if (isAuthenticated && isAdmin && adminLayout) {
+    } else if (isAuthenticated && isAdmin && !isManager) {
       return isDarkMode ? AdminDarkTheme : AdminTheme;
-    } else {
+    } else if (isAuthenticated && isManager && !isAdmin) {
       return isDarkMode ? ManagerDarkTheme : ManagerTheme;
     }
+    return isDarkMode
+      ? adminLayout
+        ? AdminDarkTheme
+        : ManagerDarkTheme
+      : adminLayout
+        ? AdminTheme
+        : ManagerTheme;
   }
 
   const themeToRender = useMemo(() => {
     return determineTheme();
-  }, [isAdmin, isAuthenticated, isManager, isParticipant, isDarkMode]);
+  }, [
+    isAdmin,
+    isAuthenticated,
+    isManager,
+    isParticipant,
+    isDarkMode,
+    adminLayout,
+  ]);
 
   return (
     <ThemeProvider theme={themeToRender}>

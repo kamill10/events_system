@@ -106,11 +106,12 @@ export function setupInterceptors(navigate: NavigateFunction) {
 
   apiWithEtag.interceptors.response.use(
     (response) => {
+      console.log(response);
       const etag = response.headers.etag as string;
       if (etag) {
         localStorage.setItem(
           "etag",
-          etag.substring(1, response.headers.etag.length - 1),
+          etag.substring(3, response.headers.etag.length - 1),
         );
       }
       return response;
