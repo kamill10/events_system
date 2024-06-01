@@ -43,12 +43,14 @@ export const AccountStateContextProvider = ({
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("token"),
   );
-  const [theme, setTheme] = useState(localStorage.getItem("theme") ?? "Light");
   const [parsedToken, setParsedToken] = useState<TokenType | null>(null);
   const [account, setAccount] = useState<GetPersonalAccountType | null>(null);
   const [isLogging, setIsLogging] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [adminLayout, setAdminLayout] = useState(true);
+  const [theme, setTheme] = useState(
+    account?.accountTheme ?? localStorage.getItem("theme") ?? "Light",
+  );
 
   useEffect(() => {
     if (token) {
@@ -58,12 +60,6 @@ export const AccountStateContextProvider = ({
       setParsedToken(null);
     }
   }, [token]);
-
-  useEffect(() => {
-    if (theme) {
-      localStorage.setItem("theme", theme);
-    }
-  }, [theme]);
 
   return (
     <AccountStateContext.Provider

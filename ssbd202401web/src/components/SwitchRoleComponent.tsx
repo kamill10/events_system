@@ -1,9 +1,6 @@
 import { Box, Typography, Switch } from "@mui/material";
 import { t } from "i18next";
 import { useAccount } from "../hooks/useAccount";
-import { api } from "../axios/axios.config";
-import { Pathnames } from "../router/Pathnames";
-import { useNavigate } from "react-router-dom";
 import { colors } from "../themes/themes";
 import { useWindowWidth } from "../hooks/useWindowWidth";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
@@ -11,18 +8,15 @@ import DescriptionIcon from "@mui/icons-material/Description";
 
 export default function SwitchRoleComponent() {
   const width = useWindowWidth();
-  const navigate = useNavigate();
-  const { adminLayout, setAdminLayout } = useAccount();
+  const { switchRoleToAdmin, switchRoleToManager, adminLayout } = useAccount();
   const handleSwitchClick = () => {
     // We check for layout before switching cause hook might not resolve right after click
     // Therefore we may end with previous state and sent request with wrong role
-    if (!adminLayout) {
-      api.switchActiveRoleToAdmin();
+    if (adminLayout) {
+      switchRoleToManager();
     } else {
-      api.switchActiveRoleToManager();
+      switchRoleToAdmin();
     }
-    setAdminLayout(!adminLayout);
-    navigate(Pathnames.public.home);
   };
 
   return (

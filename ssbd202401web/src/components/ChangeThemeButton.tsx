@@ -10,11 +10,14 @@ export default function ChangeThemeButton() {
       if (isAuthenticated) {
         setMyTheme("Light");
       } else {
-        setTheme("Light");
+        localStorage.setItem("theme", "Light");
       }
+      setTheme("Light");
     } else {
       if (isAuthenticated) {
         setMyTheme("Dark");
+      } else {
+        localStorage.setItem("theme", "Dark");
       }
       setTheme("Dark");
     }

@@ -79,6 +79,10 @@ export function initValidation() {
       .string()
       .min(8, i18next.t("passwordTooShort"))
       .max(72, i18next.t("passwordTooLong"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,72}$/,
+        i18next.t("passwordWrongFormat"),
+      )
       .required(i18next.t("passwordRequired")),
   });
 
@@ -112,6 +116,10 @@ export function initValidation() {
       .string()
       .min(8, i18next.t("passwordTooShort"))
       .max(72, i18next.t("passwordTooLong"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,72}$/,
+        i18next.t("passwordWrongFormat"),
+      )
       .required(i18next.t("passwordRequired")),
     confirmNewPassword: yup
       .string()
@@ -125,11 +133,19 @@ export function initValidation() {
       .string()
       .min(8, i18next.t("passwordTooShort"))
       .max(72, i18next.t("passwordTooLong"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,72}$/,
+        i18next.t("passwordWrongFormat"),
+      )
       .required(i18next.t("passwordRequired")),
     newPassword: yup
       .string()
       .min(8, i18next.t("passwordTooShort"))
       .max(72, i18next.t("passwordTooLong"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,72}$/,
+        i18next.t("passwordWrongFormat"),
+      )
       .required(i18next.t("passwordRequired"))
       .notOneOf(
         [yup.ref("oldPassword")],
@@ -146,6 +162,10 @@ export function initValidation() {
       .string()
       .min(8, i18next.t("passwordTooShort"))
       .max(72, i18next.t("passwordTooLong"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,72}$/,
+        i18next.t("passwordWrongFormat"),
+      )
       .required(i18next.t("passwordRequired")),
     newEmail: yup
       .string()
@@ -162,6 +182,10 @@ export function initValidation() {
       .string()
       .min(8, i18next.t("passwordTooShort"))
       .max(72, i18next.t("passwordTooLong"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,72}$/,
+        i18next.t("passwordWrongFormat"),
+      )
       .required(i18next.t("passwordRequired")),
     firstName: yup
       .string()

@@ -1,4 +1,11 @@
 export const Pathnames = {
+  singlePage: {
+    verifyAccount: "/verify-account",
+    resetPassword: "/login/reset-password",
+    confirmPasswordUpdate: "/change-my-password",
+    confirmEmailUpdate: "/confirm-email",
+    confirmUnblockAccount: "/unblock-account",
+  },
   unauth: {
     login: "/login",
     signIn: "/signin",
@@ -8,11 +15,6 @@ export const Pathnames = {
     home: "/",
     events: "/events",
     event: "/events/:id",
-    verifyAccount: "/verify-account",
-    resetPassword: "/login/reset-password",
-    confirmPasswordUpdate: "/change-my-password",
-    confirmEmailUpdate: "/confirm-email",
-    confirmUnblockAccount: "/unblock-account",
   },
   auth: {
     profile: "/profile",

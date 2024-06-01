@@ -21,6 +21,44 @@ import ConfirmPasswordUpdatePage from "../pages/ConfirmPasswordUpdatePage.tsx";
 import { ConfirmEmailUpdatePage } from "../pages/ConfirmEmailUpdatePage.tsx";
 import { ConfirmUnblockAccountPage } from "../pages/ConfirmUnblockAccountPage.tsx";
 
+export const SinglePageRoutes: RouteType[] = [
+  {
+    pathname: Pathnames.singlePage.verifyAccount,
+    page: VerifyAccountPage,
+    name: "Verify account",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+  {
+    pathname: Pathnames.singlePage.resetPassword,
+    page: ResetPasswordPage,
+    name: "Reset password",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+  {
+    pathname: Pathnames.singlePage.confirmPasswordUpdate,
+    page: ConfirmPasswordUpdatePage,
+    name: "Confirm password update",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+  {
+    pathname: Pathnames.singlePage.confirmEmailUpdate,
+    page: ConfirmEmailUpdatePage,
+    name: "Confirm email update",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+  {
+    pathname: Pathnames.singlePage.confirmUnblockAccount,
+    page: ConfirmUnblockAccountPage,
+    name: "Confrim ublock account",
+    renderOnDropdown: false,
+    renderOnNavbar: false,
+  },
+];
+
 export const UnauthRoutes: RouteType[] = [
   {
     pathname: Pathnames.unauth.login,
@@ -66,41 +104,6 @@ export const PublicRoutes: RouteType[] = [
     name: "Event",
     renderOnNavbar: false,
     renderOnDropdown: false,
-  },
-  {
-    pathname: Pathnames.public.verifyAccount,
-    page: VerifyAccountPage,
-    name: "Verify account",
-    renderOnDropdown: false,
-    renderOnNavbar: false,
-  },
-  {
-    pathname: Pathnames.public.resetPassword,
-    page: ResetPasswordPage,
-    name: "Reset password",
-    renderOnDropdown: false,
-    renderOnNavbar: false,
-  },
-  {
-    pathname: Pathnames.public.confirmPasswordUpdate,
-    page: ConfirmPasswordUpdatePage,
-    name: "Confirm password update",
-    renderOnDropdown: false,
-    renderOnNavbar: false,
-  },
-  {
-    pathname: Pathnames.public.confirmEmailUpdate,
-    page: ConfirmEmailUpdatePage,
-    name: "Confirm email update",
-    renderOnDropdown: false,
-    renderOnNavbar: false,
-  },
-  {
-    pathname: Pathnames.public.confirmUnblockAccount,
-    page: ConfirmUnblockAccountPage,
-    name: "Confrim ublock account",
-    renderOnDropdown: false,
-    renderOnNavbar: false,
   },
 ];
 
