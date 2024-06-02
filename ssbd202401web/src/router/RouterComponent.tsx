@@ -9,7 +9,7 @@ import {
   UnauthRoutes,
 } from "./Routes.ts";
 import { useAccount } from "../hooks/useAccount.ts";
-import { useEffect, useMemo } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { setupInterceptors } from "../axios/axios.config.ts";
 import { RouteType } from "../types/Components.ts";
 import DefaultLayout from "../layouts/DefaultLayout.tsx";
@@ -21,7 +21,7 @@ export default function RouterComponent() {
     useAccount();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setupInterceptors(navigate);
   }, []);
 
