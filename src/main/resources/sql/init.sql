@@ -312,3 +312,5 @@ INSERT INTO public.account_history (id, account_id, username, password, active, 
 INSERT INTO public.personal_data_history (account_history_id, firstname, lastname, email, gender) VALUES ('ef492bcf-7b4b-4adf-9fbc-db9ea8f1e1f6', 'Jacek', 'Teler', 'jacekTeler23@int.pl', 1);
 INSERT INTO public.account_history_role (accounthistory_id, roles_id) VALUES ('ef492bcf-7b4b-4adf-9fbc-db9ea8f1e1f6', 'cd8ab1c1-2431-4e28-88b5-fdd54de3d92a');
 INSERT INTO public.password_history (version, account_id, id, password) VALUES (0, '4a7945b6-b063-45f8-acf6-a1c0d5391673', 'c4467f80-d274-4fa5-a12e-35a3a0aa7964', '$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y');
+
+INSERT INTO public.speaker (id, firstname, lastname,created_at,action_type,version) VALUES ('f3c50886-bb5a-451c-99a3-6a79a6329cb5', 'Lionel', 'Mesi', '2024-04-09 07:32:00', 'CREATE',1);

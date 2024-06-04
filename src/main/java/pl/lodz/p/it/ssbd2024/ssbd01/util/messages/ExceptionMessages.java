@@ -41,4 +41,5 @@ public class ExceptionMessages {
     public static final String HIBERNATE_EXCEPTION = "Problem with hibernate.";
     public static final String JDBC_CONNECTION_ERROR = "DB connection error.";
     public static final String LAZY_INITIALIZATION_ERROR = "Entity lazy initialization error.";
+    public static final String SPEAKER_NOT_FOUND = "Speaker not found.";
 }
