@@ -5,8 +5,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.LocationRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.RoomRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.UUID;
 
@@ -25,8 +27,11 @@ public class LocationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void deleteLocation(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void deleteLocation(UUID id) throws LocationNotFoundException {
+        if (!locationRepository.existsById(id)) {
+            throw new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND);
+        }
+        locationRepository.deleteById(id);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
