@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.dto;
+package pl.lodz.p.it.ssbd2024.ssbd01.dto.mok;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
