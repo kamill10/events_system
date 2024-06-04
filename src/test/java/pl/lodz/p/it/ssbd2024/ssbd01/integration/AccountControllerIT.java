@@ -15,11 +15,11 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountHistoryDetailedDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateAccountDataDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdateEmailDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.get.GetAccountHistoryDetailedDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.update.UpdateAccountDataDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.update.UpdateEmailDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.update.UpdatePasswordDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 
 import java.io.IOException;

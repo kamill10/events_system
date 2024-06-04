@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.LoginDTO;
 
 @Aspect
 @Component
