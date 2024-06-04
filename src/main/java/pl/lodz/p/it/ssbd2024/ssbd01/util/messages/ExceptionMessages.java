@@ -41,4 +41,10 @@ public class ExceptionMessages {
     public static final String HIBERNATE_EXCEPTION = "Problem with hibernate.";
     public static final String JDBC_CONNECTION_ERROR = "DB connection error.";
     public static final String LAZY_INITIALIZATION_ERROR = "Entity lazy initialization error.";
+    public static final String INCORRECT_NAME = "Incorrect name.";
+    public static final String INCORRECT_STREET = "Incorrect street.";
+    public static final String INCORRECT_BUILDING_NUMBER = "Incorrect building number.";
+    public static final String INCORRECT_POSTAL_CODE = "Incorrect postal code.";
+    public static final String INCORRECT_CITY = "Incorrect city.";
+    public static final String INCORRECT_COUNTRY = "Incorrect country.";
 }
