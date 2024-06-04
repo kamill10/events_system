@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.dto.create;
+package pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.create;
 
 import jakarta.validation.constraints.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;

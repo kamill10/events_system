@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.controller.AuthenticationController;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mock.TestControllerConfig;

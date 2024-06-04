@@ -19,7 +19,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthHistoryRepository
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.LoginDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.auth.AccountConfirmationTokenExpiredException;

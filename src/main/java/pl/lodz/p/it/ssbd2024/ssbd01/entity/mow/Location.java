@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,11 +27,37 @@ public class Location extends ControlledEntity {
     @Size(min = 3, max = 32)
     private String name;
 
+    @Column(nullable = false)
+    @NotBlank
+    private String street;
+
+    @Column(nullable = false)
+    @NotBlank
+    private String buildingNumber;
+
+    @Column(nullable = false)
+    @NotBlank
+    @Pattern(regexp = "\\d{2}-\\d{3}")
+    private String postalCode;
+
+    @Column(nullable = false)
+    @NotBlank
+    private String city;
+
+    @Column(nullable = false)
+    @NotBlank
+    private String country;
+
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "location")
     private List<Room> rooms = new ArrayList<>();
 
-    public Location(String name) {
+    public Location(String name, String street,String buildingNumber, String postalCode, String city, String country) {
         this.name = name;
+        this.street = street;
+        this.buildingNumber = buildingNumber;
+        this.postalCode = postalCode;
+        this.city = city;
+        this.country = country;
     }
 
     @Override

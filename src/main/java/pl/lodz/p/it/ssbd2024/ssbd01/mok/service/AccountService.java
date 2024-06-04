@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.get.GetAccountPageDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.get.GetAccountPageDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.*;
