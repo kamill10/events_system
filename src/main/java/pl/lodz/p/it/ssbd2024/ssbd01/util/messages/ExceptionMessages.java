@@ -42,4 +42,5 @@ public class ExceptionMessages {
     public static final String JDBC_CONNECTION_ERROR = "DB connection error.";
     public static final String LAZY_INITIALIZATION_ERROR = "Entity lazy initialization error.";
     public static final String SPEAKER_NOT_FOUND = "Speaker not found.";
+    public static final String LOCATION_NOT_FOUND = "Location not found.";
 }

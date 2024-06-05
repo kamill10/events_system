@@ -36,6 +36,10 @@ public class Room extends ControlledEntity {
     @Max(1000)
     private Integer maxCapacity;
 
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isActive = true;
+
     public Room(String name, Location location, Integer maxCapacity) {
         this.name = name;
         this.location = location;

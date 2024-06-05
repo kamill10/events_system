@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationPageDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.LocationDTOConverter;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.LocationService;
 
 import java.util.UUID;
@@ -36,9 +37,9 @@ public class LocationController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> deleteLocation(@PathVariable UUID id) {
+    public ResponseEntity<?> deleteLocation(@PathVariable UUID id) throws LocationNotFoundException {
         locationService.deleteLocation(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping

@@ -97,10 +97,10 @@ public class Account extends ControlledEntity implements UserDetails {
     @Column(nullable = false)
     private LanguageEnum language;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private AccountTheme accountTheme;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private AccountTimeZone accountTimeZone;
 
 
