@@ -1,7 +1,5 @@
-import { Typography } from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
 import ContainerComponent from "../components/ContainerComponent";
 import { useEvents } from "../hooks/useEvents";
 import Carousel from "react-multi-carousel";
@@ -30,8 +28,7 @@ const responsive = {
 
 export default function HomePage() {
   const { getMyAccount, isAuthenticated } = useAccount();
-  const { t } = useTranslation();
-  const { events, isFetching, getEvents } = useEvents();
+  const { events, getEvents } = useEvents();
 
 
 
