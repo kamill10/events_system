@@ -20,9 +20,9 @@ import java.util.List;
 @ComponentScan(basePackages = {
         "pl.lodz.p.it.ssbd2024.ssbd01.auth.controller",
         "pl.lodz.p.it.ssbd2024.ssbd01.mok.controller",
-        "pl.lodz.p.it.ssbd2024.ssbd01.mow.controller",
         "pl.lodz.p.it.ssbd2024.ssbd01.mok.converter",
-        "pl.lodz.p.it.ssbd2024.ssbd01.mow.converter"
+        "pl.lodz.p.it.ssbd2024.ssbd01.mow.controller",
+        "pl.lodz.p.it.ssbd2024.ssbd01.mow.converter",
 })
 @Import({ExceptionHandlingController.class, OverrideSpringExceptionHandler.class})
 public class WebCoreConfig implements WebMvcConfigurer {
