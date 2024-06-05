@@ -22,6 +22,8 @@ import { NavigateFunction } from "react-router-dom";
 import { SortingRequestParams } from "../types/SortingRequestParams.ts";
 import { AccountChangesType } from "../types/AccountChanges.ts";
 
+import {Event} from "../types/Event.ts";
+
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
 
@@ -213,4 +215,5 @@ export const api = {
     return apiWithAuthToken.get(url);
   },
   refreshToken: () => apiWithAuthToken.post("/auth/refresh-token"),
+  getNonPastEvents: (): ApiResponseType<Event[]> => apiForAnon.get("/events")
 };
