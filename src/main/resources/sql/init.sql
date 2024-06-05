@@ -313,4 +313,19 @@ INSERT INTO public.personal_data_history (account_history_id, firstname, lastnam
 INSERT INTO public.account_history_role (accounthistory_id, roles_id) VALUES ('ef492bcf-7b4b-4adf-9fbc-db9ea8f1e1f6', 'cd8ab1c1-2431-4e28-88b5-fdd54de3d92a');
 INSERT INTO public.password_history (version, account_id, id, password) VALUES (0, '4a7945b6-b063-45f8-acf6-a1c0d5391673', 'c4467f80-d274-4fa5-a12e-35a3a0aa7964', '$2a$10$cZM2GhvetO6fZur/9s26P.alLI.bZmSWfxsrrsLWw4qHlD6F3903y');
 
+INSERT INTO public.event (id, version ,name, description, isNotCanceled, counter, startDate, endDate, created_at, action_type) VALUES ('dbe1b405-aed0-4d0a-bda7-50938e7b45f1', 0, 'Dni Języków Programowania', 'Idealne wydarzenie dla fanów programownia', true, 0, '2024-11-11', '2024-11-13', '2024-05-21', 'CREATE');
+INSERT INTO public.event (id, version ,name, description, isNotCanceled, counter, startDate, endDate, created_at, action_type) VALUES ('fffc5e88-3054-4776-9189-4e64f1a33291', 0, 'Research Days', 'Dni w których zobaczysz jak wygląda praca naukowców', true, 0, '2024-09-20', '2024-09-25', '2024-06-21', 'CREATE');
+INSERT INTO public.event (id, version ,name, description, isNotCanceled, counter, startDate, endDate, created_at, action_type) VALUES ('9470ac2b-d589-4740-b7b6-dd665690d531', 0, 'Dni Otwarte Politechniki', 'Zazwyczaj też są otwarte, ale teraz będą bardziej', true, 0, '2024-10-10', '2024-10-24', '2024-08-21', 'CREATE');
+INSERT INTO public.event (id, version ,name, description, isNotCanceled, counter, startDate, endDate, created_at, action_type) VALUES ('5b9cd583-b097-40a6-887f-7d4f440f99c9', 0, 'Binożowy Tydzień', 'W końcu będziesz wiedział od czego to skrót', true, 0, '2024-02-11', '2024-02-13', '2024-01-21', 'CREATE');
+INSERT INTO public.event (id, version ,name, description, isNotCanceled, counter, startDate, endDate, created_at, action_type) VALUES ('c89e341e-7927-40e7-a4d9-1695314b20e8', 0, 'Łódka Naukowców', 'Popłyń z nami w rejs wiedzy', true, 0, '2024-10-14', '2024-11-19', '2024-07-13', 'CREATE');
+
+INSERT INTO public.location (id, version, name, street, buildingNumber, postalCode, city, country, created_at, action_type) VALUES ('da7cfcfa-5f1c-4a85-8f93-1022f28f747a', 0, 'Lodex', 'Al. Politechniki', 8, '93-590', 'Łódź', 'Poland', '2024-06-05', 'CREATE');
+
+INSERT INTO public.room (id, version, name, location_id, maxCapacity, created_at, action_type) VALUES ('78f0f497-10b7-4478-9a28-c9dc86118e67', 0, '443', 'da7cfcfa-5f1c-4a85-8f93-1022f28f747a', 30, '2024-06-05', 'CREATE');
+
+INSERT INTO public.speaker (id, version, firstName, lastName, created_at, action_type) VALUES ('713c84a3-03bd-4206-ac5c-ecf8d7d04ae6', 0, 'Krzysztof', 'Ślusarksi', '2024-06-05', 'CREATE');
+
+INSERT INTO public.session (id, version, room_id, speaker_id, name, event_id, isActive, description, startTime, endTime, maxSeats, counter, created_at, action_type) VALUES ('4b2555e9-61f1-4c1d-9d7a-f425696eb2d2', 0, '78f0f497-10b7-4478-9a28-c9dc86118e67', '713c84a3-03bd-4206-ac5c-ecf8d7d04ae6', 'Dlaczego Java jest najlepsza', 'dbe1b405-aed0-4d0a-bda7-50938e7b45f1', true, 'Wykład o najlepszym języku programowania na świecie', '2024-11-13 12:00:00', '2024-11-13 15:00:00', 30, 0, '2024-06-05', 'CREATE');
+
+INSERT INTO public.ticket (id, version, account_id, session_id, isConfirmed, reservationTime, created_at, action_type) VALUES ('0b7edef0-55cb-4cc9-a7f2-95a662125511', 0, '4a7945b6-b063-45f8-acf6-a1c0d5391673', '4b2555e9-61f1-4c1d-9d7a-f425696eb2d2', true, '2024-11-10', '2024-11-10', 'CREATE');
 INSERT INTO public.speaker (id, firstname, lastname,created_at,action_type,version) VALUES ('f3c50886-bb5a-451c-99a3-6a79a6329cb5', 'Lionel', 'Mesi', '2024-04-09 07:32:00', 'CREATE',1);

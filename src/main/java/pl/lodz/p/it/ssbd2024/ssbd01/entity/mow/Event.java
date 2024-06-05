@@ -1,9 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entity.mow;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -11,16 +8,21 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @NoArgsConstructor
+@ToString(callSuper = true)
 @Getter
 @Setter
+@Table(name = "event")
 public class Event extends ControlledEntity {
 
     @Column(nullable = false, unique = true, updatable = false)
@@ -40,13 +42,29 @@ public class Event extends ControlledEntity {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "event")
     private List<Session> sessions = new ArrayList<>();
 
+    // TODO: Move to other table or remove
     @PositiveOrZero
-    private long counter;
+    private long counter = 0;
 
-    public Event(String name, String description, List<Session> sessions) {
+    /**
+     * Sessions that are part of event cannot start before start date.
+     */
+    @NotNull
+    private LocalDate startDate;
+
+    /**
+     * Sessions that are part of event cannot start after end date.
+     */
+    @NotNull
+    private LocalDate endDate;
+
+    public Event(String name, String description, List<Session> sessions,
+                 LocalDate startDate, LocalDate endDate) {
         this.name = name;
         this.description = description;
         this.sessions = sessions;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     @Override

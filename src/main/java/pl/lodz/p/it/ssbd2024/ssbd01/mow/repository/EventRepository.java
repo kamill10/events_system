@@ -6,9 +6,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
 @PreAuthorize("hasRole('ROLE_MANAGER')")
 public interface EventRepository extends JpaRepository<Event, UUID> {
+    List<Event> getByEndDateAfter(LocalDate date);
 }

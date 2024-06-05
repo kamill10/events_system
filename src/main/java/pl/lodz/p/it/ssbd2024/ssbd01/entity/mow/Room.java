@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.util.Objects;
@@ -12,7 +13,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@ToString(callSuper = true)
 @NoArgsConstructor
+@Table(name = "room")
 public class Room extends ControlledEntity {
 
     @Column(nullable = false, updatable = false, unique = true)

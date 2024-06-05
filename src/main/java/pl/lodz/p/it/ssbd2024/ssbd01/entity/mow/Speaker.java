@@ -16,7 +16,8 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(uniqueConstraints =
-@UniqueConstraint(columnNames = {"firstName", "lastName"})
+@UniqueConstraint(columnNames = {"firstName", "lastName"}),
+        name = "speaker"
 )
 public class Speaker extends ControlledEntity {
 
