@@ -23,7 +23,7 @@ public class LocationController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> getAllLocations(
+    public ResponseEntity<Page<GetLocationDTO>> getAllLocations(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "asc") String direction,
