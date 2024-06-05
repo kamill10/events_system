@@ -1,9 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entity.mow;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -19,6 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@Table(name = "location")
 @NoArgsConstructor
 public class Location extends ControlledEntity {
 

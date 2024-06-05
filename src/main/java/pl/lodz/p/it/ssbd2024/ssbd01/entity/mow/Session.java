@@ -13,22 +13,23 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@Table(name = "session")
 @NoArgsConstructor
 public class Session extends ControlledEntity {
 
     @OneToOne
     @NotNull
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "room_id")
     private Room room;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "speaker_id")
     @NotNull
     private Speaker speaker;
 
     @Column(nullable = false)
     @NotBlank
-    @Size(min = 3, max = 32)
+    @Size(min = 3, max = 64)
     private String name;
 
     @ManyToOne(
