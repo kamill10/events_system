@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationPageDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateLocationDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.LocationDTOConverter;
@@ -66,6 +67,18 @@ public class LocationController {
                 .header(HttpHeaders.IF_MATCH,eTag)
                 .body(locationDTOConverter.toGetLocationDTO(location));
     }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<GetLocationDTO> getLocation(@PathVariable UUID id) throws LocationNotFoundException {
+        Location location = locationService.getLocationById(id);
+        String eTag = ETagBuilder.buildETag(location.getVersion().toString());
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.ETAG, eTag)
+                .body(locationDTOConverter.toGetLocationDTO(locationService.getLocationById(id)));
+    }
+
+
 
 
 
