@@ -30,16 +30,18 @@ public class LocationService {
     public Page<Location> getAllLocations(GetLocationPageDTO getLocationPageDTO) {
         Sort sort = getLocationPageDTO.buildSort();
         Pageable pageable = PageRequest.of(getLocationPageDTO.page(), getLocationPageDTO.elementPerPage(), sort);
-        return locationRepository.findAll(pageable);
+        return locationRepository.findAllByIsActiveTrue(pageable);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void deleteLocation(UUID id) throws LocationNotFoundException {
-        if (!locationRepository.existsById(id)) {
-            throw new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND);
+        Location location = locationRepository.findById(id).orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
+        location.setIsActive(false);
+        for (var room : location.getRooms()) {
+            room.setIsActive(false);
         }
-        locationRepository.deleteById(id);
+        locationRepository.saveAndFlush(location);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")

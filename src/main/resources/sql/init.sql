@@ -27,12 +27,15 @@ GRANT SELECT, INSERT ON TABLE public.account_history_role TO ssbd01auth;
 GRANT SELECT, INSERT ON TABLE public.personal_data_history TO ssbd01auth;
 
 GRANT SELECT ON TABLE public.account TO ssbd01mow;
+GRANT SELECT ON TABLE public.personal_data TO ssbd01mow;
+GRANT SELECT ON TABLE public.account_role TO ssbd01mow;
+GRANT SELECT ON TABLE public.role TO ssbd01mow;
 
 GRANT SELECT, INSERT, UPDATE ON TABLE public.event TO ssbd01mow;
 GRANT SELECT, INSERT, UPDATE ON TABLE public.session TO ssbd01mow;
 
-GRANT SELECT, INSERT, DELETE, UPDATE ON TABLE public.location TO ssbd01mow;
-GRANT SELECT, INSERT, DELETE ON TABLE public.room TO ssbd01mow;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.location TO ssbd01mow;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.room TO ssbd01mow;
 
 GRANT SELECT, INSERT, UPDATE ON TABLE public.speaker TO ssbd01mow;
 
@@ -319,9 +322,9 @@ INSERT INTO public.event (id, version ,name, description, isNotCanceled, counter
 INSERT INTO public.event (id, version ,name, description, isNotCanceled, counter, startDate, endDate, created_at, action_type) VALUES ('5b9cd583-b097-40a6-887f-7d4f440f99c9', 0, 'Binożowy Tydzień', 'W końcu będziesz wiedział od czego to skrót', true, 0, '2024-02-11', '2024-02-13', '2024-01-21', 'CREATE');
 INSERT INTO public.event (id, version ,name, description, isNotCanceled, counter, startDate, endDate, created_at, action_type) VALUES ('c89e341e-7927-40e7-a4d9-1695314b20e8', 0, 'Łódka Naukowców', 'Popłyń z nami w rejs wiedzy', true, 0, '2024-10-14', '2024-11-19', '2024-07-13', 'CREATE');
 
-INSERT INTO public.location (id, version, name, street, buildingNumber, postalCode, city, country, created_at, action_type) VALUES ('da7cfcfa-5f1c-4a85-8f93-1022f28f747a', 0, 'Lodex', 'Al. Politechniki', 8, '93-590', 'Łódź', 'Poland', '2024-06-05', 'CREATE');
+INSERT INTO public.location (id, version, name, street, buildingNumber, postalCode, city, country, isactive, created_at, action_type) VALUES ('da7cfcfa-5f1c-4a85-8f93-1022f28f747a', 0, 'Lodex', 'Al. Politechniki', 8, '93-590', 'Łódź', 'Poland', true, '2024-06-05', 'CREATE');
 
-INSERT INTO public.room (id, version, name, location_id, maxCapacity, created_at, action_type) VALUES ('78f0f497-10b7-4478-9a28-c9dc86118e67', 0, '443', 'da7cfcfa-5f1c-4a85-8f93-1022f28f747a', 30, '2024-06-05', 'CREATE');
+INSERT INTO public.room (id, version, name, location_id, maxCapacity, isactive, created_at, action_type) VALUES ('78f0f497-10b7-4478-9a28-c9dc86118e67', 0, '443', 'da7cfcfa-5f1c-4a85-8f93-1022f28f747a', 30, true, '2024-06-05', 'CREATE');
 
 INSERT INTO public.speaker (id, version, firstName, lastName, created_at, action_type) VALUES ('713c84a3-03bd-4206-ac5c-ecf8d7d04ae6', 0, 'Krzysztof', 'Ślusarksi', '2024-06-05', 'CREATE');
 
