@@ -15,6 +15,7 @@ import FooterComponent from "../components/FooterComponent";
 import { Container, Box, CssBaseline } from "@mui/material";
 import { useAccount } from "../hooks/useAccount";
 import { RouteType } from "../types/Components";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 
 export default function DefaultLayout({
   children,
@@ -75,6 +76,7 @@ export default function DefaultLayout({
         <Box sx={{ marginTop: 13 }}>{children}</Box>
         <FooterComponent></FooterComponent>
       </Container>
+      <ScrollToTopButton></ScrollToTopButton>
     </ThemeProvider>
   );
 }

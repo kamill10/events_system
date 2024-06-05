@@ -1,14 +1,14 @@
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
-import { Event } from '../types/Event';
-import CenteredContainerComponent from './CenterdContainerComponent';
+import { Event } from "../types/Event";
+import CenteredContainerComponent from "./CenterdContainerComponent";
 
 interface Props {
-  event: Event,
+  event: Event;
 }
 
 export default function EventCarouselComponent(props: Props) {

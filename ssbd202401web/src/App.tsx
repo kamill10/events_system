@@ -6,6 +6,7 @@ import LoadingScreen from "./pages/LoadingScreen.tsx";
 import { ManageAccountsStateContextProvider } from "./context/ManageAccountsContext.tsx";
 import RefreshToken from "./pages/RefreshToken.tsx";
 import { EventsStateContextProvider } from "./context/EventsContext.tsx";
+import ScrollToTop from "./router/ScrollToTop.tsx";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <ManageAccountsStateContextProvider>
           <EventsStateContextProvider>
             <BrowserRouter>
+              <ScrollToTop></ScrollToTop>
               <RouterComponent></RouterComponent>
               <LoadingScreen></LoadingScreen>
               <RefreshToken></RefreshToken>
