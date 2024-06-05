@@ -5,22 +5,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/events")
+@RequestMapping("/api/events")
 @RequiredArgsConstructor
 public class EventController {
 
     private final EventService eventService;
+    private final EventDTOConverter eventDTOConverter;
 
+    /**
+     * Method for selecting all events that have not finished yet.
+     * @return all events happening in the future, meaning.
+     */
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> getAllEvents() {
-        eventService.getAllEvents();
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents() {
+        var events = eventService.getAllNotEndedEvents();
+        var eventsDTO = events.stream()
+                .map(eventDTOConverter::getEventDTO)
+                .toList();
+        return ResponseEntity.status(HttpStatus.OK).body(eventsDTO);
     }
 
     @GetMapping("/sessions/{id}")
