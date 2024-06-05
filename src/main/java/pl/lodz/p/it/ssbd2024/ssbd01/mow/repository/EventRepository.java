@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
-@PreAuthorize("hasRole('ROLE_MANAGER')")
+@PreAuthorize("hasRole(permitAll())")
 public interface EventRepository extends JpaRepository<Event, UUID> {
+
+    @PreAuthorize("hasRole(permitAll())")
     List<Event> getByEndDateAfter(LocalDate date);
 }
