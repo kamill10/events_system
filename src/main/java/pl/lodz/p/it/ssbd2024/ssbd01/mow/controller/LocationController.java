@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,9 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationPageDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateLocationDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.LocationDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.LocationService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 import java.util.UUID;
 
@@ -51,11 +55,18 @@ public class LocationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLocation);
     }
 
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> updateLocation(@PathVariable UUID id) {
-        locationService.updateLocation(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<GetLocationDTO> updateLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id, @RequestBody
+    UpdateLocationDTO updateLocationDTO) throws LocationNotFoundException, OptLockException {
+        var location = locationService.updateLocation(id,locationDTOConverter.toLocation(updateLocationDTO),eTagReceived);
+        String eTag = ETagBuilder.buildETag(location.getVersion().toString());
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.IF_MATCH,eTag)
+                .body(locationDTOConverter.toGetLocationDTO(location));
     }
+
+
 
 }

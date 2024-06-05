@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationPageDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.LocationRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.RoomRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.UUID;
@@ -52,8 +54,19 @@ public class LocationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void updateLocation(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Location updateLocation(UUID id, Location location, String eTag) throws LocationNotFoundException, OptLockException {
+        Location locationToUpdate = locationRepository.findById(id)
+                .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
+        if (!ETagBuilder.isETagValid(eTag, String.valueOf(locationToUpdate.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
+        locationToUpdate.setName(location.getName());
+        locationToUpdate.setCity(location.getCity());
+        locationToUpdate.setCountry(location.getCountry());
+        locationToUpdate.setBuildingNumber(location.getBuildingNumber());
+        locationToUpdate.setStreet(location.getStreet());
+        locationToUpdate.setPostalCode(location.getPostalCode());
+        return locationRepository.saveAndFlush(locationToUpdate);
     }
 
 }
