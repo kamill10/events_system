@@ -26,7 +26,6 @@ import java.util.UUID;
 public class LocationController {
 
     private final LocationService locationService;
-    private final LocationDTOConverter locationDTOConverter;
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -37,7 +36,7 @@ public class LocationController {
             @RequestParam(defaultValue = "id") String key
     ) {
         GetLocationPageDTO getLocationPageDTO = new GetLocationPageDTO(page, size, direction, key);
-        Page<GetLocationDTO> getLocationDTOPage = locationDTOConverter.locationDTOPage(locationService.getAllLocations(getLocationPageDTO));
+        Page<GetLocationDTO> getLocationDTOPage = LocationDTOConverter.locationDTOPage(locationService.getAllLocations(getLocationPageDTO));
         return ResponseEntity.status(HttpStatus.OK).body(getLocationDTOPage);
     }
 
@@ -52,7 +51,7 @@ public class LocationController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetLocationDTO> createLocation(@RequestBody CreateLocationDTO createLocationDTO) {
         GetLocationDTO createdLocation =
-                locationDTOConverter.toGetLocationDTO(locationService.createLocation(locationDTOConverter.toLocation(createLocationDTO)));
+                LocationDTOConverter.toGetLocationDTO(locationService.createLocation(LocationDTOConverter.toLocation(createLocationDTO)));
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLocation);
     }
 
@@ -61,11 +60,11 @@ public class LocationController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetLocationDTO> updateLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id, @RequestBody
     UpdateLocationDTO updateLocationDTO) throws LocationNotFoundException, OptLockException {
-        var location = locationService.updateLocation(id,locationDTOConverter.toLocation(updateLocationDTO),eTagReceived);
+        var location = locationService.updateLocation(id,LocationDTOConverter.toLocation(updateLocationDTO),eTagReceived);
         String eTag = ETagBuilder.buildETag(location.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.IF_MATCH,eTag)
-                .body(locationDTOConverter.toGetLocationDTO(location));
+                .body(LocationDTOConverter.toGetLocationDTO(location));
     }
 
     @GetMapping("/{id}")
@@ -75,7 +74,7 @@ public class LocationController {
         String eTag = ETagBuilder.buildETag(location.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.ETAG, eTag)
-                .body(locationDTOConverter.toGetLocationDTO(locationService.getLocationById(id)));
+                .body(LocationDTOConverter.toGetLocationDTO(locationService.getLocationById(id)));
     }
 
 

@@ -23,9 +23,7 @@ public class Room extends ControlledEntity {
     @Size(min = 3, max = 32)
     private String name;
 
-    @ManyToOne(
-            fetch = FetchType.LAZY
-    )
+    @ManyToOne
     @JoinColumn(nullable = false, updatable = false, name = "location_id")
     @NotNull
     private Location location;

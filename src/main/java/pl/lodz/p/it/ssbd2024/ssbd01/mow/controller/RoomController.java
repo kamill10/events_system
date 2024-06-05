@@ -21,11 +21,10 @@ import java.util.UUID;
 public class RoomController {
 
     private final RoomService roomService;
-    private final RoomDTOConverter roomDTOConverter;
 
     @GetMapping("/{locationId}")
     public ResponseEntity<List<GetRoomDTO>> getAllRooms(@PathVariable UUID locationId) {
-        List<GetRoomDTO> rooms = roomDTOConverter.toRoomDto(roomService.getAllLocationRooms(locationId));
+        List<GetRoomDTO> rooms = RoomDTOConverter.toRoomDto(roomService.getAllLocationRooms(locationId));
         return ResponseEntity.ok(rooms);
     }
 
@@ -35,15 +34,15 @@ public class RoomController {
         String eTag = ETagBuilder.buildETag(room.getVersion().toString());
         return ResponseEntity.ok()
                 .header("ETag", eTag)
-                .body(roomDTOConverter.toRoomDto(room));
+                .body(RoomDTOConverter.toRoomDto(room));
     }
 
     @PatchMapping("/room/{roomId}")
     public ResponseEntity<GetRoomDTO> updateRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId, @RequestBody
     UpdateRoomDTO roomDTO) throws RoomNotFoundException, OptLockException {
         return ResponseEntity.ok()
-                .body(roomDTOConverter.toRoomDto(roomService
-                        .updateRoom(roomId, roomDTOConverter.toRoom(roomDTO), eTagReceived)));
+                .body(RoomDTOConverter.toRoomDto(roomService
+                        .updateRoom(roomId, RoomDTOConverter.toRoom(roomDTO), eTagReceived)));
     }
 
 }
