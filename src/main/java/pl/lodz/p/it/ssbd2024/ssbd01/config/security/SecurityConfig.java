@@ -92,11 +92,9 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/api/speakers/{id}").hasRole("MANAGER")
 
 
-                            .requestMatchers(HttpMethod.GET, "/api/events/me/sessions").hasRole("PARTICIPANT")
-                            .requestMatchers(HttpMethod.GET, "/api/events/me/historical-events").hasRole("PARTICIPANT")
-                            .requestMatchers(HttpMethod.GET, "/api/events/me/historical-sessions").hasRole("PARTICIPANT")
-                            .requestMatchers(HttpMethod.POST, "/api/events/me/session/{id}").hasRole("PARTICIPANT")
-                            .requestMatchers(HttpMethod.DELETE, "/api/events/me/session/{id}").hasRole("PARTICIPANT");
+                            .requestMatchers(HttpMethod.GET, "/api/events/me/**").hasRole("PARTICIPANT")
+                            .requestMatchers(HttpMethod.POST, "/api/events/me/**").hasRole("PARTICIPANT")
+                            .requestMatchers(HttpMethod.DELETE, "/api/events/me/**").hasRole("PARTICIPANT");
 
 
                 });
