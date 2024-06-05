@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 
 
@@ -39,6 +40,17 @@ public class LocationDTOConverter {
         );
     }
 
+    public Location toLocation(UpdateLocationDTO updateLocationDTO) {
+        return new Location(
+                updateLocationDTO.name(),
+                updateLocationDTO.street(),
+                updateLocationDTO.buildingNumber(),
+                updateLocationDTO.postalCode(),
+                updateLocationDTO.city(),
+                updateLocationDTO.country()
+        );
+    }
+
     public GetLocationDTO toGetLocationDTO(Location location) {
         return new GetLocationDTO(
                 location.getId(),
@@ -50,5 +62,6 @@ public class LocationDTOConverter {
                 location.getCountry()
         );
     }
+
 
 }
