@@ -47,4 +47,6 @@ public class ExceptionMessages {
     public static final String INCORRECT_POSTAL_CODE = "Incorrect postal code.";
     public static final String INCORRECT_CITY = "Incorrect city.";
     public static final String INCORRECT_COUNTRY = "Incorrect country.";
+    public static final String SPEAKER_NOT_FOUND = "Speaker not found.";
+    public static final String LOCATION_NOT_FOUND = "Location not found.";
 }

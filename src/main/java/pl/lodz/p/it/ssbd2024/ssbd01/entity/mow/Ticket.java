@@ -1,9 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entity.mow;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
@@ -18,16 +15,17 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@Table(name = "ticket")
 @NoArgsConstructor
 public class Ticket extends ControlledEntity {
 
     @OneToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "account_id")
     @NotNull
     private Account account;
 
     @OneToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "session_id")
     @NotNull
     private Session session;
 

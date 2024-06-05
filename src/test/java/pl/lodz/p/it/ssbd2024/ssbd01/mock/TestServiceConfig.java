@@ -11,14 +11,15 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthHistoryRepository
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.AccountAuthRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.repository.JWTWhitelistRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationSchedulerService;
+import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.BusinessConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
-import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.JwtService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountSchedulerService;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.ServiceVerifier;
+import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 
 @Configuration
 @Import({
@@ -138,6 +139,41 @@ public class TestServiceConfig {
     @Bean
     public HandlerExceptionResolver handlerExceptionResolver() {
         return Mockito.mock(HandlerExceptionResolver.class);
+    }
+
+    @Bean
+    public AccountMowRepository accountMowRepository() {
+        return Mockito.mock(AccountMowRepository.class);
+    }
+
+    @Bean
+    public EventRepository eventRepository() {
+        return Mockito.mock(EventRepository.class);
+    }
+
+    @Bean
+    public LocationRepository locationRepository() {
+        return Mockito.mock(LocationRepository.class);
+    }
+
+    @Bean
+    public RoomRepository roomRepository() {
+        return Mockito.mock(RoomRepository.class);
+    }
+
+    @Bean
+    public SessionRepository sessionRepository() {
+        return Mockito.mock(SessionRepository.class);
+    }
+
+    @Bean
+    public SpeakerRepository speakerRepository() {
+        return Mockito.mock(SpeakerRepository.class);
+    }
+
+    @Bean
+    public TicketRepository ticketRepository() {
+        return Mockito.mock(TicketRepository.class);
     }
 
 }

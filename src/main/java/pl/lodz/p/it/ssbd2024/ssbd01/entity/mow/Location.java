@@ -1,10 +1,8 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entity.mow;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -19,6 +17,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@Table(name = "location")
 @NoArgsConstructor
 public class Location extends ControlledEntity {
 
@@ -48,7 +47,11 @@ public class Location extends ControlledEntity {
     @NotBlank
     private String country;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, mappedBy = "location")
+    @Column(nullable = false)
+    @NotNull
+    private Boolean isActive = true;
+
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "location")
     private List<Room> rooms = new ArrayList<>();
 
     public Location(String name, String street,String buildingNumber, String postalCode, String city, String country) {
