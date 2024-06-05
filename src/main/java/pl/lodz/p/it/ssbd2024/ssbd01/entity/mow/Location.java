@@ -23,7 +23,7 @@ public class Location extends ControlledEntity {
 
     @Column(nullable = false, unique = true, updatable = false)
     @NotBlank
-    @Size(min = 3, max = 32)
+    @Size(min = 3, max = 128)
     private String name;
 
     @Column(nullable = false)
