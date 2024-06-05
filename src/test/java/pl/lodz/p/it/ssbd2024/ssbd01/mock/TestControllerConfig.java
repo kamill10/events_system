@@ -9,10 +9,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.auth.service.AuthenticationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.WebCoreConfig;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.AccountService;
 import pl.lodz.p.it.ssbd2024.ssbd01.mok.service.MeService;
-import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
-import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.LocationService;
-import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.MeEventService;
-import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.SpeakerService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 
 @Configuration
@@ -64,6 +61,11 @@ public class TestControllerConfig {
     @Bean
     public SpeakerService speakerService() {
         return Mockito.mock(SpeakerService.class);
+    }
+
+    @Bean
+    public RoomService roomService() {
+        return Mockito.mock(RoomService.class);
     }
 
 
