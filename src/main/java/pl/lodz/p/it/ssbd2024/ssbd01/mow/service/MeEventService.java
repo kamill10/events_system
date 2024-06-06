@@ -31,7 +31,6 @@ import static pl.lodz.p.it.ssbd2024.ssbd01.util.Utils.isSessionActive;
 @RequiredArgsConstructor
 public class MeEventService {
 
-    private final EventRepository eventRepository;
     private final SessionRepository sessionRepository;
     private final TicketRepository ticketRepository;
 
