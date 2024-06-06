@@ -34,10 +34,8 @@ public class Utils {
         }
     }
 
-    public static void isSessionActive(Session session) throws SessionNotActiveException {
-        if (!session.getIsActive() || session.getEndTime().isBefore(LocalDateTime.now())) {
-            throw new SessionNotActiveException(ExceptionMessages.SESSION_NOT_ACTIVE);
-        }
+    public static boolean  isSessionActive(Session session) {
+        return session.getIsActive() && !session.getEndTime().isBefore(LocalDateTime.now());
     }
 
 }

@@ -27,7 +27,6 @@ public class EventService {
     private final EventRepository eventRepository;
     private final SessionRepository sessionRepository;
     private final TicketRepository ticketRepository;
-    private final MeEventService meEventService;
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")

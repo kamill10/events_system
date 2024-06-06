@@ -40,7 +40,9 @@ public class MeEventService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        isSessionActive(session);
+        if (!isSessionActive(session)) {
+            throw new SessionNotActiveException(ExceptionMessages.SESSION_NOT_ACTIVE);
+        }
         if (ticketRepository.findBySession(session).size() >= session.getMaxSeats()) {
             throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
         }

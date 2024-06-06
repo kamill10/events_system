@@ -52,7 +52,7 @@ public class ExceptionMessages {
     public static final String ROOM_NOT_FOUND = "Room not found.";
     public static final String INCORRECT_MAX_CAPACITY = "Incorrect max capacity.";
     public static final String TICKET_NOT_FOUND = "Ticket not found.";
-    public static final String TICKET_ALREADY_CANCELLED = "Ticket has been already cancelled";
+    public static final String TICKET_ALREADY_CANCELLED = "Ticket has already been cancelled. ";
     public static final String SESSION_NOT_FOUND = "Session not found. ";
     public static final String  SESSION_NOT_ACTIVE = "Session not active. ";
     public static final String ALREADY_SIGNED_UP = "Already signed up. ";
