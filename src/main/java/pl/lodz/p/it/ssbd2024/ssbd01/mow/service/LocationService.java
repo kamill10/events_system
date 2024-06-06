@@ -2,20 +2,18 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationPageDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.LocationRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.RoomRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.UUID;
@@ -25,13 +23,11 @@ import java.util.UUID;
 public class LocationService {
 
     private final LocationRepository locationRepository;
-    private final RoomRepository roomRepository;
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public Page<Location> getAllLocations(GetLocationPageDTO getLocationPageDTO) {
-        Sort sort = getLocationPageDTO.buildSort();
-        Pageable pageable = PageRequest.of(getLocationPageDTO.page(), getLocationPageDTO.elementPerPage(), sort);
+    public Page<Location> getAllLocations(PageUtils pageUtils) {
+        Pageable pageable = pageUtils.buildPageable();
         return locationRepository.findAllByIsActiveTrue(pageable);
     }
 
@@ -67,6 +63,13 @@ public class LocationService {
         locationToUpdate.setStreet(location.getStreet());
         locationToUpdate.setPostalCode(location.getPostalCode());
         return locationRepository.saveAndFlush(locationToUpdate);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public Location getLocationById(UUID id) throws LocationNotFoundException {
+        return locationRepository.findById(id)
+                .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
     }
 
 }

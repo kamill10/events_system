@@ -16,6 +16,7 @@ import {
   ResetPasswordType,
   SignInCredentialsType,
 } from "../types/Authentication.ts";
+import { PaginationLocationResponse } from "../types/Location.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
 import { NavigateFunction } from "react-router-dom";
@@ -23,6 +24,7 @@ import { SortingRequestParams } from "../types/SortingRequestParams.ts";
 import { AccountChangesType } from "../types/AccountChanges.ts";
 
 import { Event } from "../types/Event.ts";
+import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -216,4 +218,26 @@ export const api = {
   },
   refreshToken: () => apiWithAuthToken.post("/auth/refresh-token"),
   getNonPastEvents: (): ApiResponseType<Event[]> => apiForAnon.get("/events"),
+  getLocationsWithPagination: (
+    params: PaginationRequestParams,
+  ): ApiResponseType<PaginationLocationResponse> => {
+    let url = "/location";
+    let char = "?";
+    if (params.page) {
+      url += `?page=${params.page}`;
+      char = "&";
+    }
+    if (params.size) {
+      url += `${char}size=${params.size}`;
+      char = "&";
+    }
+    if (params.direction) {
+      url += `${char}direction=${params.direction}`;
+      char = "&";
+    }
+    if (params.key) {
+      url += `${char}key=${params.key}`;
+    }
+    return apiWithAuthToken.get(url);
+  },
 };

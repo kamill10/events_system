@@ -5,13 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketAlreadyCancelledException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.TicketDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.MeEventService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
@@ -27,8 +26,7 @@ public class MeEventController {
 
     @PostMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<?> signUpForSession(@PathVariable UUID id)
-            throws SessionNotFoundException, SessionNotActiveException, MaxSeatsOfSessionReachedException, AlreadySignUpException {
+    public ResponseEntity<?> signUpForSession(@PathVariable UUID id) {
         meEventService.signUpForSession(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -36,7 +34,7 @@ public class MeEventController {
     @GetMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public ResponseEntity<GetTicketDetailedDTO> getSession(@PathVariable UUID id) throws TicketNotFoundException {
-       return ResponseEntity.status(HttpStatus.OK).body(TicketDTOConverter.toTicketDetailedDTO(meEventService.getSession(id)));
+        return ResponseEntity.status(HttpStatus.OK).body(TicketDTOConverter.toTicketDetailedDTO(meEventService.getSession(id)));
     }
 
     @GetMapping("/sessions")
@@ -54,15 +52,9 @@ public class MeEventController {
 
     @GetMapping("/past-sessions")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<Page<GetTicketDTO>> getMyPastSessions(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "asc") String direction,
-            @RequestParam(defaultValue = "id") String key
-    ) {
-        PageUtils pageUtils = new PageUtils(page, size, direction, key);
-        Page<Ticket> tickets = meEventService.getMyPastSessions(pageUtils);
-        return ResponseEntity.status(HttpStatus.OK).body(TicketDTOConverter.ticketDTOPage(tickets));
+    public ResponseEntity<?> getMyHistoricalSessions() {
+        meEventService.getMyHistoricalSessions();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/historical-events")
@@ -72,18 +64,10 @@ public class MeEventController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @GetMapping("/historical-sessions")
-    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<?> getMyHistoricalSessions() {
-        meEventService.getMyHistoricalSessions();
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @DeleteMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<?> signOutFromSession(@PathVariable UUID id) {
+    public ResponseEntity<?> signOutFromSession(@PathVariable UUID id) throws TicketNotFoundException, TicketAlreadyCancelledException {
         meEventService.signOutFromSession(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }

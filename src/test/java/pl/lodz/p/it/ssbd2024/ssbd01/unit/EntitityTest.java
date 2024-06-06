@@ -148,13 +148,13 @@ public class EntitityTest {
         ticket.setAccount(account);
         ticket.setSession(session);
         ticket.setReservationTime(LocalDateTime.of(2021, 1, 1, 1, 1));
-        ticket.setIsConfirmed(true);
+        ticket.setIsNotCancelled(true);
 
         ticket2 = new Ticket();
         ticket2.setAccount(account);
         ticket2.setSession(session);
         ticket2.setReservationTime(LocalDateTime.of(2021, 1, 1, 1, 1));
-        ticket2.setIsConfirmed(true);
+        ticket2.setIsNotCancelled(true);
 
         ticket3 = new Ticket();
     }
@@ -206,7 +206,7 @@ public class EntitityTest {
 
         Assertions.assertEquals(account, ticket.getAccount());
         Assertions.assertEquals(session, ticket.getSession());
-        Assertions.assertEquals(true, ticket.getIsConfirmed());
+        Assertions.assertEquals(true, ticket.getIsNotCancelled());
         Assertions.assertEquals(LocalDateTime.of(2021, 1, 1, 1, 1), ticket.getReservationTime());
     }
 

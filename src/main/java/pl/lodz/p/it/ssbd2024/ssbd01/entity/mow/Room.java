@@ -46,6 +46,11 @@ public class Room extends ControlledEntity {
         this.maxCapacity = maxCapacity;
     }
 
+    public Room(String name, Integer maxCapacity) {
+        this.name = name;
+        this.maxCapacity = maxCapacity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

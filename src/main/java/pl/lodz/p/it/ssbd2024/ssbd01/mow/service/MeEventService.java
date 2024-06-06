@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketAlreadyCancelledException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
@@ -30,28 +31,27 @@ public class MeEventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public void signUpForSession(UUID sessionId)
-            throws SessionNotFoundException, SessionNotActiveException, AlreadySignUpException, MaxSeatsOfSessionReachedException {
-        Session session = sessionRepository.findById(sessionId).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
-        if (!session.getIsActive() || session.getEndTime().isBefore(LocalDateTime.now())) {
-            throw new SessionNotActiveException(ExceptionMessages.SESSION_NOT_ACTIVE);
-        }
-        if (ticketRepository.findBySession(session).stream()
-                .anyMatch(ticket -> ticket.getAccount().getId().equals(account.getId()))) {
-            throw new AlreadySignUpException(ExceptionMessages.ALREADY_SIGNED_UP);
-        }
-        if (ticketRepository.findBySession(session).size() >= session.getMaxSeats()) {
-            throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
-        }
-        Ticket ticket = new Ticket(account,session);
-        ticketRepository.save(ticket);
+    public void signUpForSession(UUID id) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public void getMySessions() {
+    public Ticket getSession(UUID id) throws TicketNotFoundException {
+        return ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    public Page<Ticket> getMyFutureAndPresentSessions(PageUtils pageUtils) {
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Pageable pageable = pageUtils.buildPageable();
+        return ticketRepository.findAllByAccountIdAndEndTimeAfterNow(account.getId(), LocalDateTime.now(), pageable);
+    }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    public Page<Ticket> getMyHistoricalSessions() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -60,18 +60,17 @@ public class MeEventService {
     public void getMyHistoricalEvents() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public void getMyHistoricalEvents() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public void signOutFromSession(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    public void signOutFromSession(UUID id) throws TicketNotFoundException, TicketAlreadyCancelledException {
+        Ticket ticket = ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
 
+        if (!ticket.getIsNotCancelled()) {
+            throw new TicketAlreadyCancelledException(ExceptionMessages.TICKET_ALREADY_CANCELLED);
+        }
+
+        ticket.setIsNotCancelled(false);
+        ticketRepository.saveAndFlush(ticket);
+    }
 }
