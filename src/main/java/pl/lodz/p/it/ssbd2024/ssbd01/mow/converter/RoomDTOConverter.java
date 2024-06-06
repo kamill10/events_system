@@ -1,33 +1,24 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.converter;
 
+import org.springframework.stereotype.Component;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetRoomDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetRoomDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Component
 public class RoomDTOConverter {
 
-    public static GetRoomDTO toRoomDto(Room room) {
+    public GetRoomDTO toRoomDto(Room room) {
         return new GetRoomDTO(
                 room.getName(),
                 room.getMaxCapacity()
         );
     }
 
-    public static List<GetRoomDTO> toRoomDto(List<Room> rooms) {
-        return rooms.stream().map(RoomDTOConverter::toRoomDto).collect(Collectors.toList());
-    }
-
-    public static GetRoomDetailedDTO toRoomDetailedDto(Room room) {
-        return new GetRoomDetailedDTO(
-                room.getId(),
-                room.getName(),
-                room.getMaxCapacity(),
-                LocationDTOConverter.toLocationDto(room.getLocation())
-        );
+    public List<GetRoomDTO> toRoomDto(List<Room> rooms) {
+        return rooms.stream().map(this::toRoomDto).collect(Collectors.toList());
     }
 
 }

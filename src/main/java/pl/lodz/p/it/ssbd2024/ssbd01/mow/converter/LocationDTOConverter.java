@@ -8,10 +8,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 
 
-
+@Component
 public class LocationDTOConverter {
 
-    public static GetLocationDTO toLocationDto(Location location) {
+    public GetLocationDTO toLocationDto(Location location) {
         return new GetLocationDTO(
                 location.getId(),
                 location.getName(),
@@ -24,12 +24,12 @@ public class LocationDTOConverter {
     }
 
 
-    public static Page<GetLocationDTO> locationDTOPage(Page<Location> locationPage) {
-        return locationPage.map(LocationDTOConverter::toLocationDto);
+    public Page<GetLocationDTO> locationDTOPage(Page<Location> locationPage) {
+        return locationPage.map(this::toLocationDto);
     }
 
 
-    public static Location toLocation(CreateLocationDTO createLocationDTO) {
+    public Location toLocation(CreateLocationDTO createLocationDTO) {
         return new Location(
                 createLocationDTO.name(),
                 createLocationDTO.street(),
@@ -40,7 +40,7 @@ public class LocationDTOConverter {
         );
     }
 
-    public static Location toLocation(UpdateLocationDTO updateLocationDTO) {
+    public Location toLocation(UpdateLocationDTO updateLocationDTO) {
         return new Location(
                 updateLocationDTO.name(),
                 updateLocationDTO.street(),
@@ -51,7 +51,7 @@ public class LocationDTOConverter {
         );
     }
 
-    public static GetLocationDTO toGetLocationDTO(Location location) {
+    public GetLocationDTO toGetLocationDTO(Location location) {
         return new GetLocationDTO(
                 location.getId(),
                 location.getName(),

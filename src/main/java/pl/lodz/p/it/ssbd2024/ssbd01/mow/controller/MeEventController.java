@@ -72,6 +72,13 @@ public class MeEventController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/historical-sessions")
+    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    public ResponseEntity<?> getMyHistoricalSessions() {
+        meEventService.getMyHistoricalSessions();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @DeleteMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public ResponseEntity<?> signOutFromSession(@PathVariable UUID id) {

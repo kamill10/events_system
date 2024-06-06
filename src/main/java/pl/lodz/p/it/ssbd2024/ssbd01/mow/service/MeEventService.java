@@ -4,15 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
@@ -53,24 +51,14 @@ public class MeEventService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public Ticket getSession(UUID id) throws TicketNotFoundException {
-        return ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
+    public void getMySessions() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public Page<Ticket> getMyFutureAndPresentSessions(PageUtils pageUtils) {
-        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Pageable pageable = pageUtils.buildPageable();
-        return ticketRepository.findAllByAccountIdAndEndTimeAfterNow(account.getId(), LocalDateTime.now(), pageable);
-    }
-
-    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public Page<Ticket> getMyPastSessions(PageUtils pageUtils) {
-        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Pageable pageable = pageUtils.buildPageable();
-        return ticketRepository.findAllByAccountIdAndEndTimeBeforeNow(account.getId(), LocalDateTime.now(), pageable);
+    public void getMyHistoricalEvents() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")

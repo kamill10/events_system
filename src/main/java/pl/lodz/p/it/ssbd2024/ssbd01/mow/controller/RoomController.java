@@ -19,10 +19,11 @@ import java.util.UUID;
 public class RoomController {
 
     private final RoomService roomService;
+    private final RoomDTOConverter roomDTOConverter;
 
     @GetMapping("/{locationId}")
     public ResponseEntity<List<GetRoomDTO>> getAllRooms(@PathVariable UUID locationId) {
-        List<GetRoomDTO> rooms = RoomDTOConverter.toRoomDto(roomService.getAllLocationRooms(locationId));
+        List<GetRoomDTO> rooms = roomDTOConverter.toRoomDto(roomService.getAllLocationRooms(locationId));
         return ResponseEntity.ok(rooms);
     }
 

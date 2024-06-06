@@ -18,6 +18,7 @@ import java.util.UUID;
 public class EventController {
 
     private final EventService eventService;
+    private final EventDTOConverter eventDTOConverter;
 
     /**
      * Method for selecting all events that have not finished yet.
@@ -28,7 +29,7 @@ public class EventController {
     public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents() {
         var events = eventService.getAllNotEndedEvents();
         var eventsDTO = events.stream()
-                .map(EventDTOConverter::getEventDTO)
+                .map(eventDTOConverter::getEventDTO)
                 .toList();
         return ResponseEntity.status(HttpStatus.OK).body(eventsDTO);
     }
