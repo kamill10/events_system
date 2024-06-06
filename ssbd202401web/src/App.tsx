@@ -7,6 +7,7 @@ import { ManageAccountsStateContextProvider } from "./context/ManageAccountsCont
 import RefreshToken from "./pages/RefreshToken.tsx";
 import { EventsStateContextProvider } from "./context/EventsContext.tsx";
 import ScrollToTop from "./router/ScrollToTop.tsx";
+import { LocationsStateContextProvider } from "./context/LocationsContext.tsx";
 
 function App() {
   return (
@@ -14,12 +15,14 @@ function App() {
       <AccountStateContextProvider>
         <ManageAccountsStateContextProvider>
           <EventsStateContextProvider>
-            <BrowserRouter>
-              <ScrollToTop></ScrollToTop>
-              <RouterComponent></RouterComponent>
-              <LoadingScreen></LoadingScreen>
-              <RefreshToken></RefreshToken>
-            </BrowserRouter>
+            <LocationsStateContextProvider>
+              <BrowserRouter>
+                <ScrollToTop></ScrollToTop>
+                <RouterComponent></RouterComponent>
+                <LoadingScreen></LoadingScreen>
+                <RefreshToken></RefreshToken>
+              </BrowserRouter>
+            </LocationsStateContextProvider>
           </EventsStateContextProvider>
         </ManageAccountsStateContextProvider>
       </AccountStateContextProvider>

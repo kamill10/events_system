@@ -14,6 +14,7 @@ import {
 } from "../types/Authentication";
 import { SortingRequestParams } from "../types/SortingRequestParams";
 import i18next from "i18next";
+import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -25,6 +26,7 @@ export let ChangeMyEmailSchema: yup.ObjectSchema<ChangeMyEmailType>;
 export let ManageAccountValidationSchema: yup.ObjectSchema<ManageAccountType>;
 export let ChangeEmailSchema: yup.ObjectSchema<ChangeEmailType>;
 export let SortingRequestParamsSchema: yup.ObjectSchema<SortingRequestParams>;
+export let PaginationRequestParamsSchema: yup.ObjectSchema<PaginationRequestParams>;
 
 export function initValidation() {
   signInValidationSchema = yup.object<SignInCredentialsType>().shape({
@@ -225,5 +227,22 @@ export function initValidation() {
         "active",
       ]),
     phrase: yup.string().max(64),
+  });
+
+  PaginationRequestParamsSchema = yup.object<PaginationRequestParams>().shape({
+    page: yup.number(),
+    size: yup.number(),
+    direction: yup.string().oneOf(["asc", "desc"]),
+    key: yup
+      .string()
+      .oneOf([
+        "id",
+        "name",
+        "city",
+        "country",
+        "street",
+        "buildingNumber",
+        "postalCode",
+      ]),
   });
 }
