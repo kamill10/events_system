@@ -19,19 +19,19 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Ticket extends ControlledEntity {
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false, name = "account_id")
     @NotNull
     private Account account;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false, name = "session_id")
     @NotNull
     private Session session;
 
     @Column(nullable = false)
     @NotNull
-    private Boolean isConfirmed;
+    private Boolean isNotCancelled;
 
     @PastOrPresent
     @NotNull
@@ -40,7 +40,7 @@ public class Ticket extends ControlledEntity {
     public Ticket(Account account, Session session) {
         this.account = account;
         this.session = session;
-        this.isConfirmed = false;
+        this.isNotCancelled = true;
         this.reservationTime = LocalDateTime.now();
     }
 
