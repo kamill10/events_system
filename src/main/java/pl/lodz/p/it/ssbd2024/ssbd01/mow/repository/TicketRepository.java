@@ -28,4 +28,8 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     @Override
     Ticket saveAndFlush(Ticket ticket);
+
+    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    @Query("SELECT t FROM Ticket t WHERE t.account.id = :accountId AND t.session.endTime < :now")
+    Page<Ticket> findAllByAccountIdAndEndTimeBeforeNow(UUID accountId, LocalDateTime now, Pageable pageable);
 }
