@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
 
@@ -77,7 +79,7 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> cancelEvent(@PathVariable UUID id) {
+    public ResponseEntity<?> cancelEvent(@PathVariable UUID id) throws EventNotFoundException, EventAlreadyCancelledException {
         eventService.cancelEvent(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
