@@ -69,4 +69,11 @@ public class LocationService {
         return locationRepository.saveAndFlush(locationToUpdate);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public Location getLocationById(UUID id) throws LocationNotFoundException {
+        return locationRepository.findById(id)
+                .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
+    }
+
 }
