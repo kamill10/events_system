@@ -73,8 +73,10 @@ public class MeEventService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public Page<Ticket> getMyHistoricalSessions() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Page<Ticket> getMyHistoricalSessions(PageUtils pageUtils) {
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Pageable pageable = pageUtils.buildPageable();
+        return ticketRepository.findAllByAccountIdAndEndTimeBeforeNow(account.getId(), LocalDateTime.now(), pageable);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")

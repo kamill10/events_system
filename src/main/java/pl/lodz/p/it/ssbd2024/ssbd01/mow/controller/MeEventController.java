@@ -54,9 +54,15 @@ public class MeEventController {
 
     @GetMapping("/past-sessions")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<?> getMyHistoricalSessions() {
-        meEventService.getMyHistoricalSessions();
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Page<GetTicketDTO>> getMyHistoricalSessions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(defaultValue = "id") String key
+    ) {
+        PageUtils pageUtils = new PageUtils(page, size, direction, key);
+        Page<Ticket> tickets = meEventService.getMyHistoricalSessions(pageUtils);
+        return ResponseEntity.status(HttpStatus.OK).body(TicketDTOConverter.ticketDTOPage(tickets));
     }
 
     @GetMapping("/historical-events")
@@ -72,4 +78,5 @@ public class MeEventController {
         meEventService.signOutFromSession(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
 }
