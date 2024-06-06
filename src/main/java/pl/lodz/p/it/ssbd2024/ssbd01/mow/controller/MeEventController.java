@@ -34,7 +34,7 @@ public class MeEventController {
     @GetMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public ResponseEntity<GetTicketDetailedDTO> getSession(@PathVariable UUID id) throws TicketNotFoundException {
-       return ResponseEntity.status(HttpStatus.OK).body(TicketDTOConverter.toTicketDetailedDTO(meEventService.getSession(id)));
+        return ResponseEntity.status(HttpStatus.OK).body(TicketDTOConverter.toTicketDetailedDTO(meEventService.getSession(id)));
     }
 
     @GetMapping("/sessions")
@@ -52,15 +52,9 @@ public class MeEventController {
 
     @GetMapping("/past-sessions")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<Page<GetTicketDTO>> getMyPastSessions(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "asc") String direction,
-            @RequestParam(defaultValue = "id") String key
-    ) {
-        PageUtils pageUtils = new PageUtils(page, size, direction, key);
-        Page<Ticket> tickets = meEventService.getMyPastSessions(pageUtils);
-        return ResponseEntity.status(HttpStatus.OK).body(TicketDTOConverter.ticketDTOPage(tickets));
+    public ResponseEntity<?> getMyHistoricalSessions() {
+        meEventService.getMyHistoricalSessions();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/historical-events")
@@ -76,5 +70,4 @@ public class MeEventController {
         meEventService.signOutFromSession(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }

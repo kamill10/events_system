@@ -88,9 +88,4 @@ public class EventController {
         eventService.sendMail(placeHolder);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
-
-
-
 }
