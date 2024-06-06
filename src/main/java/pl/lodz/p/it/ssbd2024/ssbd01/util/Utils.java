@@ -1,10 +1,13 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.util;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.WrongRoleToAccountException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.AlreadySignUpException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.SessionNotActiveException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
@@ -30,4 +33,9 @@ public class Utils {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
         }
     }
+
+    public static boolean  isSessionActive(Session session) {
+        return session.getIsActive() && !session.getEndTime().isBefore(LocalDateTime.now());
+    }
+
 }

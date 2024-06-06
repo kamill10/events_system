@@ -99,28 +99,28 @@ public class ExceptionHandlingController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-//    @ExceptionHandler(MappingException.class)
-//    public ResponseEntity<String> handleMappingException(MappingException e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.MAPPING_ERROR);
-//    }
-//
-//    @ExceptionHandler(AnnotationException.class)
-//    public ResponseEntity<String> handleAnnotationException(AnnotationException e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.ANNOTATION_EXCEPTION);
-//    }
-//
-//    @ExceptionHandler(JDBCConnectionException.class)
-//    public ResponseEntity<String> handleJDBCConnectionException(JDBCConnectionException e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.JDBC_CONNECTION_ERROR);
-//    }
-//
-//    @ExceptionHandler(LazyInitializationException.class)
-//    public ResponseEntity<String> handleLazyInitializationException(LazyInitializationException e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.LAZY_INITIALIZATION_ERROR);
-//    }
-//
-//    @ExceptionHandler(HibernateException.class)
-//    public ResponseEntity<String> handleHibernateException(HibernateException e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.HIBERNATE_EXCEPTION);
-//    }
+    /*@ExceptionHandler(MappingException.class)
+    public ResponseEntity<String> handleMappingException(MappingException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.MAPPING_ERROR);
+    }
+
+    @ExceptionHandler(AnnotationException.class)
+    public ResponseEntity<String> handleAnnotationException(AnnotationException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.ANNOTATION_EXCEPTION);
+    }
+
+    @ExceptionHandler(JDBCConnectionException.class)
+    public ResponseEntity<String> handleJDBCConnectionException(JDBCConnectionException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.JDBC_CONNECTION_ERROR);
+    }
+
+    @ExceptionHandler(LazyInitializationException.class)
+    public ResponseEntity<String> handleLazyInitializationException(LazyInitializationException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.LAZY_INITIALIZATION_ERROR);
+    }
+
+    @ExceptionHandler(HibernateException.class)
+    public ResponseEntity<String> handleHibernateException(HibernateException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.HIBERNATE_EXCEPTION);
+    }*/
 }

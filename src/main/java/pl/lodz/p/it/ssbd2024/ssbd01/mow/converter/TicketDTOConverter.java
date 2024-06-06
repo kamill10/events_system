@@ -31,5 +31,4 @@ public class TicketDTOConverter {
     public static Page<GetTicketDTO> ticketDTOPage(Page<Ticket> ticketPage) {
         return ticketPage.map(TicketDTOConverter::toTicketDTO);
     }
-
 }

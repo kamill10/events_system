@@ -9,6 +9,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
-@PreAuthorize("hasRole('ROLE_MANAGER')")
+@PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_PARTICIPANT')")
 public interface SessionRepository extends JpaRepository<Session, UUID> {
 }

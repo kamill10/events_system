@@ -7,9 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,6 +33,12 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     Ticket saveAndFlush(Ticket ticket);
 
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    List<Ticket> findBySession(Session session);
+
+    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    Optional<Ticket> findBySessionAndAccount(Session session, Account account);
+
     @Query("SELECT t FROM Ticket t WHERE t.account.id = :accountId AND t.session.endTime < :now")
     Page<Ticket> findAllByAccountIdAndEndTimeBeforeNow(UUID accountId, LocalDateTime now, Pageable pageable);
+
 }
