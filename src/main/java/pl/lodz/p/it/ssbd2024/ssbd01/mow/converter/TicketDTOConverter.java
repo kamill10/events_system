@@ -24,7 +24,7 @@ public class TicketDTOConverter {
                 ticket.getId(),
                 SessionDTOConverter.toSessionDetailedDTO(ticket.getSession()),
                 ticket.getReservationTime(),
-                ticket.getIsConfirmed()
+                ticket.getIsNotCancelled()
         );
     }
 
