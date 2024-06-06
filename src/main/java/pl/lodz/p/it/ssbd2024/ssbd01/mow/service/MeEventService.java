@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static pl.lodz.p.it.ssbd2024.ssbd01.util.Utils.canReserveSession;
 import static pl.lodz.p.it.ssbd2024.ssbd01.util.Utils.isSessionActive;
 
 @Service
@@ -42,8 +41,7 @@ public class MeEventService {
             throws SessionNotFoundException, SessionNotActiveException, AlreadySignUpException, MaxSeatsOfSessionReachedException {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = (Account) authentication.getPrincipal();
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         isSessionActive(session);
         if (ticketRepository.findBySession(session).size() >= session.getMaxSeats()) {
             throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
@@ -51,11 +49,12 @@ public class MeEventService {
         Optional<Ticket> accountTicket = ticketRepository.findBySessionAndAccount(session, account);
         if (accountTicket.isPresent() && !accountTicket.get().getIsNotCancelled()) {
             accountTicket.get().setIsNotCancelled(true);
+            ticketRepository.saveAndFlush(accountTicket.get());
         } else if (accountTicket.isPresent()) {
             throw new AlreadySignUpException(ExceptionMessages.ALREADY_SIGNED_UP);
         }
         Ticket ticket = new Ticket(account, session);
-        ticketRepository.save(ticket);
+        ticketRepository.saveAndFlush(ticket);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
@@ -91,11 +90,9 @@ public class MeEventService {
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public void signOutFromSession(UUID id) throws TicketNotFoundException, TicketAlreadyCancelledException {
         Ticket ticket = ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
-
         if (!ticket.getIsNotCancelled()) {
             throw new TicketAlreadyCancelledException(ExceptionMessages.TICKET_ALREADY_CANCELLED);
         }
-
         ticket.setIsNotCancelled(false);
         ticketRepository.saveAndFlush(ticket);
     }
