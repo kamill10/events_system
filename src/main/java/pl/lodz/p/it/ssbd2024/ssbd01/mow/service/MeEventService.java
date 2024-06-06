@@ -51,10 +51,8 @@ public class MeEventService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public Page<Ticket> getMyPastSessions(PageUtils pageUtils) {
-        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Pageable pageable = pageUtils.buildPageable();
-        return ticketRepository.findAllByAccountIdAndEndTimeBeforeNow(account.getId(), LocalDateTime.now(), pageable);
+    public Page<Ticket> getMyHistoricalSessions() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
@@ -62,7 +60,6 @@ public class MeEventService {
     public void getMyHistoricalEvents() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
@@ -76,5 +73,4 @@ public class MeEventService {
         ticket.setIsNotCancelled(false);
         ticketRepository.saveAndFlush(ticket);
     }
-
 }
