@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketAlreadyCancelledException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
@@ -34,7 +35,8 @@ public class MeEventService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public void signUpForSession(UUID sessionId)
-            throws SessionNotFoundException, SessionNotActiveException, AlreadySignUpException, MaxSeatsOfSessionReachedException {
+            throws SessionNotFoundException, SessionNotActiveException, AlreadySignUpException, MaxSeatsOfSessionReachedException,
+            SessionNotActiveException {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
