@@ -15,11 +15,11 @@ public class LocationDTOConverter {
         return new GetLocationDTO(
                 location.getId(),
                 location.getName(),
+                location.getCity(),
+                location.getCountry(),
                 location.getStreet(),
                 location.getBuildingNumber(),
-                location.getPostalCode(),
-                location.getCity(),
-                location.getCountry()
+                location.getPostalCode()
         );
     }
 
@@ -32,22 +32,22 @@ public class LocationDTOConverter {
     public static Location toLocation(CreateLocationDTO createLocationDTO) {
         return new Location(
                 createLocationDTO.name(),
+                createLocationDTO.city(),
+                createLocationDTO.country(),
                 createLocationDTO.street(),
                 createLocationDTO.buildingNumber(),
-                createLocationDTO.postalCode(),
-                createLocationDTO.city(),
-                createLocationDTO.country()
+                createLocationDTO.postalCode()
         );
     }
 
     public static Location toLocation(UpdateLocationDTO updateLocationDTO) {
         return new Location(
                 updateLocationDTO.name(),
+                updateLocationDTO.city(),
+                updateLocationDTO.country(),
                 updateLocationDTO.street(),
                 updateLocationDTO.buildingNumber(),
-                updateLocationDTO.postalCode(),
-                updateLocationDTO.city(),
-                updateLocationDTO.country()
+                updateLocationDTO.postalCode()
         );
     }
 
