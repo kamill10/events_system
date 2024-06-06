@@ -8,50 +8,50 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 
 
-
+@Component
 public class LocationDTOConverter {
 
-    public static GetLocationDTO toLocationDto(Location location) {
+    public GetLocationDTO toLocationDto(Location location) {
         return new GetLocationDTO(
                 location.getId(),
                 location.getName(),
+                location.getCity(),
+                location.getCountry(),
                 location.getStreet(),
                 location.getBuildingNumber(),
-                location.getPostalCode(),
-                location.getCity(),
-                location.getCountry()
+                location.getPostalCode()
         );
     }
 
 
-    public static Page<GetLocationDTO> locationDTOPage(Page<Location> locationPage) {
-        return locationPage.map(LocationDTOConverter::toLocationDto);
+    public Page<GetLocationDTO> locationDTOPage(Page<Location> locationPage) {
+        return locationPage.map(this::toLocationDto);
     }
 
 
-    public static Location toLocation(CreateLocationDTO createLocationDTO) {
+    public Location toLocation(CreateLocationDTO createLocationDTO) {
         return new Location(
                 createLocationDTO.name(),
+                createLocationDTO.city(),
+                createLocationDTO.country(),
                 createLocationDTO.street(),
                 createLocationDTO.buildingNumber(),
-                createLocationDTO.postalCode(),
-                createLocationDTO.city(),
-                createLocationDTO.country()
+                createLocationDTO.postalCode()
         );
     }
 
-    public static Location toLocation(UpdateLocationDTO updateLocationDTO) {
+    public Location toLocation(UpdateLocationDTO updateLocationDTO) {
         return new Location(
                 updateLocationDTO.name(),
+                updateLocationDTO.city(),
+                updateLocationDTO.country(),
                 updateLocationDTO.street(),
                 updateLocationDTO.buildingNumber(),
-                updateLocationDTO.postalCode(),
-                updateLocationDTO.city(),
-                updateLocationDTO.country()
+                updateLocationDTO.postalCode()
         );
     }
 
-    public static GetLocationDTO toGetLocationDTO(Location location) {
+    public GetLocationDTO toGetLocationDTO(Location location) {
         return new GetLocationDTO(
                 location.getId(),
                 location.getName(),

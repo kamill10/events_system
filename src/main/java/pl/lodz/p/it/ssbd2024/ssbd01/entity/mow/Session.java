@@ -8,6 +8,8 @@ import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -32,9 +34,14 @@ public class Session extends ControlledEntity {
     @Size(min = 3, max = 64)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(
+            fetch = FetchType.LAZY
+    )
     @JoinColumn(nullable = false, name = "event_id")
     private Event event;
+
+    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private List<Ticket> tickets = new ArrayList<>();
 
     @Column(nullable = false)
     @NotNull

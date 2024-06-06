@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
 
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class EventController {
 
     private final EventService eventService;
+    private final EventDTOConverter eventDTOConverter;
 
     /**
      * Method for selecting all events that have not finished yet.
@@ -28,7 +31,7 @@ public class EventController {
     public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents() {
         var events = eventService.getAllNotEndedEvents();
         var eventsDTO = events.stream()
-                .map(EventDTOConverter::getEventDTO)
+                .map(eventDTOConverter::getEventDTO)
                 .toList();
         return ResponseEntity.status(HttpStatus.OK).body(eventsDTO);
     }
@@ -77,7 +80,7 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> cancelEvent(@PathVariable UUID id) {
+    public ResponseEntity<?> cancelEvent(@PathVariable UUID id) throws EventNotFoundException, EventAlreadyCancelledException {
         eventService.cancelEvent(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -88,9 +91,4 @@ public class EventController {
         eventService.sendMail(placeHolder);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
-
-
-
 }
