@@ -57,4 +57,6 @@ public class ExceptionMessages {
     public static final String  SESSION_NOT_ACTIVE = "Session not active. ";
     public static final String ALREADY_SIGNED_UP = "Already signed up. ";
     public static final String MAX_SEATS_REACHED = "Max seats reached.";
+    public static final String EVENT_NOT_FOUND = "Event not found.";
+    public static final String EVENT_ALREADY_CANCELLED = "Event have already been cancelled.";
 }

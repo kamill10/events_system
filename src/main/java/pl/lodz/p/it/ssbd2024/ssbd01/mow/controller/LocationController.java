@@ -60,11 +60,10 @@ public class LocationController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetLocationDTO> updateLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id, @RequestBody
     UpdateLocationDTO updateLocationDTO) throws LocationNotFoundException, OptLockException {
-        var location = locationService.updateLocation(id, LocationDTOConverter.toLocation(updateLocationDTO), eTagReceived);
-        String eTag = ETagBuilder.buildETag(location.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.IF_MATCH, eTag)
-                .body(LocationDTOConverter.toGetLocationDTO(location));
+                .body(LocationDTOConverter.toGetLocationDTO(locationService
+                        .updateLocation(id, LocationDTOConverter
+                                .toLocation(updateLocationDTO), eTagReceived)));
     }
 
     @GetMapping("/{id}")
