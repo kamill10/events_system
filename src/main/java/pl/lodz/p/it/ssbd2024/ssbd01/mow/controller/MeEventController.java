@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketAlreadyCancelledException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.TicketDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.MeEventService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
@@ -26,7 +27,8 @@ public class MeEventController {
 
     @PostMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<?> signUpForSession(@PathVariable UUID id) {
+    public ResponseEntity<?> signUpForSession(@PathVariable UUID id)
+            throws SessionNotFoundException, SessionNotActiveException, MaxSeatsOfSessionReachedException, AlreadySignUpException {
         meEventService.signUpForSession(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
