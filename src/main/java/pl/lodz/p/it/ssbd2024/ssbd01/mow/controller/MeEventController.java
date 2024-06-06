@@ -72,5 +72,4 @@ public class MeEventController {
         meEventService.signOutFromSession(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
 }

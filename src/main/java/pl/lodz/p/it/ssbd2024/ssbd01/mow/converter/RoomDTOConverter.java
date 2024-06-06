@@ -37,5 +37,4 @@ public class RoomDTOConverter {
                 LocationDTOConverter.toLocationDto(room.getLocation())
         );
     }
-
 }

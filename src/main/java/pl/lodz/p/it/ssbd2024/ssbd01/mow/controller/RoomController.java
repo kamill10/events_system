@@ -44,5 +44,4 @@ public class RoomController {
                 .body(RoomDTOConverter.toRoomDto(roomService
                         .updateRoom(roomId, RoomDTOConverter.toRoom(roomDTO), eTagReceived)));
     }
-
 }
