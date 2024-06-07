@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
@@ -19,9 +20,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static pl.lodz.p.it.ssbd2024.ssbd01.util.Utils.isSessionActive;
 
@@ -31,6 +33,7 @@ public class MeEventService {
 
     private final SessionRepository sessionRepository;
     private final TicketRepository ticketRepository;
+    private final EventRepository eventRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
@@ -81,8 +84,15 @@ public class MeEventService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public void getMyHistoricalEvents() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Page<Event> getMyHistoricalEvents(PageUtils pageUtils) {
+        List<Session> accountHistoricalSessions = getMyHistoricalSessions(pageUtils).stream()
+                .map(Ticket::getSession).toList();
+        Set<Event> events = accountHistoricalSessions.stream()
+                .map(Session::getEvent).collect(Collectors.toSet());
+       List<Event> pastEvents =  events.stream().filter(event -> event
+               .getEndDate().isBefore(LocalDate.now())).toList();
+        Pageable pageable = pageUtils.buildPageable();
+        return eventRepository.findAllByIdIn(pastEvents.stream().map(Event::getId).toList(), pageable);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
