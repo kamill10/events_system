@@ -25,7 +25,7 @@ export const Pathnames = {
   },
   manager: {
     locations: "/locations",
-    location: "/location/:id",
+    location: "/locations/:id",
     speakers: "/speakers",
     speaker: "/speakers/:id",
   },

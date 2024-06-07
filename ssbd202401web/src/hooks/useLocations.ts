@@ -41,9 +41,37 @@ export const useLocations = () => {
     }
   };
 
+  const getLocationById = async (id: string) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getLocation(id);
+      console.log(data);
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: 'error',
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: 'error',
+          description: t('getLocationByIdFail'),
+        });
+      }
+      return null;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+
+
   return {
     locations,
     isFetching,
     getLocationsWithPagination,
+    getLocationById
   };
 };
