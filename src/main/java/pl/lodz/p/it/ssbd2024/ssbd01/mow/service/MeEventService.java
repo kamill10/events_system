@@ -38,7 +38,7 @@ public class MeEventService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public void signUpForSession(UUID sessionId)
-            throws SessionNotFoundException, SessionNotActiveException, AlreadySignUpException, MaxSeatsOfSessionReachedException,
+            throws SessionNotFoundException, AlreadySignUpException, MaxSeatsOfSessionReachedException,
             SessionNotActiveException {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
