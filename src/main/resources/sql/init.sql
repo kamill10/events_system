@@ -327,9 +327,11 @@ INSERT INTO public.location (id, version, name, street, buildingNumber, postalCo
 
 INSERT INTO public.room (id, version, name, location_id, maxCapacity, isactive, created_at, action_type) VALUES ('78f0f497-10b7-4478-9a28-c9dc86118e67', 0, '443', 'da7cfcfa-5f1c-4a85-8f93-1022f28f747a', 30, true, '2024-06-05', 'CREATE');
 
-INSERT INTO public.speaker (id, version, firstName, lastName, created_at, action_type) VALUES ('713c84a3-03bd-4206-ac5c-ecf8d7d04ae6', 0, 'Krzysztof', 'Ślusarksi', '2024-06-05', 'CREATE');
+INSERT INTO public.speaker (id, version, firstName, lastName, created_at, action_type) VALUES ('713c84a3-03bd-4206-ac5c-ecf8d7d04ae6', 0, 'Krzysztof', 'Ślusarski', '2024-06-05', 'CREATE');
 
 INSERT INTO public.session (id, version, room_id, speaker_id, name, event_id, isActive, description, startTime, endTime, maxSeats, counter, created_at, action_type) VALUES ('4b2555e9-61f1-4c1d-9d7a-f425696eb2d2', 0, '78f0f497-10b7-4478-9a28-c9dc86118e67', '713c84a3-03bd-4206-ac5c-ecf8d7d04ae6', 'Dlaczego Java jest najlepsza', 'dbe1b405-aed0-4d0a-bda7-50938e7b45f1', true, 'Wykład o najlepszym języku programowania na świecie', '2024-11-13 12:00:00', '2024-11-13 15:00:00', 30, 0, '2024-06-05', 'CREATE');
 
 INSERT INTO public.ticket (id, version, account_id, session_id, isNotCancelled, reservationTime, created_at, action_type) VALUES ('0b7edef0-55cb-4cc9-a7f2-95a662125511', 0, '4a7945b6-b063-45f8-acf6-a1c0d5391673', '4b2555e9-61f1-4c1d-9d7a-f425696eb2d2', true, '2024-06-05 12:00:00', '2024-06-05 12:00:00', 'CREATE');
 INSERT INTO public.speaker (id, firstname, lastname,created_at,action_type,version) VALUES ('f3c50886-bb5a-451c-99a3-6a79a6329cb5', 'Lionel', 'Mesi', '2024-04-09 07:32:00', 'CREATE',1);
+INSERT INTO public.speaker (id, firstname, lastname,created_at,action_type,version) VALUES ('f3c50886-bb5a-451c-99a3-6a79a6329cb6', 'Antoni', 'Nowak', '2024-04-09 07:32:00', 'CREATE',1);
+INSERT INTO public.speaker (id, firstname, lastname,created_at,action_type,version) VALUES ('f3c50886-bb5a-451c-99a3-6a79a6329cb7', 'Piotr', 'Kowalski', '2024-04-09 07:32:00', 'CREATE',1);

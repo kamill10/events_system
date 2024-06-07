@@ -350,6 +350,7 @@ i18next
           postalCode: "Kod pocztowy",
           locationDetails: "Szczegóły lokalizacji",
           manageLocations: "Zarządzaj lokalizacjami",
+          changeLocationDetails: "Zmien szczegóły lokalizacji",
         },
       },
       ENGLISH: {
@@ -655,6 +656,7 @@ i18next
           postalCode: "Postal code",
           locationDetails: "Location details",
           manageLocations: "Manage locations",
+          changeLocationDetails: "Change location details",
         },
       },
     },

@@ -7,6 +7,7 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(uniqueConstraints =
 @UniqueConstraint(columnNames = {"firstName", "lastName"}),
         name = "speaker"
@@ -30,6 +32,11 @@ public class Speaker extends ControlledEntity {
     @NotBlank
     @Size(min = 2, max = 64)
     private String lastName;
+
+    public Speaker(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     @Override
     public boolean equals(Object o) {
