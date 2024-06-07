@@ -1,3 +1,5 @@
+import { PaginationResponse } from "./Pagination";
+
 export interface Location {
   id: string;
   name: string;
@@ -8,6 +10,8 @@ export interface Location {
   postalCode: string;
 }
 
+export interface PaginationLocationResponse
+  extends PaginationResponse<Location> {}
 export interface CreateLocation {
   name: string;
   city: string;

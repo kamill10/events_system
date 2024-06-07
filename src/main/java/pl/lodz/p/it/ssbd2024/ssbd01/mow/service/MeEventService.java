@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
@@ -19,9 +20,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static pl.lodz.p.it.ssbd2024.ssbd01.util.Utils.isSessionActive;
 
@@ -31,11 +33,12 @@ public class MeEventService {
 
     private final SessionRepository sessionRepository;
     private final TicketRepository ticketRepository;
+    private final EventRepository eventRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public void signUpForSession(UUID sessionId)
-            throws SessionNotFoundException, SessionNotActiveException, AlreadySignUpException, MaxSeatsOfSessionReachedException,
+            throws SessionNotFoundException, AlreadySignUpException, MaxSeatsOfSessionReachedException,
             SessionNotActiveException {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
@@ -49,6 +52,7 @@ public class MeEventService {
         Optional<Ticket> accountTicket = ticketRepository.findBySessionAndAccount(session, account);
         if (accountTicket.isPresent() && !accountTicket.get().getIsNotCancelled()) {
             accountTicket.get().setIsNotCancelled(true);
+            accountTicket.get().setReservationTime(LocalDateTime.now());
             ticketRepository.saveAndFlush(accountTicket.get());
         } else if (accountTicket.isPresent()) {
             throw new AlreadySignUpException(ExceptionMessages.ALREADY_SIGNED_UP);
@@ -81,8 +85,11 @@ public class MeEventService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public void getMyHistoricalEvents() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Page<Event> getMyHistoricalEvents(PageUtils pageUtils) {
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Pageable pageable = pageUtils.buildPageable();
+        return eventRepository.findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDate.now(),
+                account, pageable);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")

@@ -19,7 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Session extends ControlledEntity {
 
-    @OneToOne
+    @ManyToOne
     @NotNull
     @JoinColumn(nullable = false, name = "room_id")
     private Room room;
