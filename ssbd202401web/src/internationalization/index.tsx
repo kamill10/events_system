@@ -364,7 +364,8 @@ i18next
           countryRequired: "Kraj jest wymagany",
           streetWrongFormat: "Ulica może zawierać tylko znaki alfanumeryczne",
           streetRequired: "Ulica jest wymagana",
-          buildingNumberWrongFormat: "Numer budynku może zawierać tylko znaki alfanumeryczne",
+          buildingNumberWrongFormat:
+            "Numer budynku może zawierać tylko znaki alfanumeryczne",
           buildingNumberRequired: "Numer budynku jest wymagany",
           postalCodeWrongFormat: "Kod pocztowy musi być w formacie XX-XXX",
           postalCodeRequired: "Kod pocztowy jest wymagany",
@@ -687,7 +688,8 @@ i18next
           countryRequired: "Country is required",
           streetWrongFormat: "Street can contain only alphanumeric values",
           streetRequired: "Street is required",
-          buildingNumberWrongFormat: "Building number can contain only alphanumeric values",
+          buildingNumberWrongFormat:
+            "Building number can contain only alphanumeric values",
           buildingNumberRequired: "Building number is required",
           postalCodeWrongFormat: "Postal code must be in format XX-XXX",
           postalCodeRequired: "Postal code is required",

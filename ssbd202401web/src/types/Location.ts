@@ -9,12 +9,12 @@ export interface Location {
 }
 
 export interface CreateLocation {
-    name: string;
-    city: string;
-    country: string;
-    street: string;
-    buildingNumber: string;
-    postalCode: string;
+  name: string;
+  city: string;
+  country: string;
+  street: string;
+  buildingNumber: string;
+  postalCode: string;
 }
 
 export interface Sort {

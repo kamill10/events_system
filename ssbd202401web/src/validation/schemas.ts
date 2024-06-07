@@ -15,7 +15,7 @@ import {
 import { SortingRequestParams } from "../types/SortingRequestParams";
 import i18next from "i18next";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
-import {CreateLocation} from "../types/Location.ts";
+import { CreateLocation } from "../types/Location.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -271,9 +271,8 @@ export function initValidation() {
       .matches(/[\w+]/, i18next.t("buildingNumberWrongFormat"))
       .required(i18next.t("buildingNumberRequired")),
     postalCode: yup
-        .string()
-        .matches(/^\d{2}-\d{3}$/, i18next.t("postalCodeWrongFormat"))
-        .required(i18next.t("postalCodeRequired")),
+      .string()
+      .matches(/^\d{2}-\d{3}$/, i18next.t("postalCodeWrongFormat"))
+      .required(i18next.t("postalCodeRequired")),
   });
-
 }

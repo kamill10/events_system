@@ -4,7 +4,7 @@ import { api } from "../axios/axios.config.ts";
 import { AxiosError } from "axios";
 import { useLocationsState } from "../context/LocationsContext.tsx";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
-import {CreateLocation} from "../types/Location.ts";
+import { CreateLocation } from "../types/Location.ts";
 
 export const useLocations = () => {
   const sendNotification = useNotification();
@@ -52,13 +52,13 @@ export const useLocations = () => {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
-          type: 'error',
+          type: "error",
           description: t(e.response?.data),
         });
       } else {
         sendNotification({
-          type: 'error',
-          description: t('getLocationByIdFail'),
+          type: "error",
+          description: t("getLocationByIdFail"),
         });
       }
       return null;
@@ -73,27 +73,26 @@ export const useLocations = () => {
       console.log(location);
       await api.addLocation(location);
       sendNotification({
-        type: 'success',
-        description: t('addLocationSuccess'),
+        type: "success",
+        description: t("addLocationSuccess"),
       });
     } catch (e) {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
-          type: 'error',
+          type: "error",
           description: t(e.response?.data),
         });
       } else {
         sendNotification({
-          type: 'error',
-          description: t('addLocationFail'),
+          type: "error",
+          description: t("addLocationFail"),
         });
       }
     } finally {
       setIsFetching(false);
     }
-  }
-
+  };
 
   return {
     locations,
