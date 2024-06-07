@@ -1,27 +1,29 @@
  import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Breadcrumbs,
-  Button,
-  Divider,
-  MenuItem,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary, Box,
+    Breadcrumbs,
+    Button,
+    Divider,
+    MenuItem,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TextField,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography,
 } from "@mui/material";
 import ContainerComponent from "../components/ContainerComponent";
 import { useTranslation } from "react-i18next";
 import { useLocations } from "../hooks/useLocations.ts";
+import ModalComponent from "../components/ModalComponent.tsx";
+import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
@@ -35,16 +37,21 @@ import {
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { PaginationRequestParamsSchema } from "../validation/schemas.ts";
+import { PaginationRequestParamsSchema, AddLocationSchema } from "../validation/schemas.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import LocationRowComponent from "../components/LocationRowComponent.tsx";
+ import {CreateLocation} from "../types/Location.ts";
 
 export default function LocationsPage() {
   const { t } = useTranslation();
-  const { locations, getLocationsWithPagination } = useLocations();
+  const { locations, getLocationsWithPagination, addLocation } = useLocations();
   const [open, setOpen] = useState(false);
-  const { handleSubmit, control, setValue, getValues } =
-    useForm<PaginationRequestParams>({
+  const {
+      handleSubmit,
+      control,
+      setValue,
+      getValues
+  } = useForm<PaginationRequestParams>({
       defaultValues: {
         page: 0,
         size: 5,
@@ -53,6 +60,31 @@ export default function LocationsPage() {
       },
       resolver: yupResolver(PaginationRequestParamsSchema),
     });
+
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const {
+        handleSubmit: handleModalSubmit,
+        control: modalControl,
+        reset: modalReset ,
+    } = useForm<CreateLocation>({
+            defaultValues: {
+                name: "",
+                city: "",
+                country: "",
+                street: "",
+                buildingNumber: "",
+                postalCode: "",
+            },
+            resolver: yupResolver(AddLocationSchema),
+        });
+
+    const onModalSubmit: SubmitHandler<any> = async (data) => {
+        await addLocation(data);
+        setModalOpen(false);
+        modalReset();
+        getLocationsWithPagination(getValues());
+    };
 
   const onSubmit: SubmitHandler<PaginationRequestParams> = async (data) => {
     await getLocationsWithPagination(data);
@@ -99,16 +131,26 @@ export default function LocationsPage() {
       </Breadcrumbs>
       <Typography variant="h3">{t("manageLocations")}</Typography>
       <Divider sx={{ marginTop: "1rem", marginBottom: "2rem" }} />
-      <Button
-        variant="contained"
-        sx={{
-          marginY: 2,
-        }}
-        startIcon={<RefreshIcon />}
-        onClick={() => getLocationsWithPagination(getValues())}
-      >
-        {t("refreshData")}
-      </Button>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Button
+                variant="contained"
+                sx={{
+                    marginY: 2,
+                }}
+                startIcon={<RefreshIcon />}
+                onClick={() => getLocationsWithPagination(getValues())}
+            >
+                {t("refreshData")}
+            </Button>
+            <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={() => setModalOpen(true)}
+            >
+                {t("addLocation")}
+            </Button>
+        </Box>
       <Accordion
         expanded={open}
         onChange={() => setOpen(!open)}
@@ -291,6 +333,97 @@ export default function LocationsPage() {
           }}
         />
       </TableContainer>
+        <ModalComponent open={modalOpen} onClose={() => setModalOpen(false)}>
+            <>
+                <Typography variant="h6" component="h2">
+                    {t("addLocation")}
+                </Typography>
+                <form onSubmit={handleModalSubmit(onModalSubmit)}>
+                    <Controller
+                        name="name"
+                        control={modalControl}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label={t("name")}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="city"
+                        control={modalControl}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label={t("city")}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="country"
+                        control={modalControl}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label={t("country")}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="street"
+                        control={modalControl}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label={t("street")}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="buildingNumber"
+                        control={modalControl}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label={t("buildingNumber")}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="postalCode"
+                        control={modalControl}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label={t("postalCode")}
+                                fullWidth
+                                margin="normal"
+                            />
+                        )}
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{
+                            marginTop: 2,
+                        }}
+                        fullWidth
+                    >
+                        {t("submit")}
+                    </Button>
+                </form>
+            </>
+        </ModalComponent>
     </ContainerComponent>
   );
 }

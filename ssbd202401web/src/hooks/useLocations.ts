@@ -4,6 +4,7 @@ import { api } from "../axios/axios.config.ts";
 import { AxiosError } from "axios";
 import { useLocationsState } from "../context/LocationsContext.tsx";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
+import {CreateLocation} from "../types/Location.ts";
 
 export const useLocations = () => {
   const sendNotification = useNotification();
@@ -66,12 +67,39 @@ export const useLocations = () => {
     }
   };
 
+  const addLocation = async (location: CreateLocation) => {
+    try {
+      setIsFetching(true);
+      console.log(location);
+      await api.addLocation(location);
+      sendNotification({
+        type: 'success',
+        description: t('addLocationSuccess'),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: 'error',
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: 'error',
+          description: t('addLocationFail'),
+        });
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  }
 
 
   return {
     locations,
     isFetching,
     getLocationsWithPagination,
-    getLocationById
+    getLocationById,
+    addLocation,
   };
 };

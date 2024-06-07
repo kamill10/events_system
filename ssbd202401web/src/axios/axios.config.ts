@@ -16,7 +16,7 @@ import {
   ResetPasswordType,
   SignInCredentialsType,
 } from "../types/Authentication.ts";
-import { PaginationLocationResponse } from "../types/Location.ts";
+import {CreateLocation, PaginationLocationResponse} from "../types/Location.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
 import { NavigateFunction } from "react-router-dom";
@@ -26,7 +26,7 @@ import { AccountChangesType } from "../types/AccountChanges.ts";
 import { Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 
-const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
+const API_URL: string = "http://localhost:8080/EventSymphony/api";
 const TIMEOUT_MS: number = 30000;
 
 const DEFAULT_HEADERS = {
@@ -241,5 +241,7 @@ export const api = {
     return apiWithAuthToken.get(url);
   },
   getLocation: (id: string) :ApiResponseType<Location> =>
-      apiWithAuthToken.get(`/location/${id}`)
+      apiWithAuthToken.get(`/location/${id}`),
+  addLocation: (location: CreateLocation) =>
+      apiWithAuthToken.post("/location", location),
 };

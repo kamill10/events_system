@@ -8,6 +8,15 @@ export interface Location {
   postalCode: string;
 }
 
+export interface CreateLocation {
+    name: string;
+    city: string;
+    country: string;
+    street: string;
+    buildingNumber: string;
+    postalCode: string;
+}
+
 export interface Sort {
   empty: boolean;
   sorted: boolean;

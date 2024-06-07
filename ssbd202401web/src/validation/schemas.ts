@@ -15,6 +15,7 @@ import {
 import { SortingRequestParams } from "../types/SortingRequestParams";
 import i18next from "i18next";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
+import {CreateLocation} from "../types/Location.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -27,6 +28,7 @@ export let ManageAccountValidationSchema: yup.ObjectSchema<ManageAccountType>;
 export let ChangeEmailSchema: yup.ObjectSchema<ChangeEmailType>;
 export let SortingRequestParamsSchema: yup.ObjectSchema<SortingRequestParams>;
 export let PaginationRequestParamsSchema: yup.ObjectSchema<PaginationRequestParams>;
+export let AddLocationSchema: yup.ObjectSchema<CreateLocation>;
 
 export function initValidation() {
   signInValidationSchema = yup.object<SignInCredentialsType>().shape({
@@ -245,4 +247,33 @@ export function initValidation() {
         "postalCode",
       ]),
   });
+
+  AddLocationSchema = yup.object<CreateLocation>().shape({
+    name: yup
+      .string()
+      .min(3, i18next.t("nameTooShort"))
+      .max(128, i18next.t("nameTooLong"))
+      .required(i18next.t("nameRequired")),
+    city: yup
+      .string()
+      .matches(/[\w+]/, i18next.t("cityWrongFormat"))
+      .required(i18next.t("cityRequired")),
+    country: yup
+      .string()
+      .matches(/[\w+]/, i18next.t("countryWrongFormat"))
+      .required(i18next.t("countryRequired")),
+    street: yup
+      .string()
+      .matches(/[\w+]/, i18next.t("streetWrongFormat"))
+      .required(i18next.t("streetRequired")),
+    buildingNumber: yup
+      .string()
+      .matches(/[\w+]/, i18next.t("buildingNumberWrongFormat"))
+      .required(i18next.t("buildingNumberRequired")),
+    postalCode: yup
+        .string()
+        .matches(/^\d{2}-\d{3}$/, i18next.t("postalCodeWrongFormat")) // Walidacja formatu kodu pocztowego
+        .required(i18next.t("postalCodeRequired")),
+  });
+
 }

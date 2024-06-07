@@ -25,7 +25,10 @@ export default function ModalComponent({
   children: ReactElement;
 }) {
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} sx={{
+      maxHeight: "90vh",
+      overflow: "auto",
+    }}>
       <Box sx={style}>{children}</Box>
     </Modal>
   );
