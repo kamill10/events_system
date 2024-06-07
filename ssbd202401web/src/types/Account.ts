@@ -1,3 +1,4 @@
+import { PaginationResponse } from "./Pagination.ts";
 import { AccountTypeEnum } from "./enums/AccountType.enum.ts";
 import { LanguageType } from "./enums/LanguageType.enum.ts";
 
@@ -59,34 +60,8 @@ export interface ChangeEmailType {
   email: string;
 }
 
-export interface Sort {
-  empty: boolean;
-  sorted: boolean;
-  unsorted: boolean;
-}
-
-export interface Pageable {
-  pageNumber: number;
-  pageSize: number;
-  sort: Sort;
-  offset: number;
-  paged: boolean;
-  unpaged: boolean;
-}
-
-export interface PaginationResponse {
-  content: GetAccountType[];
-  pageable: Pageable;
-  last: boolean;
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  sort: Sort;
-  first: boolean;
-  numberOfElements: number;
-  empty: boolean;
-}
+export interface PaginationGetAccountResponse
+  extends PaginationResponse<GetAccountType> {}
 
 export interface AccountsWithNumberOfElements {
   accounts: GetAccountType[];
