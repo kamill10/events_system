@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.converter;
 
+import org.springframework.data.domain.Page;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 
@@ -15,5 +16,9 @@ public class EventDTOConverter {
                 event.getStartDate(),
                 event.getEndDate()
         );
+    }
+
+    public static Page<GetEventDTO> eventDTOPage(Page<Event> eventPage) {
+        return eventPage.map(EventDTOConverter::getEventDTO);
     }
 }
