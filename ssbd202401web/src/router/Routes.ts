@@ -4,7 +4,7 @@ import EventsPage from "../pages/EventsPage.tsx";
 import LoginPage from "../pages/LoginPage.tsx";
 import SigninPage from "../pages/SigninPage.tsx";
 import ProfilePage from "../pages/ProfilePage.tsx";
-import MyEventsPage from "../pages/MyEventsPage.tsx";
+import MyEventsPage from "../pages/MyTicketsPage.tsx";
 import EventPage from "../pages/EventPage.tsx";
 import LocationsPage from "../pages/LocationsPage.tsx";
 import LocationPage from "../pages/LocationPage.tsx";
@@ -126,9 +126,9 @@ export const AuthRoutes: RouteType[] = [
 
 export const ParticipantRoutes: RouteType[] = [
   {
-    pathname: Pathnames.participant.myEvents,
+    pathname: Pathnames.participant.myTickets,
     page: MyEventsPage,
-    name: "myEventsLink",
+    name: "myTicketsLink",
     renderOnNavbar: false,
     renderOnDropdown: true,
   },

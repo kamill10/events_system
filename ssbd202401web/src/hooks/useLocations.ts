@@ -51,13 +51,13 @@ export const useLocations = () => {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
-          type: 'error',
+          type: "error",
           description: t(e.response?.data),
         });
       } else {
         sendNotification({
-          type: 'error',
-          description: t('getLocationByIdFail'),
+          type: "error",
+          description: t("getLocationByIdFail"),
         });
       }
       return null;
@@ -66,12 +66,10 @@ export const useLocations = () => {
     }
   };
 
-
-
   return {
     locations,
     isFetching,
     getLocationsWithPagination,
-    getLocationById
+    getLocationById,
   };
 };

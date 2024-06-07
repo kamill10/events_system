@@ -7,10 +7,13 @@ import ChangePersonalDataComponent from "../components/ChangePersonalDataCompone
 import ContainerComponent from "../components/ContainerComponent";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { useAccount } from "../hooks/useAccount";
+import { Pathnames } from "../router/Pathnames";
 
 export default function ProfilePage() {
   const { t } = useTranslation();
   const [page, setPage] = useState(0);
+  const { isParticipant } = useAccount();
 
   const handleChange = (_: SyntheticEvent, newValue: number) => {
     setPage(newValue);
@@ -19,7 +22,10 @@ export default function ProfilePage() {
   return (
     <ContainerComponent>
       <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: 3 }}>
-        <Link to="/home" style={{ textDecoration: "none", color: "black" }}>
+        <Link
+          to={Pathnames.public.home}
+          style={{ textDecoration: "none", color: "black" }}
+        >
           {t("home")}
         </Link>
         <Link
@@ -32,6 +38,14 @@ export default function ProfilePage() {
         >
           {t("profileLink")}
         </Link>
+        {isParticipant && (
+          <Link
+            to={Pathnames.participant.myTickets}
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            {t("myTicketsLink")}
+          </Link>
+        )}
       </Breadcrumbs>
       <Tabs value={page} onChange={handleChange}>
         <Tab label={t("profileDetails")}></Tab>

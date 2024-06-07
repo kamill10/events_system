@@ -1,0 +1,22 @@
+import { TableCell, TableRow } from "@mui/material";
+import { Ticket } from "../types/Ticket";
+import parseDate from "../validation/parseDate";
+import { useAccount } from "../hooks/useAccount";
+
+export default function TicketRowComponent({ ticket }: { ticket: Ticket }) {
+  const { account } = useAccount();
+  return (
+    <TableRow hover>
+      <TableCell>{ticket.id}</TableCell>
+      <TableCell align="right">{ticket.name}</TableCell>
+      <TableCell align="right">
+        {parseDate(ticket.startTime, account?.accountTimeZone)}
+      </TableCell>
+      <TableCell align="right">
+        {parseDate(ticket.endTime, account?.accountTimeZone)}
+      </TableCell>
+      <TableCell align="right">{ticket.roomName}</TableCell>
+      <TableCell align="right">{ticket.locationName}</TableCell>
+    </TableRow>
+  );
+}

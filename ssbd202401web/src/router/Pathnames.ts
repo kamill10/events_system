@@ -21,7 +21,7 @@ export const Pathnames = {
     logout: "/logout",
   },
   participant: {
-    myEvents: "/profile/events",
+    myTickets: "/profile/tickets",
   },
   manager: {
     locations: "/locations",
