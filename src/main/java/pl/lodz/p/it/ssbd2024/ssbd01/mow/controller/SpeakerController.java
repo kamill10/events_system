@@ -5,6 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.create.CreateSpeakerDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Speaker;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SpeakerDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.SpeakerService;
@@ -40,9 +42,13 @@ public class SpeakerController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createSpeaker() {
-        speakerService.createSpeaker();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> createSpeaker(CreateSpeakerDTO createSpeakerDTO) {
+        return ResponseEntity
+                .ok(SpeakerDTOConverter
+                        .convertToDTO(speakerService
+                                        .createSpeaker(new Speaker(
+                                                createSpeakerDTO.firstName(),
+                                                createSpeakerDTO.lastName()))));
     }
 
     @PutMapping("/{id}")
