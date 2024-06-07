@@ -272,7 +272,7 @@ export function initValidation() {
       .required(i18next.t("buildingNumberRequired")),
     postalCode: yup
         .string()
-        .matches(/^\d{2}-\d{3}$/, i18next.t("postalCodeWrongFormat")) // Walidacja formatu kodu pocztowego
+        .matches(/^\d{2}-\d{3}$/, i18next.t("postalCodeWrongFormat"))
         .required(i18next.t("postalCodeRequired")),
   });
 
