@@ -15,7 +15,4 @@ import java.util.UUID;
 @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_PARTICIPANT')")
 public interface SessionRepository extends JpaRepository<Session, UUID> {
 
-    @Query("SELECT s FROM Session s WHERE s.id = :id AND s.event.endDate < :currentDate")
-    Optional<Session> findByIdAndEventEndDateBefore(UUID id, LocalDate currentDate);
-
 }
