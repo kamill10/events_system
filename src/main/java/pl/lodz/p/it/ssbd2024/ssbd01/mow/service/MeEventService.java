@@ -52,6 +52,7 @@ public class MeEventService {
         Optional<Ticket> accountTicket = ticketRepository.findBySessionAndAccount(session, account);
         if (accountTicket.isPresent() && !accountTicket.get().getIsNotCancelled()) {
             accountTicket.get().setIsNotCancelled(true);
+            accountTicket.get().setReservationTime(LocalDateTime.now());
             ticketRepository.saveAndFlush(accountTicket.get());
         } else if (accountTicket.isPresent()) {
             throw new AlreadySignUpException(ExceptionMessages.ALREADY_SIGNED_UP);
@@ -85,14 +86,10 @@ public class MeEventService {
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public Page<Event> getMyHistoricalEvents(PageUtils pageUtils) {
-        List<Session> accountHistoricalSessions = getMyHistoricalSessions(pageUtils).stream()
-                .map(Ticket::getSession).toList();
-        Set<Event> events = accountHistoricalSessions.stream()
-                .map(Session::getEvent).collect(Collectors.toSet());
-       List<Event> pastEvents =  events.stream().filter(event -> event
-               .getEndDate().isBefore(LocalDate.now())).toList();
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Pageable pageable = pageUtils.buildPageable();
-        return eventRepository.findAllByIdIn(pastEvents.stream().map(Event::getId).toList(), pageable);
+        return eventRepository.findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDate.now(),
+                account, pageable);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")

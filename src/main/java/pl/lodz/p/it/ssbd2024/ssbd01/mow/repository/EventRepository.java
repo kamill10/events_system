@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 
 import java.time.LocalDate;
@@ -20,14 +21,6 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     @PreAuthorize("permitAll()")
     List<Event> getByEndDateAfter(LocalDate date);
 
-    @Query("SELECT DISTINCT e FROM Event e "
-            + "JOIN e.sessions s "
-            + "JOIN s.tickets t "
-            + "WHERE t.account.id = :accountId "
-            + "AND e.endDate < :currentDate")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    Page<Event> findAllPastEventsByAccountId(UUID accountId, LocalDate currentDate,Pageable pageable);
-
-    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    Page<Event> findAllByIdIn(List<UUID> ids, Pageable pageable);
+    Page<Event> findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDate currentDate, Account account, Pageable pageable);
 }
