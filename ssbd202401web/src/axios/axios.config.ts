@@ -240,4 +240,6 @@ export const api = {
     }
     return apiWithAuthToken.get(url);
   },
+  getLocation: (id: string) :ApiResponseType<Location> =>
+      apiWithAuthToken.get(`/location/${id}`)
 };
