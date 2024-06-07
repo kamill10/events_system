@@ -25,9 +25,9 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
             + "JOIN s.tickets t "
             + "WHERE t.account.id = :accountId "
             + "AND e.endDate < :currentDate")
-    List<Event> findAllPastEventsByAccountId(UUID accountId, LocalDate currentDate);
+    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    Page<Event> findAllPastEventsByAccountId(UUID accountId, LocalDate currentDate,Pageable pageable);
 
-    Page<Event> findById(UUID id, Pageable pageable);
-
+    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     Page<Event> findAllByIdIn(List<UUID> ids, Pageable pageable);
 }
