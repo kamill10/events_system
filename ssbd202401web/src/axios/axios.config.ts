@@ -27,7 +27,7 @@ import { Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 
-const API_URL: string = "http://localhost:8080/eventsymphony/api";
+const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
 
 const DEFAULT_HEADERS = {
