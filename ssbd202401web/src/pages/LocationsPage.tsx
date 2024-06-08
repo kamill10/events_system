@@ -187,7 +187,7 @@ export default function LocationsPage() {
         }}
       >
         <AccordionSummary expandIcon={<ArrowDownwardIcon />}>
-          <Typography variant="h5">{t("filterData")}</Typography>
+          <Typography variant="h5">{t("sortData")}</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ padding: "1px" }}>
           <FormComponent
@@ -263,7 +263,7 @@ export default function LocationsPage() {
               }}
               startIcon={<FilterAltIcon />}
             >
-              {t("filterData")}
+              {t("sortData")}
             </Button>
           </FormComponent>
         </AccordionDetails>

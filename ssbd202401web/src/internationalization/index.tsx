@@ -395,6 +395,7 @@ i18next
             deleteLocationSuccess: "Pomyślnie usunięto lokalizację",
             deleteLocationByIdFail: "Nie udało się usunąć lokalizacji",
             clickButToDelLocation: "Naciśnij przycisk poniżej, aby usunąć lokalizację!",
+          sortData: "Sortuj dane w tablicy"
         },
       },
       ENGLISH: {
@@ -745,6 +746,7 @@ i18next
           deleteLocationSuccess: "Location has been deleted successfully",
           deleteLocationByIdFail: "Failed to delete location",
           clickButToDelLocation: "Click the button below to delete location",
+          sortData: "Sort data in table"
         },
       },
     },
