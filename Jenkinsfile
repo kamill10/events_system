@@ -22,16 +22,13 @@ pipeline {
             }
         }
 
-//         stage('Infrastructure setup') {
-//             steps {
-//                 dir("${WORKSPACE}/docker-test") {
-//                     sh('cd ../ssbd202401web/ && npm install && npm run build')
-//                     sh('rm -rf ./html/')
-//                     sh('cp -r ../ssbd202401web/dist/ html/')
-//                     sh('docker compose up -d --build')
-//                 }
-//             }
-//         }
+        stage('Frontend build') {
+            steps {
+                dir("${WORKSPACE}/docker-test") {
+                    sh('cd ../ssbd202401web/ && npm install && npm run build')
+                }
+            }
+        }
 
 //         stage('End-to-end tests') {
 //             steps {
