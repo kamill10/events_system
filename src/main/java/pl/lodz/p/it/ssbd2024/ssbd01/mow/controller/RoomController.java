@@ -2,6 +2,8 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +17,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.RoomNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.RoomDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.RoomService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,9 +29,16 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/{locationId}")
-    public ResponseEntity<List<GetRoomDTO>> getAllRooms(@PathVariable UUID locationId) {
-        List<GetRoomDTO> rooms = RoomDTOConverter.toRoomDto(roomService.getAllLocationRooms(locationId));
-        return ResponseEntity.ok(rooms);
+    public ResponseEntity<Page<GetRoomDTO>> getAllRooms(
+            @PathVariable UUID locationId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(defaultValue = "id") String key
+    ) {
+        PageUtils pageUtils = new PageUtils(page, size, direction, key);
+        Page<Room> rooms = roomService.getAllLocationRooms(locationId, pageUtils);
+        return ResponseEntity.status(HttpStatus.OK).body(RoomDTOConverter.roomDTOPage(rooms));
     }
 
     @GetMapping("/room/{roomId}")

@@ -7,7 +7,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 public record UpdateLocationDTO(
         @NotBlank(message = ExceptionMessages.INCORRECT_NAME)
-        @Size(min = 3, max = 32,message = ExceptionMessages.INCORRECT_NAME)
+        @Size(min = 3, max = 128,message = ExceptionMessages.INCORRECT_NAME)
         String name,
 
         @NotBlank(message = ExceptionMessages.INCORRECT_STREET)
