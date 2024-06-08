@@ -11,8 +11,6 @@ export default function MyTicketsPage() {
   const [page, setPage] = useState(0);
   const { t } = useTranslation();
 
-  useEffect(() => console.log(page), [page]);
-
   const handleChange = (_: SyntheticEvent, newValue: number) => {
     setPage(newValue);
   };
