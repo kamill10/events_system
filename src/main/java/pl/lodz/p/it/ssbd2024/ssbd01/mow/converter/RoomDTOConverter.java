@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.converter;
 
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateRoomDTO;
 import org.springframework.data.domain.Page;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetRoomDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateRoomDTO;
@@ -31,6 +32,13 @@ public class RoomDTOConverter {
         return new Room(
                 room.name(),
                 room.maxCapacity()
+        );
+    }
+
+    public static Room toRoom(CreateRoomDTO createRoomDTO) {
+        return new Room(
+                createRoomDTO.name(),
+                createRoomDTO.maxCapacity()
         );
     }
 
