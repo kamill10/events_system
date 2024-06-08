@@ -32,6 +32,7 @@ import { Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
+import {CreateSpeaker, PaginationSpeakerResponse, Speaker, UpdateSpeakerDataType} from "../types/Speaker.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -253,14 +254,44 @@ export const api = {
     id: string,
     location: UpdateLocationDataType,
   ): ApiResponseType<Location> => apiWithEtag.put(`/location/${id}`, location),
+  addLocation: (location: CreateLocation) =>
+      apiWithAuthToken.post("/location", location),
+  getSpeakersWithPagination: (
+      params: PaginationRequestParams,
+  ): ApiResponseType<PaginationSpeakerResponse> => {
+    let url = "/speakers";
+    let char = "?";
+    if (params.page) {
+      url += `?page=${params.page}`;
+      char = "&";
+    }
+    if (params.size) {
+      url += `${char}size=${params.size}`;
+      char = "&";
+    }
+    if (params.direction) {
+      url += `${char}direction=${params.direction}`;
+      char = "&";
+    }
+    if (params.key) {
+      url += `${char}key=${params.key}`;
+    }
+    return apiWithAuthToken.get(url);
+  },
+  getSpeaker: (id: string): ApiResponseType<Speaker> =>
+      apiWithEtag.get(`/speakers/${id}`),
+  updateSpeaker: (
+      id: string,
+      speaker: UpdateSpeakerDataType,
+  ): ApiResponseType<Speaker> => apiWithEtag.put(`/speakers/${id}`, speaker),
+  addSpeaker: (speaker: CreateSpeaker) =>
+      apiWithAuthToken.post("/speakers", speaker),
   getMyTicketsWithPagination: (
     params: PaginationRequestParams,
   ): ApiResponseType<PaginationTicketResponse> => {
-    let url = getUrlWithPaginationParams(params, "/events/me/sessions");
+    const url = getUrlWithPaginationParams(params, "/events/me/sessions");
     return apiWithEtag.get(url);
   },
-  addLocation: (location: CreateLocation) =>
-    apiWithAuthToken.post("/location", location),
   getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
     apiWithEtag.get("/events/me/past-sessions"),
   getTicket: (id: string): ApiResponseType<TicketDetailedType> =>
