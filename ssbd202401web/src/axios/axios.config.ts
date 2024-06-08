@@ -7,7 +7,7 @@ import {
   GetAccountType,
   GetDetailedAccountType,
   GetPersonalAccountType,
-  PaginationResponse,
+  PaginationGetAccountResponse,
   UpdatePersonalDataType,
 } from "../types/Account.ts";
 import {
@@ -16,7 +16,10 @@ import {
   ResetPasswordType,
   SignInCredentialsType,
 } from "../types/Authentication.ts";
-import {Location, PaginationLocationResponse, UpdateLocationDataType} from "../types/Location.ts";
+import {
+  CreateLocation,
+  PaginationLocationResponse,
+} from "../types/Location.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
 import { NavigateFunction } from "react-router-dom";
@@ -25,6 +28,7 @@ import { AccountChangesType } from "../types/AccountChanges.ts";
 
 import { Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
+import { PaginationTicketResponse } from "../types/Ticket.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -192,7 +196,7 @@ export const api = {
     apiWithEtag.patch("/me/user-data/theme", { theme }),
   getAccountsWithPagination: (
     params: SortingRequestParams,
-  ): ApiResponseType<PaginationResponse> => {
+  ): ApiResponseType<PaginationGetAccountResponse> => {
     let url = "/accounts/page";
     let char = "?";
     if (params.phrase) {
@@ -243,5 +247,7 @@ export const api = {
   getLocation: (id: string) :ApiResponseType<Location> =>
       apiWithAuthToken.get(`/location/${id}`),
   updateLocation: (id :string,location :UpdateLocationDataType) : ApiResponseType<Location> =>
-      apiWithEtag.put(`/location/${id}`,location)
+      apiWithEtag.put(`/location/${id}`,location),
+    getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
+        apiWithEtag.get("/events/me/past-sessions"),
 };

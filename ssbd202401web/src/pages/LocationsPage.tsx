@@ -1,7 +1,8 @@
- import {
+import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   Breadcrumbs,
   Button,
   Divider,
@@ -22,10 +23,13 @@
 import ContainerComponent from "../components/ContainerComponent";
 import { useTranslation } from "react-i18next";
 import { useLocations } from "../hooks/useLocations.ts";
+import ModalComponent from "../components/ModalComponent.tsx";
+import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import FormComponent from "../components/FormComponent.tsx";
+import ConfirmChangeModal from "../components/ConfirmChangeModal";
 import {
   Controller,
   SubmitErrorHandler,
@@ -35,13 +39,18 @@ import {
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { PaginationRequestParamsSchema } from "../validation/schemas.ts";
+import {
+  PaginationRequestParamsSchema,
+  AddLocationSchema,
+} from "../validation/schemas.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import LocationRowComponent from "../components/LocationRowComponent.tsx";
+import { CreateLocation } from "../types/Location.ts";
+import TextFieldComponent from "../components/TextFieldComponent.tsx";
 
 export default function LocationsPage() {
   const { t } = useTranslation();
-  const { locations, getLocationsWithPagination } = useLocations();
+  const { locations, getLocationsWithPagination, addLocation } = useLocations();
   const [open, setOpen] = useState(false);
   const { handleSubmit, control, setValue, getValues } =
     useForm<PaginationRequestParams>({
@@ -54,6 +63,51 @@ export default function LocationsPage() {
       resolver: yupResolver(PaginationRequestParamsSchema),
     });
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const {
+    handleSubmit: handleModalSubmit,
+    control: modalControl,
+    reset: modalReset,
+    trigger,
+    formState: { errors },
+  } = useForm<CreateLocation>({
+    defaultValues: {
+      name: "",
+      city: "",
+      country: "",
+      street: "",
+      buildingNumber: "",
+      postalCode: "",
+    },
+    resolver: yupResolver(AddLocationSchema),
+  });
+
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [pendingChanges, setPendingChanges] = useState<CreateLocation | null>(
+    null,
+  );
+
+  const handleConfirmChanges = () => {
+    if (pendingChanges) {
+      addLocation(pendingChanges)
+        .then(() => {
+          setModalOpen(false);
+          getLocationsWithPagination(getValues());
+        })
+        .catch((error) => {
+          console.error("Error adding location:", error);
+        });
+      setPendingChanges(null);
+    }
+    setConfirmModalOpen(false);
+  };
+
+  const handleAddLocation = (data: CreateLocation) => {
+    setPendingChanges(data);
+    setConfirmModalOpen(true);
+  };
+
   const onSubmit: SubmitHandler<PaginationRequestParams> = async (data) => {
     await getLocationsWithPagination(data);
     setOpen(false);
@@ -62,6 +116,12 @@ export default function LocationsPage() {
   useEffect(() => {
     getLocationsWithPagination(getValues());
   }, []);
+
+  useEffect(() => {
+    if (!modalOpen) {
+      modalReset();
+    }
+  }, [modalOpen, modalReset]);
 
   const onError: SubmitErrorHandler<PaginationRequestParams> = (error) => {
     console.error(error);
@@ -99,16 +159,26 @@ export default function LocationsPage() {
       </Breadcrumbs>
       <Typography variant="h3">{t("manageLocations")}</Typography>
       <Divider sx={{ marginTop: "1rem", marginBottom: "2rem" }} />
-      <Button
-        variant="contained"
-        sx={{
-          marginY: 2,
-        }}
-        startIcon={<RefreshIcon />}
-        onClick={() => getLocationsWithPagination(getValues())}
-      >
-        {t("refreshData")}
-      </Button>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Button
+          variant="contained"
+          sx={{
+            marginY: 2,
+          }}
+          startIcon={<RefreshIcon />}
+          onClick={() => getLocationsWithPagination(getValues())}
+        >
+          {t("refreshData")}
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => setModalOpen(true)}
+        >
+          {t("addLocation")}
+        </Button>
+      </Box>
       <Accordion
         expanded={open}
         onChange={() => setOpen(!open)}
@@ -291,6 +361,83 @@ export default function LocationsPage() {
           }}
         />
       </TableContainer>
+      <ConfirmChangeModal
+        open={confirmModalOpen}
+        handleClose={() => setConfirmModalOpen(false)}
+        callback={handleConfirmChanges}
+      />
+      <ModalComponent open={modalOpen} onClose={() => setModalOpen(false)}>
+        <>
+          <Typography variant="h4" component="h2">
+            {t("addLocation")}
+          </Typography>
+          <FormComponent
+            handleSubmit={handleModalSubmit}
+            onError={onError}
+            onSubmit={handleAddLocation}
+            align="start"
+          >
+            <TextFieldComponent
+              control={modalControl}
+              errors={errors}
+              name="name"
+              trigger={trigger}
+              type="text"
+              label={t("name")}
+            />
+            <TextFieldComponent
+              control={modalControl}
+              errors={errors}
+              name="city"
+              trigger={trigger}
+              type="text"
+              label={t("city")}
+            />
+            <TextFieldComponent
+              control={modalControl}
+              errors={errors}
+              name="country"
+              trigger={trigger}
+              type="text"
+              label={t("country")}
+            />
+            <TextFieldComponent
+              control={modalControl}
+              errors={errors}
+              name="street"
+              trigger={trigger}
+              type="text"
+              label={t("street")}
+            />
+            <TextFieldComponent
+              control={modalControl}
+              errors={errors}
+              name="buildingNumber"
+              trigger={trigger}
+              type="text"
+              label={t("buildingNumber")}
+            />
+            <TextFieldComponent
+              control={modalControl}
+              errors={errors}
+              name="postalCode"
+              trigger={trigger}
+              type="text"
+              label={t("postalCode")}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                marginTop: 2,
+              }}
+              fullWidth
+            >
+              {t("submit")}
+            </Button>
+          </FormComponent>
+        </>
+      </ModalComponent>
     </ContainerComponent>
   );
 }

@@ -54,7 +54,7 @@ public class Location extends ControlledEntity {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "location")
     private List<Room> rooms = new ArrayList<>();
 
-    public Location(String name, String street,String buildingNumber, String postalCode, String city, String country) {
+    public Location(String name, String city,String country, String street, String buildingNumber, String postalCode) {
         this.name = name;
         this.street = street;
         this.buildingNumber = buildingNumber;

@@ -114,9 +114,9 @@ export default function FooterComponent() {
                 textAlign: "center",
                 color: "grey",
               }}
-              to={Pathnames.participant.myEvents}
+              to={Pathnames.participant.myTickets}
             >
-              My events
+              My tickets
             </Link>
             <Link
               style={{

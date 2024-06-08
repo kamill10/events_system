@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketAlreadyCancelledException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.TicketDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.MeEventService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
@@ -67,9 +68,17 @@ public class MeEventController {
 
     @GetMapping("/historical-events")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<?> getMyHistoricalEvents() {
-        meEventService.getMyHistoricalEvents();
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<?> getMyHistoricalEvents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(defaultValue = "id") String key
+    ) {
+        PageUtils pageUtils = new PageUtils(page, size, direction, key);
+        meEventService.getMyHistoricalEvents(pageUtils);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(EventDTOConverter.eventDTOPage(meEventService
+                        .getMyHistoricalEvents(pageUtils)));
     }
 
     @DeleteMapping("/session/{id}")
