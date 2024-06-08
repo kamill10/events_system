@@ -1,4 +1,4 @@
-import { Breadcrumbs, Divider, Tab, Tabs, Typography } from "@mui/material";
+import {Breadcrumbs, Button, Divider, Tab, Tabs, Typography} from "@mui/material";
 import ContainerComponent from "../components/ContainerComponent";
 import { useTranslation } from "react-i18next";
 import { SyntheticEvent, useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import ChangeLocationDetails from "../components/ChangeLocationDetails.tsx";
 import {Pathnames} from "../router/Pathnames.ts";
 import {useLocations} from "../hooks/useLocations.ts";
 import {Location} from "../types/Location.ts";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 export default function LocationPage() {
   const { t } = useTranslation();
@@ -73,7 +74,16 @@ export default function LocationPage() {
           {t("locationDetails")}
         </Typography>
       </Breadcrumbs>
-
+        <Button
+            variant="contained"
+            onClick={fetchLocation}
+            startIcon={<RefreshIcon />}
+            sx={{
+                margin: 2,
+            }}
+        >
+            {t("refreshData")}
+        </Button>
       <Tabs value={page} onChange={handleChange}>
         <Tab label={t("changeLocationDetails")}></Tab>
       </Tabs>

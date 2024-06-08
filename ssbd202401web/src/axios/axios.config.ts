@@ -252,4 +252,6 @@ export const api = {
       apiWithAuthToken.post("/location", location),
     getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
         apiWithEtag.get("/events/me/past-sessions"),
+  deleteLocation: (id: string) =>
+      apiWithEtag.delete(`/location/${id}`),
 };
