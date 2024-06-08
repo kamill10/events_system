@@ -125,6 +125,35 @@ export const useLocations = () => {
     }
   };
 
+  const deleteLocationById = async (id: string) => {
+    try {
+      setIsFetching(true);
+      await api.deleteLocation(id);
+      sendNotification({
+        type: 'success',
+        description: t('deleteLocationSuccess'),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: 'error',
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: 'error',
+          description: t('deleteLocationByIdFail'),
+        });
+      }
+    } finally {
+      setIsFetching(false);
+    }
+
+  }
+
+
+
   return {
     locations,
     isFetching,
@@ -132,5 +161,6 @@ export const useLocations = () => {
     getLocationById,
     updateLocationById,
     addLocation,
+    deleteLocationById,
   };
 };

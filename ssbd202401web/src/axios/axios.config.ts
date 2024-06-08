@@ -265,24 +265,26 @@ export const api = {
     apiWithEtag.get("/events/me/past-sessions"),
   getTicket: (id: string): ApiResponseType<TicketDetailedType> =>
     apiWithEtag.get(`/events/me/session/${id}`),
+    deleteLocation: (id: string) =>
+        apiWithEtag.delete(`/location/${id}`),
 };
 
 const getUrlWithPaginationParams = (
-  params: PaginationRequestParams,
-  url: string,
+    params: PaginationRequestParams,
+    url: string,
 ) => {
-  let char = "?";
-  if (params.page) {
-    url += `?page=${params.page}`;
-    char = "&";
-  }
-  if (params.size) {
-    url += `${char}size=${params.size}`;
-    char = "&";
-  }
-  if (params.direction) {
-    url += `${char}direction=${params.direction}`;
-    char = "&";
+    let char = "?";
+    if (params.page) {
+        url += `?page=${params.page}`;
+        char = "&";
+    }
+    if (params.size) {
+        url += `${char}size=${params.size}`;
+        char = "&";
+    }
+    if (params.direction) {
+        url += `${char}direction=${params.direction}`;
+        char = "&";
   }
   if (params.key) {
     url += `${char}key=${params.key}`;
