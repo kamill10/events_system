@@ -16,7 +16,10 @@ import {
   ResetPasswordType,
   SignInCredentialsType,
 } from "../types/Authentication.ts";
-import { PaginationLocationResponse } from "../types/Location.ts";
+import {
+  CreateLocation,
+  PaginationLocationResponse,
+} from "../types/Location.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
 import { NavigateFunction } from "react-router-dom";
@@ -243,6 +246,8 @@ export const api = {
   },
   getLocation: (id: string): ApiResponseType<Location> =>
     apiWithAuthToken.get(`/location/${id}`),
+  addLocation: (location: CreateLocation) =>
+    apiWithAuthToken.post("/location", location),
   getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
     apiWithEtag.get("/events/me/past-sessions"),
 };

@@ -13,6 +13,15 @@ export interface Location {
 export interface PaginationLocationResponse
   extends PaginationResponse<Location> {}
 
+export interface CreateLocation {
+  name: string;
+  city: string;
+  country: string;
+  street: string;
+  buildingNumber: string;
+  postalCode: string;
+}
+
 export interface LocationsWithNumberOfElements {
   locations: Location[];
   totalElements: number;

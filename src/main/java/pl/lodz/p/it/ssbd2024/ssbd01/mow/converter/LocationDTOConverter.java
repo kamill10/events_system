@@ -55,11 +55,11 @@ public class LocationDTOConverter {
         return new GetLocationDTO(
                 location.getId(),
                 location.getName(),
+                location.getCity(),
+                location.getCountry(),
                 location.getStreet(),
                 location.getBuildingNumber(),
-                location.getPostalCode(),
-                location.getCity(),
-                location.getCountry()
+                location.getPostalCode()
         );
     }
 }
