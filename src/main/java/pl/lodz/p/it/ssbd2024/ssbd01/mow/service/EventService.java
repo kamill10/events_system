@@ -37,8 +37,8 @@ public class EventService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")
-    public void getEventSessions(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<Session> getEventSessions(UUID id) {
+        return sessionRepository.getByEventId(id);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
