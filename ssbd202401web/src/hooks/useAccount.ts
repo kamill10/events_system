@@ -516,30 +516,6 @@ export const useAccount = () => {
     }
   };
 
-  const getMyHistoryTickets = async () => {
-    try {
-      setIsFetching(true);
-      const { data } = await api.getMyHistoryTickets();
-      return data;
-    } catch (e) {
-      console.error(e);
-      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
-        sendNotification({
-          type: "error",
-          description: t(e.response?.data),
-        });
-      } else {
-        sendNotification({
-          type: "error",
-          description: t("requestPasswordResetFail"),
-        });
-      }
-      return e;
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
   return {
     account,
     setTheme,
@@ -571,6 +547,5 @@ export const useAccount = () => {
     token,
     switchRoleToAdmin,
     switchRoleToManager,
-    getMyHistoryTickets,
   };
 };
