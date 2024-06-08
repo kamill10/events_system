@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Pathnames } from "../router/Pathnames";
 import { useState, SyntheticEvent, useEffect } from "react";
 import TicketHistoryComponent from "../components/TicketHistoryComponent";
+import { MyTicketsComponent } from "../components/MyTicketsComponent.tsx";
 
 export default function MyTicketsPage() {
   const [page, setPage] = useState(0);
@@ -50,6 +51,7 @@ export default function MyTicketsPage() {
         <Tab label={t("history")}></Tab>
       </Tabs>
       <Divider></Divider>
+      {page === 0 && <MyTicketsComponent></MyTicketsComponent>}
       {page === 1 && <TicketHistoryComponent></TicketHistoryComponent>}
     </ContainerComponent>
   );

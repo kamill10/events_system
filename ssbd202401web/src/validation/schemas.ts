@@ -235,17 +235,16 @@ export function initValidation() {
     page: yup.number(),
     size: yup.number(),
     direction: yup.string().oneOf(["asc", "desc"]),
-    key: yup
-      .string()
-      .oneOf([
-        "id",
-        "name",
-        "city",
-        "country",
-        "street",
-        "buildingNumber",
-        "postalCode",
-      ]),
+    key: yup.string(),
+    // .oneOf([
+    //   "id",
+    //   "name",
+    //   "city",
+    //   "country",
+    //   "street",
+    //   "buildingNumber",
+    //   "postalCode",
+    // ]),
   });
 
   AddLocationSchema = yup.object<CreateLocation>().shape({
