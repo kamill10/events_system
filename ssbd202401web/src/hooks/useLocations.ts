@@ -98,6 +98,10 @@ export const useLocations = () => {
     try {
       setIsFetching(true);
       const { data } = await api.updateLocation(id, location);
+      sendNotification({
+        type: "success",
+        description: t("updateLocationSuccess"),
+      });
       return data;
     } catch (e) {
       console.error(e);

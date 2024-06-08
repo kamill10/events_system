@@ -19,7 +19,7 @@ export default function ChangeLocationDataComponent (
         fetchLocation: () => void;
     }) {
     const {t} = useTranslation();
-    const {updateLocationById,getLocationById} = useLocations();
+    const {updateLocationById} = useLocations();
     const [open, setOpen] = useState(false);
     const {
         handleSubmit,
@@ -78,16 +78,14 @@ export default function ChangeLocationDataComponent (
                 <TextFieldComponent
                     control={control}
                     errors={errors}
-                    label={t("name") + "*"}
-                    name="name"
+                    name="name" label={t("name") + "*"}
                     trigger={trigger}
                     type="text"
                 />
                 <TextFieldComponent
                     control={control}
                     errors={errors}
-                    label={t("city") + "*"}
-                    name="city"
+                    name="city" label={t("city") + "*"}
                     trigger={trigger}
                     type="text"
                 />

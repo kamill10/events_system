@@ -377,6 +377,7 @@ i18next
             endTime: "Data zakończenia",
             locationName: "Lokacja",
             roomName: "Nazwa pomieszczenia",
+            updateLocationSuccess: "Pomyślnie zaktualizowano lokalizację",
         },
       },
       ENGLISH: {
@@ -709,6 +710,7 @@ i18next
           postalCodeWrongFormat: "Postal code must be in format XX-XXX",
           postalCodeRequired: "Postal code is required",
           enterNewLocationData: "Enter new location data!",
+          updateLocationSuccess: "Update location succces",
         },
       },
     },

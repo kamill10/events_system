@@ -30,7 +30,7 @@ import { Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 
-const API_URL: string = "http://localhost:8080/api";
+const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
 
 const DEFAULT_HEADERS = {
@@ -119,7 +119,7 @@ export function setupInterceptors(navigate: NavigateFunction) {
       if (etag) {
         localStorage.setItem(
           "etag",
-          etag.substring(1, response.headers.etag.length - 1),
+          etag.substring(3, response.headers.etag.length - 1),
         );
       }
       return response;
