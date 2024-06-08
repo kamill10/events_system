@@ -28,10 +28,10 @@ export interface LocationsWithNumberOfElements {
 }
 
 export interface UpdateLocationDataType {
-    name: string;
-    street: string;
-    buildingNumber: string;
-    postalCode: string;
-    city: string;
-    country: string;
+  name: string;
+  street: string;
+  buildingNumber: string;
+  postalCode: string;
+  city: string;
+  country: string;
 }

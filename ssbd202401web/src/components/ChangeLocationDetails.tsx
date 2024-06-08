@@ -1,5 +1,5 @@
 import ChangeLocationDataComponent from "./ChangeLocationDataComponent.tsx";
-import {Location} from "../types/Location.ts";
+import { Location } from "../types/Location.ts";
 
 export default function ChangeLocationDetails({
   location,
