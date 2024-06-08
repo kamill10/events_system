@@ -132,6 +132,7 @@ i18next
           changeAccRole: "Zmień role konta",
           assignRemoveRoles: "Nadaj lub odbierz role!",
           addRole: "Nadaj rolę",
+          addSpeakerText: "Dodaj prowadzącego",
           chooseOneOfRoles: "Wybierz jedną z dostępnych ról do nadania!",
           rolesAssignedToAcc: "Role przypisane do konta",
           currentPassword: "Aktulane hasło",
@@ -167,6 +168,7 @@ i18next
           locationsHeading: "Strona z lokalizacjami",
           usernameLabel: "Nazwa użytkownika",
           passwordLabel: "Hasło",
+          speakers: "Prowadzący",
           forgotPasswordLabel: "Zapomniałem hasła :(",
           signInLabel: "Nie posiadasz konta? Zarejestruj się!",
           resetPasswordLabel: "Zresetuj hasło",
@@ -242,6 +244,8 @@ i18next
           sortDataKeyBody: "Wybierz klucz, po którym dane mają być sortowane",
           sortDataDirTitle: "Kierunek sortowania",
           sortDataDirBody: "Wybierz kolejność sortowania",
+          speakerDetails: "Szczegóły prowadzących",
+          manageSpeakers: "Zarządzaj prowadzącymi",
           filterData: "Filtruj dane w tabeli",
           filterKey: "Klucz",
           "OPTLCKE.": "Wczytane dane są nieaktualne. Odśwież je!",
@@ -494,6 +498,9 @@ i18next
           profileDetails: "Profile details",
           changeProfileDetails: "Change profile details",
           accountChanges: "Account changes",
+          addSpeakerText: "Add speaker",
+          manageSpeakers: "Manage speakers",
+
           manageAccounts: "Manage accounts",
           somethingHappened: "Something bad happened :((",
           errorConfPassword:
@@ -527,6 +534,7 @@ i18next
           confirmPasswordLabel: "Confirm password",
           haveAccountLabel: "Already have an account? Log in!",
           speakerHeading: "Speaker page",
+          speakers: "Speakers",
           speakersHeading: "Speakers page",
           errorVerifyAccount:
             "There was an error while verifying your account. If you think this is a mistake, contact support.",
@@ -559,7 +567,7 @@ i18next
             "Request sent successfully! Check your mailbox!",
           requestPasswordResetFail: "Password reset failed :(",
           resetMyPasswordSucc: "Password has been reset successfully!",
-
+          speakerDetails: "Speaker details",
           getAllAccountFail: "Failed to fetch all users :(",
           getAccountByUsernameFail: "Failed to fetch user :(",
           getAccountChangesFail: "Failed to fetch account changes :(",
