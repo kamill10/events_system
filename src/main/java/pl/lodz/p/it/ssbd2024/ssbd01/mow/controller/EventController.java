@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
@@ -77,8 +79,9 @@ public class EventController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createEvent() {
-        eventService.createEvent();
+    public ResponseEntity<?> createEvent(@RequestBody CreateEventDTO createEventDTO) {
+        Event event = EventDTOConverter.getEvent(createEventDTO);
+        eventService.createEvent(event);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
