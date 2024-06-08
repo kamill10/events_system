@@ -5,8 +5,9 @@ import { SyntheticEvent, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import useNotification from "../hooks/useNotification.tsx";
 import ChangeLocationDetails from "../components/ChangeLocationDetails.tsx";
-import { Pathnames } from "../router/Pathnames.ts";
-import { useLocations } from "../hooks/useLocations.ts";
+import {Pathnames} from "../router/Pathnames.ts";
+import {useLocations} from "../hooks/useLocations.ts";
+import {Location} from "../types/Location.ts";
 
 export default function LocationPage() {
   const { t } = useTranslation();
@@ -19,22 +20,23 @@ export default function LocationPage() {
     setPage(newValue);
   };
 
-  async function fetchLocation() {
-    if (id) {
-      getLocationById(id).then((location) => {
-        setLocation(location);
-      });
-    } else {
-      sendNotification({
-        type: "error",
-        description: t("noURLParam"),
-      });
+    async function fetchLocation() {
+        if (id) {
+            getLocationById(id)
+                .then((location) => {
+                    setLocation(location);
+                });
+        } else {
+            sendNotification({
+                type: "error",
+                description: t("noURLParam"),
+            });
+        }
     }
-  }
 
-  useEffect(() => {
-    fetchLocation();
-  }, []);
+    useEffect(() => {
+        fetchLocation();
+    }, []);
 
   return (
     <ContainerComponent>

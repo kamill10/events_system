@@ -26,3 +26,12 @@ export interface LocationsWithNumberOfElements {
   locations: Location[];
   totalElements: number;
 }
+
+export interface UpdateLocationDataType {
+    name: string;
+    street: string;
+    buildingNumber: string;
+    postalCode: string;
+    city: string;
+    country: string;
+}
