@@ -708,6 +708,7 @@ i18next
           buildingNumberRequired: "Building number is required",
           postalCodeWrongFormat: "Postal code must be in format XX-XXX",
           postalCodeRequired: "Postal code is required",
+          enterNewLocationData: "Enter new location data!",
         },
       },
     },

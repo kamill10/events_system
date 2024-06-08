@@ -125,8 +125,7 @@ export const useLocations = () => {
     isFetching,
     getLocationsWithPagination,
     getLocationById,
-    updateLocationById
-    getLocationById,
+    updateLocationById,
     addLocation,
   };
 };

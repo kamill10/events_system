@@ -19,7 +19,7 @@ export default function ChangeLocationDataComponent (
         fetchLocation: () => void;
     }) {
     const {t} = useTranslation();
-    const {updateLocationById} = useLocations();
+    const {updateLocationById,getLocationById} = useLocations();
     const [open, setOpen] = useState(false);
     const {
         handleSubmit,
@@ -40,6 +40,7 @@ export default function ChangeLocationDataComponent (
         resolver: yupResolver(changeLocationDataSchema),
     });
     const handleRequest = async () => {
+        console.log(getValues())
         const err = await updateLocationById(location?.id ?? "", getValues());
         if (!err) {
             fetchLocation();

@@ -17,8 +17,8 @@ import {
   SignInCredentialsType,
 } from "../types/Authentication.ts";
 import {
-  CreateLocation,
-  PaginationLocationResponse,
+  CreateLocation, Location,
+  PaginationLocationResponse, UpdateLocationDataType,
 } from "../types/Location.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
@@ -30,7 +30,7 @@ import { Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 
-const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
+const API_URL: string = "http://localhost:8080/api";
 const TIMEOUT_MS: number = 30000;
 
 const DEFAULT_HEADERS = {
@@ -119,7 +119,7 @@ export function setupInterceptors(navigate: NavigateFunction) {
       if (etag) {
         localStorage.setItem(
           "etag",
-          etag.substring(3, response.headers.etag.length - 1),
+          etag.substring(1, response.headers.etag.length - 1),
         );
       }
       return response;
@@ -245,9 +245,11 @@ export const api = {
     return apiWithAuthToken.get(url);
   },
   getLocation: (id: string) :ApiResponseType<Location> =>
-      apiWithAuthToken.get(`/location/${id}`),
+      apiWithEtag.get(`/location/${id}`),
   updateLocation: (id :string,location :UpdateLocationDataType) : ApiResponseType<Location> =>
       apiWithEtag.put(`/location/${id}`,location),
+  addLocation: (location: CreateLocation) =>
+      apiWithAuthToken.post("/location", location),
     getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
         apiWithEtag.get("/events/me/past-sessions"),
 };
