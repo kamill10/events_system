@@ -59,4 +59,6 @@ public class ExceptionMessages {
     public static final String MAX_SEATS_REACHED = "Max seats reached.";
     public static final String EVENT_NOT_FOUND = "Event not found.";
     public static final String EVENT_ALREADY_CANCELLED = "Event have already been cancelled.";
+    public static final String INCORRECT_DESCRIPTION = "Incorrect description.";
+    public static final String FIELD_REQUIRED = "Field is required.";
 }
