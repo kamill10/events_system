@@ -4,6 +4,7 @@ import { api } from "../axios/axios.config.ts";
 import { AxiosError } from "axios";
 import { useLocationsState } from "../context/LocationsContext.tsx";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
+import {UpdateLocationDataType} from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
 
 export const useLocations = () => {
@@ -93,12 +94,42 @@ export const useLocations = () => {
       setIsFetching(false);
     }
   };
+  const updateLocationById = async (id: string, location: UpdateLocationDataType) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.updateLocation(id, location);
+      sendNotification({
+        type: "success",
+        description: t("updateLocationSuccess"),
+      });
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: 'error',
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: 'error',
+          description: t('updateLocationByIdFail'),
+        });
+      }
+      return null;
+    } finally {
+      setIsFetching(false);
+    }
+  }
+
+
 
   return {
     locations,
     isFetching,
     getLocationsWithPagination,
     getLocationById,
+    updateLocationById,
     addLocation,
   };
 };

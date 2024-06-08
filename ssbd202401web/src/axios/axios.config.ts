@@ -17,8 +17,8 @@ import {
   SignInCredentialsType,
 } from "../types/Authentication.ts";
 import {
-  CreateLocation,
-  PaginationLocationResponse,
+  CreateLocation, Location,
+  PaginationLocationResponse, UpdateLocationDataType,
 } from "../types/Location.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
@@ -244,10 +244,12 @@ export const api = {
     }
     return apiWithAuthToken.get(url);
   },
-  getLocation: (id: string): ApiResponseType<Location> =>
-    apiWithAuthToken.get(`/location/${id}`),
+  getLocation: (id: string) :ApiResponseType<Location> =>
+      apiWithEtag.get(`/location/${id}`),
+  updateLocation: (id :string,location :UpdateLocationDataType) : ApiResponseType<Location> =>
+      apiWithEtag.put(`/location/${id}`,location),
   addLocation: (location: CreateLocation) =>
-    apiWithAuthToken.post("/location", location),
-  getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
-    apiWithEtag.get("/events/me/past-sessions"),
+      apiWithAuthToken.post("/location", location),
+    getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
+        apiWithEtag.get("/events/me/past-sessions"),
 };

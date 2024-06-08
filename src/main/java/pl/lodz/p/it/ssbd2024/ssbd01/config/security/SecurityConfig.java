@@ -80,8 +80,8 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/location/**").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.DELETE, "/api/location/**").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/location/**").hasRole("MANAGER")
-                            .requestMatchers(HttpMethod.PUT, "/api/location/**}").hasRole("MANAGER")
-
+                            .requestMatchers(HttpMethod.PATCH, "/api/location/**").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.PUT, "/api/location/**").hasRole("MANAGER")
 
                             .requestMatchers(HttpMethod.GET, "/api/rooms/**").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.DELETE, "/api/rooms/**").hasRole("MANAGER")

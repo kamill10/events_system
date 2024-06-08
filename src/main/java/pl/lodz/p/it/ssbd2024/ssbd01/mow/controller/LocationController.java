@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -59,7 +60,7 @@ public class LocationController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetLocationDTO> updateLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id, @RequestBody
-    UpdateLocationDTO updateLocationDTO) throws LocationNotFoundException, OptLockException {
+    @Valid UpdateLocationDTO updateLocationDTO) throws LocationNotFoundException, OptLockException {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(LocationDTOConverter.toGetLocationDTO(locationService
                         .updateLocation(id, LocationDTOConverter
