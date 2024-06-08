@@ -7,9 +7,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.RoomNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.LocationRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.RoomRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
@@ -22,6 +25,7 @@ import java.util.UUID;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final LocationRepository locationRepository;
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -34,6 +38,15 @@ public class RoomService {
     public Room getRoomById(UUID roomId) throws RoomNotFoundException {
         return roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public Room createRoom(Room room, UUID locationId) throws LocationNotFoundException {
+        var location = locationRepository.findById(locationId)
+                .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
+        room.setLocation(location);
+        return roomRepository.saveAndFlush(room);
     }
 
     public Room updateRoom(UUID roomId, Room room, String eTagReceived) throws RoomNotFoundException, OptLockException {

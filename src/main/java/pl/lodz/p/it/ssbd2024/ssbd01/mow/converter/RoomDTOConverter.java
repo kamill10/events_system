@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.converter;
 
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateRoomDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetRoomDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateRoomDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetRoomDetailedDTO;
@@ -29,6 +30,13 @@ public class RoomDTOConverter {
         );
     }
 
+    public static Room toRoom(CreateRoomDTO createRoomDTO) {
+        return new Room(
+                createRoomDTO.name(),
+                createRoomDTO.maxCapacity()
+        );
+    }
+
     public static GetRoomDetailedDTO toRoomDetailedDto(Room room) {
         return new GetRoomDetailedDTO(
                 room.getId(),
@@ -37,4 +45,5 @@ public class RoomDTOConverter {
                 LocationDTOConverter.toLocationDto(room.getLocation())
         );
     }
+
 }

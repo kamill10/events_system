@@ -8,11 +8,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
 @PreAuthorize("hasRole('ROLE_MANAGER')")
 public interface LocationRepository extends JpaRepository<Location, UUID> {
+
+    @Override
+    @PreAuthorize("permitAll()")
+    Optional<Location> findById(UUID id);
 
     Page<Location> findAllByIsActiveTrue(Pageable pageable);
 
