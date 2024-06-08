@@ -85,7 +85,7 @@ export default function ChangeAccountDataComponent({
           control={control}
           errors={errors}
           label={t("firstName") + "*"}
-          name="firstName"
+          name="firstName" label={t("name") + "*"}
           trigger={trigger}
           type="text"
         />

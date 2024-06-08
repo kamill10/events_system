@@ -1,3 +1,6 @@
+import ChangeLocationDataComponent from "./ChangeLocationDataComponent.tsx";
+import {Location} from "../types/Location.ts";
+
 export default function ChangeLocationDetails({
   location,
   fetchLocation,
@@ -7,7 +10,10 @@ export default function ChangeLocationDetails({
 }) {
   return (
     <>
-
+      <ChangeLocationDataComponent
+        location={location}
+        fetchLocation={fetchLocation}
+      ></ChangeLocationDataComponent>
     </>
   );
 }

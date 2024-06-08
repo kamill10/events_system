@@ -351,6 +351,7 @@ i18next
           locationDetails: "Szczegóły lokalizacji",
           manageLocations: "Zarządzaj lokalizacjami",
           changeLocationDetails: "Zmien szczegóły lokalizacji",
+          enterNewLocationData: "Wprowadź nowe dane lokalizacji!",
         },
       },
       ENGLISH: {
@@ -657,6 +658,7 @@ i18next
           locationDetails: "Location details",
           manageLocations: "Manage locations",
           changeLocationDetails: "Change location details",
+          enterNewLocationData: "Enter new location data!",
         },
       },
     },
