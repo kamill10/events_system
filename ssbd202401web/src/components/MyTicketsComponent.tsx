@@ -99,7 +99,7 @@ export function MyTicketsComponent() {
         marginLeft: 5,
       }}
     >
-      <Typography variant="h4">{t("history")}</Typography>
+      <Typography variant="h4">{t("upcomingSessions")}</Typography>
       <Button
         onClick={getTickets}
         variant="contained"
