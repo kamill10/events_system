@@ -9,7 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useAccount } from "../hooks/useAccount";
 import { useEffect, useState } from "react";
 import {
   PaginationTicketResponse,
@@ -18,10 +17,11 @@ import {
 import { isInstanceOf } from "../utils";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import TicketRowComponent from "./TicketRowComponent";
+import { useMySessions } from "../hooks/useMySessions.ts";
 
 export default function TicketHistoryComponent() {
   const { t } = useTranslation();
-  const { getMyHistoryTickets } = useAccount();
+  const { getMyHistoryTickets } = useMySessions();
   const [tickets, setTickets] = useState<TicketWithNumberOfElements | null>();
 
   async function getTickets() {

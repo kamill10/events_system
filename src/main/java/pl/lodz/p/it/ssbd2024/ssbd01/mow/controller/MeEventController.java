@@ -2,6 +2,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,12 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketAlreadyCancelledException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.TicketDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.MeEventService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 
 import java.util.UUID;
@@ -37,7 +37,9 @@ public class MeEventController {
     @GetMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public ResponseEntity<GetTicketDetailedDTO> getSession(@PathVariable UUID id) throws TicketNotFoundException {
-        return ResponseEntity.status(HttpStatus.OK).body(TicketDTOConverter.toTicketDetailedDTO(meEventService.getSession(id)));
+        Ticket ticket = meEventService.getSession(id);
+        String eTag = ETagBuilder.buildETag(ticket.getVersion().toString());
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(TicketDTOConverter.toTicketDetailedDTO(ticket));
     }
 
     @GetMapping("/sessions")

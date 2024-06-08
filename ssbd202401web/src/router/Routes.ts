@@ -20,6 +20,7 @@ import VerifyAccountPage from "../pages/VerifyAccountPage.tsx";
 import ConfirmPasswordUpdatePage from "../pages/ConfirmPasswordUpdatePage.tsx";
 import { ConfirmEmailUpdatePage } from "../pages/ConfirmEmailUpdatePage.tsx";
 import { ConfirmUnblockAccountPage } from "../pages/ConfirmUnblockAccountPage.tsx";
+import { TicketPage } from "../pages/TicketPage.tsx";
 
 export const SinglePageRoutes: RouteType[] = [
   {
@@ -131,6 +132,13 @@ export const ParticipantRoutes: RouteType[] = [
     name: "myTicketsLink",
     renderOnNavbar: false,
     renderOnDropdown: true,
+  },
+  {
+    pathname: Pathnames.participant.ticket,
+    page: TicketPage,
+    name: "ticketPage",
+    renderOnNavbar: false,
+    renderOnDropdown: false,
   },
 ];
 

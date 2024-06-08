@@ -22,6 +22,7 @@ export const Pathnames = {
   },
   participant: {
     myTickets: "/profile/tickets",
+    ticket: "/profile/ticket/:id",
   },
   manager: {
     locations: "/locations",

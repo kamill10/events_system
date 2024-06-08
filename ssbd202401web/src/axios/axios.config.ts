@@ -17,8 +17,10 @@ import {
   SignInCredentialsType,
 } from "../types/Authentication.ts";
 import {
-  CreateLocation, Location,
-  PaginationLocationResponse, UpdateLocationDataType,
+  CreateLocation,
+  Location,
+  PaginationLocationResponse,
+  UpdateLocationDataType,
 } from "../types/Location.ts";
 import { AccountTypeEnum } from "../types/enums/AccountType.enum.ts";
 import { Pathnames } from "../router/Pathnames.ts";
@@ -29,6 +31,7 @@ import { AccountChangesType } from "../types/AccountChanges.ts";
 import { Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
+import { TicketDetailedType } from "../types/TicketDetailed.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -244,14 +247,47 @@ export const api = {
     }
     return apiWithAuthToken.get(url);
   },
-  getLocation: (id: string) :ApiResponseType<Location> =>
-      apiWithEtag.get(`/location/${id}`),
-  updateLocation: (id :string,location :UpdateLocationDataType) : ApiResponseType<Location> =>
-      apiWithEtag.put(`/location/${id}`,location),
+  getLocation: (id: string): ApiResponseType<Location> =>
+    apiWithEtag.get(`/location/${id}`),
+  updateLocation: (
+    id: string,
+    location: UpdateLocationDataType,
+  ): ApiResponseType<Location> => apiWithEtag.put(`/location/${id}`, location),
+  getMyTicketsWithPagination: (
+    params: PaginationRequestParams,
+  ): ApiResponseType<PaginationTicketResponse> => {
+    let url = getUrlWithPaginationParams(params, "/events/me/sessions");
+    return apiWithEtag.get(url);
+  },
   addLocation: (location: CreateLocation) =>
-      apiWithAuthToken.post("/location", location),
-    getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
-        apiWithEtag.get("/events/me/past-sessions"),
-  deleteLocation: (id: string) =>
-      apiWithEtag.delete(`/location/${id}`),
+    apiWithAuthToken.post("/location", location),
+  getMyHistoryTickets: (): ApiResponseType<PaginationTicketResponse> =>
+    apiWithEtag.get("/events/me/past-sessions"),
+  getTicket: (id: string): ApiResponseType<TicketDetailedType> =>
+    apiWithEtag.get(`/events/me/session/${id}`),
+    deleteLocation: (id: string) =>
+        apiWithEtag.delete(`/location/${id}`),
+};
+
+const getUrlWithPaginationParams = (
+  params: PaginationRequestParams,
+  url: string,
+) => {
+  let char = "?";
+  if (params.page) {
+    url += `?page=${params.page}`;
+    char = "&";
+  }
+  if (params.size) {
+    url += `${char}size=${params.size}`;
+    char = "&";
+  }
+  if (params.direction) {
+    url += `${char}direction=${params.direction}`;
+    char = "&";
+  }
+  if (params.key) {
+    url += `${char}key=${params.key}`;
+  }
+  return url;
 };

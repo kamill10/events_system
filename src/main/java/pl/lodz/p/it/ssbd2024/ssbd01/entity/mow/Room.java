@@ -9,6 +9,7 @@ import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -48,6 +49,7 @@ public class Room extends ControlledEntity {
         this.name = name;
         this.maxCapacity = maxCapacity;
     }
+
 
     @Override
     public boolean equals(Object o) {
