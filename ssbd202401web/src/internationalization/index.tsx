@@ -50,7 +50,7 @@ i18next
           logOutLink: "Wyloguj",
           myTicketsLink: "Moje bilety",
           locationsLink: "Lokalizacje",
-          speakersLink: "Prelegenci",
+          speakersLink: "Prowadzący",
 
           roles: "Role",
           role: "Rola",
@@ -170,8 +170,8 @@ i18next
           resetPasswordLabel: "Zresetuj hasło",
           confirmPasswordLabel: "Powtórz hasło",
           haveAccountLabel: "Masz już konto? Zaloguj się!",
-          speakerHeading: "Strona prelegenta",
-          speakersHeading: "Strona z prelegentami",
+          speakerHeading: "Strona prowadzącego",
+          speakersHeading: "Strona z prowadzącymi",
           errorVerifyAccount:
             "Wystąpił błąd podczas potwierdzania konta, jeżeli uważasz, że to pomyłka, skontaktuj się ze wsparciem",
           verifyAccountHeading: "Potwierdź swoje konto!",

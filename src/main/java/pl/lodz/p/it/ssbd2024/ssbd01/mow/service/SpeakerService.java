@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -12,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.SpeakerNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SpeakerRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.List;
@@ -23,10 +25,11 @@ public class SpeakerService {
 
     private final SpeakerRepository speakerRepository;
 
+
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public List<Speaker> getAllSpeakers() {
-        return speakerRepository.findAll();
+    public Page<Speaker> getAllSpeakers(PageUtils pageUtils) {
+        return speakerRepository.findAll(pageUtils.buildPageable());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
@@ -53,5 +56,11 @@ public class SpeakerService {
     public Speaker getSpeaker(UUID id) throws AppException {
         return speakerRepository.findById(id)
                 .orElseThrow(() -> new SpeakerNotFoundException(ExceptionMessages.SPEAKER_NOT_FOUND));
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public List<Speaker> searchSpeakers(String firstName, String lastName) {
+        return speakerRepository.findAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(firstName, lastName);
     }
 }
