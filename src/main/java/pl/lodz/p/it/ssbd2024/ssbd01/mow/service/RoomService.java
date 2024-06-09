@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,7 +28,7 @@ public class RoomService {
     private final LocationRepository locationRepository;
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("permitAll()")
     public Page<Room> getAllLocationRooms(UUID locationId, PageUtils pageUtils) {
         Pageable pageable = pageUtils.buildPageable();
         return roomRepository.findAllByLocationIdAndIsActiveTrue(locationId, pageable);
@@ -35,6 +36,12 @@ public class RoomService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public List<Room> getAllDeletedRooms(UUID locationId) {
+        return roomRepository.findAllByLocationIdAndIsActiveFalse(locationId);
+    }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("permitAll()")
     public Room getRoomById(UUID roomId) throws RoomNotFoundException {
         return roomRepository.findByIdAndIsActiveTrue(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
@@ -49,6 +56,8 @@ public class RoomService {
         return roomRepository.saveAndFlush(room);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public Room updateRoom(UUID roomId, Room room, String eTagReceived) throws RoomNotFoundException, OptLockException {
         Room roomToUpdate = roomRepository.findByIdAndIsActiveTrue(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
@@ -70,5 +79,24 @@ public class RoomService {
         }
         room.setIsActive(false);
         roomRepository.saveAndFlush(room);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public void activateRoom(UUID roomId, String eTagReceived) throws RoomNotFoundException, OptLockException {
+        var room = roomRepository.findByIdAndIsActiveFalse(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
+        if (!ETagBuilder.isETagValid(eTagReceived, String.valueOf(room.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
+        room.setIsActive(true);
+        roomRepository.saveAndFlush(room);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public Room getDeletedRoomById(UUID roomId) throws RoomNotFoundException {
+        return roomRepository.findByIdAndIsActiveFalse(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
     }
 }
