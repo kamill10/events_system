@@ -28,7 +28,7 @@ import { NavigateFunction } from "react-router-dom";
 import { SortingRequestParams } from "../types/SortingRequestParams.ts";
 import { AccountChangesType } from "../types/AccountChanges.ts";
 
-import { Event } from "../types/Event.ts";
+import { CreateEventDTOType, Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
@@ -265,6 +265,8 @@ export const api = {
     apiWithEtag.get("/events/me/past-sessions"),
   getTicket: (id: string): ApiResponseType<TicketDetailedType> =>
     apiWithEtag.get(`/events/me/session/${id}`),
+  createEvent: (data: CreateEventDTOType) =>
+    apiWithAuthToken.post("/events", data),
 };
 
 const getUrlWithPaginationParams = (

@@ -8,6 +8,8 @@ import RefreshToken from "./pages/RefreshToken.tsx";
 import { EventsStateContextProvider } from "./context/EventsContext.tsx";
 import ScrollToTop from "./router/ScrollToTop.tsx";
 import { LocationsStateContextProvider } from "./context/LocationsContext.tsx";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function App() {
   return (
@@ -16,12 +18,14 @@ function App() {
         <ManageAccountsStateContextProvider>
           <EventsStateContextProvider>
             <LocationsStateContextProvider>
-              <BrowserRouter>
-                <ScrollToTop></ScrollToTop>
-                <RouterComponent></RouterComponent>
-                <LoadingScreen></LoadingScreen>
-                <RefreshToken></RefreshToken>
-              </BrowserRouter>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <BrowserRouter>
+                  <ScrollToTop></ScrollToTop>
+                  <RouterComponent></RouterComponent>
+                  <LoadingScreen></LoadingScreen>
+                  <RefreshToken></RefreshToken>
+                </BrowserRouter>
+              </LocalizationProvider>
             </LocationsStateContextProvider>
           </EventsStateContextProvider>
         </ManageAccountsStateContextProvider>

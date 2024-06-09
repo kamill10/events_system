@@ -17,6 +17,7 @@ import i18next from "i18next";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
+import { CreateEventType } from "../types/Event.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -31,6 +32,7 @@ export let SortingRequestParamsSchema: yup.ObjectSchema<SortingRequestParams>;
 export let PaginationRequestParamsSchema: yup.ObjectSchema<PaginationRequestParams>;
 export let ChangeLocationDataSchema: yup.ObjectSchema<UpdateLocationDataType>;
 export let AddLocationSchema: yup.ObjectSchema<CreateLocation>;
+export let CreateEventValidationSchema: yup.ObjectSchema<CreateEventType>;
 
 export function initValidation() {
   signInValidationSchema = yup.object<SignInCredentialsType>().shape({
@@ -302,5 +304,20 @@ export function initValidation() {
       .string()
       .matches(/^\d{2}-\d{3}$/, i18next.t("postalCodeWrongFormat"))
       .required(i18next.t("postalCodeRequired")),
+  });
+
+  CreateEventValidationSchema = yup.object<CreateEventType>().shape({
+    name: yup
+      .string()
+      .min(3, i18next.t("eventNameTooShort"))
+      .max(128, i18next.t("eventNameTooLong"))
+      .required(i18next.t("eventNameRequired")),
+    description: yup
+      .string()
+      .min(3, i18next.t("eventDescTooShort"))
+      .max(1024, i18next.t("eventDescTooLong"))
+      .required("eventDesRequired"),
+    startDate: yup.mixed(),
+    endDate: yup.mixed(),
   });
 }
