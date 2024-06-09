@@ -18,7 +18,7 @@ import java.util.Objects;
 @Table(name = "room")
 public class Room extends ControlledEntity {
 
-    @Column(nullable = false, updatable = false, unique = true)
+    @Column(nullable = false, unique = true)
     @NotBlank
     @Size(min = 3, max = 32)
     private String name;

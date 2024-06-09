@@ -30,12 +30,12 @@ export default function ChangeLocationDataComponent (
         getValues,
     } = useForm<UpdateLocationDataType>({
         defaultValues: {
-            name: location?.name,
-            city: location?.city,
-            country: location?.country,
-            street: location?.street,
-            buildingNumber: location?.buildingNumber,
-            postalCode: location?.postalCode,
+            name: location?.name ?? "",
+            city: location?.city ?? "",
+            country: location?.country ?? "",
+            street: location?.street ?? "",
+            buildingNumber: location?.buildingNumber ?? "",
+            postalCode: location?.postalCode ?? "",
         },
         resolver: yupResolver(changeLocationDataSchema),
     });
