@@ -1,5 +1,4 @@
-import {PaginationResponse} from "./Pagination.ts";
-
+import { PaginationResponse } from "./Pagination.ts";
 
 export interface Speaker {
   id: string;
@@ -7,7 +6,7 @@ export interface Speaker {
   lastName: string;
 }
 export interface PaginationSpeakerResponse
-    extends PaginationResponse<Speaker> {}
+  extends PaginationResponse<Speaker> {}
 
 export interface SpeakersWithNumberOfElements {
   speakers: Speaker[];

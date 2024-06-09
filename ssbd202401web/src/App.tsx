@@ -18,12 +18,12 @@ function App() {
           <EventsStateContextProvider>
             <LocationsStateContextProvider>
               <SpeakersStateContextProvider>
-               <BrowserRouter>
-                <ScrollToTop></ScrollToTop>
-                <RouterComponent></RouterComponent>
-                <LoadingScreen></LoadingScreen>
-                <RefreshToken></RefreshToken>
-               </BrowserRouter>
+                <BrowserRouter>
+                  <ScrollToTop></ScrollToTop>
+                  <RouterComponent></RouterComponent>
+                  <LoadingScreen></LoadingScreen>
+                  <RefreshToken></RefreshToken>
+                </BrowserRouter>
               </SpeakersStateContextProvider>
             </LocationsStateContextProvider>
           </EventsStateContextProvider>

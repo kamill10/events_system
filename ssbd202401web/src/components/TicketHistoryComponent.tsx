@@ -117,6 +117,15 @@ export default function TicketHistoryComponent() {
             >
               {t("locationName")}
             </TableCell>
+            <TableCell
+              sx={{
+                fontWeight: "bold",
+                fontSize: "18px",
+              }}
+              align="right"
+            >
+              {t("ticketStatus")}
+            </TableCell>
           </TableHead>
           <TableBody>
             {tickets?.tickets.map((ticket) => {

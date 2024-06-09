@@ -24,6 +24,7 @@ export default function TicketRowComponent({ ticket }: { ticket: Ticket }) {
       </TableCell>
       <TableCell align="right">{ticket.roomName}</TableCell>
       <TableCell align="right">{ticket.locationName}</TableCell>
+      <TableCell align="right">{ticket.isNotCancelled}</TableCell>
     </TableRow>
   );
 }

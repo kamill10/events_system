@@ -7,6 +7,7 @@ export interface Ticket {
   endTime: string;
   roomName: string;
   locationName: string;
+  isNotCancelled: boolean;
 }
 
 export interface PaginationTicketResponse extends PaginationResponse<Ticket> {}

@@ -33,7 +33,12 @@ import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
 import { PaginationRoomResponse } from "../types/Room.ts";
-import {CreateSpeaker, PaginationSpeakerResponse, Speaker, UpdateSpeakerDataType} from "../types/Speaker.ts";
+import {
+  CreateSpeaker,
+  PaginationSpeakerResponse,
+  Speaker,
+  UpdateSpeakerDataType,
+} from "../types/Speaker.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
@@ -255,9 +260,9 @@ export const api = {
     location: UpdateLocationDataType,
   ): ApiResponseType<Location> => apiWithEtag.put(`/location/${id}`, location),
   addLocation: (location: CreateLocation) =>
-      apiWithAuthToken.post("/location", location),
+    apiWithAuthToken.post("/location", location),
   getSpeakersWithPagination: (
-      params: PaginationRequestParams,
+    params: PaginationRequestParams,
   ): ApiResponseType<PaginationSpeakerResponse> => {
     let url = "/speakers";
     let char = "?";
@@ -279,13 +284,13 @@ export const api = {
     return apiWithAuthToken.get(url);
   },
   getSpeaker: (id: string): ApiResponseType<Speaker> =>
-      apiWithEtag.get(`/speakers/${id}`),
+    apiWithEtag.get(`/speakers/${id}`),
   updateSpeaker: (
-      id: string,
-      speaker: UpdateSpeakerDataType,
+    id: string,
+    speaker: UpdateSpeakerDataType,
   ): ApiResponseType<Speaker> => apiWithEtag.put(`/speakers/${id}`, speaker),
   addSpeaker: (speaker: CreateSpeaker) =>
-      apiWithAuthToken.post("/speakers", speaker),
+    apiWithAuthToken.post("/speakers", speaker),
   getMyTicketsWithPagination: (
     params: PaginationRequestParams,
   ): ApiResponseType<PaginationTicketResponse> => {
@@ -304,6 +309,8 @@ export const api = {
     let url = getUrlWithPaginationParams(params, `/rooms/${locationId}`);
     return apiWithAuthToken.get(url);
   },
+  signOutOfSession: (id: string) =>
+    apiWithEtag.delete(`/events/me/session/${id}`),
 };
 
 const getUrlWithPaginationParams = (

@@ -23,7 +23,7 @@ export const useMySessions = () => {
       } else {
         sendNotification({
           type: "error",
-          description: t("requestPasswordResetFail"),
+          description: t("getMyHistoryTicketsFail"),
         });
       }
       return e;
@@ -47,7 +47,7 @@ export const useMySessions = () => {
       } else {
         sendNotification({
           type: "error",
-          description: t("requestPasswordResetFail"),
+          description: t("getMyTicketsFail"),
         });
       }
       return e;
@@ -71,7 +71,30 @@ export const useMySessions = () => {
       } else {
         sendNotification({
           type: "error",
-          description: t("requestPasswordResetFail"),
+          description: t("getTicketFail"),
+        });
+      }
+      return e;
+    } finally {
+      // setIsFetching(false);
+    }
+  };
+
+  const signOutOfSession = async (id: string) => {
+    try {
+      // setIsFetching(true);
+      await api.signOutOfSession(id);
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("singOutOfSessionFail"),
         });
       }
       return e;
@@ -84,5 +107,6 @@ export const useMySessions = () => {
     getMyTickets,
     getMyHistoryTickets,
     getTicket,
+    signOutOfSession,
   };
 };

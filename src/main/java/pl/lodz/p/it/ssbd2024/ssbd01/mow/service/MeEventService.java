@@ -96,15 +96,11 @@ public class MeEventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public void signOutFromSession(UUID id, String eTag) throws TicketNotFoundException, TicketAlreadyCancelledException, OptLockException {
+    public void signOutFromSession(UUID id, String eTag) throws TicketNotFoundException, OptLockException {
         Ticket ticket = ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
 
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(ticket.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
-        }
-
-        if (!ticket.getIsNotCancelled()) {
-            throw new TicketAlreadyCancelledException(ExceptionMessages.TICKET_ALREADY_CANCELLED);
         }
 
         ticket.setIsNotCancelled(false);
