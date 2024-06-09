@@ -1,4 +1,4 @@
-import { SpeakerType } from "./Speaker.ts";
+import { Speaker } from "./Speaker.ts";
 import { RoomType } from "./Room.ts";
 import { Event } from "./Event.ts";
 
@@ -10,7 +10,7 @@ export interface SessionDetailedType {
   endTime: string;
   maxSeats: number;
   isActive: boolean;
-  speaker: SpeakerType;
+  speaker: Speaker;
   room: RoomType;
   event: Event;
 }

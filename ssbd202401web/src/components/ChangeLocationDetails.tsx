@@ -1,5 +1,6 @@
 import ChangeLocationDataComponent from "./ChangeLocationDataComponent.tsx";
 import { Location } from "../types/Location.ts";
+import DeleteLocationComponent from "./DeleteLocationComponent.tsx";
 
 export default function ChangeLocationDetails({
   location,
@@ -13,7 +14,13 @@ export default function ChangeLocationDetails({
       <ChangeLocationDataComponent
         location={location}
         fetchLocation={fetchLocation}
-      ></ChangeLocationDataComponent>
+      />
+      {location && (
+        <DeleteLocationComponent
+          locationId={location.id}
+          fetchLocation={fetchLocation}
+        />
+      )}
     </>
   );
 }

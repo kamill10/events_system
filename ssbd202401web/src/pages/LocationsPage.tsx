@@ -187,7 +187,7 @@ export default function LocationsPage() {
         }}
       >
         <AccordionSummary expandIcon={<ArrowDownwardIcon />}>
-          <Typography variant="h5">{t("filterData")}</Typography>
+          <Typography variant="h5">{t("sortData")}</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ padding: "1px" }}>
           <FormComponent
@@ -263,7 +263,7 @@ export default function LocationsPage() {
               }}
               startIcon={<FilterAltIcon />}
             >
-              {t("filterData")}
+              {t("sortData")}
             </Button>
           </FormComponent>
         </AccordionDetails>
@@ -383,7 +383,7 @@ export default function LocationsPage() {
               name="name"
               trigger={trigger}
               type="text"
-              label={t("name")}
+              label={t("name") + "*"}
             />
             <TextFieldComponent
               control={modalControl}
@@ -391,7 +391,7 @@ export default function LocationsPage() {
               name="city"
               trigger={trigger}
               type="text"
-              label={t("city")}
+              label={t("city") + "*"}
             />
             <TextFieldComponent
               control={modalControl}
@@ -399,7 +399,7 @@ export default function LocationsPage() {
               name="country"
               trigger={trigger}
               type="text"
-              label={t("country")}
+              label={t("country") + "*"}
             />
             <TextFieldComponent
               control={modalControl}
@@ -407,7 +407,7 @@ export default function LocationsPage() {
               name="street"
               trigger={trigger}
               type="text"
-              label={t("street")}
+              label={t("street") + "*"}
             />
             <TextFieldComponent
               control={modalControl}
@@ -415,7 +415,7 @@ export default function LocationsPage() {
               name="buildingNumber"
               trigger={trigger}
               type="text"
-              label={t("buildingNumber")}
+              label={t("buildingNumber") + "*"}
             />
             <TextFieldComponent
               control={modalControl}
@@ -423,7 +423,7 @@ export default function LocationsPage() {
               name="postalCode"
               trigger={trigger}
               type="text"
-              label={t("postalCode")}
+              label={t("postalCode") + "*"}
             />
             <Button
               type="submit"

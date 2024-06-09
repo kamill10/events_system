@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.create;
+package pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create;
 
 import jakarta.validation.constraints.Size;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
