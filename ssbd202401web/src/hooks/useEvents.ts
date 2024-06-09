@@ -4,11 +4,13 @@ import { useEventsState } from "../context/EventsContext";
 import useNotification from "./useNotification";
 import { useTranslation } from "react-i18next";
 import { CreateEventDTOType, CreateEventType } from "../types/Event";
+import { useLoadingScreen } from "./useLoadingScreen";
 
 export const useEvents = () => {
   const sendNotification = useNotification();
   const { t } = useTranslation();
-  const { events, isFetching, setEvents, setIsFetching } = useEventsState();
+  const { events, setEvents } = useEventsState();
+  const { setIsFetching } = useLoadingScreen();
 
   const getEvents = async () => {
     try {
@@ -68,7 +70,6 @@ export const useEvents = () => {
 
   return {
     events,
-    isFetching,
     getEvents,
     createEvent,
   };

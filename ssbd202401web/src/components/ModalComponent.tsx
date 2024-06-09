@@ -20,7 +20,7 @@ export default function ModalComponent({
   open,
   onClose,
   children,
-  width
+  width,
 }: {
   open: boolean;
   onClose: () => void;
@@ -29,10 +29,14 @@ export default function ModalComponent({
 }) {
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={{
-        ...style,
-        width: width ?? style.width
-      }}>{children}</Box>
+      <Box
+        sx={{
+          ...style,
+          width: width ?? style.width,
+        }}
+      >
+        {children}
+      </Box>
     </Modal>
   );
 }

@@ -117,7 +117,11 @@ export default function EventsPage() {
           </Button>
         )}
       </Box>
-      <ModalComponent width={700} onClose={() => setModalOpen(false)} open={modalOpen}>
+      <ModalComponent
+        width={700}
+        onClose={() => setModalOpen(false)}
+        open={modalOpen}
+      >
         <FormComponent
           handleSubmit={handleSubmit}
           onError={onError}
@@ -193,7 +197,7 @@ export default function EventsPage() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            gap: "1rem"
+            gap: "1rem",
           }}
         >
           <Typography align="center" variant="h4">

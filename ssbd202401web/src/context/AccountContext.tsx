@@ -17,10 +17,6 @@ interface AccountState {
   setToken: (token: string | null) => void;
   parsedToken: TokenType | null;
   setParsedToken: (token: TokenType) => void;
-  isLogging: boolean;
-  setIsLogging: (state: boolean) => void;
-  isFetching: boolean;
-  setIsFetching: (state: boolean) => void;
   adminLayout: boolean;
   setAdminLayout: (state: boolean) => void;
 }
@@ -45,8 +41,6 @@ export const AccountStateContextProvider = ({
   );
   const [parsedToken, setParsedToken] = useState<TokenType | null>(null);
   const [account, setAccount] = useState<GetPersonalAccountType | null>(null);
-  const [isLogging, setIsLogging] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
   const [adminLayout, setAdminLayout] = useState(true);
   const [theme, setTheme] = useState(
     account?.accountTheme ?? localStorage.getItem("theme") ?? "Light",
@@ -72,10 +66,6 @@ export const AccountStateContextProvider = ({
         setToken,
         parsedToken,
         setParsedToken,
-        isLogging,
-        setIsLogging,
-        isFetching,
-        setIsFetching,
         adminLayout,
         setAdminLayout,
       }}
