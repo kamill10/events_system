@@ -22,6 +22,7 @@ public interface LocationRepository extends JpaRepository<Location, UUID> {
 
     Page<Location> findAllByIsActiveTrue(Pageable pageable);
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Override
     Location saveAndFlush(Location ticket);
 

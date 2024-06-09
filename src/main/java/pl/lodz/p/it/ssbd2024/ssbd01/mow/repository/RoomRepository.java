@@ -16,4 +16,5 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
 
     Page<Room> findAllByLocationId(UUID locationId, Pageable pageUtils);
 
+
 }
