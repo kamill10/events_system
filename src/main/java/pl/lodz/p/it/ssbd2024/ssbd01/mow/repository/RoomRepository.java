@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,5 +18,9 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
 
     Page<Room> findAllByLocationIdAndIsActiveTrue(UUID locationId, Pageable pageUtils);
 
+    List<Room> findAllByLocationIdAndIsActiveFalse(UUID locationId);
+
     Optional<Room> findByIdAndIsActiveTrue(UUID id);
+
+    Optional<Room> findByIdAndIsActiveFalse(UUID id);
 }

@@ -19,6 +19,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.RoomService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,10 +42,33 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(RoomDTOConverter.roomDTOPage(rooms));
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @GetMapping("/deleted/{locationId}")
+    public ResponseEntity<List<GetRoomDTO>> getDeletedRooms(@PathVariable UUID locationId) {
+        var rooms = roomService.getAllDeletedRooms(locationId)
+                .stream()
+                .map(RoomDTOConverter::toRoomDto)
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(rooms);
+    }
+
+    @GetMapping("/room/deleted/{roomId}")
+    public ResponseEntity<GetRoomDTO> getDeletedRoomById(@PathVariable UUID roomId) throws RoomNotFoundException {
+        Room room = roomService.getDeletedRoomById(roomId);
+        String eTag = ETagBuilder.buildETag(room.getVersion().toString());
+
+        return ResponseEntity.ok()
+                .header("ETag", eTag)
+                .body(RoomDTOConverter.toRoomDto(room));
+    }
+
     @GetMapping("/room/{roomId}")
     public ResponseEntity<GetRoomDTO> getRoomById(@PathVariable UUID roomId) throws RoomNotFoundException {
         Room room = roomService.getRoomById(roomId);
         String eTag = ETagBuilder.buildETag(room.getVersion().toString());
+
         return ResponseEntity.ok()
                 .header("ETag", eTag)
                 .body(RoomDTOConverter.toRoomDto(room));
@@ -64,6 +88,16 @@ public class RoomController {
     public ResponseEntity<?> deleteRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId)
             throws OptLockException, RoomNotFoundException {
         roomService.deleteRoom(roomId, eTagReceived);
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PatchMapping("/room/activate/{roomId}")
+    public ResponseEntity<?> activateRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId)
+            throws OptLockException, RoomNotFoundException {
+        roomService.activateRoom(roomId, eTagReceived);
 
         return ResponseEntity.ok()
                 .build();
