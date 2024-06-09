@@ -17,9 +17,9 @@ import i18next from "i18next";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
-import {CreateSpeaker} from "../types/Speaker.ts";
 import { CreateEventType } from "../types/Event.ts";
 import { Dayjs } from "dayjs";
+import {CreateSpeaker, UpdateSpeakerDataType} from "../types/Speaker.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -36,6 +36,7 @@ export let ChangeLocationDataSchema: yup.ObjectSchema<UpdateLocationDataType>;
 export let AddLocationSchema: yup.ObjectSchema<CreateLocation>;
 export let AddSpeakerSchema: yup.ObjectSchema<CreateSpeaker>;
 export let CreateEventValidationSchema: yup.ObjectSchema<CreateEventType>;
+export let ModifySpeakerSchema: yup.ObjectSchema<UpdateSpeakerDataType>;
 
 export function initValidation() {
   signInValidationSchema = yup.object<SignInCredentialsType>().shape({
@@ -185,6 +186,21 @@ export function initValidation() {
   });
 
   AddSpeakerSchema = yup.object<CreateSpeaker>().shape({
+    firstName: yup
+        .string()
+        .min(2, i18next.t("firstNameTooShort"))
+        .max(32, i18next.t("firstNameTooLong"))
+        .matches(/[\w+]/, i18next.t("firstNameWrongFormat"))
+        .required(i18next.t("firstNameRequired")),
+    lastName: yup
+        .string()
+        .min(2, i18next.t("lastNameTooShort"))
+        .max(64, i18next.t("lastNameTooLong"))
+        .matches(/[\w+]/, i18next.t("lastNameWrongFormat"))
+        .required(i18next.t("lastNameRequired")),
+  });
+
+  ModifySpeakerSchema = yup.object<UpdateSpeakerDataType>().shape({
     firstName: yup
         .string()
         .min(2, i18next.t("firstNameTooShort"))
