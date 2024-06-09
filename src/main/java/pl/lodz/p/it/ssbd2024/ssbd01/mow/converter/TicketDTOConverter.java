@@ -15,7 +15,8 @@ public class TicketDTOConverter {
                 ticket.getSession().getStartTime(),
                 ticket.getSession().getEndTime(),
                 ticket.getSession().getRoom().getName(),
-                ticket.getSession().getRoom().getLocation().getName()
+                ticket.getSession().getRoom().getLocation().getName(),
+                ticket.getIsNotCancelled()
         );
     }
 

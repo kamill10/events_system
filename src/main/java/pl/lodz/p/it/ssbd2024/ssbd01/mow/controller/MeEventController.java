@@ -87,7 +87,7 @@ public class MeEventController {
     @DeleteMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public ResponseEntity<?> signOutFromSession(@PathVariable UUID id, @RequestHeader("If-Match") String eTag)
-            throws TicketNotFoundException, TicketAlreadyCancelledException, OptLockException {
+            throws TicketNotFoundException, OptLockException {
         meEventService.signOutFromSession(id, eTag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

@@ -250,6 +250,11 @@ i18next
           updateSpeakerByIdFail: "Nie udało się zaktualizować prowadzącego",
           filterData: "Filtruj dane w tabeli",
           filterKey: "Klucz",
+          getMyHistoryTicketsFail: "Nie udało się pobrać historii biletów :(",
+          getMyTicketsFail: "Nie udało się pobrać biletów :(",
+          getTicketFail: "Nie udało się pobrać biletu :(",
+          singOutOfSessionFail: "Nie udało się wypisać z sesji :(",
+          singOutOfSession: "Wypisz się",
           "OPTLCKE.": "Wczytane dane są nieaktualne. Odśwież je!",
           "Role with given name does not exist.":
             "Rola o tej nazwie nie istnieje",
@@ -644,6 +649,11 @@ i18next
           sortDataDirBody: "Choose sort direction",
           filterData: "Filter data in a table",
           filterKey: "Key",
+          getMyHistoryTicketsFail: "Failed to fetch history of tickets :(",
+          getMyTicketsFail: "Failed to fetch tickets :(",
+          getTicketFail: "Failed to fetch a ticket :(",
+          singOutOfSessionFail: "Failed to sign out of a session :(",
+          singOutOfSession: "Sign out",
           "OPTLCKE.": "Data you try to update is out of date. Refresh it!",
           "Role with given name does not exist.":
             "Role with given name does not exist",

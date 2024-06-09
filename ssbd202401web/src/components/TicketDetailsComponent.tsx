@@ -10,7 +10,7 @@ import {
 import parseDate from "../validation/parseDate.ts";
 import { useAccount } from "../hooks/useAccount.ts";
 
-export function TicketDetails({
+export function TicketDetailsComponent({
   ticket,
 }: {
   ticket: TicketDetailedType | null;
@@ -60,35 +60,37 @@ export function TicketDetails({
   ];
 
   return (
-    <TableContainer>
-      <TableHead>
-        <TableCell
-          sx={{
-            fontWeight: "bold",
-            fontSize: "18px",
-          }}
-        >
-          {[t("tableKey")]}
-        </TableCell>
-        <TableCell
-          sx={{
-            fontWeight: "bold",
-            fontSize: "18px",
-          }}
-        >
-          {[t("tableValue")]}
-        </TableCell>
-      </TableHead>
-      <TableBody>
-        {data.map((_, value) => {
-          return (
-            <TableRow hover key={value}>
-              <TableCell>{Object.keys(data[value])}</TableCell>
-              <TableCell>{Object.values(data[value])}</TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </TableContainer>
+    <>
+      <TableContainer>
+        <TableHead>
+          <TableCell
+            sx={{
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+          >
+            {[t("tableKey")]}
+          </TableCell>
+          <TableCell
+            sx={{
+              fontWeight: "bold",
+              fontSize: "18px",
+            }}
+          >
+            {[t("tableValue")]}
+          </TableCell>
+        </TableHead>
+        <TableBody>
+          {data.map((_, value) => {
+            return (
+              <TableRow hover key={value}>
+                <TableCell>{Object.keys(data[value])}</TableCell>
+                <TableCell>{Object.values(data[value])}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </TableContainer>
+    </>
   );
 }

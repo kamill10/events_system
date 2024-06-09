@@ -311,6 +311,8 @@ export const api = {
     let url = getUrlWithPaginationParams(params, `/rooms/${locationId}`);
     return apiWithAuthToken.get(url);
   },
+  signOutOfSession: (id: string) =>
+    apiWithEtag.delete(`/events/me/session/${id}`),
 };
 
 const getUrlWithPaginationParams = (

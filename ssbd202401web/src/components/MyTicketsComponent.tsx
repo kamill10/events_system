@@ -5,6 +5,7 @@ import {
   Box,
   Button,
   MenuItem,
+  Paper,
   Table,
   TableBody,
   TableCell,
@@ -205,7 +206,7 @@ export function MyTicketsComponent() {
           </FormComponent>
         </AccordionDetails>
       </Accordion>
-      <TableContainer>
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableCell
@@ -261,6 +262,15 @@ export function MyTicketsComponent() {
               align="right"
             >
               {t("locationName")}
+            </TableCell>
+            <TableCell
+              sx={{
+                fontWeight: "bold",
+                fontSize: "18px",
+              }}
+              align="right"
+            >
+              {t("ticketStatus")}
             </TableCell>
           </TableHead>
           <TableBody>
