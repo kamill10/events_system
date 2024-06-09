@@ -18,6 +18,7 @@ import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
 import { CreateEventType } from "../types/Event.ts";
+import { Dayjs } from "dayjs";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -306,6 +307,7 @@ export function initValidation() {
       .required(i18next.t("postalCodeRequired")),
   });
 
+  /* @ts-ignore */
   CreateEventValidationSchema = yup.object<CreateEventType>().shape({
     name: yup
       .string()
@@ -317,7 +319,27 @@ export function initValidation() {
       .min(3, i18next.t("eventDescTooShort"))
       .max(1024, i18next.t("eventDescTooLong"))
       .required("eventDesRequired"),
-    startDate: yup.mixed(),
-    endDate: yup.mixed(),
+    startDate: yup.mixed().test("start-date-before-end", (value, context) => {
+      const tempStart = value as Dayjs;
+      const tempEnd = context.parent.endDate as Dayjs;
+      if (tempStart.diff(tempEnd) > 0) {
+        return context.createError({
+          path: context.path,
+          message: i18next.t("Event start date after end date.")
+        })
+      }
+      return true;
+    }),
+    endDate: yup.mixed().test("start-date-before-end", (value, context) => {
+      const tempEnd = value as Dayjs;
+      const tempStart = context.parent.startDate as Dayjs;
+      if (tempEnd.diff(tempStart) < 0) {
+        return context.createError({
+          path: context.path,
+          message: i18next.t("Event start date after end date.")
+        })
+      }
+      return true;
+    }),
   });
 }

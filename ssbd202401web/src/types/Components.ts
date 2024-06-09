@@ -21,7 +21,9 @@ export interface TextFieldProps<T extends FieldValues> {
 }
 
 export interface DatePickerProps<T extends FieldValues>
-  extends TextFieldProps<T> {}
+  extends TextFieldProps<T> {
+    whatToValidate?: string[];
+  }
 
 export interface RouteType {
   page: React.FunctionComponent;

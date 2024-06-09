@@ -13,21 +13,26 @@ const style = {
   p: 4,
   display: "flex",
   flexDirection: "column",
-  alignItems: "start",
+  alignItems: "center",
 };
 
 export default function ModalComponent({
   open,
   onClose,
   children,
+  width
 }: {
   open: boolean;
   onClose: () => void;
   children?: ReactElement;
+  width?: number;
 }) {
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={style}>{children}</Box>
+      <Box sx={{
+        ...style,
+        width: width ?? style.width
+      }}>{children}</Box>
     </Modal>
   );
 }

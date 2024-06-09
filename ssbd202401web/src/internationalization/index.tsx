@@ -408,6 +408,10 @@ i18next
           createEventSucc: "Wydarzenie utworzono pomyślnie!",
           createEventFail: "Nie udało się utworzyć wydarzenia :(",
           eventRedirectQuestion: "Czy chciałbyś dodać sesje od razu?",
+          "Incorrect name.": "Długośc nazwy jest niepoprawna",
+          "Incorrect description.": "Długość opisu jest niepoprawna",
+          "Field is required.": "Wszystkie pola oznaczone * są wymagane",
+          "Event start date after end date.": "Początek wydarzenia musi być przed końcem wydarzenia",
         },
       },
       ENGLISH: {
@@ -771,6 +775,11 @@ i18next
           createEventSucc: "Event has been created successfully!",
           createEventFail: "Event creation failed :(",
           eventRedirectQuestion: "Would you like to add sessions right away?",
+          "Incorrect name.": "Length of name is incorrect",
+          "Incorrect description.": "Length of description is incorrect",
+          "Field is required.": "All of the fields with a * sign at the end are required",
+          "Event start date after end date.": "Event's start date must be before the end date"
+
         },
       },
     },

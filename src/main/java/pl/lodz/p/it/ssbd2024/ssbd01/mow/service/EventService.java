@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventStartDateAfterEndDateException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
@@ -68,7 +69,10 @@ public class EventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void createEvent(Event event) {
+    public void createEvent(Event event) throws EventStartDateAfterEndDateException {
+        if (event.getStartDate().isAfter(event.getEndDate())) {
+            throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
+        }
         eventRepository.saveAndFlush(event);
     }
 

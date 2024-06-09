@@ -117,7 +117,7 @@ export default function EventsPage() {
           </Button>
         )}
       </Box>
-      <ModalComponent onClose={() => setModalOpen(false)} open={modalOpen}>
+      <ModalComponent width={700} onClose={() => setModalOpen(false)} open={modalOpen}>
         <FormComponent
           handleSubmit={handleSubmit}
           onError={onError}
@@ -142,7 +142,7 @@ export default function EventsPage() {
             trigger={trigger}
             type="text"
             multiline={true}
-            rows={3}
+            rows={5}
           ></TextFieldComponent>
           <DatePickerComponent
             control={control}
@@ -151,6 +151,7 @@ export default function EventsPage() {
             name="startDate"
             trigger={trigger}
             type=""
+            whatToValidate={["endDate"]}
           ></DatePickerComponent>
           <DatePickerComponent
             control={control}
@@ -159,6 +160,7 @@ export default function EventsPage() {
             name="endDate"
             trigger={trigger}
             type=""
+            whatToValidate={["startDate"]}
           ></DatePickerComponent>
           <Button
             type="submit"
@@ -183,6 +185,7 @@ export default function EventsPage() {
       <ModalComponent
         onClose={() => setRedirectOpen(false)}
         open={redirectOpen}
+        width={600}
       >
         <Box
           sx={{
@@ -190,6 +193,7 @@ export default function EventsPage() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            gap: "1rem"
           }}
         >
           <Typography align="center" variant="h4">
@@ -201,7 +205,6 @@ export default function EventsPage() {
           <Box
             sx={{
               display: "flex",
-              width: "100%",
               justifyContent: "space-between",
               alignItems: "center",
             }}
