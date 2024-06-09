@@ -12,7 +12,7 @@ export default function LocationRowComponent({
         <TableRow
             hover
             onClick={() => {
-                navigate("/locations/" + speaker.id);
+                navigate("/speakers/" + speaker.id);
             }}
         >
             <TableCell>{speaker.id}</TableCell>
