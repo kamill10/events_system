@@ -31,6 +31,13 @@ public class LocationService {
         return locationRepository.findAllByIsActiveTrue(pageable);
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public Page<Location> getAllDeletedLocations(PageUtils pageUtils) {
+        Pageable pageable = pageUtils.buildPageable();
+        return locationRepository.findAllByIsActiveFalse(pageable);
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void deleteLocation(UUID id, String eTag) throws LocationNotFoundException, OptLockException {

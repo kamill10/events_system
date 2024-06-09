@@ -41,6 +41,19 @@ public class LocationController {
         return ResponseEntity.status(HttpStatus.OK).body(getLocationDTOPage);
     }
 
+    @GetMapping("/deleted")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<Page<GetLocationDTO>> getAllDeletedLocations(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(defaultValue = "id") String key
+    ) {
+        PageUtils pageUtils = new PageUtils(page, size, direction, key);
+        Page<GetLocationDTO> getLocationDTOPage = LocationDTOConverter.locationDTOPage(locationService.getAllDeletedLocations(pageUtils));
+        return ResponseEntity.status(HttpStatus.OK).body(getLocationDTOPage);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> deleteLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id)
