@@ -429,7 +429,8 @@ i18next
           "Incorrect name.": "Długośc nazwy jest niepoprawna",
           "Incorrect description.": "Długość opisu jest niepoprawna",
           "Field is required.": "Wszystkie pola oznaczone * są wymagane",
-          "Event start date after end date.": "Początek wydarzenia musi być przed końcem wydarzenia",
+          "Event start date after end date.":
+            "Początek wydarzenia musi być przed końcem wydarzenia",
         },
       },
       ENGLISH: {
@@ -812,9 +813,10 @@ i18next
           eventRedirectQuestion: "Would you like to add sessions right away?",
           "Incorrect name.": "Length of name is incorrect",
           "Incorrect description.": "Length of description is incorrect",
-          "Field is required.": "All of the fields with a * sign at the end are required",
-          "Event start date after end date.": "Event's start date must be before the end date"
-
+          "Field is required.":
+            "All of the fields with a * sign at the end are required",
+          "Event start date after end date.":
+            "Event's start date must be before the end date",
         },
       },
     },

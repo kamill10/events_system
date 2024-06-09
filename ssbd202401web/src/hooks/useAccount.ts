@@ -19,6 +19,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { LanguageType } from "../types/enums/LanguageType.enum";
 import { AxiosError } from "axios";
+import { useLoadingScreen } from "./useLoadingScreen";
 
 export const useAccount = () => {
   const { t } = useTranslation();
@@ -32,13 +33,11 @@ export const useAccount = () => {
     setTheme,
     token,
     setToken,
-    isLogging,
-    setIsLogging,
-    isFetching,
-    setIsFetching,
     adminLayout,
     setAdminLayout,
   } = useAccountState();
+
+  const { setIsLoggingIn, setIsFetching } = useLoadingScreen();
 
   const { i18n } = useTranslation();
 
@@ -51,7 +50,7 @@ export const useAccount = () => {
 
   const logIn = async (formData: LoginCredentialsType) => {
     try {
-      setIsLogging(true);
+      setIsLoggingIn(true);
       const { data } = await api.logIn(formData);
       setToken(data);
       localStorage.setItem("token", data);
@@ -76,7 +75,7 @@ export const useAccount = () => {
       }
       return e;
     } finally {
-      setIsLogging(false);
+      setIsLoggingIn(false);
     }
   };
 
@@ -521,8 +520,6 @@ export const useAccount = () => {
     setTheme,
     theme,
     parsedToken,
-    isLogging,
-    isFetching,
     isAuthenticated,
     isAdmin,
     isParticipant,

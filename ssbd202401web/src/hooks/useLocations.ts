@@ -6,12 +6,14 @@ import { useLocationsState } from "../context/LocationsContext.tsx";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
+import { useLoadingScreen } from "./useLoadingScreen.ts";
 
 export const useLocations = () => {
   const sendNotification = useNotification();
   const { t } = useTranslation();
-  const { locations, isFetching, setLocations, setIsFetching } =
-    useLocationsState();
+  const { locations, setLocations } = useLocationsState();
+
+  const { setIsFetching } = useLoadingScreen();
 
   const getLocationsWithPagination = async (
     requestParams: PaginationRequestParams,
@@ -181,7 +183,6 @@ export const useLocations = () => {
 
   return {
     locations,
-    isFetching,
     getLocationsWithPagination,
     getLocationById,
     updateLocationById,

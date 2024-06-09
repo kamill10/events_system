@@ -4,8 +4,6 @@ import { createContext, ReactNode, useContext, useState } from "react";
 interface ManageLocations {
   locations: LocationsWithNumberOfElements | null;
   setLocations: (locations: LocationsWithNumberOfElements) => void;
-  isFetching: boolean;
-  setIsFetching: (state: boolean) => void;
 }
 
 const LocationsStateContext = createContext<ManageLocations | null>(null);
@@ -17,15 +15,12 @@ export const LocationsStateContextProvider = ({
 }) => {
   const [locations, setLocations] =
     useState<LocationsWithNumberOfElements | null>(null);
-  const [isFetching, setIsFetching] = useState(false);
 
   return (
     <LocationsStateContext.Provider
       value={{
         locations,
         setLocations,
-        isFetching,
-        setIsFetching,
       }}
     >
       {children}

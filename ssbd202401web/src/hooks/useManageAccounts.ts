@@ -6,11 +6,13 @@ import { AccountTypeEnum } from "../types/enums/AccountType.enum";
 import useNotification from "./useNotification";
 import { SortingRequestParams } from "../types/SortingRequestParams.ts";
 import { AxiosError } from "axios";
+import { useLoadingScreen } from "./useLoadingScreen.ts";
 
 export const useManageAccounts = () => {
   const sendNotification = useNotification();
   const { t } = useTranslation();
-  const { accounts, setAccounts, isFetching, setIsFetching } = useUsersState();
+  const { accounts, setAccounts } = useUsersState();
+  const { setIsFetching } = useLoadingScreen();
 
   const getAccountByUsername = async (username: string) => {
     try {
@@ -284,7 +286,6 @@ export const useManageAccounts = () => {
 
   return {
     accounts,
-    isFetching,
     setIsFetching,
     setAccounts,
     getAccountByUsername,

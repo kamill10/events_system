@@ -21,14 +21,16 @@ export default function DatePickerComponent<T extends FieldValues>(
               }}
               slotProps={{
                 textField: {
-                  error: errors[name] ? true : false
-                }
+                  error: errors[name] ? true : false,
+                },
               }}
               value={field.value}
               onChange={(e) => {
                 field.onChange(e);
                 trigger(name);
-                whatToValidate?.forEach(element => trigger(element as Path<T>))
+                whatToValidate?.forEach((element) =>
+                  trigger(element as Path<T>),
+                );
               }}
               name={field.name}
               format="DD-MM-YYYY"
