@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -88,11 +89,12 @@ public class AuthenticationService {
             timeoutString = "${transaction.timeout}"
     )
     @Retryable(
-            retryFor = {OptimisticLockException.class},
+            retryFor = {OptimisticLockException.class, UnexpectedRollbackException.class},
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
     public String authenticate(LoginDTO loginDTO, String language) throws AppException {
+
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
         } catch (BadCredentialsException e) {
@@ -143,6 +145,13 @@ public class AuthenticationService {
         account.setLastSuccessfulLoginIp(ipAddress);
 
         accountAuthRepository.saveAndFlush(account);
+
+        try {
+            Thread.sleep(11000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         accountAuthHistoryRepository.saveAndFlush(new AccountHistory(account));
 
         return jwtService.generateToken(new HashMap<>(), account);
@@ -151,7 +160,7 @@ public class AuthenticationService {
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @Retryable(
-            retryFor = {OptimisticLockException.class},
+            retryFor = {OptimisticLockException.class, UnexpectedRollbackException.class},
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
@@ -182,7 +191,7 @@ public class AuthenticationService {
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @Retryable(
-            retryFor = {OptimisticLockException.class},
+            retryFor = {OptimisticLockException.class, UnexpectedRollbackException.class},
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
