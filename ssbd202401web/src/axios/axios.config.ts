@@ -32,6 +32,7 @@ import { Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
+import { PaginationRoomResponse } from "../types/Room.ts";
 import {CreateSpeaker, PaginationSpeakerResponse, Speaker, UpdateSpeakerDataType} from "../types/Speaker.ts";
 
 const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
@@ -118,7 +119,6 @@ export function setupInterceptors(navigate: NavigateFunction) {
 
   apiWithEtag.interceptors.response.use(
     (response) => {
-      console.log(response);
       const etag = response.headers.etag as string;
       if (etag) {
         localStorage.setItem(
@@ -296,26 +296,32 @@ export const api = {
     apiWithEtag.get("/events/me/past-sessions"),
   getTicket: (id: string): ApiResponseType<TicketDetailedType> =>
     apiWithEtag.get(`/events/me/session/${id}`),
-    deleteLocation: (id: string) =>
-        apiWithEtag.delete(`/location/${id}`),
+  deleteLocation: (id: string) => apiWithEtag.delete(`/location/${id}`),
+  getRoomsByLocationIdWithPagination: (
+    locationId: string,
+    params: PaginationRequestParams,
+  ): ApiResponseType<PaginationRoomResponse> => {
+    let url = getUrlWithPaginationParams(params, `/rooms/${locationId}`);
+    return apiWithAuthToken.get(url);
+  },
 };
 
 const getUrlWithPaginationParams = (
-    params: PaginationRequestParams,
-    url: string,
+  params: PaginationRequestParams,
+  url: string,
 ) => {
-    let char = "?";
-    if (params.page) {
-        url += `?page=${params.page}`;
-        char = "&";
-    }
-    if (params.size) {
-        url += `${char}size=${params.size}`;
-        char = "&";
-    }
-    if (params.direction) {
-        url += `${char}direction=${params.direction}`;
-        char = "&";
+  let char = "?";
+  if (params.page) {
+    url += `?page=${params.page}`;
+    char = "&";
+  }
+  if (params.size) {
+    url += `${char}size=${params.size}`;
+    char = "&";
+  }
+  if (params.direction) {
+    url += `${char}direction=${params.direction}`;
+    char = "&";
   }
   if (params.key) {
     url += `${char}key=${params.key}`;

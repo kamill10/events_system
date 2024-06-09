@@ -10,17 +10,17 @@ export default function ChangeLocationDetails({
   fetchLocation: () => void;
 }) {
   return (
-      <>
-            <ChangeLocationDataComponent
-                location={location}
-                fetchLocation={fetchLocation}
-            />
-            {location && (
-                <DeleteLocationComponent
-                     locationId={location.id}
-                     fetchLocation={fetchLocation}
-                 />
-             )}
-          </>
+    <>
+      <ChangeLocationDataComponent
+        location={location}
+        fetchLocation={fetchLocation}
+      />
+      {location && (
+        <DeleteLocationComponent
+          locationId={location.id}
+          fetchLocation={fetchLocation}
+        />
+      )}
+    </>
   );
 }

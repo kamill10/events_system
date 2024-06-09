@@ -21,7 +21,6 @@ export default function GenderListComponent<T extends FieldValues>(
               label={t("gender") + "*"}
               value={field.value}
               onChange={(e) => {
-                console.log(e);
                 field.onChange(e);
               }}
               id={field.name}

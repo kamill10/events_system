@@ -39,7 +39,6 @@ export default function ChangeLocationDataComponent({
     resolver: yupResolver(changeLocationDataSchema),
   });
   const handleRequest = async () => {
-    console.log(getValues());
     const err = await updateLocationById(location?.id ?? "", getValues());
     if (!err) {
       fetchLocation();
