@@ -84,7 +84,8 @@ export default function ChangeAccountDataComponent({
         <TextFieldComponent
           control={control}
           errors={errors}
-          name="firstName" label={t("name") + "*"}
+          name="firstName"
+          label={t("name") + "*"}
           trigger={trigger}
           type="text"
         />

@@ -40,7 +40,7 @@ public record GetAccountDetailedDTO(
 
         LanguageEnum language,
 
-        String theme,
+        String accountTheme,
 
         String accountTimeZone
 ) {}

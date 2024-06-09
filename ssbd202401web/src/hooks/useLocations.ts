@@ -4,7 +4,7 @@ import { api } from "../axios/axios.config.ts";
 import { AxiosError } from "axios";
 import { useLocationsState } from "../context/LocationsContext.tsx";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
-import {UpdateLocationDataType} from "../types/Location.ts";
+import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
 
 export const useLocations = () => {
@@ -47,7 +47,6 @@ export const useLocations = () => {
     try {
       setIsFetching(true);
       const { data } = await api.getLocation(id);
-      console.log(data);
       return data;
     } catch (e) {
       console.error(e);
@@ -71,7 +70,6 @@ export const useLocations = () => {
   const addLocation = async (location: CreateLocation) => {
     try {
       setIsFetching(true);
-      console.log(location);
       await api.addLocation(location);
       sendNotification({
         type: "success",
@@ -94,7 +92,10 @@ export const useLocations = () => {
       setIsFetching(false);
     }
   };
-  const updateLocationById = async (id: string, location: UpdateLocationDataType) => {
+  const updateLocationById = async (
+    id: string,
+    location: UpdateLocationDataType,
+  ) => {
     try {
       setIsFetching(true);
       const { data } = await api.updateLocation(id, location);
@@ -107,22 +108,76 @@ export const useLocations = () => {
       console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
-          type: 'error',
+          type: "error",
           description: t(e.response?.data),
         });
       } else {
         sendNotification({
-          type: 'error',
-          description: t('updateLocationByIdFail'),
+          type: "error",
+          description: t("updateLocationByIdFail"),
         });
       }
       return null;
     } finally {
       setIsFetching(false);
     }
-  }
+  };
 
+  const deleteLocationById = async (id: string) => {
+    try {
+      setIsFetching(true);
+      await api.deleteLocation(id);
+      sendNotification({
+        type: "success",
+        description: t("deleteLocationSuccess"),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("deleteLocationByIdFail"),
+        });
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
+  const getRoomsByLocationIdWithPagination = async (
+    locationId: string,
+    requestParams: PaginationRequestParams,
+  ) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getRoomsByLocationIdWithPagination(
+        locationId,
+        requestParams,
+      );
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getRoomsByLocationIdWithPaginationFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   return {
     locations,
@@ -131,5 +186,7 @@ export const useLocations = () => {
     getLocationById,
     updateLocationById,
     addLocation,
+    deleteLocationById,
+    getRoomsByLocationIdWithPagination,
   };
 };

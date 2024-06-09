@@ -5,13 +5,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.create.CreateSpeakerDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateSpeakerDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSearchSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Speaker;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SpeakerDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.SpeakerService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 
 import java.util.UUID;
 
@@ -22,15 +24,6 @@ public class SpeakerController {
 
     private final SpeakerService speakerService;
 
-    @GetMapping
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> getAllSpeakers() {
-        return ResponseEntity.ok()
-                .body(speakerService.getAllSpeakers()
-                        .stream()
-                        .map(SpeakerDTOConverter::convertToDTO)
-                        .toList());
-    }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -41,9 +34,21 @@ public class SpeakerController {
                 .body(SpeakerDTOConverter.convertToDTO(speaker));
     }
 
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<?> getAllSpeakers(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "5") int size,
+                                                    @RequestParam(defaultValue = "asc") String direction,
+                                                    @RequestParam(defaultValue = "id") String key) {
+        PageUtils pageUtils = new PageUtils(page, size, direction, key);
+        return ResponseEntity.ok()
+                .body(speakerService.getAllSpeakers(pageUtils)
+                        .map(SpeakerDTOConverter::convertToDTO));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createSpeaker(CreateSpeakerDTO createSpeakerDTO) {
+    public ResponseEntity<?> createSpeaker(@RequestBody CreateSpeakerDTO createSpeakerDTO) {
         return ResponseEntity
                 .ok(SpeakerDTOConverter
                         .convertToDTO(speakerService
@@ -64,6 +69,15 @@ public class SpeakerController {
                                                                    updateSpeakerDTO.firstName(),
                                                                    updateSpeakerDTO.lastName()),
                                                                    eTagReceived)));
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<?> searchSpeakers(@RequestBody GetSearchSpeakerDTO getSearchSpeakerDTO) {
+        return ResponseEntity.ok()
+                .body(speakerService.searchSpeakers(getSearchSpeakerDTO.firstName(), getSearchSpeakerDTO.lastName())
+                        .stream()
+                        .map(SpeakerDTOConverter::convertToDTO));
     }
 
 }
