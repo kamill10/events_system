@@ -4,8 +4,6 @@ import { AccountsWithNumberOfElements } from "../types/Account";
 interface ManageAccounts {
   accounts: AccountsWithNumberOfElements | null;
   setAccounts: (accounts: AccountsWithNumberOfElements) => void;
-  isFetching: boolean;
-  setIsFetching: (state: boolean) => void;
 }
 
 const ManageAccountsStateContext = createContext<ManageAccounts | null>(null);
@@ -18,15 +16,12 @@ export const ManageAccountsStateContextProvider = ({
   const [accounts, setAccounts] = useState<AccountsWithNumberOfElements | null>(
     null,
   );
-  const [isFetching, setIsFetching] = useState(false);
 
   return (
     <ManageAccountsStateContext.Provider
       value={{
         accounts,
         setAccounts,
-        isFetching,
-        setIsFetching,
       }}
     >
       {children}

@@ -4,8 +4,6 @@ import { createContext, ReactNode, useContext, useState } from "react";
 interface ManageSpeakers {
   speakers: SpeakersWithNumberOfElements | null;
   setSpeakers: (speakers: SpeakersWithNumberOfElements) => void;
-  isFetching: boolean;
-  setIsFetching: (state: boolean) => void;
 }
 
 const SpeakersStateContext = createContext<ManageSpeakers | null>(null);
@@ -18,15 +16,12 @@ export const SpeakersStateContextProvider = ({
   const [speakers, setSpeakers] = useState<SpeakersWithNumberOfElements | null>(
     null,
   );
-  const [isFetching, setIsFetching] = useState(false);
 
   return (
     <SpeakersStateContext.Provider
       value={{
         speakers,
         setSpeakers,
-        isFetching,
-        setIsFetching,
       }}
     >
       {children}

@@ -6,12 +6,14 @@ import { useSpeakersState } from "../context/SpeakersContext.tsx";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateSpeakerDataType } from "../types/Speaker.ts";
 import { CreateSpeaker } from "../types/Speaker.ts";
+import { useLoadingScreen } from "./useLoadingScreen.ts";
 
 export const useSpeakers = () => {
   const sendNotification = useNotification();
   const { t } = useTranslation();
-  const { speakers, isFetching, setSpeakers, setIsFetching } =
-    useSpeakersState();
+  const { speakers, setSpeakers } = useSpeakersState();
+
+  const { setIsFetching } = useLoadingScreen();
 
   const getSpeakersWithPagination = async (
     requestParams: PaginationRequestParams,
@@ -127,7 +129,6 @@ export const useSpeakers = () => {
 
   return {
     speakers,
-    isFetching,
     getSpeakersWithPagination,
     getSpeakerById,
     updateSpeakerById,

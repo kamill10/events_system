@@ -1,10 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.entity.mow;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -49,12 +46,14 @@ public class Event extends ControlledEntity {
      * Sessions that are part of event cannot start before start date.
      */
     @NotNull
+    @FutureOrPresent
     private LocalDate startDate;
 
     /**
      * Sessions that are part of event cannot start after end date.
      */
     @NotNull
+    @FutureOrPresent
     private LocalDate endDate;
 
     public Event(String name, String description, List<Session> sessions,

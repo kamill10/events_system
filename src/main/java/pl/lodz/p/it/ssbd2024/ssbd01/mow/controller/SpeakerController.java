@@ -30,7 +30,7 @@ public class SpeakerController {
     public ResponseEntity<?> getSpeaker(@PathVariable UUID id) throws AppException {
         var speaker = speakerService.getSpeaker(id);
         return ResponseEntity.ok()
-                .header(HttpHeaders.IF_MATCH, ETagBuilder.buildETag(String.valueOf(speaker.getVersion())))
+                .header(HttpHeaders.ETAG, ETagBuilder.buildETag(speaker.getVersion().toString()))
                 .body(SpeakerDTOConverter.convertToDTO(speaker));
     }
 
