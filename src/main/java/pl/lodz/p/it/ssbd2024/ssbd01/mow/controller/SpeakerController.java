@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.create.CreateSpeakerDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSearchSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Speaker;
@@ -48,7 +48,7 @@ public class SpeakerController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createSpeaker(CreateSpeakerDTO createSpeakerDTO) {
+    public ResponseEntity<?> createSpeaker(@RequestBody CreateSpeakerDTO createSpeakerDTO) {
         return ResponseEntity
                 .ok(SpeakerDTOConverter
                         .convertToDTO(speakerService

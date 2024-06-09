@@ -75,7 +75,7 @@ export const useSpeakers = () => {
             await api.addSpeaker(speaker);
             sendNotification({
                 type: "success",
-                description: t("addLocationSuccess"),
+                description: t("addSpeakerSuccess"),
             });
         } catch (e) {
             console.error(e);
@@ -87,7 +87,7 @@ export const useSpeakers = () => {
             } else {
                 sendNotification({
                     type: "error",
-                    description: t("addLocationFail"),
+                    description: t("addSpeakerFail"),
                 });
             }
         } finally {
@@ -96,14 +96,14 @@ export const useSpeakers = () => {
     };
     const updateSpeakerById = async (
         id: string,
-        location: UpdateSpeakerDataType,
+        speaker: UpdateSpeakerDataType,
     ) => {
         try {
             setIsFetching(true);
-            const { data } = await api.updateSpeaker(id, location);
+            const { data } = await api.updateSpeaker(id, speaker);
             sendNotification({
                 type: "success",
-                description: t("updateLocationSuccess"),
+                description: t("updateSpeakerSuccess"),
             });
             return data;
         } catch (e) {
@@ -116,7 +116,7 @@ export const useSpeakers = () => {
             } else {
                 sendNotification({
                     type: "error",
-                    description: t("updateLocationByIdFail"),
+                    description: t("updateSpeakerByIdFail"),
                 });
             }
             return null;
