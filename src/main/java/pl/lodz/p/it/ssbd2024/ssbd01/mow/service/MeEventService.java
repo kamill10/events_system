@@ -12,11 +12,13 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
@@ -94,8 +96,12 @@ public class MeEventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public void signOutFromSession(UUID id) throws TicketNotFoundException, TicketAlreadyCancelledException {
+    public void signOutFromSession(UUID id, String eTag) throws TicketNotFoundException, TicketAlreadyCancelledException, OptLockException {
         Ticket ticket = ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
+
+        if (!ETagBuilder.isETagValid(eTag, String.valueOf(ticket.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
 
         if (!ticket.getIsNotCancelled()) {
             throw new TicketAlreadyCancelledException(ExceptionMessages.TICKET_ALREADY_CANCELLED);
