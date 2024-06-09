@@ -17,6 +17,7 @@ import i18next from "i18next";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
+import {CreateSpeaker} from "../types/Speaker.ts";
 import { CreateEventType } from "../types/Event.ts";
 import { Dayjs } from "dayjs";
 
@@ -33,6 +34,7 @@ export let SortingRequestParamsSchema: yup.ObjectSchema<SortingRequestParams>;
 export let PaginationRequestParamsSchema: yup.ObjectSchema<PaginationRequestParams>;
 export let ChangeLocationDataSchema: yup.ObjectSchema<UpdateLocationDataType>;
 export let AddLocationSchema: yup.ObjectSchema<CreateLocation>;
+export let AddSpeakerSchema: yup.ObjectSchema<CreateSpeaker>;
 export let CreateEventValidationSchema: yup.ObjectSchema<CreateEventType>;
 
 export function initValidation() {
@@ -180,6 +182,21 @@ export function initValidation() {
       .string()
       .email(i18next.t("emailWrongFormat"))
       .required(i18next.t("emailRequired")),
+  });
+
+  AddSpeakerSchema = yup.object<CreateSpeaker>().shape({
+    firstName: yup
+        .string()
+        .min(2, i18next.t("firstNameTooShort"))
+        .max(32, i18next.t("firstNameTooLong"))
+        .matches(/[\w+]/, i18next.t("firstNameWrongFormat"))
+        .required(i18next.t("firstNameRequired")),
+    lastName: yup
+        .string()
+        .min(2, i18next.t("lastNameTooShort"))
+        .max(64, i18next.t("lastNameTooLong"))
+        .matches(/[\w+]/, i18next.t("lastNameWrongFormat"))
+        .required(i18next.t("lastNameRequired")),
   });
 
   ManageAccountValidationSchema = yup.object<ManageAccountType>().shape({

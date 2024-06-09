@@ -33,8 +33,12 @@ public class LocationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void deleteLocation(UUID id) throws LocationNotFoundException {
-        Location location = locationRepository.findById(id).orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
+    public void deleteLocation(UUID id, String eTag) throws LocationNotFoundException, OptLockException {
+        Location location = locationRepository.findById(id)
+                .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
+        if (!ETagBuilder.isETagValid(eTag, String.valueOf(location.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
         location.setIsActive(false);
         for (var room : location.getRooms()) {
             room.setIsActive(false);

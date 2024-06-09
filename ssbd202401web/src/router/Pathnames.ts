@@ -29,6 +29,7 @@ export const Pathnames = {
     location: "/locations/:id",
     speakers: "/speakers",
     speaker: "/speakers/:id",
+    room: "/rooms/:id",
   },
   admin: {
     accounts: "/accounts",

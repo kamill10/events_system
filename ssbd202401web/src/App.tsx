@@ -10,6 +10,7 @@ import ScrollToTop from "./router/ScrollToTop.tsx";
 import { LocationsStateContextProvider } from "./context/LocationsContext.tsx";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { SpeakersStateContextProvider } from "./context/SpeakersContext.tsx";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <ManageAccountsStateContextProvider>
           <EventsStateContextProvider>
             <LocationsStateContextProvider>
+                <SpeakersStateContextProvider>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <BrowserRouter>
                   <ScrollToTop></ScrollToTop>
@@ -26,6 +28,7 @@ function App() {
                   <RefreshToken></RefreshToken>
                 </BrowserRouter>
               </LocalizationProvider>
+                </SpeakersStateContextProvider>
             </LocationsStateContextProvider>
           </EventsStateContextProvider>
         </ManageAccountsStateContextProvider>

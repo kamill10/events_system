@@ -43,14 +43,15 @@ public class LocationController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> deleteLocation(@PathVariable UUID id) throws LocationNotFoundException {
-        locationService.deleteLocation(id);
+    public ResponseEntity<?> deleteLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id)
+            throws LocationNotFoundException, OptLockException {
+        locationService.deleteLocation(id, eTagReceived);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<GetLocationDTO> createLocation(@RequestBody CreateLocationDTO createLocationDTO) {
+    public ResponseEntity<GetLocationDTO> createLocation(@RequestBody @Valid CreateLocationDTO createLocationDTO) {
         GetLocationDTO createdLocation =
                 LocationDTOConverter.toGetLocationDTO(locationService.createLocation(LocationDTOConverter.toLocation(createLocationDTO)));
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLocation);

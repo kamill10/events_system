@@ -6,7 +6,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.create.CreateSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Speaker;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;

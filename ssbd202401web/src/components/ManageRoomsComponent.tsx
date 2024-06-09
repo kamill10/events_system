@@ -17,15 +17,10 @@ import {
   Typography,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import TicketRowComponent from "./TicketRowComponent.tsx";
+import RoomRowComponent from "./RoomRowComponent.tsx";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import {
-  PaginationTicketResponse,
-  TicketWithNumberOfElements,
-} from "../types/Ticket.ts";
 import { isInstanceOf } from "../utils";
-import { useMySessions } from "../hooks/useMySessions.ts";
 import {
   Controller,
   SubmitErrorHandler,
@@ -38,11 +33,16 @@ import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import FormComponent from "./FormComponent.tsx";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import { useLocations } from "../hooks/useLocations.ts";
+import {
+  PaginationRoomResponse,
+  RoomsWithNumberOfElements,
+} from "../types/Room.ts";
 
-export function MyTicketsComponent() {
+export function ManageRoomsComponent({ locationId }: { locationId: string }) {
   const { t } = useTranslation();
-  const { getMyTickets } = useMySessions();
-  const [tickets, setTickets] = useState<TicketWithNumberOfElements | null>();
+  const { getRoomsByLocationIdWithPagination } = useLocations();
+  const [rooms, setRooms] = useState<RoomsWithNumberOfElements | null>();
   const [open, setOpen] = useState(false);
 
   const { handleSubmit, control, setValue, getValues } =
@@ -51,28 +51,31 @@ export function MyTicketsComponent() {
         page: 0,
         size: 5,
         direction: "asc",
-        key: "session.startTime",
+        key: "id",
       },
       resolver: yupResolver(PaginationRequestParamsSchema),
     });
 
-  async function getTickets() {
-    const response = await getMyTickets(getValues());
-    if (isInstanceOf<PaginationTicketResponse>(response, "pageable")) {
-      setTickets({
+  async function getRooms() {
+    const response = await getRoomsByLocationIdWithPagination(
+      locationId,
+      getValues(),
+    );
+    if (isInstanceOf<PaginationRoomResponse>(response, "pageable")) {
+      setRooms({
         numberOfElements: response.numberOfElements,
-        tickets: response.content,
+        rooms: response.content,
       });
     }
   }
 
   const onSubmit: SubmitHandler<PaginationRequestParams> = async () => {
-    await getTickets();
+    await getRooms();
     setOpen(false);
   };
 
   useEffect(() => {
-    getTickets();
+    getRooms();
   }, []);
 
   const onError: SubmitErrorHandler<PaginationRequestParams> = (error) => {
@@ -98,9 +101,9 @@ export function MyTicketsComponent() {
         marginLeft: 5,
       }}
     >
-      <Typography variant="h4">{t("upcomingSessions")}</Typography>
+      <Typography variant="h4">{t("manageRooms")}</Typography>
       <Button
-        onClick={getTickets}
+        onClick={getRooms}
         variant="contained"
         startIcon={<RefreshIcon></RefreshIcon>}
         color="secondary"
@@ -151,17 +154,8 @@ export function MyTicketsComponent() {
                     autoComplete=""
                   >
                     <MenuItem value="id">{t("id")}</MenuItem>
-                    <MenuItem value="session.name">{t("sessionName")}</MenuItem>
-                    <MenuItem value="session.startTime">
-                      {t("startTime")}
-                    </MenuItem>
-                    <MenuItem value="session.endTime">{t("endTime")}</MenuItem>
-                    <MenuItem value="session.room.name">
-                      {t("roomName")}
-                    </MenuItem>
-                    <MenuItem value="session.event.name">
-                      {t("locationName")}
-                    </MenuItem>
+                    <MenuItem value="name">{t("roomName")}</MenuItem>
+                    <MenuItem value="maxCapacity">{t("maxCapacity")}</MenuItem>
                   </TextField>
                 );
               }}
@@ -224,33 +218,6 @@ export function MyTicketsComponent() {
               }}
               align="right"
             >
-              {t("sessionName")}
-            </TableCell>
-            <TableCell
-              sx={{
-                fontWeight: "bold",
-                fontSize: "18px",
-              }}
-              align="right"
-            >
-              {t("startTime")}
-            </TableCell>
-            <TableCell
-              sx={{
-                fontWeight: "bold",
-                fontSize: "18px",
-              }}
-              align="right"
-            >
-              {t("endTime")}
-            </TableCell>
-            <TableCell
-              sx={{
-                fontWeight: "bold",
-                fontSize: "18px",
-              }}
-              align="right"
-            >
               {t("roomName")}
             </TableCell>
             <TableCell
@@ -260,16 +227,13 @@ export function MyTicketsComponent() {
               }}
               align="right"
             >
-              {t("locationName")}
+              {t("maxCapacity")}
             </TableCell>
           </TableHead>
           <TableBody>
-            {tickets?.tickets.map((ticket) => {
+            {rooms?.rooms.map((room) => {
               return (
-                <TicketRowComponent
-                  key={ticket.id}
-                  ticket={ticket}
-                ></TicketRowComponent>
+                <RoomRowComponent key={room.id} room={room}></RoomRowComponent>
               );
             })}
           </TableBody>
@@ -277,7 +241,7 @@ export function MyTicketsComponent() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25, 50]}
           component="div"
-          count={tickets?.numberOfElements ?? 0}
+          count={rooms?.numberOfElements ?? 0}
           rowsPerPage={getValues().size ?? 5}
           page={getValues().page ?? 0}
           onPageChange={handleChangePage}

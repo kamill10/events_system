@@ -47,7 +47,6 @@ export const useLocations = () => {
     try {
       setIsFetching(true);
       const { data } = await api.getLocation(id);
-      console.log(data);
       return data;
     } catch (e) {
       console.error(e);
@@ -71,7 +70,6 @@ export const useLocations = () => {
   const addLocation = async (location: CreateLocation) => {
     try {
       setIsFetching(true);
-      console.log(location);
       await api.addLocation(location);
       sendNotification({
         type: "success",
@@ -125,6 +123,62 @@ export const useLocations = () => {
     }
   };
 
+  const deleteLocationById = async (id: string) => {
+    try {
+      setIsFetching(true);
+      await api.deleteLocation(id);
+      sendNotification({
+        type: "success",
+        description: t("deleteLocationSuccess"),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("deleteLocationByIdFail"),
+        });
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const getRoomsByLocationIdWithPagination = async (
+    locationId: string,
+    requestParams: PaginationRequestParams,
+  ) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getRoomsByLocationIdWithPagination(
+        locationId,
+        requestParams,
+      );
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getRoomsByLocationIdWithPaginationFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return {
     locations,
     isFetching,
@@ -132,5 +186,7 @@ export const useLocations = () => {
     getLocationById,
     updateLocationById,
     addLocation,
+    deleteLocationById,
+    getRoomsByLocationIdWithPagination,
   };
 };
