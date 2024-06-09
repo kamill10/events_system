@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.TicketDTOConverter;
@@ -85,8 +86,9 @@ public class MeEventController {
 
     @DeleteMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<?> signOutFromSession(@PathVariable UUID id) throws TicketNotFoundException, TicketAlreadyCancelledException {
-        meEventService.signOutFromSession(id);
+    public ResponseEntity<?> signOutFromSession(@PathVariable UUID id, @RequestHeader("If-Match") String eTag)
+            throws TicketNotFoundException, TicketAlreadyCancelledException, OptLockException {
+        meEventService.signOutFromSession(id, eTag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
