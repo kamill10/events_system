@@ -16,7 +16,14 @@ export interface TextFieldProps<T extends FieldValues> {
   name: Path<T>;
   label: string;
   focused?: boolean;
+  multiline?: boolean;
+  rows?: number;
 }
+
+export interface DatePickerProps<T extends FieldValues>
+  extends TextFieldProps<T> {
+    whatToValidate?: string[];
+  }
 
 export interface RouteType {
   page: React.FunctionComponent;

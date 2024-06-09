@@ -13,8 +13,18 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 export default function TextFieldComponent<T extends FieldValues>(
   props: TextFieldProps<T>,
 ) {
-  const { control, name, trigger, errors, label, type, disabled, focused } =
-    props;
+  const {
+    control,
+    name,
+    trigger,
+    errors,
+    label,
+    type,
+    disabled,
+    focused,
+    multiline,
+    rows,
+  } = props;
   const [textVisible, setTextVisible] = useState(false);
 
   if (type === "password")
@@ -40,7 +50,6 @@ export default function TextFieldComponent<T extends FieldValues>(
                 name={field.name}
                 autoComplete=""
                 fullWidth
-                focused={focused}
                 type={textVisible ? "text" : "password"}
                 error={errors[name] ? true : false}
                 disabled={disabled}
@@ -92,6 +101,9 @@ export default function TextFieldComponent<T extends FieldValues>(
               name={field.name}
               autoComplete=""
               fullWidth
+              multiline={multiline}
+              rows={rows}
+              focused={focused}
               type={type}
               error={errors[name] ? true : false}
               disabled={disabled}

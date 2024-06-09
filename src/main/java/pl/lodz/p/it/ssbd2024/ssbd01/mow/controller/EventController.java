@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventNotFoundException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventStartDateAfterEndDateException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SessionDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
@@ -79,7 +80,7 @@ public class EventController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createEvent(@RequestBody CreateEventDTO createEventDTO) {
+    public ResponseEntity<?> createEvent(@RequestBody CreateEventDTO createEventDTO) throws EventStartDateAfterEndDateException {
         Event event = EventDTOConverter.getEvent(createEventDTO);
         eventService.createEvent(event);
         return ResponseEntity.status(HttpStatus.OK).build();
