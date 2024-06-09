@@ -7,7 +7,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
@@ -31,13 +30,13 @@ public class RoomService {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public Page<Room> getAllLocationRooms(UUID locationId, PageUtils pageUtils) {
         Pageable pageable = pageUtils.buildPageable();
-        return roomRepository.findAllByLocationId(locationId, pageable);
+        return roomRepository.findAllByLocationIdAndIsActiveTrue(locationId, pageable);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public Room getRoomById(UUID roomId) throws RoomNotFoundException {
-        return roomRepository.findById(roomId)
+        return roomRepository.findByIdAndIsActiveTrue(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
     }
 
@@ -51,7 +50,7 @@ public class RoomService {
     }
 
     public Room updateRoom(UUID roomId, Room room, String eTagReceived) throws RoomNotFoundException, OptLockException {
-        Room roomToUpdate = roomRepository.findById(roomId)
+        Room roomToUpdate = roomRepository.findByIdAndIsActiveTrue(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTagReceived, String.valueOf(roomToUpdate.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
@@ -59,5 +58,17 @@ public class RoomService {
         roomToUpdate.setName(room.getName());
         roomToUpdate.setMaxCapacity(room.getMaxCapacity());
         return roomRepository.saveAndFlush(roomToUpdate);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public void deleteRoom(UUID roomId, String eTagReceived) throws RoomNotFoundException, OptLockException {
+        var room = roomRepository.findByIdAndIsActiveTrue(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
+        if (!ETagBuilder.isETagValid(eTagReceived, String.valueOf(room.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
+        room.setIsActive(false);
+        roomRepository.saveAndFlush(room);
     }
 }

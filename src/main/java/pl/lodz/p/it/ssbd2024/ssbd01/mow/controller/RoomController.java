@@ -59,6 +59,16 @@ public class RoomController {
                 .build();
     }
 
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @DeleteMapping("/room/{roomId}")
+    public ResponseEntity<?> deleteRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId)
+            throws OptLockException, RoomNotFoundException {
+        roomService.deleteRoom(roomId, eTagReceived);
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
     @PatchMapping("/room/{roomId}")
     public ResponseEntity<GetRoomDTO> updateRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId, @RequestBody
     UpdateRoomDTO roomDTO) throws RoomNotFoundException, OptLockException {

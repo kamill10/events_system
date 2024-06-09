@@ -8,13 +8,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
 @PreAuthorize("hasRole('ROLE_MANAGER')")
 public interface RoomRepository extends JpaRepository<Room, UUID> {
 
-    Page<Room> findAllByLocationId(UUID locationId, Pageable pageUtils);
+    Page<Room> findAllByLocationIdAndIsActiveTrue(UUID locationId, Pageable pageUtils);
 
-
+    Optional<Room> findByIdAndIsActiveTrue(UUID id);
 }
