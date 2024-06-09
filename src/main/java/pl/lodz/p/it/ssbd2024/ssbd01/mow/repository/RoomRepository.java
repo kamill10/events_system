@@ -16,10 +16,12 @@ import java.util.UUID;
 @PreAuthorize("hasRole('ROLE_MANAGER')")
 public interface RoomRepository extends JpaRepository<Room, UUID> {
 
+    @PreAuthorize("permitAll()")
     Page<Room> findAllByLocationIdAndIsActiveTrue(UUID locationId, Pageable pageUtils);
 
     List<Room> findAllByLocationIdAndIsActiveFalse(UUID locationId);
 
+    @PreAuthorize("permitAll()")
     Optional<Room> findByIdAndIsActiveTrue(UUID id);
 
     Optional<Room> findByIdAndIsActiveFalse(UUID id);
