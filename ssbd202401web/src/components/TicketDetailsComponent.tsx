@@ -10,7 +10,7 @@ import {
 import parseDate from "../validation/parseDate.ts";
 import { useAccount } from "../hooks/useAccount.ts";
 
-export function TicketDetails({
+export function TicketDetailsComponent({
   ticket,
 }: {
   ticket: TicketDetailedType | null;

@@ -8,7 +8,7 @@ import ContainerComponent from "../components/ContainerComponent.tsx";
 import { Breadcrumbs, Button, Typography } from "@mui/material";
 import { Pathnames } from "../router/Pathnames.ts";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { TicketDetails } from "../components/TicketDetails.tsx";
+import { TicketDetailsComponent } from "../components/TicketDetailsComponent.tsx";
 import ConfirmChangeModal from "../components/ConfirmChangeModal.tsx";
 
 export function TicketPage() {
@@ -87,7 +87,7 @@ export function TicketPage() {
       >
         {t("singOutOfSession")}
       </Button>
-      <TicketDetails ticket={ticket}></TicketDetails>
+      <TicketDetailsComponent ticket={ticket}></TicketDetailsComponent>
       <ConfirmChangeModal
         callback={signOut}
         handleClose={() => setOpen(false)}
