@@ -32,7 +32,7 @@ import { CreateEventDTOType, Event } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
-import { PaginationRoomResponse } from "../types/Room.ts";
+import {GetRoomResponse, PaginationRoomResponse, UpdateRoomType} from "../types/Room.ts";
 import {
   CreateSpeaker,
   PaginationSpeakerResponse,
@@ -313,6 +313,10 @@ export const api = {
   },
   signOutOfSession: (id: string) =>
     apiWithEtag.delete(`/events/me/session/${id}`),
+  getRoomById: (id: string) : ApiResponseType<GetRoomResponse> =>
+  apiWithEtag.get(`/rooms/room/${id}`),
+  updateRoom: (id :string, room: UpdateRoomType) : ApiResponseType<GetRoomResponse> =>
+    apiWithEtag.patch(`/rooms/room/${id}`, room),
 };
 
 const getUrlWithPaginationParams = (
