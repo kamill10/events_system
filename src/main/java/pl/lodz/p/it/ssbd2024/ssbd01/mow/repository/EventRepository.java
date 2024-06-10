@@ -11,7 +11,9 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Transactional(propagation = Propagation.MANDATORY)
@@ -19,8 +21,8 @@ import java.util.UUID;
 public interface EventRepository extends JpaRepository<Event, UUID> {
 
     @PreAuthorize("permitAll()")
-    List<Event> getByEndDateAfter(LocalDate date);
+    List<Event> getByEndDateAfter(LocalDateTime date);
 
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    Page<Event> findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDate currentDate, Account account, Pageable pageable);
+    Page<Event> findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDateTime currentDateTime, Account account, Pageable pageable);
 }

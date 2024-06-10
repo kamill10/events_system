@@ -92,7 +92,7 @@ export default function AccountPage() {
           {t("accountDetails")}
         </Typography>
       </Breadcrumbs>
-      <Typography variant="h3">
+      <Typography variant="h4">
         {t("accountDetails")}: {username}
       </Typography>
       <Button

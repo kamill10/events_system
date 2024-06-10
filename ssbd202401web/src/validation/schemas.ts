@@ -17,7 +17,7 @@ import i18next from "i18next";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
-import { CreateEventType } from "../types/Event.ts";
+import { CreateEventType, UpdateEventType } from "../types/Event.ts";
 import { Dayjs } from "dayjs";
 import { CreateSpeaker, UpdateSpeakerDataType } from "../types/Speaker.ts";
 
@@ -37,6 +37,7 @@ export let AddLocationSchema: yup.ObjectSchema<CreateLocation>;
 export let AddSpeakerSchema: yup.ObjectSchema<CreateSpeaker>;
 export let CreateEventValidationSchema: yup.ObjectSchema<CreateEventType>;
 export let ModifySpeakerSchema: yup.ObjectSchema<UpdateSpeakerDataType>;
+export let UpdateEventValidationSchema: yup.ObjectSchema<UpdateEventType>;
 
 export function initValidation() {
   signInValidationSchema = yup.object<SignInCredentialsType>().shape({
@@ -375,4 +376,40 @@ export function initValidation() {
       return true;
     }),
   });
+
+  /*@ts-ignore*/
+  UpdateEventValidationSchema = yup.object<UpdateEventType>().shape({
+    name: yup
+      .string()
+      .min(3, i18next.t("eventNameTooShort"))
+      .max(128, i18next.t("eventNameTooLong"))
+      .required(i18next.t("eventNameRequired")),
+    description: yup
+      .string()
+      .min(3, i18next.t("eventDescTooShort"))
+      .max(1024, i18next.t("eventDescTooLong"))
+      .required("eventDesRequired"),
+    startDate: yup.mixed().test("start-date-before-end", (value, context) => {
+      const tempStart = value as Dayjs;
+      const tempEnd = context.parent.endDate as Dayjs;
+      if (tempStart.diff(tempEnd) > 0) {
+        return context.createError({
+          path: context.path,
+          message: i18next.t("Event start date after end date."),
+        });
+      }
+      return true;
+    }),
+    endDate: yup.mixed().test("start-date-before-end", (value, context) => {
+      const tempEnd = value as Dayjs;
+      const tempStart = context.parent.startDate as Dayjs;
+      if (tempEnd.diff(tempStart) < 0) {
+        return context.createError({
+          path: context.path,
+          message: i18next.t("Event start date after end date."),
+        });
+      }
+      return true;
+    }),
+  })
 }

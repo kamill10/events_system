@@ -9,6 +9,7 @@ import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +22,7 @@ import java.util.Objects;
 @Table(name = "event")
 public class Event extends ControlledEntity {
 
-    @Column(nullable = false, unique = true, updatable = false)
+    @Column(nullable = false, unique = true, updatable = true)
     @NotBlank
     @Size(min = 3, max = 128)
     private String name;
@@ -47,17 +48,17 @@ public class Event extends ControlledEntity {
      */
     @NotNull
     @FutureOrPresent
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     /**
      * Sessions that are part of event cannot start after end date.
      */
     @NotNull
     @FutureOrPresent
-    private LocalDate endDate;
+    private LocalDateTime endDate;
 
     public Event(String name, String description, List<Session> sessions,
-                 LocalDate startDate, LocalDate endDate) {
+                 LocalDateTime startDate, LocalDateTime endDate) {
         this.name = name;
         this.description = description;
         this.sessions = sessions;

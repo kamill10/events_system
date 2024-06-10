@@ -1,3 +1,4 @@
+
 export default function parseDate(date: string, accountTimeZone?: string) {
   const a = new Date(new Date(date).setHours(new Date(date).getHours() + 2));
   if (!accountTimeZone) {
