@@ -106,6 +106,7 @@ public class EventService {
         databaseEvent.setName(event.getName());
         databaseEvent.setStartDate(event.getStartDate());
         databaseEvent.setEndDate(event.getEndDate());
+        databaseEvent.setDescriptionPL(event.getDescriptionPL());
 
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         TranslationUtils.translateEvent(databaseEvent, account.getLanguage().getLanguageCode(), config.getDeepl());
