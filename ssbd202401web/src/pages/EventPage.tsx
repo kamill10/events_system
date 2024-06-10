@@ -27,7 +27,6 @@ import { useAccount } from "../hooks/useAccount";
 import { useSessions } from "../hooks/useSessions";
 import { SessionDetailedType } from "../types/SessionDetailed";
 import SessionRowComponent from "../components/SessionRowComponent";
-import {CancelEventComponent} from "../components/CancelEventComponent.tsx";
 
 export default function EventPage() {
   const { t } = useTranslation();

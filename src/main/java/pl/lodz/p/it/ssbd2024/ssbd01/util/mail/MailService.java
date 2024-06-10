@@ -139,4 +139,8 @@ public class MailService {
         mailTemplateService.sendEmailTemplate(account, "mail.verify.account.subject",
                 "mail.verify.account.body", new Object[] {sb});
     }
+
+    public void sendEmailOnEventCancel(Account account, String eventName) {
+        mailTemplateService.sendEmailTemplate(account, "mail.event.cancel.subject", "mail.event.cancel.body", new Object[] {eventName});
+    }
 }
