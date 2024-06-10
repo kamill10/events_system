@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -8,13 +9,17 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventStartDateAfterEndDateException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.SessionsExistOutsideRangeException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SessionDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +43,14 @@ public class EventController {
                 .map(EventDTOConverter::getEventDTO)
                 .toList();
         return ResponseEntity.status(HttpStatus.OK).body(eventsDTO);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<GetEventDTO> getEvent(@PathVariable UUID id) throws EventNotFoundException {
+        Event event = eventService.getEvent(id);
+        String etag = ETagBuilder.buildETag(event.getVersion().toString());
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(EventDTOConverter.getEventDTO(event));
     }
 
     @GetMapping("/sessions/{id}")
@@ -73,17 +86,25 @@ public class EventController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> updateEvent(@PathVariable UUID id) {
-        eventService.updateEvent(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<GetEventDTO> updateEvent(
+            @PathVariable UUID id,
+            @RequestHeader(HttpHeaders.IF_MATCH) String etag,
+            @RequestBody UpdateEventDTO updateEventDTO) throws
+                OptLockException,
+                SessionsExistOutsideRangeException,
+                EventNotFoundException,
+                EventStartDateAfterEndDateException {
+        Event event = EventDTOConverter.getEvent(updateEventDTO);
+        Event updatedEvent = eventService.updateEvent(id, etag, event);
+        return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventDTO(updatedEvent));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createEvent(@RequestBody CreateEventDTO createEventDTO) throws EventStartDateAfterEndDateException {
+    public ResponseEntity<String> createEvent(@RequestBody CreateEventDTO createEventDTO) throws EventStartDateAfterEndDateException {
         Event event = EventDTOConverter.getEvent(createEventDTO);
-        eventService.createEvent(event);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        String eventId = eventService.createEvent(event);
+        return ResponseEntity.status(HttpStatus.OK).body(eventId);
     }
 
     @DeleteMapping("/{id}")

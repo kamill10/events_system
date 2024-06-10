@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({JpaConfig.class, BusinessConfig.class, ToolsConfig.class})
+@Import({AsyncConfig.class, JpaConfig.class, BusinessConfig.class, ToolsConfig.class})
 public class RootConfig {
 
     @Bean

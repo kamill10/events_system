@@ -93,7 +93,7 @@ public class MeEventService {
     public Page<Event> getMyHistoricalEvents(PageUtils pageUtils) {
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Pageable pageable = pageUtils.buildPageable();
-        return eventRepository.findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDate.now(),
+        return eventRepository.findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDateTime.now(),
                 account, pageable);
     }
 
