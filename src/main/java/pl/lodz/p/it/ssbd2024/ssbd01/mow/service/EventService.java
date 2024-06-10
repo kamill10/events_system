@@ -10,10 +10,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventStartDateAfterEndDateException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.SessionsExistOutsideRangeException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
@@ -70,13 +67,17 @@ public class EventService {
             EventNotFoundException,
             OptLockException,
             SessionsExistOutsideRangeException,
-            EventStartDateAfterEndDateException {
+            EventStartDateAfterEndDateException,
+            EventStartDateInPast {
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
         if (!ETagBuilder.isETagValid(etag, String.valueOf(databaseEvent.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
         LocalDateTime newEventStartTime = event.getStartDate().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime newEventEndTime = event.getEndDate().withHour(23).withMinute(59).withSecond(59);
+        if (newEventStartTime.getDayOfMonth() - LocalDate.now().getDayOfMonth() < 0) {
+            throw new EventStartDateInPast(ExceptionMessages.EVENT_START_IN_PAST);
+        }
         List<Session> sessionsOutsideRange = sessionRepository.findSessionsOutsideRange(id, newEventStartTime, newEventEndTime);
         if (!sessionsOutsideRange.isEmpty()) {
             throw new SessionsExistOutsideRangeException(ExceptionMessages.SESSIONS_OUTSIDE_RANGE);
@@ -93,12 +94,15 @@ public class EventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public String createEvent(Event event) throws EventStartDateAfterEndDateException {
+    public String createEvent(Event event) throws EventStartDateAfterEndDateException, EventStartDateInPast {
         if (event.getStartDate().isAfter(event.getEndDate())) {
             throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
         }
         LocalDateTime newEventStartTime = event.getStartDate().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime newEventEndTime = event.getEndDate().withHour(23).withMinute(59).withSecond(59);
+        if (newEventStartTime.getDayOfMonth() - LocalDate.now().getDayOfMonth() < 0) {
+            throw new EventStartDateInPast(ExceptionMessages.EVENT_START_IN_PAST);
+        }
         event.setStartDate(newEventStartTime);
         event.setEndDate(newEventEndTime);
         eventRepository.saveAndFlush(event);

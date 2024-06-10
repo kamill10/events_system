@@ -62,4 +62,5 @@ public class ExceptionMessages {
     public static final String FIELD_REQUIRED = "Field is required.";
     public static final String EVENT_START_AFTER_END = "Event start date after end date.";
     public static final String SESSIONS_OUTSIDE_RANGE = "Sessions outside range.";
+    public static final String EVENT_START_IN_PAST = "Event start date in the past.";
 }

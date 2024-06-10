@@ -12,10 +12,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventNotFoundException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventStartDateAfterEndDateException;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.SessionsExistOutsideRangeException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SessionDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
@@ -90,10 +87,11 @@ public class EventController {
             @PathVariable UUID id,
             @RequestHeader(HttpHeaders.IF_MATCH) String etag,
             @RequestBody UpdateEventDTO updateEventDTO) throws
-                OptLockException,
-                SessionsExistOutsideRangeException,
-                EventNotFoundException,
-                EventStartDateAfterEndDateException {
+            OptLockException,
+            SessionsExistOutsideRangeException,
+            EventNotFoundException,
+            EventStartDateAfterEndDateException,
+            EventStartDateInPast {
         Event event = EventDTOConverter.getEvent(updateEventDTO);
         Event updatedEvent = eventService.updateEvent(id, etag, event);
         return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventDTO(updatedEvent));
@@ -101,7 +99,9 @@ public class EventController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<String> createEvent(@RequestBody CreateEventDTO createEventDTO) throws EventStartDateAfterEndDateException {
+    public ResponseEntity<String> createEvent(@RequestBody CreateEventDTO createEventDTO) throws
+            EventStartDateAfterEndDateException,
+            EventStartDateInPast {
         Event event = EventDTOConverter.getEvent(createEventDTO);
         String eventId = eventService.createEvent(event);
         return ResponseEntity.status(HttpStatus.OK).body(eventId);
