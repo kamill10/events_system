@@ -450,10 +450,9 @@ i18next
           updateEventFail: "Nie udało się zaktualizować wydarzenia :(",
           changeEventTitle: "Zmień szczegóły wydarzenia",
           changeEventBody: "Wprowadź nowe dane wydarzenia poniżej!",
-          "Sessions outside range.":
-            "Istnieją sesje, które nie zawierają się w podanym zakresie. Zmień go!",
-          "musi być datą bieżącą lub w przyszłości":
-            "Data nie może być z przeszłości",
+          "Sessions outside range.": "Istnieją sesje, które nie zawierają się w podanym zakresie. Zmień go!",
+          "musi być datą bieżącą lub w przyszłości": "Data nie może być z przeszłości",
+          "Event start date in the past.": "Początek wydarzenia musi być w przyszłości",
 
           getDeletedLocationsFail:
             "Nie udało się pobrać usuniętych lokalizacji",
@@ -862,10 +861,9 @@ i18next
           updateEventFail: "Failed to update event :(",
           changeEventTitle: "Change event details",
           changeEventBody: "Enter new event data below!",
-          "Sessions outside range.":
-            "There are sessions outside the chosen range. Change it!",
-          "musi być datą bieżącą lub w przyszłości":
-            "Date can't be from the past",
+          "Sessions outside range.": "There are sessions outside the chosen range. Change it!",
+          "musi być datą bieżącą lub w przyszłości": "Date can't be from the past",
+          "Event start date in the past.": "Event's start date must be in the present",
           getDeletedLocationsFail: "Failed to fetch deleted locations :(",
           getDeletedLocationFail: "Failed to fetch deleted location",
           restoreLocationSuccess: "Location has been restored successfully",

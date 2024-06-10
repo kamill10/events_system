@@ -16,12 +16,14 @@ import { useEvents } from "../hooks/useEvents";
 import { AxiosError } from "axios";
 import { Event } from "../types/Event";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useAccount } from "../hooks/useAccount";
 
 export default function EventPage() {
   const { t } = useTranslation();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const { getEventById } = useEvents();
   const { id } = useParams();
+  const { isManager } = useAccount();
   const [event, setEvent] = useState<Event | null>(null);
 
   async function getEvent() {
@@ -83,10 +85,10 @@ export default function EventPage() {
       </Button>
       <Tabs value={page} onChange={handleChange}>
         <Tab label={t("eventLink")}></Tab>
-        <Tab label={t("changeEvent")}></Tab>
+        {isManager && <Tab label={t("changeEvent")}></Tab>}
       </Tabs>
       <Divider></Divider>
-      {page === 1 && (
+      {page === 1 && isManager && (
         <ChangeEventDetailsComponent
           event={event}
           getEvent={getEvent}

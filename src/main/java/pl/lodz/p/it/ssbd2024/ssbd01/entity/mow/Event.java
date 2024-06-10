@@ -52,14 +52,12 @@ public class Event extends ControlledEntity {
      * Sessions that are part of event cannot start before start date.
      */
     @NotNull
-    @FutureOrPresent
     private LocalDateTime startDate;
 
     /**
      * Sessions that are part of event cannot start after end date.
      */
     @NotNull
-    @FutureOrPresent
     private LocalDateTime endDate;
 
 
