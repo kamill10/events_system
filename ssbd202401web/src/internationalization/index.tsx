@@ -300,10 +300,15 @@ i18next
           "DB connection error.": "Wystąpił błąd po stronie serwera",
           "Entity lazy initialization error.":
             "Wystąpił błąd po stronie serwera",
+          "Session not found." : "Nie ma takiej sesji",
+          "Session not active." : "Sesja nie jest aktywna",
+          "Already signed up." : "Jesteś już zapisan na tą sesje",
+          "Max seats reached." : "Osiągnieto limit miejsc",
           usernameTooShort: "Nazwa użytkownika musi mieć minimum 3 znaki",
           usernameTooLong:
             "Nazwa użytkownika nie może być dłuższa niż 32 znaki",
           usernameWrongFormat:
+
             "Nazwa użytkownika może zawierać tylko znaki alfanumeryczne",
           usernameRequired: "Nazwa użytkownika jest wymagana",
           passwordTooShort: "Hasło musi mieć minimum 8 znaków",
@@ -472,6 +477,7 @@ i18next
           signForSession: "Zapisz się na sesje",
           allSeats: "Liczba miejsc",
           freeSeats: "Wolne miejsca",
+          signOnSessionSuccess: "Zapisano na sesje pomyślnie!",
         },
       },
       ENGLISH: {
@@ -733,6 +739,10 @@ i18next
           "Problem with hibernate.": "Internal server error",
           "DB connection error.": "Internal server error",
           "Entity lazy initialization error.": "Internal server error",
+          "Session not found." : "Session not found",
+          "Session not active." : "Sesja not active",
+          "Already signed up." : "You are already signed on this session",
+          "Max seats reached." : "Limit of seats reached",
           usernameTooShort: "Username must be at least 3 characters long",
           usernameTooLong: "Username can be a maximum of 32 characters",
           usernameWrongFormat: "Username can contain only alphanumeric values",
@@ -897,6 +907,7 @@ i18next
           signForSession: "Sign for Session",
           allSeats: "All Seats",
           freeSeats: "Free Seats",
+          signOnSessionSuccess: "Successfuly signed on session"
         },
       },
     },
