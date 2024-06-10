@@ -1,8 +1,11 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -105,8 +108,13 @@ public class EventService {
         return event.getId().toString();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void cancelEvent(UUID id) throws EventNotFoundException, EventAlreadyCancelledException {
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
 

@@ -2,11 +2,14 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mok.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
@@ -63,6 +66,11 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void changeMyPasswordSendMail(String currentPassword, String newPassword)
             throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -91,6 +99,11 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void changeMyEmailSendMail(String currentPassword, String newEmail)
             throws WrongOldPasswordException, EmailAlreadyExistsException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -117,6 +130,11 @@ public class MeService {
 
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void changeMyPasswordWithToken(String token)
             throws AppException {
         Account account = verifier.verifyCredentialReset(token, changeMyPasswordRepository);
@@ -135,6 +153,11 @@ public class MeService {
 
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void changeMyEmailWithToken(String token)
             throws AppException {
         Account accountToUpdate = verifier.verifyCredentialReset(token, changeEmailRepository);
@@ -149,6 +172,11 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account updateMyAccountData(Account accountData, String eTag, String theme, String timeZone)
             throws AppException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -198,6 +226,11 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void setAccountTheme(String theme) throws AppException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
