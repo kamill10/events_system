@@ -1,19 +1,36 @@
 version: '3'
 
 services:
+  nginx:
+    depends_on:
+      - tomcat
+    image: nginx:1.25.4
+    build:
+        context: .
+        dockerfile: Dockerfile-nginx
+    hostname: nginx
+    container_name: nginx
+    networks:
+      - ssbd01_local
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   tomcat:
     depends_on:
       postgres:
         condition: service_healthy
     image: tomcat:10.1.19-jre21
+    build:
+        context: .
+        dockerfile: Dockerfile-tomcat
     hostname: tomcat
-    container_name: tomcat_test
+    container_name: tomcat
     networks:
-      - ssbd01_test
+      - ssbd01_local
     ports:
-      - "28080:8080"
-    volumes:
-      - '../target/ssbd01.war:/usr/local/tomcat/webapps/ssbd01.war'
+      - "8080:8080"
 
   postgres:
     image: postgres:16.2
@@ -25,19 +42,19 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     hostname: postgres
-    container_name: postgres_test
+    container_name: postgres
     networks:
-      - ssbd01_test
+      - ssbd01_local
     ports:
-      - "54320:5432"
+      - "5432:5432"
     volumes:
-      - pg_test:/var/lib/postgresql/data
+      - pg_local:/var/lib/postgresql/data
       - ./create-users.sql:/docker-entrypoint-initdb.d/create-users.sql
 
 volumes:
-  pg_test:
+  pg_local:
 
 networks:
-  ssbd01_test:
+  ssbd01_local:
     driver: bridge
 

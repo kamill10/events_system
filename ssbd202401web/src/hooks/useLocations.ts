@@ -181,6 +181,87 @@ export const useLocations = () => {
     }
   };
 
+  const getDeletedLocationsWithPagination = async (
+    requestParams: PaginationRequestParams,
+  ) => {
+    try {
+      setIsFetching(true);
+      const { data } =
+        await api.getDeletedLocationsWithPagination(requestParams);
+      setLocations({
+        locations: data.content,
+        totalElements: data.totalElements,
+      });
+      return data.content;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getDeletedLocationsFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const getDeletedLocation = async (id: string) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getDeletedLocation(id);
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getDeletedLocationFail"),
+        });
+      }
+      return null;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const restoreLocation = async (id: string) => {
+    try {
+      setIsFetching(true);
+      await api.restoreLocation(id);
+      sendNotification({
+        type: "success",
+        description: t("restoreLocationSuccess"),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("restoreLocationFail"),
+        });
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return {
     locations,
     getLocationsWithPagination,
@@ -189,5 +270,8 @@ export const useLocations = () => {
     addLocation,
     deleteLocationById,
     getRoomsByLocationIdWithPagination,
+    getDeletedLocationsWithPagination,
+    getDeletedLocation,
+    restoreLocation,
   };
 };

@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -88,11 +89,12 @@ public class AuthenticationService {
             timeoutString = "${transaction.timeout}"
     )
     @Retryable(
-            retryFor = {OptimisticLockException.class},
+            retryFor = {OptimisticLockException.class, UnexpectedRollbackException.class},
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
     public String authenticate(LoginDTO loginDTO, String language) throws AppException {
+
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.username(), loginDTO.password()));
         } catch (BadCredentialsException e) {
@@ -143,6 +145,7 @@ public class AuthenticationService {
         account.setLastSuccessfulLoginIp(ipAddress);
 
         accountAuthRepository.saveAndFlush(account);
+
         accountAuthHistoryRepository.saveAndFlush(new AccountHistory(account));
 
         return jwtService.generateToken(new HashMap<>(), account);
@@ -151,7 +154,7 @@ public class AuthenticationService {
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @Retryable(
-            retryFor = {OptimisticLockException.class},
+            retryFor = {OptimisticLockException.class, UnexpectedRollbackException.class},
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
@@ -182,7 +185,7 @@ public class AuthenticationService {
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @Retryable(
-            retryFor = {OptimisticLockException.class},
+            retryFor = {OptimisticLockException.class, UnexpectedRollbackException.class},
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
@@ -200,8 +203,13 @@ public class AuthenticationService {
         RunAs.runAsSystem(() -> mailService.sendEmailToInformAboutUnblockAccount(returnAccount));
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void deleteExpiredTokensAndAccounts() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -221,8 +229,13 @@ public class AuthenticationService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void unlockAccounts() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -239,8 +252,13 @@ public class AuthenticationService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void lockAccountsThatAreNotUsed() {
         LocalDateTime now = LocalDateTime.now();
 
@@ -260,14 +278,24 @@ public class AuthenticationService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void deleteExpiredJWTTokensFromWhitelist() {
         jwtWhitelistRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void sendAccountConfirmationReminder() {
         confirmationReminderRepository.findByReminderDateBefore(LocalDateTime.now()).forEach(confirmationReminder -> {
             AccountConfirmation confirmation =
@@ -279,15 +307,25 @@ public class AuthenticationService {
         });
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void logout(String token) {
         jwtWhitelistRepository.deleteByToken(token);
     }
 
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasAnyRole('ROLE_PARTICIPANT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public String refreshJWT(String token) throws AppException {
         JWTWhitelistToken jwtWhitelistToken = jwtWhitelistRepository.findByToken(token.substring(7)).orElseThrow(
                 () -> new TokenNotFoundException(ExceptionMessages.TOKEN_NOT_FOUND));

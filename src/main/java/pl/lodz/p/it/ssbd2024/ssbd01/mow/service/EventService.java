@@ -1,10 +1,18 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 
+import com.deepl.api.DeepLException;
+import com.deepl.api.TextResult;
+import com.deepl.api.Translator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
@@ -15,6 +23,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDate;
@@ -29,6 +38,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final SessionRepository sessionRepository;
     private final TicketRepository ticketRepository;
+    private final ConfigurationProperties config;
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")
@@ -67,8 +77,12 @@ public class EventService {
             EventNotFoundException,
             OptLockException,
             SessionsExistOutsideRangeException,
+<<<<<<< HEAD
             EventStartDateAfterEndDateException,
             EventStartDateInPast {
+=======
+            EventStartDateAfterEndDateException, DeepLException, InterruptedException {
+>>>>>>> 108d3dc8a323759fb3be1fcdccd9fb366e364b64
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
         if (!ETagBuilder.isETagValid(etag, String.valueOf(databaseEvent.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
@@ -86,15 +100,29 @@ public class EventService {
             throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
         }
         databaseEvent.setName(event.getName());
-        databaseEvent.setDescription(event.getDescription());
         databaseEvent.setStartDate(event.getStartDate());
         databaseEvent.setEndDate(event.getEndDate());
+
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Translator translator = new Translator(config.getDeepl());
+        if (Objects.equals(account.getLanguage().getLanguageCode(), "pl-PL")) {
+            databaseEvent.setDescriptionPL(event.getDescriptionPL());
+            databaseEvent.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
+        } else {
+            databaseEvent.setDescriptionEN(event.getDescriptionPL());
+            databaseEvent.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
+        }
+
         return eventRepository.saveAndFlush(databaseEvent);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+<<<<<<< HEAD
     public String createEvent(Event event) throws EventStartDateAfterEndDateException, EventStartDateInPast {
+=======
+    public String createEvent(Event event) throws EventStartDateAfterEndDateException, DeepLException, InterruptedException {
+>>>>>>> 108d3dc8a323759fb3be1fcdccd9fb366e364b64
         if (event.getStartDate().isAfter(event.getEndDate())) {
             throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
         }
@@ -105,12 +133,27 @@ public class EventService {
         }
         event.setStartDate(newEventStartTime);
         event.setEndDate(newEventEndTime);
+
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Translator translator = new Translator(config.getDeepl());
+        if (Objects.equals(account.getLanguage().getLanguageCode(), "pl-PL")) {
+            event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
+        } else {
+            event.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
+            event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
+        }
+
         eventRepository.saveAndFlush(event);
         return event.getId().toString();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void cancelEvent(UUID id) throws EventNotFoundException, EventAlreadyCancelledException {
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
 
