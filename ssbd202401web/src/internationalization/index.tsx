@@ -445,11 +445,6 @@ i18next
           "Sessions outside range.": "Istnieją sesje, które nie zawierają się w podanym zakresie. Zmień go!",
           "musi być datą bieżącą lub w przyszłości": "Data nie może być z przeszłości",
           "Event start date in the past.": "Początek wydarzenia musi być w przyszłości",
-          
-          "Sessions outside range.":
-            "Istnieją sesje, które nie zawierają się w podanym zakresie. Zmień go!",
-          "musi być datą bieżącą lub w przyszłości":
-            "Data nie może być z przeszłości",
 
           getDeletedLocationsFail:
             "Nie udało się pobrać usuniętych lokalizacji",
@@ -860,10 +855,6 @@ i18next
           "Sessions outside range.": "There are sessions outside the chosen range. Change it!",
           "musi być datą bieżącą lub w przyszłości": "Date can't be from the past",
           "Event start date in the past.": "Event's start date must be in the present",
-          "Sessions outside range.":
-            "There are sessions outside the chosen range. Change it!",
-          "musi być datą bieżącą lub w przyszłości":
-            "Date can't be from the past",
           getDeletedLocationsFail: "Failed to fetch deleted locations :(",
           getDeletedLocationFail: "Failed to fetch deleted location",
           restoreLocationSuccess: "Location has been restored successfully",
