@@ -36,13 +36,18 @@ import {
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
-import {GetRoomResponse, PaginationRoomResponse, UpdateRoomType} from "../types/Room.ts";
+import {
+  GetRoomResponse,
+  PaginationRoomResponse,
+  UpdateRoomType,
+} from "../types/Room.ts";
 import {
   CreateSpeaker,
   PaginationSpeakerResponse,
   Speaker,
   UpdateSpeakerDataType,
 } from "../types/Speaker.ts";
+import { SessionDetailedType } from "../types/SessionDetailed.ts";
 
 const API_URL: string = import.meta.env.VITE_API_URL;
 const TIMEOUT_MS: number = 30000;
@@ -317,12 +322,19 @@ export const api = {
   },
   signOutOfSession: (id: string) =>
     apiWithEtag.delete(`/events/me/session/${id}`),
-  getRoomById: (id: string) : ApiResponseType<GetRoomResponse> =>
-  apiWithEtag.get(`/rooms/room/${id}`),
-  updateRoom: (id :string, room: UpdateRoomType) : ApiResponseType<GetRoomResponse> =>
+  getRoomById: (id: string): ApiResponseType<GetRoomResponse> =>
+    apiWithEtag.get(`/rooms/room/${id}`),
+  updateRoom: (
+    id: string,
+    room: UpdateRoomType,
+  ): ApiResponseType<GetRoomResponse> =>
     apiWithEtag.patch(`/rooms/room/${id}`, room),
   getEventById: (id: string): ApiResponseType<Event> =>
     apiWithEtag.get(`/events/${id}`),
+  getEventDetailedSessions: (
+    id: string,
+  ): ApiResponseType<SessionDetailedType[]> =>
+    apiForAnon.get(`events/sessions/${id}`),
   updateEvent: (id: string, data: UpdateEventDTOType) =>
     apiWithEtag.put(`/events/${id}`, data),
   getDeletedLocationsWithPagination: (

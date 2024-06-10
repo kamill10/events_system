@@ -16,12 +16,12 @@ export interface RoomsWithNumberOfElements {
 }
 
 export interface UpdateRoomType {
-    name: string;
-    maxCapacity: number;
+  name: string;
+  maxCapacity: number;
 }
 
 export interface GetRoomResponse {
-    id: string;
-    name: string;
-    maxCapacity: number;
+  id: string;
+  name: string;
+  maxCapacity: number;
 }

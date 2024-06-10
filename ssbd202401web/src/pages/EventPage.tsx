@@ -2,7 +2,14 @@ import {
   Breadcrumbs,
   Button,
   Divider,
+  Paper,
   Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Tabs,
   Typography,
 } from "@mui/material";
@@ -17,6 +24,9 @@ import { AxiosError } from "axios";
 import { Event } from "../types/Event";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useAccount } from "../hooks/useAccount";
+import { useSessions } from "../hooks/useSessions";
+import { SessionDetailedType } from "../types/SessionDetailed";
+import SessionRowComponent from "../components/SessionRowComponent";
 
 export default function EventPage() {
   const { t } = useTranslation();
@@ -25,6 +35,11 @@ export default function EventPage() {
   const { id } = useParams();
   const { isManager } = useAccount();
   const [event, setEvent] = useState<Event | null>(null);
+  const { getDetailedSessions } = useSessions();
+
+  const [sessionsList, setSessionsList] = useState<
+    SessionDetailedType[] | null
+  >(null);
 
   async function getEvent() {
     const response = await getEventById(id ?? "");
@@ -33,12 +48,19 @@ export default function EventPage() {
     }
   }
 
+  async function getSessions() {
+    const response = await getDetailedSessions(id ?? "");
+    if (!(response instanceof AxiosError)) {
+      setSessionsList(response as SessionDetailedType[]);
+    }
+  }
+
   const handleChange = (_: SyntheticEvent, newValue: number) => {
     setPage(newValue);
   };
 
   useEffect(() => {
-    getEvent();
+    Promise.all([getEvent(), getSessions()]);
   }, []);
 
   return (
@@ -88,6 +110,64 @@ export default function EventPage() {
         {isManager && <Tab label={t("changeEvent")}></Tab>}
       </Tabs>
       <Divider></Divider>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow hover>
+              <TableCell
+                align="left"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                {t("name")}
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                {t("startTimeTime")}
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                {t("endTimeTime")}
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                {t("locationName")}
+              </TableCell>
+              <TableCell
+                align="right"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                }}
+              >
+                {t("speaker")}
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sessionsList?.map((session) => {
+              return <SessionRowComponent key={session.id} session={session} />;
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
       {page === 1 && isManager && (
         <ChangeEventDetailsComponent
           event={event}

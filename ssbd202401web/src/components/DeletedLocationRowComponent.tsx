@@ -4,6 +4,7 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import ConfirmChangeModal from "./ConfirmChangeModal.tsx";
 import { useState } from "react";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
+import { useTranslation } from "react-i18next";
 
 export default function DeletedLocationRowComponent({
   location,
@@ -19,6 +20,7 @@ export default function DeletedLocationRowComponent({
   paginationRequestParams: PaginationRequestParams;
 }) {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const handleOpen = async () => {
     try {
@@ -60,7 +62,7 @@ export default function DeletedLocationRowComponent({
           startIcon={<RestoreIcon />}
           onClick={handleOpen}
         >
-          Restore
+          {t("restore")}
         </Button>
       </TableCell>
       <ConfirmChangeModal
