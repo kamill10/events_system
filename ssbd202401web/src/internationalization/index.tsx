@@ -337,7 +337,10 @@ i18next
           refreshModalTitle: "Twoja sesja niedługo wygaśnie!",
           refreshModalBody:
             "Twoja sesja wygaśnie w mniej niż 60 sekund. Odśwież ją lub zignoruj tę informację przy pomocy jedenego z przycisków!",
-
+          description: "Opis",
+          startTimeTime: "Godzina rozpoczęcia",
+          endTimeTime: "Godzina zakończenia",
+          restore: "Przywróć",
           "0": "Nie określona",
           "1": "Mężczyzna",
           "2": "Kobieta",
@@ -454,6 +457,8 @@ i18next
             "Istnieją sesje, które nie zawierają się w podanym zakresie. Zmień go!",
           "musi być datą bieżącą lub w przyszłości":
             "Data nie może być z przeszłości",
+          "Event start date in the past.":
+            "Początek wydarzenia musi być w przyszłości",
 
           getDeletedLocationsFail:
             "Nie udało się pobrać usuniętych lokalizacji",
@@ -462,10 +467,12 @@ i18next
           restoreLocationFail: "Nie udało się przywrócić lokalizacji",
           deletedLocations: "Usunięte lokalizacje",
           actions: "Akcje",
-          restore: "Przywróć",
           learnMore: "Zobacz więcej",
+          sessionDetails: "Szczegóły sesji",
+          signForSession: "Zapisz się na sesje",
+          allSeats: "Liczba miejsc",
+          freeSeats: "Wolne miejsca",
         },
-
       },
       ENGLISH: {
         translation: {
@@ -761,7 +768,10 @@ i18next
           refreshModalTitle: "Your session is ending!",
           refreshModalBody:
             "Your session will expire in less than 60 seconds. Refresh it of ignore this message using one of those buttons!",
-
+          description: "Description",
+          restore: "Restore",
+          startTimeTime: "Start Time",
+          endTimeTime: "End Time",
           "0": "Not Known",
           "1": "Male",
           "2": "Female",
@@ -866,24 +876,28 @@ i18next
             "There are sessions outside the chosen range. Change it!",
           "musi być datą bieżącą lub w przyszłości":
             "Date can't be from the past",
+          "Event start date in the past.":
+            "Event's start date must be in the present",
           getDeletedLocationsFail: "Failed to fetch deleted locations :(",
           getDeletedLocationFail: "Failed to fetch deleted location",
           restoreLocationSuccess: "Location has been restored successfully",
           restoreLocationFail: "Failed to restore location",
           deletedLocations: "Deleted locations",
           actions: "Actions",
-          restore: "Restore",
           learnMore: "Learn More",
+          maxCapacityTooSmall: "Max capacity to small",
+          maxCapacityTooBig: "Max capacity to big",
+          maxCapacityRequired: "Max capacity can not be empty",
+          updateRoomSuccess: "Room updated successfully.",
+          updateRoomByIdFail: "Failed to update room.",
+          getRoomByFail: "Failed to get room.",
+          changeRoomDetails: "Change room details",
+          enterNewRoomData: "Enter new room data!",
+          sessionDetails: "Session details",
+          signForSession: "Sign for Session",
+          allSeats: "All Seats",
+          freeSeats: "Free Seats",
         },
-        maxCapacityTooSmall: "Max capacity to small",
-        maxCapacityTooBig: "Max capacity to big",
-        maxCapacityRequired: "Max capacity can not be empty",
-        updateRoomSuccess: "Room updated successfully.",
-        updateRoomByIdFail: "Failed to update room.",
-        getRoomByFail: "Failed to get room.",
-        changeRoomDetails: "Change room details",
-        enterNewRoomData: "Enter new room data!",
-
       },
     },
     lng:

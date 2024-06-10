@@ -41,7 +41,10 @@ export default function HomePage() {
         <Carousel responsive={responsive} keyBoardControl={true}>
           {events?.map((event: Event) => {
             return (
-              <EventCarouselComponent event={event}></EventCarouselComponent>
+              <EventCarouselComponent
+                key={event.id}
+                event={event}
+              ></EventCarouselComponent>
             );
           })}
         </Carousel>

@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { Event } from "../types/Event";
 import { Grid } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   event: Event | undefined;
@@ -14,6 +15,7 @@ interface Props {
 
 export default function EventBigCardComponent(props: Props) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <Grid item xs={12} md={6}>
@@ -34,7 +36,12 @@ export default function EventBigCardComponent(props: Props) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">{t("learnMore")}</Button>
+          <Button
+            onClick={() => navigate(`/events/${props.event?.id}`)}
+            size="small"
+          >
+            {t("learnMore")}
+          </Button>
         </CardActions>
       </Card>
     </Grid>

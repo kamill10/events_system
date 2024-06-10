@@ -6,12 +6,15 @@ import Typography from "@mui/material/Typography";
 
 import { Event } from "../types/Event";
 import CenteredContainerComponent from "./CenterdContainerComponent";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   event: Event;
 }
 
 export default function EventCarouselComponent(props: Props) {
+  const navigate = useNavigate();
+
   return (
     <CenteredContainerComponent>
       <Card sx={{ maxWidth: 345 }}>
@@ -24,7 +27,12 @@ export default function EventCarouselComponent(props: Props) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">Learn More</Button>
+          <Button
+            size="small"
+            onClick={() => navigate(`/events/${props.event?.id}`)}
+          >
+            Learn More
+          </Button>
         </CardActions>
       </Card>
     </CenteredContainerComponent>
