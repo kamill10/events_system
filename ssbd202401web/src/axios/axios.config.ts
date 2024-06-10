@@ -346,6 +346,7 @@ export const api = {
   getDeletedLocation: (id: string): ApiResponseType<Location> =>
     apiWithEtag.get(`/location/deleted/${id}`),
   restoreLocation: (id: string) => apiWithEtag.patch(`/location/${id}`),
+  cancelEvent: (id: string) => apiWithEtag.delete(`/events/${id}`),
 };
 
 const getUrlWithPaginationParams = (

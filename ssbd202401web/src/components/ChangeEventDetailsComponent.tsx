@@ -12,6 +12,7 @@ import TextFieldComponent from "./TextFieldComponent";
 import DatePickerComponent from "./DatePickerComponent";
 import SaveIcon from "@mui/icons-material/Save";
 import ConfirmChangeModal from "./ConfirmChangeModal";
+import {CancelEventComponent} from "./CancelEventComponent.tsx";
 
 export default function ChangeEventDetailsComponent({
   event,
@@ -126,6 +127,9 @@ export default function ChangeEventDetailsComponent({
         >
           {t("saveChanges")}
         </Button>
+        {event?.isNotCanceled && (
+            <CancelEventComponent id={event?.id ?? ""}></CancelEventComponent>
+        )}
       </FormComponent>
       <ConfirmChangeModal
         callback={handleRequest}

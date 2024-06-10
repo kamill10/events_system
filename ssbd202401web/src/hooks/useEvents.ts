@@ -134,11 +134,39 @@ export const useEvents = () => {
     }
   };
 
+  const cancelEvent = async (id: string) => {
+    try {
+      setIsFetching(true);
+      await api.cancelEvent(id);
+      sendNotification({
+        type: "success",
+        description: t("cancelEventSucc"),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("cancelEventFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  }
+
   return {
     events,
     getEvents,
     createEvent,
     getEventById,
     updateEvent,
+    cancelEvent,
   };
 };
