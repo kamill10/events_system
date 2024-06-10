@@ -40,7 +40,7 @@ import {
   UpdateSpeakerDataType,
 } from "../types/Speaker.ts";
 
-const API_URL: string = "http://localhost:8080/eventsymphony/api";
+const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
 const TIMEOUT_MS: number = 30000;
 
 const DEFAULT_HEADERS = {
@@ -128,7 +128,7 @@ export function setupInterceptors(navigate: NavigateFunction) {
       if (etag) {
         localStorage.setItem(
           "etag",
-          etag.substring(1, response.headers.etag.length - 1),
+          etag.substring(3, response.headers.etag.length - 1),
         );
       }
       return response;
@@ -313,10 +313,20 @@ export const api = {
   },
   signOutOfSession: (id: string) =>
     apiWithEtag.delete(`/events/me/session/${id}`),
-  getEventById: (id: string): ApiResponseType<Event> => 
+  getEventById: (id: string): ApiResponseType<Event> =>
     apiWithEtag.get(`/events/${id}`),
-  updateEvent: (id: string, data: UpdateEventDTOType) => 
-    apiWithEtag.put(`/events/${id}`, data)
+  updateEvent: (id: string, data: UpdateEventDTOType) =>
+    apiWithEtag.put(`/events/${id}`, data),
+  getDeletedLocationsWithPagination: (
+      params: PaginationRequestParams
+    ): ApiResponseType<PaginationLocationResponse> => {
+    let url = getUrlWithPaginationParams(params, "/location/deleted");
+    return apiWithAuthToken.get(url);
+  },
+  getDeletedLocation: (id: string): ApiResponseType<Location> =>
+    apiWithEtag.get(`/location/deleted/${id}`),
+  restoreLocation: (id: string) =>
+    apiWithEtag.patch(`/location/${id}`),
 };
 
 const getUrlWithPaginationParams = (
