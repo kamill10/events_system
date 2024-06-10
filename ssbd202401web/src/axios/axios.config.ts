@@ -348,6 +348,7 @@ export const api = {
   restoreLocation: (id: string) => apiWithEtag.patch(`/location/${id}`),
   signOnSession: (id: string) =>
       apiWithAuthToken.post(`/events/me/session/${id}`),
+  cancelEvent: (id: string) => apiWithEtag.delete(`/events/${id}`),
 };
 
 const getUrlWithPaginationParams = (

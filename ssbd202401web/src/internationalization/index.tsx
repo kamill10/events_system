@@ -478,6 +478,10 @@ i18next
           allSeats: "Liczba miejsc",
           freeSeats: "Wolne miejsca",
           signOnSessionSuccess: "Zapisano na sesje pomyślnie!",
+          cancelEventSucc: "Wydarzenie anulowano pomyślnie!",
+          cancelEventFail: "Nie udało się anulować wydarzenia :(",
+          cancelEvent: "Anuluj wydarzenie",
+          cancelEventDescription: "Anuluj wydarzenie, wszystkie sesje i bilety",
         },
       },
       ENGLISH: {
@@ -908,6 +912,10 @@ i18next
           allSeats: "All Seats",
           freeSeats: "Free Seats",
           signOnSessionSuccess: "Successfuly signed on session"
+            cancelEventSucc: "Event has been cancelled successfully!",
+            cancelEventFail: "Failed to cancel event :(",
+          cancelEvent: "Cancel event",
+          cancelEventDescription: "Cancel event, all sessions and tickets",
         },
       },
     },

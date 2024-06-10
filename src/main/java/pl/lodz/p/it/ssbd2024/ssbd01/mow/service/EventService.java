@@ -23,8 +23,10 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.Mail;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDate;
@@ -40,6 +42,7 @@ public class EventService {
     private final SessionRepository sessionRepository;
     private final TicketRepository ticketRepository;
     private final ConfigurationProperties config;
+    private final MailService mailService;
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")
@@ -146,8 +149,12 @@ public class EventService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void cancelEvent(UUID id) throws EventNotFoundException, EventAlreadyCancelledException {
+    public void cancelEvent(UUID id, String etag) throws EventNotFoundException, EventAlreadyCancelledException, OptLockException {
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
+
+        if (!ETagBuilder.isETagValid(etag, String.valueOf(event.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
 
         if (!event.getIsNotCanceled()) {
             throw new EventAlreadyCancelledException(ExceptionMessages.EVENT_ALREADY_CANCELLED);
@@ -164,15 +171,11 @@ public class EventService {
                 .stream()
                 .toList();
 
-        //TODO: send mail to all accounts
+        accounts.forEach(account -> {
+            mailService.sendEmailOnEventCancel(account, event.getName());
+        });
 
         eventRepository.saveAndFlush(event);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void sendMail(String placeHolder) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
