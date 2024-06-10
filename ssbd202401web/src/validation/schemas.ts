@@ -17,9 +17,10 @@ import i18next from "i18next";
 import {PaginationRequestParams} from "../types/PaginationRequestParams.ts";
 import {UpdateLocationDataType} from "../types/Location.ts";
 import {CreateLocation} from "../types/Location.ts";
-import {CreateEventType} from "../types/Event.ts";
+import {CreateEventType, UpdateEventType} from "../types/Event.ts";
 import {Dayjs} from "dayjs";
 import {CreateSpeaker, UpdateSpeakerDataType} from "../types/Speaker.ts";
+import {UpdateRoomType} from "../types/Room.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
