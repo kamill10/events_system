@@ -51,9 +51,6 @@ public class MeEventService {
         if (!isSessionActive(session)) {
             throw new SessionNotActiveException(ExceptionMessages.SESSION_NOT_ACTIVE);
         }
-        if (ticketRepository.findBySession(session).size() >= session.getMaxSeats()) {
-            throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
-        }
         Optional<Ticket> accountTicket = ticketRepository.findBySessionAndAccount(session, account);
         if (accountTicket.isPresent() && !accountTicket.get().getIsNotCancelled()) {
             accountTicket.get().setIsNotCancelled(true);
@@ -62,7 +59,12 @@ public class MeEventService {
         } else if (accountTicket.isPresent()) {
             throw new AlreadySignUpException(ExceptionMessages.ALREADY_SIGNED_UP);
         }
+        if (session.getAvailableSeats() <= 0) {
+            throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
+        }
+        session.setAvailableSeats(session.getAvailableSeats() - 1);
         Ticket ticket = new Ticket(account, session);
+        sessionRepository.saveAndFlush(session);
         ticketRepository.saveAndFlush(ticket);
     }
 
