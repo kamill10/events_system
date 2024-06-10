@@ -436,6 +436,13 @@ i18next
           "Field is required.": "Wszystkie pola oznaczone * są wymagane",
           "Event start date after end date.":
             "Początek wydarzenia musi być przed końcem wydarzenia",
+          getDeletedLocationsFail: "Nie udało się pobrać usuniętych lokalizacji",
+          getDeletedLocationFail: "Nie udało się pobrać usuniętej lokalizacji",
+          restoreLocationSuccess: "Pomyślnie przywrócono lokalizację",
+          restoreLocationFail: "Nie udało się przywrócić lokalizacji",
+          deletedLocations: "Usunięte lokalizacje",
+          actions: "Akcje",
+          restore: "Przywróć",
         },
       },
       ENGLISH: {
@@ -827,6 +834,13 @@ i18next
             "All of the fields with a * sign at the end are required",
           "Event start date after end date.":
             "Event's start date must be before the end date",
+          getDeletedLocationsFail: "Failed to fetch deleted locations :(",
+          getDeletedLocationFail: "Failed to fetch deleted location",
+          restoreLocationSuccess: "Location has been restored successfully",
+          restoreLocationFail: "Failed to restore location",
+          deletedLocations: "Deleted locations",
+          actions: "Actions",
+          restore: "Restore",
         },
       },
     },

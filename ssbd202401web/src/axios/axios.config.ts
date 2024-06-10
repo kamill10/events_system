@@ -313,6 +313,16 @@ export const api = {
   },
   signOutOfSession: (id: string) =>
     apiWithEtag.delete(`/events/me/session/${id}`),
+  getDeletedLocationsWithPagination: (
+      params: PaginationRequestParams
+    ): ApiResponseType<PaginationLocationResponse> => {
+    let url = getUrlWithPaginationParams(params, "/location/deleted");
+    return apiWithAuthToken.get(url);
+  },
+  getDeletedLocation: (id: string): ApiResponseType<Location> =>
+    apiWithEtag.get(`/location/deleted/${id}`),
+  restoreLocation: (id: string) =>
+    apiWithEtag.patch(`/location/${id}`),
 };
 
 const getUrlWithPaginationParams = (
