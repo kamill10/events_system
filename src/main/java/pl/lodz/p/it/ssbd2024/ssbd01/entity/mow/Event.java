@@ -27,14 +27,14 @@ public class Event extends ControlledEntity {
     @Size(min = 3, max = 128)
     private String name;
 
-    @Size(min = 3, max = 1024)
-    @NotBlank
-    @Column(columnDefinition = "varchar(1024)")
+    @Size(max = 1024)
+    @NotNull
+    @Column(columnDefinition = "varchar(1024)", nullable = false)
     private String descriptionPL;
 
-    @Size(min = 3, max = 1024)
-    @NotBlank
-    @Column(columnDefinition = "varchar(1024)")
+    @Size(max = 1024)
+    @NotNull
+    @Column(columnDefinition = "varchar(1024)", nullable = false)
     private String descriptionEN;
 
     @Column(nullable = false)
@@ -52,14 +52,12 @@ public class Event extends ControlledEntity {
      * Sessions that are part of event cannot start before start date.
      */
     @NotNull
-    @FutureOrPresent
     private LocalDateTime startDate;
 
     /**
      * Sessions that are part of event cannot start after end date.
      */
     @NotNull
-    @FutureOrPresent
     private LocalDateTime endDate;
 
 
@@ -70,6 +68,7 @@ public class Event extends ControlledEntity {
         this.sessions = sessions;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.descriptionEN = "";
     }
 
     @Override
