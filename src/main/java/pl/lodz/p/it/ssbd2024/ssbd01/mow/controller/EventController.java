@@ -18,6 +18,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SessionDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -34,12 +35,9 @@ public class EventController {
     @GetMapping
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents(@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language) {
-        var events = eventService.getAllNotEndedEvents();
-        if (Objects.equals(language.substring(0, 4), "pl-PL")) {
-            return ResponseEntity.status(HttpStatus.OK).body(events.stream().map(EventDTOConverter::getEventPlDTO).toList());
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(events.stream().map(EventDTOConverter::getEventEnDTO).toList());
-        }
+        List<Event> events = eventService.getAllNotEndedEvents();
+        List<GetEventDTO> eventDTOs = TranslationUtils.resolveEventsLanguage(events, language);
+        return ResponseEntity.status(HttpStatus.OK).body(eventDTOs);
     }
 
     @GetMapping("/{id}")
@@ -48,11 +46,8 @@ public class EventController {
             throws EventNotFoundException {
         Event event = eventService.getEvent(id);
         String etag = ETagBuilder.buildETag(event.getVersion().toString());
-        if (Objects.equals(language.substring(0, 4), "pl-PL")) {
-            return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(EventDTOConverter.getEventPlDTO(event));
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(EventDTOConverter.getEventEnDTO(event));
-        }
+        GetEventDTO eventDTO = TranslationUtils.resolveEventLanguage(event, language);
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(eventDTO);
     }
 
     @GetMapping("/sessions/{id}")

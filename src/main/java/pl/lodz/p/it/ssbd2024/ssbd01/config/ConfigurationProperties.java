@@ -134,9 +134,6 @@ public class ConfigurationProperties {
     @Value("${auth.lock-time.unused.account.days}")
     private Integer authLockTimeUnusedAccountDays;
 
-    @Value("#{systemEnvironment['DEEPL_KEY']}")
+    @Value("#{systemEnvironment['DEEPL_KEY'] ?: null}")
     private String deepl;
-
-
-
 }

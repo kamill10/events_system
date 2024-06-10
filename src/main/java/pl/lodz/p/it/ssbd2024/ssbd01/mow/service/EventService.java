@@ -23,6 +23,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
@@ -82,34 +83,32 @@ public class EventService {
             InterruptedException,
             EventStartDateInPast {
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
+
         if (!ETagBuilder.isETagValid(etag, String.valueOf(databaseEvent.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
+
         LocalDateTime newEventStartTime = event.getStartDate().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime newEventEndTime = event.getEndDate().withHour(23).withMinute(59).withSecond(59);
         if (newEventStartTime.getDayOfMonth() - LocalDate.now().getDayOfMonth() < 0) {
             throw new EventStartDateInPast(ExceptionMessages.EVENT_START_IN_PAST);
         }
         List<Session> sessionsOutsideRange = sessionRepository.findSessionsOutsideRange(id, newEventStartTime, newEventEndTime);
+
         if (!sessionsOutsideRange.isEmpty()) {
             throw new SessionsExistOutsideRangeException(ExceptionMessages.SESSIONS_OUTSIDE_RANGE);
         }
+
         if (event.getStartDate().isAfter(event.getEndDate())) {
             throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
         }
+
         databaseEvent.setName(event.getName());
         databaseEvent.setStartDate(event.getStartDate());
         databaseEvent.setEndDate(event.getEndDate());
 
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Translator translator = new Translator(config.getDeepl());
-        if (Objects.equals(account.getLanguage().getLanguageCode(), "pl-PL")) {
-            databaseEvent.setDescriptionPL(event.getDescriptionPL());
-            databaseEvent.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
-        } else {
-            databaseEvent.setDescriptionEN(event.getDescriptionPL());
-            databaseEvent.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
-        }
+        TranslationUtils.translateEvent(databaseEvent, account.getLanguage().getLanguageCode(), config.getDeepl());
 
         return eventRepository.saveAndFlush(databaseEvent);
     }
@@ -133,13 +132,7 @@ public class EventService {
         event.setEndDate(newEventEndTime);
 
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Translator translator = new Translator(config.getDeepl());
-        if (Objects.equals(account.getLanguage().getLanguageCode(), "pl-PL")) {
-            event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
-        } else {
-            event.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
-            event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
-        }
+        TranslationUtils.translateEvent(event, account.getLanguage().getLanguageCode(), config.getDeepl());
 
         eventRepository.saveAndFlush(event);
         return event.getId().toString();
