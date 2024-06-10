@@ -95,12 +95,10 @@ public class EventController {
             OptLockException,
             SessionsExistOutsideRangeException,
             EventNotFoundException,
-<<<<<<< HEAD
             EventStartDateAfterEndDateException,
+            DeepLException,
+            InterruptedException,
             EventStartDateInPast {
-=======
-            EventStartDateAfterEndDateException, DeepLException, InterruptedException {
->>>>>>> 108d3dc8a323759fb3be1fcdccd9fb366e364b64
         Event event = EventDTOConverter.getEvent(updateEventDTO);
         Event updatedEvent = eventService.updateEvent(id, etag, event);
         return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventPlDTO(updatedEvent));
@@ -108,14 +106,12 @@ public class EventController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-<<<<<<< HEAD
-    public ResponseEntity<String> createEvent(@RequestBody CreateEventDTO createEventDTO) throws
-            EventStartDateAfterEndDateException,
-            EventStartDateInPast {
-=======
     public ResponseEntity<String> createEvent(@RequestBody CreateEventDTO createEventDTO)
-            throws EventStartDateAfterEndDateException, DeepLException, InterruptedException {
->>>>>>> 108d3dc8a323759fb3be1fcdccd9fb366e364b64
+            throws
+            EventStartDateAfterEndDateException,
+            DeepLException,
+            InterruptedException,
+            EventStartDateInPast {
         Event event = EventDTOConverter.getEvent(createEventDTO);
         String eventId = eventService.createEvent(event);
         return ResponseEntity.status(HttpStatus.OK).body(eventId);

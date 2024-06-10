@@ -20,6 +20,10 @@ import java.util.UUID;
 @PreAuthorize("hasRole('ROLE_MANAGER')")
 public interface EventRepository extends JpaRepository<Event, UUID> {
 
+    @Override
+    @PreAuthorize("permitAll()")
+    Optional<Event> findById(UUID id);
+
     @PreAuthorize("permitAll()")
     List<Event> getByEndDateAfter(LocalDateTime date);
 

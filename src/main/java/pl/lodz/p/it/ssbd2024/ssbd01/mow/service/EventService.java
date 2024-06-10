@@ -77,12 +77,10 @@ public class EventService {
             EventNotFoundException,
             OptLockException,
             SessionsExistOutsideRangeException,
-<<<<<<< HEAD
             EventStartDateAfterEndDateException,
+            DeepLException,
+            InterruptedException,
             EventStartDateInPast {
-=======
-            EventStartDateAfterEndDateException, DeepLException, InterruptedException {
->>>>>>> 108d3dc8a323759fb3be1fcdccd9fb366e364b64
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
         if (!ETagBuilder.isETagValid(etag, String.valueOf(databaseEvent.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
@@ -118,11 +116,11 @@ public class EventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-<<<<<<< HEAD
-    public String createEvent(Event event) throws EventStartDateAfterEndDateException, EventStartDateInPast {
-=======
-    public String createEvent(Event event) throws EventStartDateAfterEndDateException, DeepLException, InterruptedException {
->>>>>>> 108d3dc8a323759fb3be1fcdccd9fb366e364b64
+    public String createEvent(Event event) throws
+            EventStartDateAfterEndDateException,
+            DeepLException,
+            InterruptedException,
+            EventStartDateInPast {
         if (event.getStartDate().isAfter(event.getEndDate())) {
             throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
         }
