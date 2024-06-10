@@ -5,9 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
@@ -73,6 +76,11 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account addAccount(Account account) {
         Account returnedAccount = accountMokRepository.saveAndFlush(account);
         accountMokHistoryRepository.saveAndFlush(new AccountHistory(returnedAccount));
@@ -83,6 +91,11 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account addRoleToAccount(UUID id, AccountRoleEnum roleName, String eTag)
             throws AppException {
         Role role = roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(ExceptionMessages.ROLE_NOT_FOUND));
@@ -123,6 +136,11 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account removeRoleFromAccount(UUID id, AccountRoleEnum roleName, String eTag)
             throws AppException {
         Role role = roleRepository.findByName(roleName)
@@ -150,6 +168,11 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account setAccountStatus(UUID id, boolean status, String eTag) throws AppException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
@@ -173,6 +196,11 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account getAccountByUsername(String username) throws AppException {
         return accountMokRepository.findByUsername(username)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
@@ -180,6 +208,11 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Account updateAccountData(UUID id, Account account, String eTag) throws AppException {
         Account accountToUpdate = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
@@ -234,6 +267,11 @@ public class AccountService {
 
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void resetPasswordAndSendEmail(String email) {
         Optional<Account> account = accountMokRepository.findByEmail(email);
 
@@ -255,6 +293,11 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void changePasswordByAdminAndSendEmail(String email) throws AppException {
         Account account = accountMokRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
@@ -274,6 +317,11 @@ public class AccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void sendMailWhenEmailChangeByAdmin(UUID id, String email) throws AppException {
         Account account = accountMokRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(ExceptionMessages.ACCOUNT_NOT_FOUND));
@@ -295,6 +343,11 @@ public class AccountService {
 
     @PreAuthorize("permitAll()")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void resetPasswordWithToken(String token, String newPassword)
             throws AppException {
         Account accountToUpdate = verifier.verifyCredentialReset(token, resetCredentialRepository);
@@ -311,14 +364,24 @@ public class AccountService {
         resetCredentialRepository.deleteByToken(token);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public List<AccountHistory> getAllAccountHistoryByUsername(String username) {
         return accountMokHistoryRepository.findAllByAccount_Username(username);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void addTimeZone(String timeZone) throws AppException {
         try {
             ZoneId zoneId = ZoneId.of(timeZone);
@@ -331,25 +394,45 @@ public class AccountService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void addTheme(String theme) {
         AccountTheme accountTheme = new AccountTheme(theme);
         themeRepository.saveAndFlush(accountTheme);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void deleteExpiredResetCredentialTokens() {
         resetCredentialRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void deleteExpiredChangePasswordTokens() {
         changeMyPasswordRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_SYSTEM')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void deleteExpiredChangeEmailTokens() {
         changeEmailRepository.deleteAllByExpirationDateBefore(LocalDateTime.now());
     }

@@ -3,9 +3,12 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -90,12 +93,17 @@ public class MeEventService {
     public Page<Event> getMyHistoricalEvents(PageUtils pageUtils) {
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Pageable pageable = pageUtils.buildPageable();
-        return eventRepository.findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDate.now(),
+        return eventRepository.findAllByEndDateBeforeAndSessions_Tickets_Account(LocalDateTime.now(),
                 account, pageable);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void signOutFromSession(UUID id, String eTag) throws TicketNotFoundException, OptLockException {
         Ticket ticket = ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
 

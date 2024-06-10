@@ -22,3 +22,7 @@ export interface CreateEventDTOType {
   startDate: string;
   endDate: string;
 }
+
+export interface UpdateEventType extends CreateEventType {}
+
+export interface UpdateEventDTOType extends CreateEventDTOType {}

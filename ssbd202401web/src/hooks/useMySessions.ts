@@ -78,13 +78,13 @@ export const useMySessions = () => {
       }
       return e;
     } finally {
-      // setIsFetching(false);
+      setIsFetching(false);
     }
   };
 
   const signOutOfSession = async (id: string) => {
     try {
-      // setIsFetching(true);
+      setIsFetching(true);
       await api.signOutOfSession(id);
     } catch (e) {
       console.error(e);

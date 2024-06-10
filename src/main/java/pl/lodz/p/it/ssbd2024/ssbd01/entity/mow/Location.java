@@ -21,7 +21,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Location extends ControlledEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @NotBlank
     @Size(min = 3, max = 128)
     private String name;

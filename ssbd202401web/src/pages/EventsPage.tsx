@@ -19,6 +19,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import dayjs from "dayjs";
 import { useEvents } from "../hooks/useEvents";
 import ConfirmChangeModal from "../components/ConfirmChangeModal";
+import { AxiosError } from "axios";
 
 export default function EventsPage() {
   const { t } = useTranslation();
@@ -26,6 +27,7 @@ export default function EventsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [redirectOpen, setRedirectOpen] = useState(false);
+  const [newEventId, setNewEventId] = useState("");
   const navigate = useNavigate();
   const { createEvent } = useEvents();
   const {
@@ -46,9 +48,12 @@ export default function EventsPage() {
 
   async function handleRequest() {
     const response = await createEvent(getValues());
-    if (!response) {
+    if (!(response instanceof AxiosError)) {
+      setNewEventId(response);
       setModalOpen(false);
       setRedirectOpen(true);
+    } else {
+
     }
   }
 
@@ -76,7 +81,7 @@ export default function EventsPage() {
           {t("eventsLink")}
         </Link>
         <Typography variant="body1" color={"grey"}>
-          Wydarzenie
+          {t("eventLink")}
         </Typography>
       </Breadcrumbs>
       <Typography variant="h3">{t("eventsLink")}</Typography>
@@ -106,7 +111,7 @@ export default function EventsPage() {
         {isManager && (
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
             sx={{
               marginY: 2,
             }}
@@ -215,7 +220,7 @@ export default function EventsPage() {
           >
             <Button
               onClick={() => {
-                navigate("/events/" + getValues().name.split(" ").join("+"));
+                navigate("/events/" + newEventId);
               }}
               color={"success"}
             >

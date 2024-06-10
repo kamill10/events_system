@@ -28,7 +28,7 @@ import { NavigateFunction } from "react-router-dom";
 import { SortingRequestParams } from "../types/SortingRequestParams.ts";
 import { AccountChangesType } from "../types/AccountChanges.ts";
 
-import { CreateEventDTOType, Event } from "../types/Event.ts";
+import { CreateEventDTOType, Event, UpdateEventDTOType } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
@@ -317,6 +317,20 @@ export const api = {
   apiWithEtag.get(`/rooms/room/${id}`),
   updateRoom: (id :string, room: UpdateRoomType) : ApiResponseType<GetRoomResponse> =>
     apiWithEtag.patch(`/rooms/room/${id}`, room),
+  getEventById: (id: string): ApiResponseType<Event> =>
+    apiWithEtag.get(`/events/${id}`),
+  updateEvent: (id: string, data: UpdateEventDTOType) =>
+    apiWithEtag.put(`/events/${id}`, data),
+  getDeletedLocationsWithPagination: (
+      params: PaginationRequestParams
+    ): ApiResponseType<PaginationLocationResponse> => {
+    let url = getUrlWithPaginationParams(params, "/location/deleted");
+    return apiWithAuthToken.get(url);
+  },
+  getDeletedLocation: (id: string): ApiResponseType<Location> =>
+    apiWithEtag.get(`/location/deleted/${id}`),
+  restoreLocation: (id: string) =>
+    apiWithEtag.patch(`/location/${id}`),
 };
 
 const getUrlWithPaginationParams = (
