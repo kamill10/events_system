@@ -1,18 +1,18 @@
 import * as yup from "yup";
 import {
-    UpdatePersonalDataType,
-    ChangeMyPasswordType,
-    ChangeMyEmailType,
-    ManageAccountType,
-    ChangeEmailType,
+  UpdatePersonalDataType,
+  ChangeMyPasswordType,
+  ChangeMyEmailType,
+  ManageAccountType,
+  ChangeEmailType,
 } from "../types/Account";
 import {
-    SignInCredentialsType,
-    LoginCredentialsType,
-    ForgotPasswordType,
-    ResetPasswordType,
+  SignInCredentialsType,
+  LoginCredentialsType,
+  ForgotPasswordType,
+  ResetPasswordType,
 } from "../types/Authentication";
-import {SortingRequestParams} from "../types/SortingRequestParams";
+import { SortingRequestParams } from "../types/SortingRequestParams";
 import i18next from "i18next";
 import {PaginationRequestParams} from "../types/PaginationRequestParams.ts";
 import {UpdateLocationDataType} from "../types/Location.ts";

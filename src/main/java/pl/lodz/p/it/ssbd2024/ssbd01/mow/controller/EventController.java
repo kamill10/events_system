@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
+import com.deepl.api.DeepLException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -31,26 +33,29 @@ public class EventController {
 
     private final EventService eventService;
 
-    /**
-     * Method for selecting all events that have not finished yet.
-     * @return all events happening in the future, meaning.
-     */
+
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents() {
+    public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents(@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language) {
         var events = eventService.getAllNotEndedEvents();
-        var eventsDTO = events.stream()
-                .map(EventDTOConverter::getEventDTO)
-                .toList();
-        return ResponseEntity.status(HttpStatus.OK).body(eventsDTO);
+        if (Objects.equals(language.substring(0, 4), "pl-PL")) {
+            return ResponseEntity.status(HttpStatus.OK).body(events.stream().map(EventDTOConverter::getEventPlDTO).toList());
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(events.stream().map(EventDTOConverter::getEventEnDTO).toList());
+        }
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<GetEventDTO> getEvent(@PathVariable UUID id) throws EventNotFoundException {
+    public ResponseEntity<GetEventDTO> getEvent(@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language, @PathVariable UUID id)
+            throws EventNotFoundException {
         Event event = eventService.getEvent(id);
         String etag = ETagBuilder.buildETag(event.getVersion().toString());
-        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(EventDTOConverter.getEventDTO(event));
+        if (Objects.equals(language.substring(0, 4), "pl-PL")) {
+            return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(EventDTOConverter.getEventPlDTO(event));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(EventDTOConverter.getEventEnDTO(event));
+        }
     }
 
     @GetMapping("/sessions/{id}")
@@ -90,18 +95,19 @@ public class EventController {
             @PathVariable UUID id,
             @RequestHeader(HttpHeaders.IF_MATCH) String etag,
             @RequestBody UpdateEventDTO updateEventDTO) throws
-                OptLockException,
-                SessionsExistOutsideRangeException,
-                EventNotFoundException,
-                EventStartDateAfterEndDateException {
+            OptLockException,
+            SessionsExistOutsideRangeException,
+            EventNotFoundException,
+            EventStartDateAfterEndDateException, DeepLException, InterruptedException {
         Event event = EventDTOConverter.getEvent(updateEventDTO);
         Event updatedEvent = eventService.updateEvent(id, etag, event);
-        return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventDTO(updatedEvent));
+        return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventPlDTO(updatedEvent));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<String> createEvent(@RequestBody CreateEventDTO createEventDTO) throws EventStartDateAfterEndDateException {
+    public ResponseEntity<String> createEvent(@RequestBody CreateEventDTO createEventDTO)
+            throws EventStartDateAfterEndDateException, DeepLException, InterruptedException {
         Event event = EventDTOConverter.getEvent(createEventDTO);
         String eventId = eventService.createEvent(event);
         return ResponseEntity.status(HttpStatus.OK).body(eventId);

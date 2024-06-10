@@ -42,3 +42,5 @@ build/
 
 ### html ###
 docker/html
+docker-local/html
+docker-local/ssbd01.war

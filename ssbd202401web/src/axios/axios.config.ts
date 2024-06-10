@@ -28,7 +28,11 @@ import { NavigateFunction } from "react-router-dom";
 import { SortingRequestParams } from "../types/SortingRequestParams.ts";
 import { AccountChangesType } from "../types/AccountChanges.ts";
 
-import { CreateEventDTOType, Event, UpdateEventDTOType } from "../types/Event.ts";
+import {
+  CreateEventDTOType,
+  Event,
+  UpdateEventDTOType,
+} from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
@@ -40,7 +44,7 @@ import {
   UpdateSpeakerDataType,
 } from "../types/Speaker.ts";
 
-const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
+const API_URL: string = import.meta.env.VITE_API_URL;
 const TIMEOUT_MS: number = 30000;
 
 const DEFAULT_HEADERS = {
@@ -322,15 +326,14 @@ export const api = {
   updateEvent: (id: string, data: UpdateEventDTOType) =>
     apiWithEtag.put(`/events/${id}`, data),
   getDeletedLocationsWithPagination: (
-      params: PaginationRequestParams
-    ): ApiResponseType<PaginationLocationResponse> => {
+    params: PaginationRequestParams,
+  ): ApiResponseType<PaginationLocationResponse> => {
     let url = getUrlWithPaginationParams(params, "/location/deleted");
     return apiWithAuthToken.get(url);
   },
   getDeletedLocation: (id: string): ApiResponseType<Location> =>
     apiWithEtag.get(`/location/deleted/${id}`),
-  restoreLocation: (id: string) =>
-    apiWithEtag.patch(`/location/${id}`),
+  restoreLocation: (id: string) => apiWithEtag.patch(`/location/${id}`),
 };
 
 const getUrlWithPaginationParams = (

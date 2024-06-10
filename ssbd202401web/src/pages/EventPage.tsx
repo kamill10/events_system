@@ -1,4 +1,11 @@
-import { Breadcrumbs, Button, Divider, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Breadcrumbs,
+  Button,
+  Divider,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import ContainerComponent from "../components/ContainerComponent";
 import { useTranslation } from "react-i18next";
 import { SyntheticEvent, useEffect, useState } from "react";
@@ -26,11 +33,11 @@ export default function EventPage() {
 
   const handleChange = (_: SyntheticEvent, newValue: number) => {
     setPage(newValue);
-  }
+  };
 
   useEffect(() => {
     getEvent();
-  }, [])
+  }, []);
 
   return (
     <ContainerComponent>
@@ -79,10 +86,12 @@ export default function EventPage() {
         <Tab label={t("changeEvent")}></Tab>
       </Tabs>
       <Divider></Divider>
-      {page === 1 && <ChangeEventDetailsComponent
-        event={event}
-        getEvent={getEvent}
-      ></ChangeEventDetailsComponent>}
+      {page === 1 && (
+        <ChangeEventDetailsComponent
+          event={event}
+          getEvent={getEvent}
+        ></ChangeEventDetailsComponent>
+      )}
     </ContainerComponent>
   );
 }

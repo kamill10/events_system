@@ -243,7 +243,8 @@ export const useLocations = () => {
   ) => {
     try {
       setIsFetching(true);
-      const { data } = await api.getDeletedLocationsWithPagination(requestParams);
+      const { data } =
+        await api.getDeletedLocationsWithPagination(requestParams);
       setLocations({
         locations: data.content,
         totalElements: data.totalElements,
@@ -290,7 +291,6 @@ export const useLocations = () => {
     } finally {
       setIsFetching(false);
     }
-
   };
 
   const restoreLocation = async (id: string) => {
@@ -317,7 +317,7 @@ export const useLocations = () => {
     } finally {
       setIsFetching(false);
     }
-  }
+  };
 
   return {
     locations,

@@ -1,5 +1,5 @@
-import { useTranslation } from "react-i18next"
-import { CreateEventType, Event, UpdateEventType } from "../types/Event"
+import { useTranslation } from "react-i18next";
+import { CreateEventType, Event, UpdateEventType } from "../types/Event";
 import { useEvents } from "../hooks/useEvents";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
@@ -15,10 +15,10 @@ import ConfirmChangeModal from "./ConfirmChangeModal";
 
 export default function ChangeEventDetailsComponent({
   event,
-  getEvent
+  getEvent,
 }: {
-  event: Event | null,
-  getEvent: () => void
+  event: Event | null;
+  getEvent: () => void;
 }) {
   const { t } = useTranslation();
   const { updateEvent } = useEvents();
@@ -43,7 +43,7 @@ export default function ChangeEventDetailsComponent({
   async function handleRequest() {
     const response = await updateEvent(event?.id ?? "", getValues());
     if (!response) {
-      getEvent(); 
+      getEvent();
     }
   }
 
@@ -61,7 +61,7 @@ export default function ChangeEventDetailsComponent({
     setValue("startDate", dayjs(event?.startDate) ?? dayjs());
     setValue("endDate", dayjs(event?.endDate) ?? dayjs());
   }, [event]);
-  
+
   return (
     <>
       <FormComponent
@@ -133,5 +133,5 @@ export default function ChangeEventDetailsComponent({
         open={open}
       ></ConfirmChangeModal>
     </>
-  )
+  );
 }
