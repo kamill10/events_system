@@ -21,7 +21,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -114,15 +113,9 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> cancelEvent(@PathVariable UUID id) throws EventNotFoundException, EventAlreadyCancelledException {
-        eventService.cancelEvent(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PostMapping("/mail")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> sendMail(@RequestBody String placeHolder) {
-        eventService.sendMail(placeHolder);
+    public ResponseEntity<?> cancelEvent(@PathVariable UUID id, @RequestHeader(HttpHeaders.IF_MATCH) String etag)
+            throws EventNotFoundException, EventAlreadyCancelledException, OptLockException {
+        eventService.cancelEvent(id, etag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
