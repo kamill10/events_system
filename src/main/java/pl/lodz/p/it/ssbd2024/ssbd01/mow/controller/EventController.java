@@ -1,20 +1,16 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
 import com.deepl.api.DeepLException;
-import com.deepl.api.Translator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EventAlreadyCancelledException;
@@ -37,17 +33,12 @@ public class EventController {
 
     private final EventService eventService;
 
-    /**
-     * Method for selecting all events that have not finished yet.
-     *
-     * @return all events happening in the future, meaning.
-     */
+
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents() {
+    public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents(@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language) {
         var events = eventService.getAllNotEndedEvents();
-        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (Objects.equals(account.getLanguage().getLanguageCode(), "pl-PL")) {
+        if (Objects.equals(language.substring(0, 4), "pl-PL")) {
             return ResponseEntity.status(HttpStatus.OK).body(events.stream().map(EventDTOConverter::getEventPlDTO).toList());
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(events.stream().map(EventDTOConverter::getEventEnDTO).toList());
@@ -56,11 +47,11 @@ public class EventController {
 
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<GetEventDTO> getEvent(@PathVariable UUID id) throws EventNotFoundException {
+    public ResponseEntity<GetEventDTO> getEvent(@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language, @PathVariable UUID id)
+            throws EventNotFoundException {
         Event event = eventService.getEvent(id);
         String etag = ETagBuilder.buildETag(event.getVersion().toString());
-        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (Objects.equals(account.getLanguage().getLanguageCode(), "pl-PL")) {
+        if (Objects.equals(language.substring(0, 4), "pl-PL")) {
             return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(EventDTOConverter.getEventPlDTO(event));
         } else {
             return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(EventDTOConverter.getEventEnDTO(event));
