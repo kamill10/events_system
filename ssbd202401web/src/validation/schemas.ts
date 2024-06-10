@@ -14,13 +14,13 @@ import {
 } from "../types/Authentication";
 import { SortingRequestParams } from "../types/SortingRequestParams";
 import i18next from "i18next";
-import {PaginationRequestParams} from "../types/PaginationRequestParams.ts";
-import {UpdateLocationDataType} from "../types/Location.ts";
-import {CreateLocation} from "../types/Location.ts";
-import {CreateEventType, UpdateEventType} from "../types/Event.ts";
-import {Dayjs} from "dayjs";
-import {CreateSpeaker, UpdateSpeakerDataType} from "../types/Speaker.ts";
-import {UpdateRoomType} from "../types/Room.ts";
+import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
+import { UpdateLocationDataType } from "../types/Location.ts";
+import { CreateLocation } from "../types/Location.ts";
+import { CreateEventType, UpdateEventType } from "../types/Event.ts";
+import { Dayjs } from "dayjs";
+import { CreateSpeaker, UpdateSpeakerDataType } from "../types/Speaker.ts";
+import { UpdateRoomType } from "../types/Room.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -413,19 +413,17 @@ export function initValidation() {
       }
       return true;
     }),
-  })
-    UpdateRoomSchema =  yup.object<UpdateRoomType>().shape({
-        name: yup
-            .string()
-            .min(3, i18next.t("nameTooShort"))
-            .max(32, i18next.t("nameTooLong"))
-            .required(i18next.t("nameRequired")),
-        maxCapacity: yup
-            .number()
-            .min(1, i18next.t("maxCapacityTooSmall"))
-            .max(1000, i18next.t("maxCapacityTooBig"))
-            .required(i18next.t("maxCapacityRequired")),
-
-    });
+  });
+  UpdateRoomSchema = yup.object<UpdateRoomType>().shape({
+    name: yup
+      .string()
+      .min(3, i18next.t("nameTooShort"))
+      .max(32, i18next.t("nameTooLong"))
+      .required(i18next.t("nameRequired")),
+    maxCapacity: yup
+      .number()
+      .min(1, i18next.t("maxCapacityTooSmall"))
+      .max(1000, i18next.t("maxCapacityTooBig"))
+      .required(i18next.t("maxCapacityRequired")),
+  });
 }
-
