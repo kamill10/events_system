@@ -40,7 +40,7 @@ import {
   UpdateSpeakerDataType,
 } from "../types/Speaker.ts";
 
-const API_URL: string = "https://team-1.proj-sum.it.p.lodz.pl/api";
+const API_URL: string = import.meta.env.VITE_API_URL;
 const TIMEOUT_MS: number = 30000;
 
 const DEFAULT_HEADERS = {

@@ -1,0 +1,5 @@
+FROM tomcat:10.1.19-jre21
+
+COPY ssbd01.war /usr/local/tomcat/webapps/ssbd01.war
+
+EXPOSE 8080
