@@ -30,7 +30,12 @@ public class Event extends ControlledEntity {
     @Size(min = 3, max = 1024)
     @NotBlank
     @Column(columnDefinition = "varchar(1024)")
-    private String description;
+    private String descriptionPL;
+
+    @Size(min = 3, max = 1024)
+    @NotBlank
+    @Column(columnDefinition = "varchar(1024)")
+    private String descriptionEN;
 
     @Column(nullable = false)
     @NotNull
@@ -57,10 +62,11 @@ public class Event extends ControlledEntity {
     @FutureOrPresent
     private LocalDateTime endDate;
 
-    public Event(String name, String description, List<Session> sessions,
+
+    public Event(String name, String descriptionPL, List<Session> sessions,
                  LocalDateTime startDate, LocalDateTime endDate) {
         this.name = name;
-        this.description = description;
+        this.descriptionPL = descriptionPL;
         this.sessions = sessions;
         this.startDate = startDate;
         this.endDate = endDate;

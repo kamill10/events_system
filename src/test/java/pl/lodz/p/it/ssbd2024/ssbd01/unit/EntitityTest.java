@@ -131,13 +131,13 @@ public class EntitityTest {
         session3 = new Session();
 
         event = new Event();
-        event.setDescription("description");
+        event.setDescriptionPL("description");
         event.setName("name");
         event.setIsNotCanceled(true);
         event.setSessions(List.of(session));
 
         event2 = new Event();
-        event2.setDescription("description");
+        event2.setDescriptionPL("description");
         event2.setName("name");
         event2.setIsNotCanceled(true);
         event2.setSessions(List.of(session));
@@ -199,7 +199,7 @@ public class EntitityTest {
         Assertions.assertEquals(LocalDateTime.of(2021, 1, 1, 1, 1), session.getStartTime());
         Assertions.assertEquals(LocalDateTime.of(2021, 1, 1, 1, 1), session.getEndTime());
 
-        Assertions.assertEquals("description", event.getDescription());
+        Assertions.assertEquals("description", event.getDescriptionPL());
         Assertions.assertEquals("name", event.getName());
         Assertions.assertEquals(true, event.getIsNotCanceled());
         Assertions.assertEquals(1, event.getSessions().size());

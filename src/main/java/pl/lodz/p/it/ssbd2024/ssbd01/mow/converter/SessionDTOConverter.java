@@ -7,7 +7,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 
 public class SessionDTOConverter {
 
-    public static GetSessionDetailedDTO toSessionDetailedDTO(Session session) {
+    public static GetSessionDetailedDTO toSessionPlDetailedDTO(Session session) {
         return new GetSessionDetailedDTO(
                 session.getId(),
                 session.getName(),
@@ -18,7 +18,7 @@ public class SessionDTOConverter {
                 session.getIsActive(),
                 SpeakerDTOConverter.convertToDTO(session.getSpeaker()),
                 RoomDTOConverter.toRoomDetailedDto(session.getRoom()),
-                EventDTOConverter.getEventDTO(session.getEvent())
+                EventDTOConverter.getEventPlDTO(session.getEvent())
         );
     }
 
