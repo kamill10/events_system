@@ -6,6 +6,19 @@ pipeline {
     }
 
     stages {
+        stage('Write to File') {
+                    steps {
+                        dir("/home/jenkins/workspace/deploy/docker") {
+                            script {
+                                def deeplKey = env.DEEPL_KEY
+                                sh """
+                                    echo "DEEPL_KEY=${deeplKey}" >> .env
+                                """
+                            }
+                        }
+                    }
+                }
+
         stage('Compose down') {
             steps {
                 dir("/home/jenkins/workspace/deploy/docker") {
