@@ -6,9 +6,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDetailedDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
@@ -79,9 +81,12 @@ public class MeEventController {
     ) {
         PageUtils pageUtils = new PageUtils(page, size, direction, key);
         meEventService.getMyHistoricalEvents(pageUtils);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(EventDTOConverter.eventDTOPage(meEventService
-                        .getMyHistoricalEvents(pageUtils)));
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (account.getLanguage().getLanguageCode().equals("pl-PL")) {
+            return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.eventPlDTOPage(meEventService.getMyHistoricalEvents(pageUtils)));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.eventEnDTOPage(meEventService.getMyHistoricalEvents(pageUtils)));
+        }
     }
 
     @DeleteMapping("/session/{id}")

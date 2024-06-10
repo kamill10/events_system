@@ -11,11 +11,22 @@ import java.util.ArrayList;
 
 public class EventDTOConverter {
 
-    public static GetEventDTO getEventDTO(Event event) {
+    public static GetEventDTO getEventPlDTO(Event event) {
         return new GetEventDTO(
                 event.getId(),
                 event.getName(),
-                event.getDescription(),
+                event.getDescriptionPL(),
+                event.getIsNotCanceled(),
+                event.getStartDate(),
+                event.getEndDate()
+        );
+    }
+
+    public static GetEventDTO getEventEnDTO(Event event) {
+        return new GetEventDTO(
+                event.getId(),
+                event.getName(),
+                event.getDescriptionEN(),
                 event.getIsNotCanceled(),
                 event.getStartDate(),
                 event.getEndDate()
@@ -42,7 +53,11 @@ public class EventDTOConverter {
         );
     }
 
-    public static Page<GetEventDTO> eventDTOPage(Page<Event> eventPage) {
-        return eventPage.map(EventDTOConverter::getEventDTO);
+    public static Page<GetEventDTO> eventPlDTOPage(Page<Event> eventPage) {
+        return eventPage.map(EventDTOConverter::getEventPlDTO);
+    }
+
+    public static Page<GetEventDTO> eventEnDTOPage(Page<Event> eventPage) {
+        return eventPage.map(EventDTOConverter::getEventEnDTO);
     }
 }

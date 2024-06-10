@@ -23,7 +23,7 @@ public class TicketDTOConverter {
     public static GetTicketDetailedDTO toTicketDetailedDTO(Ticket ticket) {
         return new GetTicketDetailedDTO(
                 ticket.getId(),
-                SessionDTOConverter.toSessionDetailedDTO(ticket.getSession()),
+                SessionDTOConverter.toSessionPlDetailedDTO(ticket.getSession()),
                 ticket.getReservationTime(),
                 ticket.getIsNotCancelled()
         );

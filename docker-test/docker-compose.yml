@@ -6,6 +6,8 @@ services:
       postgres:
         condition: service_healthy
     image: tomcat:10.1.19-jre21
+    environment:
+      - DEEPL_KEY=${DEEPL_KEY}
     hostname: tomcat
     container_name: tomcat_test
     networks:
