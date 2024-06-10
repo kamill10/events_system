@@ -63,6 +63,9 @@ public class Session extends ControlledEntity {
     @PositiveOrZero
     private long counter;
 
+    @Min(0)
+    private int availableSeats;
+
     public Session(Room room, Speaker speaker, String name, Event event,
                    Boolean isActive, String description, LocalDateTime startTime,
                    LocalDateTime endTime, Integer maxSeats) {
@@ -75,6 +78,7 @@ public class Session extends ControlledEntity {
         this.startTime = startTime;
         this.endTime = endTime;
         this.maxSeats = maxSeats;
+        this.availableSeats = maxSeats;
     }
 
     @Override
