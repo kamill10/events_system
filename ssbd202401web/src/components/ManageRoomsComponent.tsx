@@ -67,6 +67,7 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
         rooms: response.content,
       });
     }
+    console.log("updateintable")
   }
 
   const onSubmit: SubmitHandler<PaginationRequestParams> = async () => {
@@ -233,7 +234,7 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
           <TableBody>
             {rooms?.rooms.map((room) => {
               return (
-                <RoomRowComponent key={room.id} room={room}></RoomRowComponent>
+                <RoomRowComponent key={room.id} room={room} getRooms={getRooms}></RoomRowComponent>
               );
             })}
           </TableBody>

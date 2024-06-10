@@ -75,7 +75,7 @@ public class LocationController {
         String eTag = ETagBuilder.buildETag(location.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.ETAG, eTag)
-                .body(LocationDTOConverter.toGetLocationDTO(locationService.getLocationById(id)));
+                .body(LocationDTOConverter.toGetLocationDTO(location));
     }
 
 

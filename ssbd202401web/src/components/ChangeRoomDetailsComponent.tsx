@@ -1,7 +1,7 @@
 import {useTranslation} from "react-i18next";
 import {useLocations} from "../hooks/useLocations.ts";
 import {useEffect, useState} from "react";
-import {GetRoomResponse,UpdateRoomType} from "../types/Room.ts";
+import {RoomType, UpdateRoomType} from "../types/Room.ts";
 import {SubmitErrorHandler, SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {UpdateRoomSchema} from "../validation/schemas.ts";
@@ -11,14 +11,15 @@ import TextFieldComponent from "./TextFieldComponent.tsx";
 import ConfirmChangeModal from "./ConfirmChangeModal.tsx";
 
 
-export default function ChangeRoomDetailsComponent({room,fetchRoom,setModal}: {
-    room: GetRoomResponse | null ;
+export default function ChangeRoomDetailsComponent({room,fetchRoom,setOpen,getRooms}: {
+    room: RoomType | null ;
     fetchRoom: () => void;
-    setModal: () => void;
+    setOpen: (open: boolean) => void;
+    getRooms: () => void;
 }) {
     const {t} = useTranslation();
     const {updateRoomById} = useLocations();
-    const [open, setOpen] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
     const {
         handleSubmit,
         control,
@@ -34,13 +35,14 @@ export default function ChangeRoomDetailsComponent({room,fetchRoom,setModal}: {
         resolver: yupResolver(UpdateRoomSchema),
     });
     const handleRequest = async () => {
-        const err = await updateRoomById(room?.id ?? "", getValues());
-        if (!err) {
-            await fetchRoom();
-        }
+            await updateRoomById(room?.id ?? "", getValues());
+            getRooms();
+            setConfirmOpen(false)
+            setOpen(false)
     };
     const onSubmit: SubmitHandler<UpdateRoomType> = async () => {
-        setOpen(true);
+        setConfirmOpen(true);
+        fetchRoom();
     };
     const onError: SubmitErrorHandler<UpdateRoomType> = (error) => {
         console.error(error);
@@ -94,8 +96,8 @@ export default function ChangeRoomDetailsComponent({room,fetchRoom,setModal}: {
             </FormComponent>
             <ConfirmChangeModal
                 callback={handleRequest}
-                handleClose={() => setOpen(false)}
-                open={open}
+                handleClose={() => setConfirmOpen(false)}
+                open={confirmOpen}
             ></ConfirmChangeModal>
         </>
     )
