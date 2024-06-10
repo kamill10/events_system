@@ -7,6 +7,7 @@ import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
 import { useLoadingScreen } from "./useLoadingScreen.ts";
+import {UpdateRoomType} from "../types/Room.ts";
 
 export const useLocations = () => {
   const sendNotification = useNotification();
@@ -181,6 +182,62 @@ export const useLocations = () => {
     }
   };
 
+  const getRoomById = async (
+      id : string) => {
+    try {
+      setIsFetching(true);
+      const {data} = await api.getRoomById(id);
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getRoomByIdFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  }
+
+
+    const updateRoomById = async (
+        id: string,
+        room: UpdateRoomType,
+      ) => {
+        try {
+          setIsFetching(true);
+          const { data } = await api.updateRoom(id, room);
+          sendNotification({
+            type: "success",
+            description: t("updateRoomSuccess"),
+          });
+          return data;
+        } catch (e) {
+          console.error(e);
+          if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+            sendNotification({
+              type: "error",
+              description: t(e.response?.data),
+            });
+          } else {
+            sendNotification({
+              type: "error",
+              description: t("updateRoomByIdFail"),
+            });
+          }
+          return null;
+        } finally {
+          setIsFetching(false);
+        }
+    }
   const getDeletedLocationsWithPagination = async (
     requestParams: PaginationRequestParams,
   ) => {
@@ -270,8 +327,12 @@ export const useLocations = () => {
     addLocation,
     deleteLocationById,
     getRoomsByLocationIdWithPagination,
+    getRoomById,
+    updateRoomById,
     getDeletedLocationsWithPagination,
     getDeletedLocation,
     restoreLocation,
   };
-};
+  }
+
+

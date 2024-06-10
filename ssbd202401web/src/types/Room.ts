@@ -14,3 +14,14 @@ export interface RoomsWithNumberOfElements {
   rooms: RoomType[];
   numberOfElements: number;
 }
+
+export interface UpdateRoomType {
+    name: string;
+    maxCapacity: number;
+}
+
+export interface GetRoomResponse {
+    id: string;
+    name: string;
+    maxCapacity: number;
+}

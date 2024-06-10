@@ -436,6 +436,14 @@ i18next
           "Field is required.": "Wszystkie pola oznaczone * są wymagane",
           "Event start date after end date.":
             "Początek wydarzenia musi być przed końcem wydarzenia",
+          maxCapacityTooSmall: "Maksymalna pojemność musi być większa od 0",
+          maxCapacityTooBig: "Maksymalna pojemnność musi być mniejsza od 1000",
+          maxCapacityRequired: "Maksymalna pojemność nie może być pusta",
+          updateRoomSuccess: "Pomyślnie zaktualizowano pokój",
+          updateRoomByIdFail: "Błąd przy aktualizowania pokoju",
+          getRoomByFail: "Błąd przy pobieraniu pokoju.",
+          changeRoomDetails: "Zmień szczegóły pokoju",
+          enterNewRoomData: "Wprowadź nowe dane pokoju!",
           eventLink: "Szczegóły wydarzenia",
           changeEvent: "Zaktualizuj wydarzenie",
           updateEventSucc: "Wydarzenie zaktualizowane pomyślnie!",
@@ -457,6 +465,7 @@ i18next
           restore: "Przywróć",
           learnMore: "Zobacz więcej",
         },
+
       },
       ENGLISH: {
         translation: {
@@ -866,6 +875,15 @@ i18next
           restore: "Restore",
           learnMore: "Learn More",
         },
+        maxCapacityTooSmall: "Max capacity to small",
+        maxCapacityTooBig: "Max capacity to big",
+        maxCapacityRequired: "Max capacity can not be empty",
+        updateRoomSuccess: "Room updated successfully.",
+        updateRoomByIdFail: "Failed to update room.",
+        getRoomByFail: "Failed to get room.",
+        changeRoomDetails: "Change room details",
+        enterNewRoomData: "Enter new room data!",
+
       },
     },
     lng:
