@@ -339,6 +339,7 @@ i18next
             "Twoja sesja wygaśnie w mniej niż 60 sekund. Odśwież ją lub zignoruj tę informację przy pomocy jedenego z przycisków!",
           description: "Opis",
           startTimeTime: "Godzina rozpoczęcia",
+          endTimeTime: "Godzina zakończenia",
           restore: "Przywróć",
           "0": "Nie określona",
           "1": "Mężczyzna",
