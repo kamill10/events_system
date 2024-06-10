@@ -3,7 +3,12 @@ import { api } from "../axios/axios.config";
 import { useEventsState } from "../context/EventsContext";
 import useNotification from "./useNotification";
 import { useTranslation } from "react-i18next";
-import { CreateEventDTOType, CreateEventType, UpdateEventDTOType, UpdateEventType } from "../types/Event";
+import {
+  CreateEventDTOType,
+  CreateEventType,
+  UpdateEventDTOType,
+  UpdateEventType,
+} from "../types/Event";
 import { useLoadingScreen } from "./useLoadingScreen";
 
 export const useEvents = () => {
@@ -41,7 +46,7 @@ export const useEvents = () => {
     const dataToSend: CreateEventDTOType = {
       ...data,
       startDate: data.startDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
-      endDate: data.endDate?.format("YYYY-MM-DD HH:mm:ss")?? "",
+      endDate: data.endDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
     };
     console.log(dataToSend);
     try {
@@ -93,15 +98,15 @@ export const useEvents = () => {
     } finally {
       setIsFetching(false);
     }
-  }
-  
+  };
+
   const updateEvent = async (id: string, data: UpdateEventType) => {
     console.log(data);
     const dataToSend: UpdateEventDTOType = {
       ...data,
       startDate: data.startDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
       endDate: data.endDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
-    }
+    };
     console.log(dataToSend);
     try {
       setIsFetching(true);
@@ -127,13 +132,13 @@ export const useEvents = () => {
     } finally {
       setIsFetching(false);
     }
-  }
+  };
 
   return {
     events,
     getEvents,
     createEvent,
     getEventById,
-    updateEvent
+    updateEvent,
   };
 };

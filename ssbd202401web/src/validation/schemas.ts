@@ -411,5 +411,5 @@ export function initValidation() {
       }
       return true;
     }),
-  })
+  });
 }

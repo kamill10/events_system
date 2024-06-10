@@ -1,4 +1,14 @@
-import { Box, Breadcrumbs, Button, Divider, Typography } from "@mui/material";
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Divider,
+  Grid,
+  Typography,
+} from "@mui/material";
 import ContainerComponent from "../components/ContainerComponent";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,7 +16,7 @@ import { Pathnames } from "../router/Pathnames";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 import { useAccount } from "../hooks/useAccount";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalComponent from "../components/ModalComponent";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import FormComponent from "../components/FormComponent";
@@ -20,6 +30,7 @@ import dayjs from "dayjs";
 import { useEvents } from "../hooks/useEvents";
 import ConfirmChangeModal from "../components/ConfirmChangeModal";
 import { AxiosError } from "axios";
+import EventBigCardComponent from "../components/EventBigCardComponent";
 
 export default function EventsPage() {
   const { t } = useTranslation();
@@ -29,7 +40,7 @@ export default function EventsPage() {
   const [redirectOpen, setRedirectOpen] = useState(false);
   const [newEventId, setNewEventId] = useState("");
   const navigate = useNavigate();
-  const { createEvent } = useEvents();
+  const { events, createEvent, getEvents } = useEvents();
   const {
     handleSubmit,
     control,
@@ -46,6 +57,10 @@ export default function EventsPage() {
     resolver: yupResolver(CreateEventValidationSchema),
   });
 
+  useEffect(() => {
+    getEvents();
+  }, []);
+
   async function handleRequest() {
     const response = await createEvent(getValues());
     if (!(response instanceof AxiosError)) {
@@ -53,7 +68,6 @@ export default function EventsPage() {
       setModalOpen(false);
       setRedirectOpen(true);
     } else {
-
     }
   }
 
@@ -122,6 +136,11 @@ export default function EventsPage() {
           </Button>
         )}
       </Box>
+      <Grid container spacing={6}>
+        {events?.map((event, index) => (
+          <EventBigCardComponent key={index} event={event} />
+        ))}
+      </Grid>
       <ModalComponent
         width={700}
         onClose={() => setModalOpen(false)}
