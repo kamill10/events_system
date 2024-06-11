@@ -42,6 +42,6 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     @Query("SELECT t FROM Ticket t WHERE t.account.id = :accountId AND t.session.endTime < :now")
     Page<Ticket> findAllByAccountIdAndEndTimeBeforeNow(UUID accountId, LocalDateTime now, Pageable pageable);
 
-
-
+    @Query("SELECT t FROM Ticket t WHERE t.session.id = :id")
+    List<Ticket> findBySessionId(UUID id);
 }

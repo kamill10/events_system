@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.GetParticipantDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
@@ -117,5 +119,17 @@ public class EventController {
             throws EventNotFoundException, EventAlreadyCancelledException, OptLockException {
         eventService.cancelEvent(id, etag);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/session/{id}/participants")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<?> getParticipants(@PathVariable UUID id) {
+        List<Account> participants = eventService.getSessionParticipants(id);
+
+        List<GetParticipantDTO> participantDTOs = participants.stream()
+                .map(account -> new GetParticipantDTO(account.getFirstName(), account.getLastName(), account.getEmail(), account.getUsername()))
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(participantDTOs);
     }
 }

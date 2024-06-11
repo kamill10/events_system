@@ -69,6 +69,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/events").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/events/{id}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/events/sessions/{id}").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/events/session/{id}/participants").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/events/session/{id}").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/events/session").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.DELETE, "/api/events/session/{id}").hasRole("MANAGER")
