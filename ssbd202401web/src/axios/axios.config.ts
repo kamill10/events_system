@@ -346,6 +346,8 @@ export const api = {
   getDeletedLocation: (id: string): ApiResponseType<Location> =>
     apiWithEtag.get(`/location/deleted/${id}`),
   restoreLocation: (id: string) => apiWithEtag.patch(`/location/${id}`),
+  signOnSession: (id: string) =>
+      apiWithAuthToken.post(`/events/me/session/${id}`),
   cancelEvent: (id: string) => apiWithEtag.delete(`/events/${id}`),
 };
 

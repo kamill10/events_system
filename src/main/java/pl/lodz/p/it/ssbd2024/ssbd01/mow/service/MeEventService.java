@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 
+import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,14 +41,22 @@ public class MeEventService {
     private final TicketRepository ticketRepository;
     private final EventRepository eventRepository;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Retryable(
+            retryFor = {OptimisticLockException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void signUpForSession(UUID sessionId)
             throws SessionNotFoundException, AlreadySignUpException, MaxSeatsOfSessionReachedException,
             SessionNotActiveException {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (session.getAvailableSeats() <= 0) {
+            throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
+        }
         if (!isSessionActive(session)) {
             throw new SessionNotActiveException(ExceptionMessages.SESSION_NOT_ACTIVE);
         }
@@ -58,9 +67,6 @@ public class MeEventService {
             ticketRepository.saveAndFlush(accountTicket.get());
         } else if (accountTicket.isPresent()) {
             throw new AlreadySignUpException(ExceptionMessages.ALREADY_SIGNED_UP);
-        }
-        if (session.getAvailableSeats() <= 0) {
-            throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
         }
         session.setAvailableSeats(session.getAvailableSeats() - 1);
         Ticket ticket = new Ticket(account, session);

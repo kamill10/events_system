@@ -14,6 +14,8 @@ import parseDate from "../validation/parseDate";
 import { Key, useState } from "react";
 import { t } from "i18next";
 import ModalComponent from "./ModalComponent";
+import {useSessions} from "../hooks/useSessions.ts";
+import ConfirmChangeModal from "./ConfirmChangeModal.tsx";
 
 export default function SessionRowComponent({
   session,
@@ -23,6 +25,8 @@ export default function SessionRowComponent({
   const [isOpen, setIsOpen] = useState(false);
   const address = `${session.room.location.street} ${session.room.location.buildingNumber}, ${session.room.location.postalCode}, ${session.room.location.city}`;
   const speaker = `${session.speaker.firstName} ${session.speaker.lastName}`;
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const {signOnSession} = useSessions();
 
   const data = [
     { [t("name")]: session?.name },
@@ -35,6 +39,11 @@ export default function SessionRowComponent({
     { [t("roomName")]: session?.room.name },
     { [t("speaker")]: speaker },
   ];
+
+  const handleRequest = async () => {
+    await signOnSession(session.id);
+    setIsOpen(false);
+  }
 
   return (
     <>
@@ -67,9 +76,15 @@ export default function SessionRowComponent({
             sx={{
               marginTop: 2,
             }}
+            onClick={() => setConfirmOpen(true)}
           >
             {t("signForSession")}
           </Button>
+          <ConfirmChangeModal
+              callback={handleRequest}
+              handleClose={() => setConfirmOpen(false)}
+              open={confirmOpen}
+          ></ConfirmChangeModal>
           <Box
             sx={{
               display: "flex",
