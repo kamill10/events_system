@@ -42,6 +42,9 @@ pipeline {
                 dir("/home/jenkins/workspace/deploy/docker") {
                     sh('cp ../target/ssbd01.war .')
                     sh('docker build -t ssbd202401/web_app:${env.BUILD_NUMBER} -f Dockerfile-tomcat .')
+                    sh """
+                        echo "DOCKER_IMG=ssbd202401/web_app:${env.BUILD_NUMBER}" >> .env
+                    """
                 }
             }
         }
