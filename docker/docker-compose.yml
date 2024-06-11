@@ -24,7 +24,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: ssbd202401/web_app:latest
+    image: ${DOCKER_IMG}
     environment:
       DEEPL_KEY: ${DEEPL_KEY}
     hostname: tomcat

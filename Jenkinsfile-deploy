@@ -41,7 +41,10 @@ pipeline {
             steps {
                 dir("/home/jenkins/workspace/deploy/docker") {
                     sh('cp ../target/ssbd01.war .')
-                    sh('docker build -t ssbd202401/web_app:latest -f Dockerfile-tomcat .')
+                    sh('docker build -t ssbd202401/web_app:${env.BUILD_NUMBER} -f Dockerfile-tomcat .')
+                    sh """
+                        echo "DOCKER_IMG=ssbd202401/web_app:${env.BUILD_NUMBER}" >> .env
+                    """
                 }
             }
         }
@@ -51,7 +54,7 @@ pipeline {
                 dir("/home/jenkins/workspace/deploy/docker") {
                     withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                               sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                              sh 'docker push ssbd202401/web_app:latest'
+                              sh 'docker push ssbd202401/web_app:${env.BUILD_NUMBER}'
                             }
                           }
                         }
