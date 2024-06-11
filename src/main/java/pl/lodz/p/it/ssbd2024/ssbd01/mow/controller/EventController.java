@@ -17,6 +17,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
+import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.ParticipantDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SessionDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
@@ -123,11 +124,11 @@ public class EventController {
 
     @GetMapping("/session/{id}/participants")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> getParticipants(@PathVariable UUID id) {
+    public ResponseEntity<List<GetParticipantDTO>> getParticipants(@PathVariable UUID id) {
         List<Account> participants = eventService.getSessionParticipants(id);
 
         List<GetParticipantDTO> participantDTOs = participants.stream()
-                .map(account -> new GetParticipantDTO(account.getFirstName(), account.getLastName(), account.getEmail(), account.getUsername()))
+                .map(ParticipantDTOConverter::getParticipantDTO)
                 .toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(participantDTOs);

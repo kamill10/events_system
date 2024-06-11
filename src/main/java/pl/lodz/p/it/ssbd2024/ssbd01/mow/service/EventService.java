@@ -187,7 +187,7 @@ public class EventService {
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public List<Account> getSessionParticipants(UUID id) {
-        List<Ticket> tickets = ticketRepository.findBySessionId(id);
+        List<Ticket> tickets = ticketRepository.findBySession_Id(id);
 
         return tickets.stream()
                 .map(Ticket::getAccount)
