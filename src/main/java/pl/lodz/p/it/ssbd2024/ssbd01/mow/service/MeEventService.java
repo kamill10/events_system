@@ -120,6 +120,7 @@ public class MeEventService {
         }
 
         ticket.setIsNotCancelled(false);
+        ticket.getSession().setAvailableSeats(ticket.getSession().getAvailableSeats() + 1);
         ticketRepository.saveAndFlush(ticket);
     }
 }
