@@ -183,4 +183,14 @@ public class EventService {
     public Event getEvent(UUID id) throws EventNotFoundException {
         return eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
     }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public List<Account> getSessionParticipants(UUID id) {
+        List<Ticket> tickets = ticketRepository.findBySession_Id(id);
+
+        return tickets.stream()
+                .map(Ticket::getAccount)
+                .toList();
+    }
 }
