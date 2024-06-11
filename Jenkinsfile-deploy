@@ -19,14 +19,6 @@ pipeline {
                     }
                 }
 
-        stage('Compose down') {
-            steps {
-                dir("/home/jenkins/workspace/deploy/docker") {
-                    sh('docker compose down')
-                }
-            }
-        }
-
         stage('Build war') {
             steps {
                 dir("/home/jenkins/workspace/deploy") {
@@ -41,6 +33,34 @@ pipeline {
                     sh('cd ../ssbd202401web/ && npm install && npm run build')
                     sh('rm -rf ./html/')
                     sh('cp -r ../ssbd202401web/dist/ html/')
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir("/home/jenkins/workspace/deploy/docker") {
+                    sh('cp ../target/ssbd01.war .')
+                    sh('docker build -t ssbd202401/web_app:latest -f Dockerfile-tomcat .')
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                dir("/home/jenkins/workspace/deploy/docker") {
+                    withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                              sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+                              sh 'docker push ssbd202401/web_app:latest'
+                            }
+                          }
+                        }
+                       }
+
+        stage('Compose down') {
+            steps {
+                dir("/home/jenkins/workspace/deploy/docker") {
+                    sh('docker compose down')
                 }
             }
         }
