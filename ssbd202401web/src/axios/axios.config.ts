@@ -351,7 +351,7 @@ export const api = {
   cancelEvent: (id: string) => apiWithEtag.delete(`/events/${id}`),
   getPastEventsPaginationResponse: (params: PaginationRequestParams )
       : ApiResponseType<PaginationPastEventResponse> => {
-    let url = getUrlWithPaginationParams(params, `/events/me/historical-events}`);
+    let url = getUrlWithPaginationParams(params, `/events/me/historical-events`);
     return apiWithAuthToken.get(url);
   }
 

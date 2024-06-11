@@ -6,6 +6,7 @@ import { Pathnames } from "../router/Pathnames";
 import { useState, SyntheticEvent } from "react";
 import TicketHistoryComponent from "../components/TicketHistoryComponent";
 import { MyTicketsComponent } from "../components/MyTicketsComponent.tsx";
+import {EventHistoryComponent} from "../components/EventHistoryComponent.tsx";
 
 export default function MyTicketsPage() {
   const [page, setPage] = useState(0);
