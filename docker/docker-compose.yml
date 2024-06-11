@@ -24,7 +24,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    image: tomcat:10.1.19-jre21
+    image: ssbd202401/web_app:latest
     environment:
       DEEPL_KEY: ${DEEPL_KEY}
     hostname: tomcat
@@ -33,8 +33,6 @@ services:
       - ssbd01
     ports:
       - "8080:8080"
-    volumes:
-      - '../target/ssbd01.war:/usr/local/tomcat/webapps/ssbd01.war'
 
   postgres:
     image: postgres:16.2
