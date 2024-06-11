@@ -10,6 +10,7 @@ import {
   UpdateEventType,
 } from "../types/Event";
 import { useLoadingScreen } from "./useLoadingScreen";
+import {PaginationRequestParams} from "../types/PaginationRequestParams.ts";
 
 export const useEvents = () => {
   const sendNotification = useNotification();
@@ -159,6 +160,31 @@ export const useEvents = () => {
     } finally {
       setIsFetching(false);
     }
+  };
+
+  const getMyPastEvents = async (params: PaginationRequestParams) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getPastEventsPaginationResponse(params);
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getPastEventFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+
   }
 
   return {
@@ -168,5 +194,6 @@ export const useEvents = () => {
     getEventById,
     updateEvent,
     cancelEvent,
+    getMyPastEvents
   };
 };

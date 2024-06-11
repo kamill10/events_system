@@ -30,7 +30,7 @@ import { AccountChangesType } from "../types/AccountChanges.ts";
 
 import {
   CreateEventDTOType,
-  Event,
+  Event, PaginationPastEventResponse,
   UpdateEventDTOType,
 } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
@@ -349,6 +349,13 @@ export const api = {
   signOnSession: (id: string) =>
       apiWithAuthToken.post(`/events/me/session/${id}`),
   cancelEvent: (id: string) => apiWithEtag.delete(`/events/${id}`),
+  getPastEventsPaginationResponse: (params: PaginationRequestParams )
+      : ApiResponseType<PaginationPastEventResponse> => {
+    let url = getUrlWithPaginationParams(params, `/events/me/historical-events}`);
+    return apiWithAuthToken.get(url);
+  }
+
+
 };
 
 const getUrlWithPaginationParams = (
