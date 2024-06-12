@@ -18,6 +18,7 @@ public interface SessionRepository extends JpaRepository<Session, UUID> {
     @PreAuthorize("permitAll()")
     List<Session> getByEventId(UUID eventId);
 
+
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @Query("SELECT s FROM Session s WHERE s.event.id = :id AND (s.startTime < :startTime OR s.endTime > :endTime)")
     List<Session> findSessionsOutsideRange(UUID id, LocalDateTime startTime, LocalDateTime endTime);
