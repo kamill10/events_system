@@ -314,6 +314,32 @@ export const useLocations = () => {
     }
   };
 
+  const deleteRoomById = async (id: string) => {
+    try {
+      setIsFetching(true);
+      await api.deleteRoom(id);
+      sendNotification({
+        type: "success",
+        description: t("deleteRoomSuccess"),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("deleteRoomByIdFail"),
+        });
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return {
     locations,
     getLocationsWithPagination,
@@ -327,5 +353,6 @@ export const useLocations = () => {
     getDeletedLocationsWithPagination,
     getDeletedLocation,
     restoreLocation,
+    deleteRoomById,
   };
 };

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { ApiResponseType } from "../types/ApiResponse.ts";
+import { ApiResponseType, ApiResponseType } from "../types/ApiResponse.ts";
 import {
   ChangeEmailType,
   ChangeMyEmailType,
@@ -329,6 +329,10 @@ export const api = {
     room: UpdateRoomType,
   ): ApiResponseType<GetRoomResponse> =>
     apiWithEtag.patch(`/rooms/room/${id}`, room),
+  deleteRoom: (
+    id: string
+  ) => 
+    apiWithEtag.delete(`/rooms/room/${id}`),
   getEventById: (id: string): ApiResponseType<Event> =>
     apiWithEtag.get(`/events/${id}`),
   getEventDetailedSessions: (
