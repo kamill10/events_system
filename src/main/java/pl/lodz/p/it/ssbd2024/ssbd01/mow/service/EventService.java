@@ -195,4 +195,11 @@ public class EventService {
                 .map(Ticket::getAccount)
                 .toList();
     }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("permitAll()")
+    public Session getSession(UUID id) {
+        return sessionRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ExceptionMessages.SESSION_NOT_FOUND));
+    }
 }
