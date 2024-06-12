@@ -57,7 +57,6 @@ const getHistoricalEvents = async () => {
 
     useEffect(() => {
         getHistoricalEvents();
-        console.log(events);
     }, []);
 
     const onError: SubmitErrorHandler<PaginationRequestParams> = (error) => {

@@ -485,6 +485,7 @@ i18next
                     getPastEventFail: "Błąd przy pobiraniu historycznych wydarzeń",
                     historicalEvents: "HISTORYCZNE WYDARZENIA",
                     historicalSessions: "HISTORYCZNE SESJE",
+                    addRoom: "Dodaj pokój",
                 },
             },
             ENGLISH: {
@@ -922,6 +923,7 @@ i18next
                     getPastEventFail: "Getting your past events fail",
                     historicalEvents: "HISTORICAL EVENTS",
                     historicalSessions: "HISTORICAL SESSIONS",
+                    addRoom: "Add room",
                 },
             },
         },

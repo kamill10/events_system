@@ -20,7 +20,7 @@ import { CreateLocation } from "../types/Location.ts";
 import { CreateEventType, UpdateEventType } from "../types/Event.ts";
 import { Dayjs } from "dayjs";
 import { CreateSpeaker, UpdateSpeakerDataType } from "../types/Speaker.ts";
-import { UpdateRoomType } from "../types/Room.ts";
+import { CreateRoomInput, UpdateRoomType } from "../types/Room.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -40,6 +40,7 @@ export let CreateEventValidationSchema: yup.ObjectSchema<CreateEventType>;
 export let ModifySpeakerSchema: yup.ObjectSchema<UpdateSpeakerDataType>;
 export let UpdateEventValidationSchema: yup.ObjectSchema<UpdateEventType>;
 export let UpdateRoomSchema: yup.ObjectSchema<UpdateRoomType>;
+export let CreateRoomSchema: yup.ObjectSchema<CreateRoomInput>;
 
 export function initValidation() {
   signInValidationSchema = yup.object<SignInCredentialsType>().shape({
@@ -415,6 +416,18 @@ export function initValidation() {
     }),
   });
   UpdateRoomSchema = yup.object<UpdateRoomType>().shape({
+    name: yup
+      .string()
+      .min(3, i18next.t("nameTooShort"))
+      .max(32, i18next.t("nameTooLong"))
+      .required(i18next.t("nameRequired")),
+    maxCapacity: yup
+      .number()
+      .min(1, i18next.t("maxCapacityTooSmall"))
+      .max(1000, i18next.t("maxCapacityTooBig"))
+      .required(i18next.t("maxCapacityRequired")),
+  });
+  CreateRoomSchema = yup.object<CreateRoomInput>().shape({
     name: yup
       .string()
       .min(3, i18next.t("nameTooShort"))

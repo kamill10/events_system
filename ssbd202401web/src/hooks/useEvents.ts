@@ -43,13 +43,11 @@ export const useEvents = () => {
   };
 
   const createEvent = async (data: CreateEventType) => {
-    console.log(data);
     const dataToSend: CreateEventDTOType = {
       ...data,
       startDate: data.startDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
       endDate: data.endDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
     };
-    console.log(dataToSend);
     try {
       setIsFetching(true);
       const { data } = await api.createEvent(dataToSend);
@@ -102,13 +100,11 @@ export const useEvents = () => {
   };
 
   const updateEvent = async (id: string, data: UpdateEventType) => {
-    console.log(data);
     const dataToSend: UpdateEventDTOType = {
       ...data,
       startDate: data.startDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
       endDate: data.endDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
     };
-    console.log(dataToSend);
     try {
       setIsFetching(true);
       await api.updateEvent(id, dataToSend);
