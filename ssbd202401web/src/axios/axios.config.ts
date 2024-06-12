@@ -7,7 +7,7 @@ import {
   GetAccountType,
   GetDetailedAccountType,
   GetPersonalAccountType,
-  PaginationGetAccountResponse,
+  PaginationGetAccountResponse, Participant,
   UpdatePersonalDataType,
 } from "../types/Account.ts";
 import {
@@ -359,10 +359,12 @@ export const api = {
   getPastEventsPaginationResponse: (params: PaginationRequestParams )
       : ApiResponseType<PaginationPastEventResponse> => {
     let url = getUrlWithPaginationParams(params, `/events/me/historical-events`);
-    return apiWithAuthToken.get(url);
-  }
-
-
+    return apiWithAuthToken.get(url)
+  },
+  getSession: (id: string): ApiResponseType<SessionDetailedType> =>
+      apiWithEtag.get(`/events/session/${id}`),
+  getSessionParticipants: (id: string): ApiResponseType<Participant[]> =>
+        apiWithEtag.get(`/events/session/${id}/participants`),
 };
 
 const getUrlWithPaginationParams = (
