@@ -1,4 +1,4 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.integration;
+package pl.lodz.p.it.ssbd2024.ssbd01.integration.mok;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.response.ValidatableResponse;
@@ -10,6 +10,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.LoginDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.update.UpdateAccountDataDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.update.UpdateEmailDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mok.update.UpdatePasswordDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.integration.AbstractControllerIT;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 
 import java.util.UUID;
