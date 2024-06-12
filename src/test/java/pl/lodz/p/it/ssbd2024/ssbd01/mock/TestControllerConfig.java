@@ -68,5 +68,7 @@ public class TestControllerConfig {
         return Mockito.mock(RoomService.class);
     }
 
+    @Bean
+    public SessionService sessionService() { return Mockito.mock(SessionService.class); }
 
 }
