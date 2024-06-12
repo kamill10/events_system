@@ -302,7 +302,7 @@ i18next
                         "Wystąpił błąd po stronie serwera",
                     "Session not found.": "Nie ma takiej sesji",
                     "Session not active.": "Sesja nie jest aktywna",
-                    "Already signed up.": "Jesteś już zapisan na tą sesje",
+                    "Already signed up.": "Jesteś już zapisany na tą sesję",
                     "Max seats reached.": "Osiągnieto limit miejsc",
                     usernameTooShort: "Nazwa użytkownika musi mieć minimum 3 znaki",
                     usernameTooLong:

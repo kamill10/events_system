@@ -48,12 +48,17 @@ public class MeEventService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void signUpForSession(UUID sessionId)
+    public void signUpForSession(UUID sessionId, String eTagReceived)
             throws SessionNotFoundException, AlreadySignUpException, MaxSeatsOfSessionReachedException,
-            SessionNotActiveException {
+            SessionNotActiveException, OptLockException {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String etag = session.getName() + session.getStartTime().toString()
+                + session.getEndTime().toString();
+        if (!ETagBuilder.isETagValid(eTagReceived, etag)) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
         if (session.getAvailableSeats() <= 0) {
             throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
         }
