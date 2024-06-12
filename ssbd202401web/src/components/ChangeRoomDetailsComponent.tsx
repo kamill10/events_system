@@ -56,11 +56,13 @@ export default function ChangeRoomDetailsComponent({
   useEffect(() => {
     setValue("name", room?.name ?? "");
     setValue("maxCapacity", room?.maxCapacity ?? 1);
-    console.log(room?.name, room?.maxCapacity);
   }, [room, setValue, trigger]);
 
-  const handleDelete = () => {
-    deleteRoomById(room?.id ?? "");
+  const handleDelete = async () => {
+    await deleteRoomById(room?.id ?? "");
+    getRooms();
+    setConfirmOpen(false);
+    setOpen(false);
   }
   
   return (

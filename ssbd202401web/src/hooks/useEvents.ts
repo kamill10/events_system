@@ -10,6 +10,7 @@ import {
   UpdateEventType,
 } from "../types/Event";
 import { useLoadingScreen } from "./useLoadingScreen";
+import {PaginationRequestParams} from "../types/PaginationRequestParams.ts";
 
 export const useEvents = () => {
   const sendNotification = useNotification();
@@ -42,13 +43,11 @@ export const useEvents = () => {
   };
 
   const createEvent = async (data: CreateEventType) => {
-    console.log(data);
     const dataToSend: CreateEventDTOType = {
       ...data,
       startDate: data.startDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
       endDate: data.endDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
     };
-    console.log(dataToSend);
     try {
       setIsFetching(true);
       const { data } = await api.createEvent(dataToSend);
@@ -101,13 +100,11 @@ export const useEvents = () => {
   };
 
   const updateEvent = async (id: string, data: UpdateEventType) => {
-    console.log(data);
     const dataToSend: UpdateEventDTOType = {
       ...data,
       startDate: data.startDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
       endDate: data.endDate?.format("YYYY-MM-DD HH:mm:ss") ?? "",
     };
-    console.log(dataToSend);
     try {
       setIsFetching(true);
       await api.updateEvent(id, dataToSend);
@@ -159,6 +156,31 @@ export const useEvents = () => {
     } finally {
       setIsFetching(false);
     }
+  };
+
+  const getMyPastEvents = async (params: PaginationRequestParams) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getPastEventsPaginationResponse(params);
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getPastEventFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+
   }
 
   return {
@@ -168,5 +190,6 @@ export const useEvents = () => {
     getEventById,
     updateEvent,
     cancelEvent,
+    getMyPastEvents
   };
 };

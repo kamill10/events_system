@@ -15,6 +15,7 @@ export const Pathnames = {
     home: "/",
     events: "/events",
     event: "/events/:id",
+    session: "/events/:id/session/:sid",
   },
   auth: {
     profile: "/profile",
