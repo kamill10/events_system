@@ -59,10 +59,13 @@ public class SessionService {
 
         var event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
+        session.setEvent(event);
         var speaker = speakerRepository.findById(speakerId)
                 .orElseThrow(() -> new SpeakerNotFoundException(ExceptionMessages.SPEAKER_NOT_FOUND));
+        session.setSpeaker(speaker);
         var room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
+        session.setRoom(room);
         sessionRepository.saveAndFlush(session);
         return session.getId().toString();
     }

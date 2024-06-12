@@ -8,18 +8,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.GetParticipantDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.ParticipantDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SessionDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
+import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.SessionService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
 
@@ -32,6 +35,7 @@ import java.util.UUID;
 public class EventController {
 
     private final EventService eventService;
+    private final SessionService sessionService;
 
 
     @GetMapping
@@ -52,6 +56,7 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(eventDTO);
     }
 
+    //tod Nie powinnobyć czasem najpierw id?
     @GetMapping("/sessions/{id}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<GetSessionForListDTO>> getEventSessions(@PathVariable UUID id) {
@@ -60,27 +65,6 @@ public class EventController {
                 .map(SessionDTOConverter::getSessionForListDTO)
                 .toList();
         return ResponseEntity.status(HttpStatus.OK).body(sessionEventsDTO);
-    }
-
-    @PutMapping("/session/{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> updateSession(@PathVariable UUID id) {
-        eventService.updateSession(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PostMapping("/session")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createSession() {
-        eventService.createSession();
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @DeleteMapping("/session/{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> cancelSession(@PathVariable UUID id) {
-        eventService.cancelSession(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/{id}")
