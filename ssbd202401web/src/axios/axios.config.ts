@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { ApiResponseType, ApiResponseType } from "../types/ApiResponse.ts";
+import { ApiResponseType } from "../types/ApiResponse.ts";
 import {
   ChangeEmailType,
   ChangeMyEmailType,
@@ -7,7 +7,7 @@ import {
   GetAccountType,
   GetDetailedAccountType,
   GetPersonalAccountType,
-  PaginationGetAccountResponse,
+  PaginationGetAccountResponse, Participant,
   UpdatePersonalDataType,
 } from "../types/Account.ts";
 import {
@@ -30,13 +30,14 @@ import { AccountChangesType } from "../types/AccountChanges.ts";
 
 import {
   CreateEventDTOType,
-  Event,
+  Event, PaginationPastEventResponse,
   UpdateEventDTOType,
 } from "../types/Event.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
 import {
+  CreateRoom,
   GetRoomResponse,
   PaginationRoomResponse,
   UpdateRoomType,
@@ -333,6 +334,8 @@ export const api = {
     id: string
   ) => 
     apiWithEtag.delete(`/rooms/room/${id}`),
+  addRoom: (room: CreateRoom) =>
+    apiWithAuthToken.post('/rooms/room', room),
   getEventById: (id: string): ApiResponseType<Event> =>
     apiWithEtag.get(`/events/${id}`),
   getEventDetailedSessions: (
@@ -353,6 +356,15 @@ export const api = {
   signOnSession: (id: string) =>
       apiWithEtag.post(`/events/me/session/${id}`),
   cancelEvent: (id: string) => apiWithEtag.delete(`/events/${id}`),
+  getPastEventsPaginationResponse: (params: PaginationRequestParams )
+      : ApiResponseType<PaginationPastEventResponse> => {
+    let url = getUrlWithPaginationParams(params, `/events/me/historical-events`);
+    return apiWithAuthToken.get(url)
+  },
+  getSession: (id: string): ApiResponseType<SessionDetailedType> =>
+      apiWithEtag.get(`/events/session/${id}`),
+  getSessionParticipants: (id: string): ApiResponseType<Participant[]> =>
+        apiWithEtag.get(`/events/session/${id}/participants`),
 };
 
 const getUrlWithPaginationParams = (

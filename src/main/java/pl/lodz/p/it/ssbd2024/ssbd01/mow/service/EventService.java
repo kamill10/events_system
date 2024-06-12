@@ -24,6 +24,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.Mail;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
@@ -159,6 +160,7 @@ public class EventService {
         if (!event.getIsNotCanceled()) {
             throw new EventAlreadyCancelledException(ExceptionMessages.EVENT_ALREADY_CANCELLED);
         }
+
         event.setIsNotCanceled(false);
 
         List<Account> accounts = event.getSessions()
@@ -172,7 +174,7 @@ public class EventService {
                 .toList();
 
         accounts.forEach(account -> {
-            mailService.sendEmailOnEventCancel(account, event.getName());
+            RunAs.runAsSystem(() -> mailService.sendEmailOnEventCancel(account, event.getName()));
         });
 
         eventRepository.saveAndFlush(event);
@@ -190,7 +192,15 @@ public class EventService {
         List<Ticket> tickets = ticketRepository.findBySession_Id(id);
 
         return tickets.stream()
+                .filter(Ticket::getIsNotCancelled)
                 .map(Ticket::getAccount)
                 .toList();
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("permitAll()")
+    public Session getSession(UUID id) {
+        return sessionRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ExceptionMessages.SESSION_NOT_FOUND));
     }
 }

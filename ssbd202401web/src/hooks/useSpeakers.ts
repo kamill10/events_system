@@ -49,7 +49,6 @@ export const useSpeakers = () => {
     try {
       setIsFetching(true);
       const { data } = await api.getSpeaker(id);
-      console.log(data);
       return data;
     } catch (e) {
       console.error(e);
@@ -73,7 +72,6 @@ export const useSpeakers = () => {
   const addSpeaker = async (speaker: CreateSpeaker) => {
     try {
       setIsFetching(true);
-      console.log(speaker);
       await api.addSpeaker(speaker);
       sendNotification({
         type: "success",

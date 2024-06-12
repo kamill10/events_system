@@ -67,3 +67,10 @@ export interface AccountsWithNumberOfElements {
   accounts: GetAccountType[];
   totalElements: number;
 }
+
+export interface Participant {
+    firstName: string;
+    lastName: string;
+    email: string;
+    username: string;
+}
