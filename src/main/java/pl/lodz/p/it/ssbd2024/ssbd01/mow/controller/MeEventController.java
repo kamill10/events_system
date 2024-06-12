@@ -32,10 +32,11 @@ public class MeEventController {
 
     @PostMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<?> signUpForSession(@PathVariable UUID id)
-            throws SessionNotFoundException, SessionNotActiveException, MaxSeatsOfSessionReachedException, AlreadySignUpException {
-        meEventService.signUpForSession(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<String> signUpForSession(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID id)
+            throws SessionNotFoundException, SessionNotActiveException, MaxSeatsOfSessionReachedException,
+            AlreadySignUpException, OptLockException {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(meEventService.signUpForSession(id, eTagReceived).getSession().getName());
     }
 
     @GetMapping("/session/{id}")

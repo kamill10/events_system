@@ -46,12 +46,19 @@ public class MeEventService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void signUpForSession(UUID sessionId)
+    public Ticket signUpForSession(UUID sessionId, String eTagReceived)
             throws SessionNotFoundException, AlreadySignUpException, MaxSeatsOfSessionReachedException,
-            SessionNotActiveException {
+            SessionNotActiveException, OptLockException {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        StringBuilder etagBuilder = new StringBuilder();
+        etagBuilder.append(session.getName())
+                .append(session.getStartTime().toString())
+                .append(session.getEndTime().toString());
+        /*if (!ETagBuilder.isETagValid(eTagReceived, etagBuilder.toString())) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }*/
         if (session.getAvailableSeats() <= 0) {
             throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
         }
@@ -59,17 +66,19 @@ public class MeEventService {
             throw new SessionNotActiveException(ExceptionMessages.SESSION_NOT_ACTIVE);
         }
         Optional<Ticket> accountTicket = ticketRepository.findBySessionAndAccount(session, account);
-        if (accountTicket.isPresent() && !accountTicket.get().getIsNotCancelled()) {
+        if (accountTicket.isPresent() && accountTicket.get().getIsNotCancelled()) {
+            throw new AlreadySignUpException(ExceptionMessages.ALREADY_SIGNED_UP);
+        } else if (accountTicket.isPresent()) {
             accountTicket.get().setIsNotCancelled(true);
             accountTicket.get().setReservationTime(LocalDateTime.now());
-            ticketRepository.saveAndFlush(accountTicket.get());
-        } else if (accountTicket.isPresent()) {
-            throw new AlreadySignUpException(ExceptionMessages.ALREADY_SIGNED_UP);
+            session.setAvailableSeats(session.getAvailableSeats() - 1);
+            sessionRepository.saveAndFlush(session);
+            return ticketRepository.saveAndFlush(accountTicket.get());
         }
         session.setAvailableSeats(session.getAvailableSeats() - 1);
         Ticket ticket = new Ticket(account, session);
         sessionRepository.saveAndFlush(session);
-        ticketRepository.saveAndFlush(ticket);
+        return ticketRepository.saveAndFlush(ticket);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
