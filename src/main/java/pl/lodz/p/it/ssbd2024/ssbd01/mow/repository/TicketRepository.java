@@ -25,6 +25,9 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     Optional<Ticket> findById(UUID id);
 
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
+    Optional<Ticket> findByIdAndAccount_Id(UUID id, UUID accountId);
+
+    @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     @Query("SELECT t FROM Ticket t WHERE t.account.id = :accountId AND t.session.endTime >= :now")
     Page<Ticket> findAllByAccountIdAndEndTimeAfterNow(UUID accountId, LocalDateTime now, Pageable pageable);
 

@@ -18,7 +18,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.TicketNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
@@ -26,10 +25,9 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.UUID;
 
 import static pl.lodz.p.it.ssbd2024.ssbd01.util.Utils.isSessionActive;
 
@@ -77,7 +75,9 @@ public class MeEventService {
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public Ticket getSession(UUID id) throws TicketNotFoundException {
-        return ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ticketRepository.findByIdAndAccount_Id(id, account.getId())
+                .orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
@@ -112,11 +112,18 @@ public class MeEventService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void signOutFromSession(UUID id, String eTag) throws TicketNotFoundException, OptLockException {
-        Ticket ticket = ticketRepository.findById(id).orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
+    public void signOutOfSession(UUID id, String eTag) throws TicketNotFoundException, OptLockException, TicketAlreadyCancelledException {
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Ticket ticket = ticketRepository.findByIdAndAccount_Id(id, account.getId())
+                .orElseThrow(() -> new TicketNotFoundException(ExceptionMessages.TICKET_NOT_FOUND));
 
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(ticket.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
+
+        if (!ticket.getIsNotCancelled()) {
+            throw new TicketAlreadyCancelledException(ExceptionMessages.TICKET_ALREADY_CANCELLED);
         }
 
         ticket.setIsNotCancelled(false);

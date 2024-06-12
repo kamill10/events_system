@@ -25,19 +25,19 @@ import static io.restassured.RestAssured.given;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class AbstractControllerIT {
 
-    static ObjectMapper objectMapper;
+    public static ObjectMapper objectMapper;
 
-    static Network network = Network.newNetwork();
+    public static Network network = Network.newNetwork();
 
-    static int port;
+    public static int port;
 
-    static String baseUrl;
+    public static String baseUrl;
 
-    static String adminToken;
+    public static String adminToken;
 
-    static String participantToken;
+    public static String participantToken;
 
-    static String managerToken;
+    public static String managerToken;
 
     public static ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -45,7 +45,7 @@ public abstract class AbstractControllerIT {
         return objectMapper;
     }
 
-    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2")
+    public static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2")
             .withDatabaseName("ssbd01")
             .withUsername("ssbd01admin")
             .withPassword("admin")
@@ -64,7 +64,7 @@ public abstract class AbstractControllerIT {
             .waitingFor(Wait.forSuccessfulCommand("pg_isready -U ssbd01admin"));
 
 
-    static final GenericContainer<?> tomcat = new GenericContainer<>("tomcat:10.1.19-jre21")
+    public static final GenericContainer<?> tomcat = new GenericContainer<>("tomcat:10.1.19-jre21")
             .withExposedPorts(8080)
             .withNetworkAliases("tomcat")
             .withNetwork(network)
@@ -87,7 +87,6 @@ public abstract class AbstractControllerIT {
     }
 
     public static void authenticationToAdminTest() throws JsonProcessingException {
-
         LoginDTO loginDTO = new LoginDTO("testAdmin", "P@ssw0rd");
         ValidatableResponse response = given()
                 .contentType("application/json")
@@ -104,7 +103,6 @@ public abstract class AbstractControllerIT {
     }
 
     public static void authenticationToParticipantTest() throws JsonProcessingException {
-
         LoginDTO loginDTO = new LoginDTO("testParticipant", "P@ssw0rd");
         var response = given()
                 .contentType("application/json")
@@ -120,7 +118,6 @@ public abstract class AbstractControllerIT {
     }
 
     public static void authenticationToManagerTest() throws JsonProcessingException {
-
         LoginDTO loginDTO = new LoginDTO("testManager", "P@ssw0rd");
         var response = given()
                 .contentType("application/json")

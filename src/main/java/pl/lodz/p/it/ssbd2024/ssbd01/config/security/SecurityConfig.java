@@ -76,7 +76,6 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/api/events/{id}").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/events").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.DELETE, "/api/events/{id}").hasRole("MANAGER")
-                            .requestMatchers(HttpMethod.POST, "/api/events/mail").hasRole("MANAGER")
 
 
                             .requestMatchers(HttpMethod.GET, "/api/location/**").hasRole("MANAGER")
