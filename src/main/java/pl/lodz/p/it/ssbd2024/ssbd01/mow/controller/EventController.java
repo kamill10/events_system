@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.GetParticipantDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -60,6 +61,14 @@ public class EventController {
                 .map(SessionDTOConverter::getSessionForListDTO)
                 .toList();
         return ResponseEntity.status(HttpStatus.OK).body(sessionEventsDTO);
+    }
+
+    @GetMapping("/session/{id}")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<GetSessionDetailedDTO> getSession(@PathVariable UUID id) {
+        var session = eventService.getSession(id);
+        var sessionDTO = SessionDTOConverter.toSessionPlDetailedDTO(session);
+        return ResponseEntity.status(HttpStatus.OK).body(sessionDTO);
     }
 
     @PutMapping("/session/{id}")
