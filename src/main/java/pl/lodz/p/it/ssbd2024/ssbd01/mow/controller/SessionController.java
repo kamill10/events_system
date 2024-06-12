@@ -1,24 +1,20 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
-import com.deepl.api.DeepLException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.GetParticipantDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.ParticipantDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.SessionDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.EventService;
@@ -48,12 +44,12 @@ public class SessionController {
 
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<GetEventDTO> getSession(@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language, @PathVariable UUID id)
+    public ResponseEntity<GetSessionDetailedDTO> getSession(@PathVariable UUID id)
             throws SessionNotFoundException {
         Session session = sessionService.getSession(id);
         String etag = ETagBuilder.buildETag(session.getVersion().toString());
-        //todo
-        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).build();
+        GetSessionDetailedDTO sessionDetailedDTO = SessionDTOConverter.toGetDetailedSessionSession(session);
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(sessionDetailedDTO);
     }
 
     @PutMapping("/{id}")
@@ -73,16 +69,16 @@ public class SessionController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> cancelSession(@PathVariable UUID id) {
-        sessionService.cancelSession(id);
+    public ResponseEntity<?> cancelSession(@PathVariable UUID id, @RequestHeader(HttpHeaders.IF_MATCH) String etag) throws SessionNotFoundException, OptLockException {
+        sessionService.cancelSession(id, etag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 
-    @GetMapping("/session/{id}/participants")
+    @GetMapping("/{id}/participants")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<GetParticipantDTO>> getParticipants(@PathVariable UUID id) {
-        //todo
-        return ResponseEntity.status(HttpStatus.OK).build();
+        List<GetParticipantDTO> particpantDTOs = sessionService.getSessionParticipants(id).stream().map(ParticipantDTOConverter::getParticipantDTO).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(particpantDTOs);
     }
 }

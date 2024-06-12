@@ -35,7 +35,6 @@ import java.util.UUID;
 public class EventController {
 
     private final EventService eventService;
-    private final SessionService sessionService;
 
 
     @GetMapping
@@ -57,7 +56,7 @@ public class EventController {
     }
 
     //tod Nie powinnobyć czasem najpierw id?
-    @GetMapping("/sessions/{id}")
+    @GetMapping("/{id}/sessions/")
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<GetSessionForListDTO>> getEventSessions(@PathVariable UUID id) {
         var sessionEvents = eventService.getEventSessions(id);

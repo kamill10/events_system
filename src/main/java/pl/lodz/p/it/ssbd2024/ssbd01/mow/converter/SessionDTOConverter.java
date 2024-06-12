@@ -18,6 +18,20 @@ public class SessionDTOConverter {
                 createSessionDTO.maxSeats()
         );
     }
+    public static GetSessionDetailedDTO toGetDetailedSessionSession(Session session){
+        return new GetSessionDetailedDTO(
+                session.getId(),
+                session.getName(),
+                session.getDescription(),
+                session.getStartTime(),
+                session.getEndTime(),
+                session.getMaxSeats(),
+                session.getIsActive(),
+                SpeakerDTOConverter.convertToDTO(session.getSpeaker()),
+                RoomDTOConverter.toRoomDetailedDto(session.getRoom()),
+                EventDTOConverter.getEventPlDTO(session.getEvent())
+        );
+    }
     public static GetSessionDetailedDTO toSessionPlDetailedDTO(Session session) {
         return new GetSessionDetailedDTO(
                 session.getId(),
