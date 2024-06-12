@@ -1,5 +1,4 @@
 import axios, { AxiosError } from "axios";
-import { ApiResponseType } from "../types/ApiResponse.ts";
 import {
   ChangeEmailType,
   ChangeMyEmailType,
