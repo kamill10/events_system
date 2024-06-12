@@ -192,6 +192,7 @@ public class EventService {
         List<Ticket> tickets = ticketRepository.findBySession_Id(id);
 
         return tickets.stream()
+                .filter(Ticket::getIsNotCancelled)
                 .map(Ticket::getAccount)
                 .toList();
     }
