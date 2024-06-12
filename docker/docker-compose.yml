@@ -1,38 +1,38 @@
 version: '3'
 
 services:
-#  nginx:
-#    depends_on:
-#      - tomcat
-#    image: nginx:1.25.4
-#    volumes:
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
-#    build:
-#        context: .
-#        dockerfile: Dockerfile
-#    hostname: nginx
-#    container_name: nginx
-#    networks:
-#          - ssbd01
-#    ports:
-#      - "80:80"
-#      - "443:443"
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
-#
-#  tomcat:
-#    depends_on:
-#      postgres:
-#        condition: service_healthy
-#    image: ${DOCKER_IMG}
-#    environment:
-#      DEEPL_KEY: ${DEEPL_KEY}
-#    hostname: tomcat
-#    container_name: tomcat
-#    networks:
-#      - ssbd01
-#    ports:
-#      - "8080:8080"
+  nginx:
+    depends_on:
+      - tomcat
+    image: nginx:1.25.4
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    build:
+        context: .
+        dockerfile: Dockerfile
+    hostname: nginx
+    container_name: nginx
+    networks:
+          - ssbd01
+    ports:
+      - "80:80"
+      - "443:443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  tomcat:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    image: ${DOCKER_IMG}
+    environment:
+      DEEPL_KEY: ${DEEPL_KEY}
+    hostname: tomcat
+    container_name: tomcat
+    networks:
+      - ssbd01
+    ports:
+      - "8080:8080"
 
   postgres:
     image: postgres:16.2
