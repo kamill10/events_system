@@ -37,6 +37,7 @@ import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { PaginationTicketResponse } from "../types/Ticket.ts";
 import { TicketDetailedType } from "../types/TicketDetailed.ts";
 import {
+  CreateRoom,
   GetRoomResponse,
   PaginationRoomResponse,
   UpdateRoomType,
@@ -333,6 +334,8 @@ export const api = {
     id: string
   ) => 
     apiWithEtag.delete(`/rooms/room/${id}`),
+  addRoom: (room: CreateRoom) =>
+    apiWithAuthToken.post('/rooms/room', room),
   getEventById: (id: string): ApiResponseType<Event> =>
     apiWithEtag.get(`/events/${id}`),
   getEventDetailedSessions: (
