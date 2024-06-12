@@ -61,15 +61,18 @@ public class SessionController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createSession(@RequestBody CreateSessionDTO createSessionDTO) throws SessionStartDateInPast, SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, EventNotFoundException {
+    public ResponseEntity<?> createSession(@RequestBody CreateSessionDTO createSessionDTO) throws
+            SessionStartDateInPast, SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, EventNotFoundException {
         Session session = SessionDTOConverter.getSession(createSessionDTO);
-        String newSessionId = sessionService.createSession(session, createSessionDTO.eventId(), createSessionDTO.speakerId(), createSessionDTO.roomId());
+        String newSessionId =
+                sessionService.createSession(session, createSessionDTO.eventId(), createSessionDTO.speakerId(), createSessionDTO.roomId());
         return ResponseEntity.status(HttpStatus.OK).body(newSessionId);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> cancelSession(@PathVariable UUID id, @RequestHeader(HttpHeaders.IF_MATCH) String etag) throws SessionNotFoundException, OptLockException {
+    public ResponseEntity<?> cancelSession(@PathVariable UUID id, @RequestHeader(HttpHeaders.IF_MATCH) String etag)
+            throws SessionNotFoundException, OptLockException {
         sessionService.cancelSession(id, etag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -78,7 +81,8 @@ public class SessionController {
     @GetMapping("/{id}/participants")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<GetParticipantDTO>> getParticipants(@PathVariable UUID id) {
-        List<GetParticipantDTO> particpantDTOs = sessionService.getSessionParticipants(id).stream().map(ParticipantDTOConverter::getParticipantDTO).toList();
+        List<GetParticipantDTO> particpantDTOs =
+                sessionService.getSessionParticipants(id).stream().map(ParticipantDTOConverter::getParticipantDTO).toList();
         return ResponseEntity.status(HttpStatus.OK).body(particpantDTOs);
     }
 }

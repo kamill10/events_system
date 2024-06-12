@@ -1,16 +1,13 @@
-package pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create;
+package pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Speaker;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record CreateSessionDTO(
+public record UpdateSessionDTO(
         @NotNull(message = ExceptionMessages.FIELD_REQUIRED) UUID eventId,
         @NotNull(message = ExceptionMessages.FIELD_REQUIRED) UUID roomId,
         @NotNull(message = ExceptionMessages.FIELD_REQUIRED) UUID speakerId,

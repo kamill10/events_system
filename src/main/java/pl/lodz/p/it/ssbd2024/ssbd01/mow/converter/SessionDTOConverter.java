@@ -8,7 +8,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 
 public class SessionDTOConverter {
 
-    public static Session getSession(CreateSessionDTO createSessionDTO){
+    public static Session getSession(CreateSessionDTO createSessionDTO) {
         return new Session(
                 createSessionDTO.name(),
                 createSessionDTO.isActive(),
@@ -18,7 +18,8 @@ public class SessionDTOConverter {
                 createSessionDTO.maxSeats()
         );
     }
-    public static GetSessionDetailedDTO toGetDetailedSessionSession(Session session){
+
+    public static GetSessionDetailedDTO toGetDetailedSessionSession(Session session) {
         return new GetSessionDetailedDTO(
                 session.getId(),
                 session.getName(),
@@ -32,6 +33,7 @@ public class SessionDTOConverter {
                 EventDTOConverter.getEventPlDTO(session.getEvent())
         );
     }
+
     public static GetSessionDetailedDTO toSessionPlDetailedDTO(Session session) {
         return new GetSessionDetailedDTO(
                 session.getId(),

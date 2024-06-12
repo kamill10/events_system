@@ -29,16 +29,26 @@ public class SessionService {
     private final SpeakerRepository speakerRepository;
     private final RoomRepository roomRepository;
 
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = {Exception.class},
+            timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void updateSession(UUID id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = {Exception.class},
+            timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public String createSession(Session session, UUID eventId, UUID speakerId, UUID roomId) throws SessionStartDateAfterEndDateException, SessionStartDateInPast, EventNotFoundException, RoomNotFoundException, SpeakerNotFoundException {
+    public String createSession(Session session, UUID eventId, UUID speakerId, UUID roomId)
+            throws SessionStartDateAfterEndDateException,
+            SessionStartDateInPast,
+            EventNotFoundException,
+            RoomNotFoundException,
+            SpeakerNotFoundException {
         if (session.getStartTime().isBefore(LocalDateTime.now())) {
             throw new SessionStartDateInPast("KOTWICA");
         }
@@ -46,39 +56,54 @@ public class SessionService {
             throw new SessionStartDateAfterEndDateException("KOTWICA");
         }
 
-        var event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
+        var event =
+                eventRepository
+                        .findById(eventId)
+                        .orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
         session.setEvent(event);
-        var speaker = speakerRepository.findById(speakerId)
-                .orElseThrow(() -> new SpeakerNotFoundException(ExceptionMessages.SPEAKER_NOT_FOUND));
+        var speaker =
+                speakerRepository
+                        .findById(speakerId)
+                        .orElseThrow(() -> new SpeakerNotFoundException(ExceptionMessages.SPEAKER_NOT_FOUND));
         session.setSpeaker(speaker);
-        var room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
+        var room =
+                roomRepository
+                        .findById(roomId)
+                        .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
         session.setRoom(room);
         sessionRepository.saveAndFlush(session);
         return session.getId().toString();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = {Exception.class},
+            timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void cancelSession(UUID id, String etag) throws SessionNotFoundException, OptLockException {
+    public void cancelSession(UUID id, String etag)
+            throws SessionNotFoundException, OptLockException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = {Exception.class},
+            timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public List<Account> getSessionParticipants(UUID id) {
         List<Ticket> tickets = ticketRepository.findBySession_Id(id);
 
-        return tickets.stream()
-                .map(Ticket::getAccount)
-                .toList();
+        return tickets.stream().map(Ticket::getAccount).toList();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = {Exception.class},
+            timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")
     public Session getSession(UUID id) throws SessionNotFoundException {
-        return sessionRepository.findById(id).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
+        return sessionRepository
+                .findById(id)
+                .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
     }
 }
