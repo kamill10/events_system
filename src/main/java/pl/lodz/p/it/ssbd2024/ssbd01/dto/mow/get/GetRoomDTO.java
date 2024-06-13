@@ -6,6 +6,7 @@ import java.util.UUID;
 public record GetRoomDTO(
         UUID id,
         String name,
-        Integer maxCapacity
+        Integer maxCapacity,
+        Boolean isActive
 ) {
 }

@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -13,6 +14,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationAlreadyDeletedException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.LocationDTOConverter;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.LocationService;
@@ -75,8 +77,8 @@ public class LocationController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> deleteLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id)
-            throws LocationNotFoundException, OptLockException {
+    public ResponseEntity<?> deleteLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @NotNull @PathVariable UUID id)
+            throws LocationNotFoundException, OptLockException, LocationAlreadyDeletedException {
         locationService.deleteLocation(id, eTagReceived);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

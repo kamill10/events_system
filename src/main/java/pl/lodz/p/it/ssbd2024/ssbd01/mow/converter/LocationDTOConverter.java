@@ -19,7 +19,8 @@ public class LocationDTOConverter {
                 location.getCountry(),
                 location.getStreet(),
                 location.getBuildingNumber(),
-                location.getPostalCode()
+                location.getPostalCode(),
+                location.getIsActive()
         );
     }
 
@@ -59,7 +60,8 @@ public class LocationDTOConverter {
                 location.getCountry(),
                 location.getStreet(),
                 location.getBuildingNumber(),
-                location.getPostalCode()
+                location.getPostalCode(),
+                location.getIsActive()
         );
     }
 }

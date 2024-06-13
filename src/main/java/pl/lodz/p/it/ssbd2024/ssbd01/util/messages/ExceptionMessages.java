@@ -64,4 +64,5 @@ public class ExceptionMessages {
     public static final String SESSIONS_OUTSIDE_RANGE = "Sessions outside range.";
     public static final String EVENT_START_IN_PAST = "Event start date in the past.";
     public static final String TICKET_ALREADY_CANCELLED = "Ticket have already been cancelled.";
+    public static final String LOCATION_ALREADY_DELETED = "Location already deleted.";
 }
