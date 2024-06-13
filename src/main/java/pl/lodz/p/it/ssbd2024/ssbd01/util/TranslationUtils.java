@@ -19,7 +19,7 @@ public class TranslationUtils {
         }
 
         Translator translator = new Translator(apiKey);
-        if (Objects.equals(language, "pl-PL")) {
+        if (Objects.equals(language, "pl")) {
             event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
         } else {
             event.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
@@ -38,7 +38,7 @@ public class TranslationUtils {
     }
 
     public static GetEventDTO resolveEventLanguage(Event event, String language) {
-        if (Objects.equals(language.substring(0, 5), "pl-PL")) {
+        if (Objects.equals(language.substring(0, 2), "pl")) {
             return EventDTOConverter.getEventPlDTO(event);
         } else {
             if (event.getDescriptionEN() == null || event.getDescriptionEN().isEmpty()) {
