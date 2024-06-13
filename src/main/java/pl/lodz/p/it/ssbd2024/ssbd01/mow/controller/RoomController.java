@@ -76,11 +76,11 @@ public class RoomController {
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("/room")
-    public ResponseEntity<?> createRoom(@RequestBody @Valid CreateRoomDTO createRoomDTO) throws LocationNotFoundException {
+    public ResponseEntity<UUID> createRoom(@RequestBody @Valid CreateRoomDTO createRoomDTO) throws LocationNotFoundException {
         Room room = RoomDTOConverter.toRoom(createRoomDTO);
-        roomService.createRoom(room, createRoomDTO.locationId());
+        var roomCreated = roomService.createRoom(room, createRoomDTO.locationId());
         return ResponseEntity.ok()
-                .build();
+                .body(roomCreated.getId());
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
