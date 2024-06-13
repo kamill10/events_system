@@ -56,9 +56,9 @@ public class MeEventService {
         etagBuilder.append(session.getName())
                 .append(session.getStartTime().toString())
                 .append(session.getEndTime().toString());
-        /*if (!ETagBuilder.isETagValid(eTagReceived, etagBuilder.toString())) {
+        if (!ETagBuilder.isETagValid(eTagReceived, etagBuilder.toString())) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
-        }*/
+        }
         if (session.getAvailableSeats() <= 0) {
             throw new MaxSeatsOfSessionReachedException(ExceptionMessages.MAX_SEATS_REACHED);
         }
