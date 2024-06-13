@@ -3,6 +3,7 @@ package pl.lodz.p.it.ssbd2024.ssbd01.mow.converter;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 
 import java.util.List;
@@ -13,11 +14,20 @@ public class SessionDTOConverter {
     public static Session getSession(CreateSessionDTO createSessionDTO) {
         return new Session(
                 createSessionDTO.name(),
-                true,
                 createSessionDTO.description(),
                 createSessionDTO.startDate(),
                 createSessionDTO.endDate(),
                 createSessionDTO.maxSeats()
+        );
+    }
+
+    public static Session getSession(UpdateSessionDTO updateSessionDTO) {
+        return new Session(
+                updateSessionDTO.name(),
+                updateSessionDTO.description(),
+                updateSessionDTO.startDate(),
+                updateSessionDTO.endDate(),
+                updateSessionDTO.maxSeats()
         );
     }
 

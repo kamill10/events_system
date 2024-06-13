@@ -81,11 +81,10 @@ public class Session extends ControlledEntity {
         this.availableSeats = maxSeats;
     }
 
-    public Session(String name,
-                   Boolean isActive, String description, LocalDateTime startTime,
+    public Session(String name, String description, LocalDateTime startTime,
                    LocalDateTime endTime, Integer maxSeats) {
         this.name = name;
-        this.isActive = isActive;
+        this.isActive = true;
         this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;

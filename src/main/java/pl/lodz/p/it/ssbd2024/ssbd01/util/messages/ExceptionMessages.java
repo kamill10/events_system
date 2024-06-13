@@ -55,6 +55,11 @@ public class ExceptionMessages {
     public static final String SESSION_NOT_FOUND = "Session not found.";
     public static final String SESSION_NOT_ACTIVE = "Session not active.";
     public static final String SESSION_ALREADY_CANCELLED = "Session have already been cancelled.";
+
+    public static final String SESSION_MAX_SEAT_LOWER_THAN_SOLD_TICKETS =
+            "session has too few available places to accommodate all already signed particpants";
+    public static final String SESSION_START_AFTER_END = "Session start date after end date.";
+    public static final String SESSION_START_IN_PAST = "Session start date in the past.";
     public static final String ALREADY_SIGNED_UP = "Already signed up.";
     public static final String MAX_SEATS_REACHED = "Max seats reached.";
     public static final String EVENT_NOT_FOUND = "Event not found.";

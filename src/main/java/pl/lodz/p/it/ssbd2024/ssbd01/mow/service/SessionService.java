@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
@@ -33,9 +34,46 @@ public class SessionService {
             rollbackFor = {Exception.class},
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void updateSession(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void updateSession(UUID id, String etag, Session session)
+            throws
+            SessionNotFoundException,
+            OptLockException,
+            SessionStartDateInPast,
+            SessionStartDateAfterEndDateException,
+            SessionsExistOutsideRangeException {
+        Session pSession = sessionRepository.findById(id).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
+        if (!ETagBuilder.isETagValid(etag, String.valueOf(pSession.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
+        if (session.getStartTime().isAfter(session.getEndTime())) {
+            throw new SessionStartDateAfterEndDateException(ExceptionMessages.SESSION_START_AFTER_END);
+        }
+
+        if (session.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new SessionStartDateInPast(ExceptionMessages.SESSION_START_IN_PAST);
+        }
+
+        if (session.getStartTime().isAfter(session.getEndTime())) {
+            throw new SessionStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
+        }
+
+        Event pEvent = pSession.getEvent();
+        if (session.getStartTime().isBefore(pEvent.getStartDate()) || session.getEndTime().isAfter(pEvent.getEndDate())) {
+            throw new SessionsExistOutsideRangeException(ExceptionMessages.SESSIONS_OUTSIDE_RANGE);
+        }
+
+        pSession.setSpeaker(session.getSpeaker());
+        pSession.setRoom(session.getRoom());
+        pSession.setName(session.getName());
+        pSession.setDescription(session.getDescription());
+        pSession.setStartTime(session.getStartTime());
+        pSession.setEndTime(session.getEndTime());
+        pSession.setMaxSeats(session.getMaxSeats());
+
+
+        sessionRepository.saveAndFlush(session);
     }
+
 
     @Transactional(
             propagation = Propagation.REQUIRES_NEW,
@@ -52,10 +90,10 @@ public class SessionService {
             RoomIsBusyException,
             SpeakerIsBusyException {
         if (session.getStartTime().isBefore(LocalDateTime.now())) {
-            throw new SessionStartDateInPast("KOTWICA");
+            throw new SessionStartDateInPast(ExceptionMessages.SESSION_START_IN_PAST);
         }
         if (session.getStartTime().isAfter(session.getEndTime())) {
-            throw new SessionStartDateAfterEndDateException("KOTWICA");
+            throw new SessionStartDateAfterEndDateException(ExceptionMessages.SESSION_START_AFTER_END);
         }
 
         var event = eventRepository

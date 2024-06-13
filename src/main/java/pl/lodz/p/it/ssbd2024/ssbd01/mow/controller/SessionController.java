@@ -1,5 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.GetParticipantDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
@@ -62,14 +64,22 @@ public class SessionController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> updateSession(@PathVariable UUID id) {
-        sessionService.updateSession(id);
+    public ResponseEntity<?> updateSession(@PathVariable UUID id,
+                                           @RequestHeader(HttpHeaders.IF_MATCH) String etag,
+                                           @RequestBody @Valid UpdateSessionDTO updateSessionDTO) throws
+            OptLockException,
+            SessionsExistOutsideRangeException,
+            SessionStartDateInPast,
+            SessionNotFoundException,
+            SessionStartDateAfterEndDateException {
+        Session session = SessionDTOConverter.getSession(updateSessionDTO);
+        sessionService.updateSession(id, etag, session);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createSession(@RequestBody CreateSessionDTO createSessionDTO) throws
+    public ResponseEntity<?> createSession(@RequestBody @Valid CreateSessionDTO createSessionDTO) throws
             SessionStartDateInPast, SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, EventNotFoundException,
             RoomIsBusyException, RoomSeatsExceededException, SpeakerIsBusyException {
         Session session = SessionDTOConverter.getSession(createSessionDTO);
