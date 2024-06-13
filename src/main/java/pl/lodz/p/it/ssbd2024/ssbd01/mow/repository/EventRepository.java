@@ -25,6 +25,9 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     Optional<Event> findById(UUID id);
 
     @PreAuthorize("permitAll()")
+    Optional<Event> findByIdAndIsNotCanceledTrue(UUID id);
+
+    @PreAuthorize("permitAll()")
     List<Event> getByEndDateAfter(LocalDateTime date);
 
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")

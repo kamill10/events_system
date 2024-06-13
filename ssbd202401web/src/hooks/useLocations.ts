@@ -7,7 +7,7 @@ import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import { UpdateLocationDataType } from "../types/Location.ts";
 import { CreateLocation } from "../types/Location.ts";
 import { useLoadingScreen } from "./useLoadingScreen.ts";
-import { UpdateRoomType } from "../types/Room.ts";
+import { CreateRoom, UpdateRoomType } from "../types/Room.ts";
 
 export const useLocations = () => {
   const sendNotification = useNotification();
@@ -314,6 +314,58 @@ export const useLocations = () => {
     }
   };
 
+  const deleteRoomById = async (id: string) => {
+    try {
+      setIsFetching(true);
+      await api.deleteRoom(id);
+      sendNotification({
+        type: "success",
+        description: t("deleteRoomSuccess"),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("deleteRoomByIdFail"),
+        });
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const addRoom = async (room: CreateRoom) => {
+    try {
+      setIsFetching(true);
+      await api.addRoom(room);
+      sendNotification({
+        type: "success",
+        description: t("addLocationSuccess"),
+      });
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("addLocationFail"),
+        });
+      }
+    } finally {
+      setIsFetching(false);
+    }
+  }
+
   return {
     locations,
     getLocationsWithPagination,
@@ -327,5 +379,7 @@ export const useLocations = () => {
     getDeletedLocationsWithPagination,
     getDeletedLocation,
     restoreLocation,
+    deleteRoomById,
+    addRoom,
   };
 };

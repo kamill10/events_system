@@ -13,7 +13,7 @@ public class SessionDTOConverter {
     public static Session getSession(CreateSessionDTO createSessionDTO) {
         return new Session(
                 createSessionDTO.name(),
-                createSessionDTO.isActive(),
+                true,
                 createSessionDTO.description(),
                 createSessionDTO.startDate(),
                 createSessionDTO.endDate(),
@@ -29,6 +29,7 @@ public class SessionDTOConverter {
                 session.getStartTime(),
                 session.getEndTime(),
                 session.getMaxSeats(),
+                session.getAvailableSeats(),
                 session.getIsActive(),
                 SpeakerDTOConverter.convertToDTO(session.getSpeaker()),
                 RoomDTOConverter.toRoomDetailedDto(session.getRoom()),
@@ -44,6 +45,7 @@ public class SessionDTOConverter {
                 session.getStartTime(),
                 session.getEndTime(),
                 session.getMaxSeats(),
+                session.getAvailableSeats(),
                 session.getIsActive(),
                 SpeakerDTOConverter.convertToDTO(session.getSpeaker()),
                 RoomDTOConverter.toRoomDetailedDto(session.getRoom()),
@@ -59,6 +61,7 @@ public class SessionDTOConverter {
                 session.getStartTime(),
                 session.getEndTime(),
                 session.getMaxSeats(),
+                session.getAvailableSeats(),
                 session.getIsActive(),
                 SpeakerDTOConverter.convertToDTO(session.getSpeaker()),
                 RoomDTOConverter.toRoomDetailedDto(session.getRoom())

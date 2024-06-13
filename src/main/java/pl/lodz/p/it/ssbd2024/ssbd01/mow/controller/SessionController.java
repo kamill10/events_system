@@ -41,7 +41,21 @@ public class SessionController {
     public ResponseEntity<GetSessionDetailedDTO> getSession(@PathVariable UUID id)
             throws SessionNotFoundException {
         Session session = sessionService.getSession(id);
-        String etag = ETagBuilder.buildETag(session.getVersion().toString());
+        // For signing at session we don't want to check if whole object has changed
+        // We don't care about version, we can allow for aggregate to change, we just cant allow it to be negative
+        String etag = ETagBuilder.buildETag(
+                session.getName(), session.getStartTime().toString(), session.getEndTime().toString()
+        );
+        GetSessionDetailedDTO sessionDetailedDTO = SessionDTOConverter.toGetDetailedSession(session);
+        return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(sessionDetailedDTO);
+    }
+
+    @GetMapping("/manager/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<GetSessionDetailedDTO> getSessionForManager(@PathVariable UUID id)
+            throws SessionNotFoundException {
+        Session session = sessionService.getSession(id);
+        String etag = ETagBuilder.buildETag(String.valueOf(session.getVersion()));
         GetSessionDetailedDTO sessionDetailedDTO = SessionDTOConverter.toGetDetailedSession(session);
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(sessionDetailedDTO);
     }
@@ -56,7 +70,8 @@ public class SessionController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> createSession(@RequestBody CreateSessionDTO createSessionDTO) throws
-            SessionStartDateInPast, SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, EventNotFoundException {
+            SessionStartDateInPast, SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, EventNotFoundException,
+            RoomIsBusyException, RoomSeatsExceededException, SpeakerIsBusyException {
         Session session = SessionDTOConverter.getSession(createSessionDTO);
         String newSessionId =
                 sessionService.createSession(session, createSessionDTO.eventId(), createSessionDTO.speakerId(), createSessionDTO.roomId());

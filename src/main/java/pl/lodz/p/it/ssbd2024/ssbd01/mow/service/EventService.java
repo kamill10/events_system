@@ -21,6 +21,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
@@ -150,7 +151,7 @@ public class EventService {
                 .toList();
 
         accounts.forEach(account -> {
-            mailService.sendEmailOnEventCancel(account, event.getName());
+            RunAs.runAsSystem(() -> mailService.sendEmailOnEventCancel(account, event.getName()));
         });
 
         eventRepository.saveAndFlush(event);
@@ -168,6 +169,7 @@ public class EventService {
         List<Ticket> tickets = ticketRepository.findBySession_Id(id);
 
         return tickets.stream()
+                .filter(Ticket::getIsNotCancelled)
                 .map(Ticket::getAccount)
                 .toList();
     }
