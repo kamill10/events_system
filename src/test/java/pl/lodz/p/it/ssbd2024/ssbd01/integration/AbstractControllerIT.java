@@ -127,7 +127,6 @@ public abstract class AbstractControllerIT {
                 .post(baseUrl + "/auth/authenticate")
                 .then()
                 .statusCode(HttpStatus.OK.value());
-
         String jwtToken = response.extract().body().asString();
         managerToken = jwtToken.substring(1, jwtToken.length() - 1);
     }
