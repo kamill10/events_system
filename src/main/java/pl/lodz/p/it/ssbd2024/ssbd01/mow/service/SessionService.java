@@ -1,11 +1,16 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
@@ -32,9 +37,45 @@ public class SessionService {
             rollbackFor = {Exception.class},
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void updateSession(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void updateSession(UUID id, String etag, Session session) throws SessionNotFoundException, OptLockException, SessionStartDateInPast, SessionStartDateAfterEndDateException, SessionsExistOutsideRangeException, SessionMaxSeatLowerThanSoldTickets {
+        Session pSession = sessionRepository.findById(id).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
+        if (!ETagBuilder.isETagValid(etag, String.valueOf(session.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
+        if (session.getStartTime().isAfter(session.getEndTime())) {
+            throw new SessionStartDateAfterEndDateException(ExceptionMessages.SESSION_START_AFTER_END);
+        }
+
+        if (session.getStartTime().isBefore(LocalDateTime.now())) {
+            throw new SessionStartDateInPast(ExceptionMessages.SESSION_START_IN_PAST);
+        }
+
+        if (session.getStartTime().isAfter(session.getEndTime())) {
+            throw new SessionStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
+        }
+
+        Event pEvent = pSession.getEvent();
+        if (session.getStartTime().isBefore(pEvent.getStartDate()) || session.getEndTime().isAfter(pEvent.getEndDate())) {
+            throw new SessionsExistOutsideRangeException(ExceptionMessages.SESSIONS_OUTSIDE_RANGE);
+        }
+
+        if (session.getMaxSeats() < (pSession.getMaxSeats() - pSession.getAvailableSeats())) {
+            throw new SessionMaxSeatLowerThanSoldTickets(ExceptionMessages.SESSION_MAX_SEAT_LOWER_THAN_SOLD_TICKETS);
+        }
+
+
+        pSession.setSpeaker(session.getSpeaker());
+        pSession.setRoom(session.getRoom());
+        pSession.setName(session.getName());
+        pSession.setDescription(session.getDescription());
+        pSession.setStartTime(session.getStartTime());
+        pSession.setEndTime(session.getEndTime());
+        pSession.setMaxSeats(session.getMaxSeats());
+
+
+        sessionRepository.saveAndFlush(session);
     }
+
 
     @Transactional(
             propagation = Propagation.REQUIRES_NEW,
