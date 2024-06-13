@@ -19,12 +19,8 @@ public class TranslationUtils {
         }
 
         Translator translator = new Translator(apiKey);
-        if (Objects.equals(language, "pl")) {
-            event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
-        } else {
             event.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
             event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
-        }
     }
 
     public static List<GetEventDTO> resolveEventsLanguage(List<Event> events, String language) {
