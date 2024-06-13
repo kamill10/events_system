@@ -5,15 +5,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.it.ssbd2024.ssbd01.config.ConfigurationProperties;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
@@ -112,7 +109,7 @@ public class SessionService {
             rollbackFor = {Exception.class},
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")
-    public List<Session> getSessions() throws SessionNotFoundException {
+    public List<Session> getSessions() {
         return sessionRepository.findAll();
     }
 }
