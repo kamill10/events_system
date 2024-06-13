@@ -12,6 +12,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.integration.AbstractControllerIT;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -99,8 +100,8 @@ public class MOW10createEventIT extends AbstractControllerIT {
         CreateEventDTO eventDTO = new CreateEventDTO(
                 RandomStringUtils.random(3, true, false),
                 RandomStringUtils.random(3, true, false),
-                LocalDateTime.now().minusDays(1),
-                LocalDateTime.now().plusDays(1)
+                LocalDateTime.of(2020, Month.AUGUST, 10, 10, 10, 10),
+                LocalDateTime.of(2020, Month.AUGUST, 14, 10, 10, 10)
         );
         given()
                 .contentType("application/json")
