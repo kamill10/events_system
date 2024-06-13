@@ -39,6 +39,8 @@ public abstract class AbstractControllerIT {
 
     public static String managerToken;
 
+    public static String secondParticipantToken;
+
     public static ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -130,6 +132,21 @@ public abstract class AbstractControllerIT {
 
         String jwtToken = response.extract().body().asString();
         managerToken = jwtToken.substring(1, jwtToken.length() - 1);
+    }
+
+    public static void authenticationToSecondParticipant() throws JsonProcessingException {
+        LoginDTO loginDTO = new LoginDTO("marcinKaczkan21", "P@ssw0rd");
+        var response = given()
+                .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
+                .body(objectMapper.writeValueAsString(loginDTO))
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        String jwtToken = response.extract().body().asString();
+        secondParticipantToken = jwtToken.substring(1, jwtToken.length() - 1);
     }
 
     @BeforeEach

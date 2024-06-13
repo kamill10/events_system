@@ -99,7 +99,7 @@ public class ExceptionHandlingController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    /*@ExceptionHandler(MappingException.class)
+    @ExceptionHandler(MappingException.class)
     public ResponseEntity<String> handleMappingException(MappingException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.MAPPING_ERROR);
     }
@@ -122,5 +122,5 @@ public class ExceptionHandlingController {
     @ExceptionHandler(HibernateException.class)
     public ResponseEntity<String> handleHibernateException(HibernateException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.HIBERNATE_EXCEPTION);
-    }*/
+    }
 }
