@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
@@ -78,8 +79,18 @@ public class SessionService {
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void cancelSession(UUID id, String etag)
-            throws SessionNotFoundException, OptLockException {
-        throw new UnsupportedOperationException("Not supported yet.");
+            throws SessionNotFoundException, OptLockException, SessionAlreadyCanceledException {
+        Session session = sessionRepository.findById(id).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
+        if (!ETagBuilder.isETagValid(etag, String.valueOf(session.getVersion()))) {
+            throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
+        }
+
+        if (!session.getIsActive()) {
+            throw new SessionAlreadyCanceledException(ExceptionMessages.SESSION_ALREADY_CANCELLED);
+        }
+
+        session.setIsActive(false);
+        sessionRepository.saveAndFlush(session);
     }
 
     @Transactional(

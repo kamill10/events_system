@@ -31,7 +31,7 @@ public class SessionController {
 
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<GetSessionForListDTO>> getAllSessions() throws SessionNotFoundException {
+    public ResponseEntity<List<GetSessionForListDTO>> getAllSessions() {
         List<GetSessionForListDTO> sessions = SessionDTOConverter.getSessionsForListDTO(sessionService.getSessions());
         return ResponseEntity.status(HttpStatus.OK).body(sessions);
     }
@@ -42,7 +42,7 @@ public class SessionController {
             throws SessionNotFoundException {
         Session session = sessionService.getSession(id);
         String etag = ETagBuilder.buildETag(session.getVersion().toString());
-        GetSessionDetailedDTO sessionDetailedDTO = SessionDTOConverter.toGetDetailedSessionSession(session);
+        GetSessionDetailedDTO sessionDetailedDTO = SessionDTOConverter.toGetDetailedSession(session);
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(sessionDetailedDTO);
     }
 
@@ -66,7 +66,7 @@ public class SessionController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> cancelSession(@PathVariable UUID id, @RequestHeader(HttpHeaders.IF_MATCH) String etag)
-            throws SessionNotFoundException, OptLockException {
+            throws SessionNotFoundException, OptLockException, SessionAlreadyCanceledException {
         sessionService.cancelSession(id, etag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
