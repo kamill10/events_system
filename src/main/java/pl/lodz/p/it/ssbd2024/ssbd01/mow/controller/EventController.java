@@ -55,8 +55,8 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(eventDTO);
     }
 
-    //tod Nie powinnobyć czasem najpierw id?
-    @GetMapping("/{id}/sessions/")
+
+    @GetMapping("/sessions/{id}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<List<GetSessionForListDTO>> getEventSessions(@PathVariable UUID id) {
         var sessionEvents = eventService.getEventSessions(id);
