@@ -1,6 +1,7 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.controller;
 
 import com.deepl.api.DeepLException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -68,14 +69,14 @@ public class EventController {
     public ResponseEntity<GetEventDTO> updateEvent(
             @PathVariable UUID id,
             @RequestHeader(HttpHeaders.IF_MATCH) String etag,
-            @RequestBody UpdateEventDTO updateEventDTO) throws
+            @RequestBody @Valid UpdateEventDTO updateEventDTO) throws
             OptLockException,
             SessionsExistOutsideRangeException,
             EventNotFoundException,
             EventStartDateAfterEndDateException,
             DeepLException,
             InterruptedException,
-            EventStartDateInPast {
+            EventStartDateInPastException {
         Event event = EventDTOConverter.getEvent(updateEventDTO);
         Event updatedEvent = eventService.updateEvent(id, etag, event);
         return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventPlDTO(updatedEvent));
@@ -83,15 +84,15 @@ public class EventController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<String> createEvent(@RequestBody CreateEventDTO createEventDTO)
+    public ResponseEntity<String> createEvent(@RequestBody @Valid CreateEventDTO createEventDTO)
             throws
             EventStartDateAfterEndDateException,
             DeepLException,
             InterruptedException,
-            EventStartDateInPast {
+            EventStartDateInPastException {
         Event event = EventDTOConverter.getEvent(createEventDTO);
         String eventId = eventService.createEvent(event);
-        return ResponseEntity.status(HttpStatus.OK).body(eventId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventId);
     }
 
     @DeleteMapping("/{id}")
