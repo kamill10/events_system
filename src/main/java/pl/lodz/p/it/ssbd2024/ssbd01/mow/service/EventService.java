@@ -63,7 +63,7 @@ public class EventService {
             EventStartDateAfterEndDateException,
             DeepLException,
             InterruptedException,
-            EventStartDateInPast {
+            EventStartDateInPastException {
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
 
         if (!ETagBuilder.isETagValid(etag, String.valueOf(databaseEvent.getVersion()))) {
@@ -73,7 +73,7 @@ public class EventService {
         LocalDateTime newEventStartTime = event.getStartDate().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime newEventEndTime = event.getEndDate().withHour(23).withMinute(59).withSecond(59);
         if (newEventStartTime.getDayOfMonth() - LocalDate.now().getDayOfMonth() < 0) {
-            throw new EventStartDateInPast(ExceptionMessages.EVENT_START_IN_PAST);
+            throw new EventStartDateInPastException(ExceptionMessages.EVENT_START_IN_PAST);
         }
         List<Session> sessionsOutsideRange = sessionRepository.findSessionsOutsideRange(id, newEventStartTime, newEventEndTime);
 
@@ -86,8 +86,8 @@ public class EventService {
         }
 
         databaseEvent.setName(event.getName());
-        databaseEvent.setStartDate(event.getStartDate());
-        databaseEvent.setEndDate(event.getEndDate());
+        databaseEvent.setStartDate(newEventStartTime);
+        databaseEvent.setEndDate(newEventEndTime);
         databaseEvent.setDescriptionPL(event.getDescriptionPL());
 
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -102,14 +102,14 @@ public class EventService {
             EventStartDateAfterEndDateException,
             DeepLException,
             InterruptedException,
-            EventStartDateInPast {
+            EventStartDateInPastException {
         if (event.getStartDate().isAfter(event.getEndDate())) {
             throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
         }
         LocalDateTime newEventStartTime = event.getStartDate().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime newEventEndTime = event.getEndDate().withHour(23).withMinute(59).withSecond(59);
         if (newEventStartTime.getDayOfMonth() - LocalDate.now().getDayOfMonth() < 0) {
-            throw new EventStartDateInPast(ExceptionMessages.EVENT_START_IN_PAST);
+            throw new EventStartDateInPastException(ExceptionMessages.EVENT_START_IN_PAST);
         }
         event.setStartDate(newEventStartTime);
         event.setEndDate(newEventEndTime);

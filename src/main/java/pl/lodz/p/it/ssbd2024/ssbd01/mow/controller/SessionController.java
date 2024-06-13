@@ -71,9 +71,10 @@ public class SessionController {
             SessionsExistOutsideRangeException,
             SessionStartDateInPast,
             SessionNotFoundException,
-            SessionStartDateAfterEndDateException {
+            SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, RoomIsBusyException, RoomSeatsExceededException,
+            SpeakerIsBusyException {
         Session session = SessionDTOConverter.getSession(updateSessionDTO);
-        sessionService.updateSession(id, etag, session);
+        sessionService.updateSession(id, etag, session, updateSessionDTO.speakerId(), updateSessionDTO.roomId());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
