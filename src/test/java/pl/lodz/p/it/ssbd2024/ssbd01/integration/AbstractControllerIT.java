@@ -7,6 +7,8 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.cloud.openfeign.support.PageJacksonModule;
+import org.springframework.cloud.openfeign.support.SortJacksonModule;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.BindMode;
@@ -41,7 +43,10 @@ public abstract class AbstractControllerIT {
 
     public static ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModules(
+                new JavaTimeModule(),
+                new PageJacksonModule(),
+                new SortJacksonModule());
         return objectMapper;
     }
 
