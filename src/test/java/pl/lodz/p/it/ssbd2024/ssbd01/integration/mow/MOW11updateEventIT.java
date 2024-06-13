@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.integration.AbstractControllerIT;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
@@ -14,6 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
@@ -22,7 +24,6 @@ public class MOW11updateEventIT extends AbstractControllerIT {
 
     private String eventId;
     private String etag;
-    private String eventName;
     private final Random random = new Random();
 
     private void setupEventAndEtag() {
@@ -58,7 +59,6 @@ public class MOW11updateEventIT extends AbstractControllerIT {
                 .extract()
                 .header(HttpHeaders.ETAG);
         etag = getEventResponse.substring(1, getEventResponse.length() - 1);
-        eventName = eventDTO.name();
     }
 
     @BeforeEach
@@ -333,11 +333,32 @@ public class MOW11updateEventIT extends AbstractControllerIT {
 
     @Test
     public void updateEventThrowsSessionsExistOutsideRangeException() {
+        CreateSessionDTO sessionDTO = new CreateSessionDTO(
+                UUID.fromString(eventId),
+                UUID.fromString("78f0f497-10b7-4478-9a28-c9dc86118e67"),
+                UUID.fromString("f3c50886-bb5a-451c-99a3-6a79a6329cb5"),
+                RandomStringUtils.random(3, true, false),
+                RandomStringUtils.random(3, true, false),
+                LocalDateTime.now().minusHours(1),
+                LocalDateTime.now().plusHours(2),
+                random.nextInt(10, 30)
+        );
+
+        given()
+                .contentType("application/json")
+                .header("Accept-Language", "pl-PL")
+                .header("Authorization", "Bearer " + managerToken)
+                .body(sessionDTO)
+                .when()
+                .post(baseUrl + "/sessions")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
         UpdateEventDTO eventDTO = new UpdateEventDTO(
                 RandomStringUtils.random(3, true, false),
                 RandomStringUtils.random(3, true, false),
-                LocalDateTime.now(),
-                LocalDateTime.now().plusDays(1)
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2)
         );
 
         given()
@@ -351,7 +372,31 @@ public class MOW11updateEventIT extends AbstractControllerIT {
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body(
-                        containsString(ExceptionMessages.EVENT_START_AFTER_END)
+                        containsString(ExceptionMessages.SESSIONS_OUTSIDE_RANGE)
+                );
+    }
+
+    @Test
+    public void updateEventThrowsEventNotFoundException() {
+        UpdateEventDTO eventDTO = new UpdateEventDTO(
+                RandomStringUtils.random(3, true, false),
+                RandomStringUtils.random(3, true, false),
+                LocalDateTime.now().plusDays(1),
+                LocalDateTime.now().plusDays(2)
+        );
+
+        given()
+                .contentType("application/json")
+                .header("Accept-Language", "pl-PL")
+                .header("Authorization", "Bearer " + managerToken)
+                .header(HttpHeaders.IF_MATCH, etag)
+                .body(eventDTO)
+                .when()
+                .put(baseUrl + "/events/" + UUID.randomUUID())
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body(
+                        containsString(ExceptionMessages.EVENT_NOT_FOUND)
                 );
     }
 }
