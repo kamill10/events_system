@@ -56,24 +56,6 @@ public class EventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void updateSession(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void createSession() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void cancelSession(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public Event updateEvent(UUID id, String etag, Event event) throws
             EventNotFoundException,
             OptLockException,
@@ -156,7 +138,6 @@ public class EventService {
         if (!event.getIsNotCanceled()) {
             throw new EventAlreadyCancelledException(ExceptionMessages.EVENT_ALREADY_CANCELLED);
         }
-
         event.setIsNotCanceled(false);
 
         List<Account> accounts = event.getSessions()
@@ -191,12 +172,5 @@ public class EventService {
                 .filter(Ticket::getIsNotCancelled)
                 .map(Ticket::getAccount)
                 .toList();
-    }
-
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("permitAll()")
-    public Session getSession(UUID id) {
-        return sessionRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ExceptionMessages.SESSION_NOT_FOUND));
     }
 }
