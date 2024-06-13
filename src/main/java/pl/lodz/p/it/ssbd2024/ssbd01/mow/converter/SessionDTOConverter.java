@@ -21,7 +21,7 @@ public class SessionDTOConverter {
         );
     }
 
-    public static GetSessionDetailedDTO toGetDetailedSessionSession(Session session) {
+    public static GetSessionDetailedDTO toGetDetailedSession(Session session) {
         return new GetSessionDetailedDTO(
                 session.getId(),
                 session.getName(),
