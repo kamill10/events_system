@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.*;
@@ -34,13 +32,14 @@ public class SessionService {
             rollbackFor = {Exception.class},
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void updateSession(UUID id, String etag, Session session)
+    public void updateSession(UUID id, String etag, Session session, UUID speakerId, UUID roomId)
             throws
             SessionNotFoundException,
             OptLockException,
             SessionStartDateInPast,
             SessionStartDateAfterEndDateException,
-            SessionsExistOutsideRangeException {
+            SessionsExistOutsideRangeException, RoomNotFoundException, SpeakerNotFoundException, SpeakerIsBusyException, RoomSeatsExceededException,
+            RoomIsBusyException {
         Session pSession = sessionRepository.findById(id).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         if (!ETagBuilder.isETagValid(etag, String.valueOf(pSession.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
@@ -53,17 +52,52 @@ public class SessionService {
             throw new SessionStartDateInPast(ExceptionMessages.SESSION_START_IN_PAST);
         }
 
-        if (session.getStartTime().isAfter(session.getEndTime())) {
-            throw new SessionStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
-        }
-
         Event pEvent = pSession.getEvent();
         if (session.getStartTime().isBefore(pEvent.getStartDate()) || session.getEndTime().isAfter(pEvent.getEndDate())) {
             throw new SessionsExistOutsideRangeException(ExceptionMessages.SESSIONS_OUTSIDE_RANGE);
         }
 
-        pSession.setSpeaker(session.getSpeaker());
-        pSession.setRoom(session.getRoom());
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
+
+        Speaker speaker = speakerRepository.findById(speakerId)
+                .orElseThrow(() -> new SpeakerNotFoundException(ExceptionMessages.SPEAKER_NOT_FOUND));
+
+        List<Session> speakerOverlappingSessions = sessionRepository.findSpeakerSessionsInRange(
+                speakerId,
+                session.getStartTime(),
+                session.getEndTime());
+
+        if (!speakerOverlappingSessions.isEmpty()) {
+            if (speakerOverlappingSessions.size() > 1) {
+                throw new SpeakerIsBusyException(ExceptionMessages.SPEAKER_IS_BUSY);
+            }
+            if (!speakerOverlappingSessions.getFirst().getId().equals(id)) {
+                throw new SpeakerIsBusyException(ExceptionMessages.SPEAKER_IS_BUSY);
+            }
+        }
+
+        if (session.getMaxSeats() > room.getMaxCapacity()) {
+            throw new RoomSeatsExceededException(ExceptionMessages.ROOM_SEATS_EXCEEDED);
+        }
+
+        List<Session> overlappingSessions = sessionRepository.findSessionsInsideRangeAtRoom(
+                roomId,
+                session.getStartTime(),
+                session.getEndTime());
+
+        if (!overlappingSessions.isEmpty()) {
+            if (overlappingSessions.size() > 1) {
+                throw new RoomIsBusyException(ExceptionMessages.ROOM_BUSY);
+            }
+            if (!overlappingSessions.getFirst().getId().equals(id)) {
+                throw new RoomIsBusyException(ExceptionMessages.ROOM_BUSY);
+            }
+        }
+
+
+        pSession.setSpeaker(speaker);
+        pSession.setRoom(room);
         pSession.setName(session.getName());
         pSession.setDescription(session.getDescription());
         pSession.setStartTime(session.getStartTime());
@@ -71,7 +105,7 @@ public class SessionService {
         pSession.setMaxSeats(session.getMaxSeats());
 
 
-        sessionRepository.saveAndFlush(session);
+        sessionRepository.saveAndFlush(pSession);
     }
 
 
