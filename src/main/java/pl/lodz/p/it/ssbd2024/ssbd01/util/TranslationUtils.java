@@ -14,7 +14,7 @@ public class TranslationUtils {
 
     public static void translateEvent(Event event, String language, String apiKey) throws DeepLException, InterruptedException {
 
-        if (apiKey == null || apiKey.isEmpty()) {
+        if (apiKey == null) {
             return;
         }
 
