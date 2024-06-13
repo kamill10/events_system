@@ -19,6 +19,8 @@ public interface RoomRepository extends JpaRepository<Room, UUID> {
     @PreAuthorize("permitAll()")
     Page<Room> findAllByLocationIdAndIsActiveTrue(UUID locationId, Pageable pageUtils);
 
+    List<Room> findAllByLocationIdAndIsActiveTrue(UUID locationId);
+
     List<Room> findAllByLocationIdAndIsActiveFalse(UUID locationId);
 
     @PreAuthorize("permitAll()")

@@ -36,6 +36,12 @@ public class RoomService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public List<Room> getAllLocationRooms(UUID locationId) {
+        return roomRepository.findAllByLocationIdAndIsActiveTrue(locationId);
+    }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public List<Room> getAllDeletedRooms(UUID locationId) {
         return roomRepository.findAllByLocationIdAndIsActiveFalse(locationId);
     }

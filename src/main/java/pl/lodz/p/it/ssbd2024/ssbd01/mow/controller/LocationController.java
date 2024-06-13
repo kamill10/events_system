@@ -21,6 +21,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.LocationService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,6 +42,16 @@ public class LocationController {
         PageUtils pageUtils = new PageUtils(page, size, direction, key);
         Page<GetLocationDTO> getLocationDTOPage = LocationDTOConverter.locationDTOPage(locationService.getAllLocations(pageUtils));
         return ResponseEntity.status(HttpStatus.OK).body(getLocationDTOPage);
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<List<GetLocationDTO>> getAllLocations() {
+        var allLocations = locationService.getAllLocations()
+                .stream()
+                .map(LocationDTOConverter::toGetLocationDTO)
+                .toList();
+        return ResponseEntity.status(HttpStatus.OK).body(allLocations);
     }
 
     @GetMapping("/deleted")
