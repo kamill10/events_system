@@ -52,10 +52,11 @@ public class MeEventService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String etag = ETagBuilder.buildETag(
-                session.getName(), session.getStartTime().toString(), session.getEndTime().toString()
-        );
-        if (!ETagBuilder.isETagValid(eTagReceived, etag)) {
+        StringBuilder etagBuilder = new StringBuilder();
+        etagBuilder.append(session.getName())
+                .append(session.getStartTime().toString())
+                .append(session.getEndTime().toString());
+        if (!ETagBuilder.isETagValid(eTagReceived, etagBuilder.toString())) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
         if (session.getAvailableSeats() <= 0) {

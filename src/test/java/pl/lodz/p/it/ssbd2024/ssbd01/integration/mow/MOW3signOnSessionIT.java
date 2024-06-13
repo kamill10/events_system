@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class MOW3signOnSessionIT extends AbstractControllerIT {
 
@@ -41,6 +42,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
 
     @Test
     public void signOnSessionPositiveTest() throws JsonProcessingException {
+        assertNotEquals(etag, "");
                  given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + participantToken)
@@ -153,11 +155,19 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
 
     @Test
     public void signOnWhenMaxSeatsReached() throws JsonProcessingException {
+        var response = given()
+                .contentType("application/json")
+                .when()
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d4")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String  etag2 = response.extract().header("ETag");
+        etag2 = etag2.substring(1, etag2.length() - 1);
         given()
                 .contentType("application/json")
                 .header("Accept-Language", "en-US")
                 .header("Authorization", "Bearer " + participantToken)
-                .header("If-Match", etag)
+                .header("If-Match", etag2)
                 .when()
                 .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d4")
                 .then()
@@ -166,7 +176,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .contentType("application/json")
                 .header("Accept-Language", "en-US")
                 .header("Authorization", "Bearer " + secondParticipantToken)
-                .header("If-Match", etag)
+                .header("If-Match", etag2)
                 .when()
                 .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d4")
                 .then()

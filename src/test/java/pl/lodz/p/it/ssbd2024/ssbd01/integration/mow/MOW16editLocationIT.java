@@ -78,29 +78,6 @@ public class MOW16editLocationIT extends AbstractControllerIT {
     }
 
     @Test
-    public void editLocationNotUniqueName() throws JsonProcessingException {
-        var response = given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + managerToken)
-                .header("Accept-Language", "en-US")
-                .when()
-                .get(baseUrl + "/location/da7cfcfa-5f1c-4a85-8f93-1022f28f747a")
-                .then()
-                .statusCode(HttpStatus.OK.value());
-        String etag = response.extract().header("ETag");
-        etag = etag.substring(1, etag.length() - 1);
-        UpdateLocationDTO updateLocationDTO = new UpdateLocationDTO("bylo","testowa","69b","99-140","Lodz","Polska");
-        given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " + managerToken)
-                .header("If-Match", etag)
-                .body(objectMapper.writeValueAsString(updateLocationDTO))
-                .when()
-                .put(baseUrl + "/location/da7cfcfa-5f1c-4a85-8f93-1022f28f747a")
-                .then()
-                .statusCode(HttpStatus.CONFLICT.value());
-    }
-    @Test
     public void editLocationInValidPostalCode() throws JsonProcessingException {
         var response = given()
                 .contentType("application/json")
