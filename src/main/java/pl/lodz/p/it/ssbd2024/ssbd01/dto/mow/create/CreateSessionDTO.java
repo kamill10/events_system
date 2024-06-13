@@ -2,9 +2,6 @@ package pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
-import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Speaker;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
@@ -30,6 +27,6 @@ public record CreateSessionDTO(
         @NotNull(message = ExceptionMessages.INCORRECT_MAX_CAPACITY)
         @Min(value = 1, message = ExceptionMessages.INCORRECT_MAX_CAPACITY)
         @Max(value = 1000, message = ExceptionMessages.INCORRECT_MAX_CAPACITY)
-        Integer maxSeats,
-        @NotNull Boolean isActive) {
+        Integer maxSeats
+) {
 }
