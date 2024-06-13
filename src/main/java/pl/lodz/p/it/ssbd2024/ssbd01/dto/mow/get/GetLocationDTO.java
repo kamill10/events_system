@@ -9,6 +9,7 @@ public record GetLocationDTO(
         String country,
         String street,
         String buildingNumber,
-        String postalCode
+        String postalCode,
+        Boolean isActive
 ) {
 }
