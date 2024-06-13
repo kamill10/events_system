@@ -21,7 +21,7 @@ public class MailTemplateService {
     private MessageSource messageSource;
     private final MailSenderService mailSenderService;
 
-    @Async
+
     public void sendEmailTemplate(Account mailTo, String mailSubject, String mailContent, Object[] contentArgs) {
         Locale locale = Locale.forLanguageTag(mailTo.getLanguage().getLanguageCode());
         String subject = messageSource.getMessage(mailSubject, null, locale);
@@ -33,7 +33,6 @@ public class MailTemplateService {
         mailSenderService.sendEmail(mail);
     }
 
-    @Async
     public void sendEmailOnNewMail(Account mailTo, String mailSubject, String mailContent, Object[] contentArgs, String newEmail) {
         Locale locale = Locale.forLanguageTag(mailTo.getLanguage().getLanguageCode());
         String subject = messageSource.getMessage(mailSubject, null, locale);

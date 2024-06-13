@@ -6,6 +6,7 @@ import { Pathnames } from "../router/Pathnames";
 import { useState, SyntheticEvent } from "react";
 import TicketHistoryComponent from "../components/TicketHistoryComponent";
 import { MyTicketsComponent } from "../components/MyTicketsComponent.tsx";
+import {EventHistoryComponent} from "../components/EventHistoryComponent.tsx";
 
 export default function MyTicketsPage() {
   const [page, setPage] = useState(0);
@@ -46,11 +47,13 @@ export default function MyTicketsPage() {
       </Breadcrumbs>
       <Tabs value={page} onChange={handleChange}>
         <Tab label={t("upcomingSessions")}></Tab>
-        <Tab label={t("history")}></Tab>
+        <Tab label={t("historicalSessions")}></Tab>
+          <Tab label={t("historicalEvents")}></Tab>
       </Tabs>
       <Divider></Divider>
       {page === 0 && <MyTicketsComponent></MyTicketsComponent>}
       {page === 1 && <TicketHistoryComponent></TicketHistoryComponent>}
+        {page === 2 && <EventHistoryComponent></EventHistoryComponent>}
     </ContainerComponent>
   );
 }
