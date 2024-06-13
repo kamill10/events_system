@@ -25,14 +25,17 @@ public interface SessionRepository extends JpaRepository<Session, UUID> {
     Optional<Session> findById(UUID id);
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @Query("SELECT s FROM Session s WHERE s.event.id = :id AND (s.startTime < :startTime OR s.endTime > :endTime)")
+    @Query("SELECT s FROM Session s WHERE s.event.id = :id AND NOT (s.startTime < :startTime AND s.endTime > :endTime)")
     List<Session> findSessionsOutsideRange(UUID id, LocalDateTime startTime, LocalDateTime endTime);
 
+    // https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @Query("SELECT s FROM Session s WHERE s.room.id = :roomId AND (s.startTime > :startTime AND s.endTime < :endTime)")
+    @Query("SELECT s FROM Session s WHERE s.room.id = :roomId AND (s.startTime <= :endTime AND s.endTime >= :startTime)")
     List<Session> findSessionsInsideRangeAtRoom(UUID roomId, LocalDateTime startTime, LocalDateTime endTime);
 
+
+    // https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    @Query("SELECT s FROM Session s WHERE s.speaker.id = :speakerId AND (s.startTime > :startTime AND s.endTime < :endTime)")
+    @Query("SELECT s FROM Session s WHERE s.speaker.id = :speakerId AND (s.startTime <= :endTime AND s.endTime >= :startTime)")
     List<Session> findSpeakerSessionsInRange(UUID speakerId, LocalDateTime startTime, LocalDateTime endTime);
 }
