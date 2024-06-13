@@ -81,6 +81,17 @@ public class Session extends ControlledEntity {
         this.availableSeats = maxSeats;
     }
 
+    public Session(String name, String description, LocalDateTime startTime,
+                   LocalDateTime endTime, Integer maxSeats) {
+        this.name = name;
+        this.isActive = true;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.maxSeats = maxSeats;
+        this.availableSeats = maxSeats;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

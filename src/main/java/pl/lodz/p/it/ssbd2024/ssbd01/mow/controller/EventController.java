@@ -63,35 +63,6 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.OK).body(sessionEventsDTO);
     }
 
-    @GetMapping("/session/{id}")
-    @PreAuthorize("permitAll()")
-    public ResponseEntity<GetSessionDetailedDTO> getSession(@PathVariable UUID id) {
-        var session = eventService.getSession(id);
-        var sessionDTO = SessionDTOConverter.toSessionPlDetailedDTO(session);
-        return ResponseEntity.status(HttpStatus.OK).body(sessionDTO);
-    }
-
-    @PutMapping("/session/{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> updateSession(@PathVariable UUID id) {
-        eventService.updateSession(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PostMapping("/session")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createSession() {
-        eventService.createSession();
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @DeleteMapping("/session/{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> cancelSession(@PathVariable UUID id) {
-        eventService.cancelSession(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetEventDTO> updateEvent(

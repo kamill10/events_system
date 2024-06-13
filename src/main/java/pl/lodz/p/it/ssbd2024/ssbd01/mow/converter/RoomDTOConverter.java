@@ -16,7 +16,8 @@ public class RoomDTOConverter {
         return new GetRoomDTO(
                 room.getId(),
                 room.getName(),
-                room.getMaxCapacity()
+                room.getMaxCapacity(),
+                room.getIsActive()
         );
     }
 
