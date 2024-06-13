@@ -17,36 +17,28 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class MOW3signOnSessionIT extends AbstractControllerIT {
 
-     String etag;
-
-
     @BeforeEach
     public void authenticate() throws JsonProcessingException {
         authenticationToParticipantTest();
         authenticationToManagerTest();
         authenticationToSecondParticipant();
-        getEtag();
     }
 
+
     @Test
-    public void getEtag() {
+    public void signOnSessionPositiveTest() throws JsonProcessingException {
         var response = given()
                 .contentType("application/json")
                 .when()
                 .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
                 .then()
                 .statusCode(HttpStatus.OK.value());
-        etag = response.extract().header("ETag");
+        String etag = response.extract().header("ETag");
         etag = etag.substring(1, etag.length() - 1);
-    }
-
-    @Test
-    public void signOnSessionPositiveTest() throws JsonProcessingException {
         assertNotEquals(etag, "");
                  given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + participantToken)
-                .header("Accept-Language", "en-US")
                 .header("If-Match", etag)
                 .when()
                 .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
@@ -67,9 +59,16 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
     }
     @Test
     public void signOnSessionWithoutToken() throws JsonProcessingException {
+        var response = given()
+                .contentType("application/json")
+                .when()
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String etag = response.extract().header("ETag");
+        etag = etag.substring(1, etag.length() - 1);
                 given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
                 .header("If-Match", etag)
                 .when()
                 .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
@@ -82,7 +81,14 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
     public void signOnSessionWrongRole() throws JsonProcessingException {
         var response = given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
+                .when()
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String etag = response.extract().header("ETag");
+        etag = etag.substring(1, etag.length() - 1);
+       given()
+                .contentType("application/json")
                 .header("Authorization", "Bearer " + managerToken)
                 .header("If-Match", etag)
                 .when()
@@ -94,10 +100,17 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
 
     @Test
     public void signOnSessionWrongEtag() throws JsonProcessingException {
-
         var response = given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
+                .when()
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String etag = response.extract().header("ETag");
+        etag = etag.substring(1, etag.length() - 1);
+
+             given()
+                .contentType("application/json")
                 .header("Authorization", "Bearer " + participantToken)
                 .header("If-Match", etag)
                 .when()
@@ -106,7 +119,6 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .statusCode(HttpStatus.OK.value());
         given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
                 .header("Authorization", "Bearer " + secondParticipantToken)
                 .header("If-Match", etag)
                 .when()
@@ -120,7 +132,14 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
     public void signOnNotExistSession() throws JsonProcessingException {
         var response = given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
+                .when()
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String etag = response.extract().header("ETag");
+        etag = etag.substring(1, etag.length() - 1);
+        given()
+                .contentType("application/json")
                 .header("Authorization", "Bearer " + participantToken)
                 .header("If-Match", etag)
                 .when()
@@ -132,9 +151,16 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
 
     @Test
     public void signOnSecondTime() throws JsonProcessingException {
+        var response = given()
+                .contentType("application/json")
+                .when()
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String etag = response.extract().header("ETag");
+        etag = etag.substring(1, etag.length() - 1);
             given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
                 .header("Authorization", "Bearer " + participantToken)
                 .header("If-Match", etag)
                 .when()
@@ -143,7 +169,6 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .statusCode(HttpStatus.OK.value());
         given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
                 .header("Authorization", "Bearer " + participantToken)
                 .header("If-Match", etag)
                 .when()
@@ -165,7 +190,6 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
         etag2 = etag2.substring(1, etag2.length() - 1);
         given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
                 .header("Authorization", "Bearer " + participantToken)
                 .header("If-Match", etag2)
                 .when()
@@ -174,7 +198,6 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .statusCode(HttpStatus.OK.value());
         given()
                 .contentType("application/json")
-                .header("Accept-Language", "en-US")
                 .header("Authorization", "Bearer " + secondParticipantToken)
                 .header("If-Match", etag2)
                 .when()
