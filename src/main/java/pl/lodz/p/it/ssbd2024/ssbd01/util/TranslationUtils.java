@@ -19,7 +19,7 @@ public class TranslationUtils {
         }
 
         Translator translator = new Translator(apiKey);
-        if (Objects.equals(language, "pl-PL")) {
+        if (Objects.equals(language, "pl")) {
             event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
         } else {
             event.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
