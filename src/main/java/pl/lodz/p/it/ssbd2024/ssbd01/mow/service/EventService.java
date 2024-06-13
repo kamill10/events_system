@@ -1,8 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 
 import com.deepl.api.DeepLException;
-import com.deepl.api.TextResult;
-import com.deepl.api.Translator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -23,10 +21,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.Mail;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
-import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
@@ -85,7 +81,7 @@ public class EventService {
             EventStartDateAfterEndDateException,
             DeepLException,
             InterruptedException,
-            EventStartDateInPast {
+            EventStartDateInPastException {
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
 
         if (!ETagBuilder.isETagValid(etag, String.valueOf(databaseEvent.getVersion()))) {
@@ -95,7 +91,7 @@ public class EventService {
         LocalDateTime newEventStartTime = event.getStartDate().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime newEventEndTime = event.getEndDate().withHour(23).withMinute(59).withSecond(59);
         if (newEventStartTime.getDayOfMonth() - LocalDate.now().getDayOfMonth() < 0) {
-            throw new EventStartDateInPast(ExceptionMessages.EVENT_START_IN_PAST);
+            throw new EventStartDateInPastException(ExceptionMessages.EVENT_START_IN_PAST);
         }
         List<Session> sessionsOutsideRange = sessionRepository.findSessionsOutsideRange(id, newEventStartTime, newEventEndTime);
 
@@ -108,8 +104,8 @@ public class EventService {
         }
 
         databaseEvent.setName(event.getName());
-        databaseEvent.setStartDate(event.getStartDate());
-        databaseEvent.setEndDate(event.getEndDate());
+        databaseEvent.setStartDate(newEventStartTime);
+        databaseEvent.setEndDate(newEventEndTime);
         databaseEvent.setDescriptionPL(event.getDescriptionPL());
 
         Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -124,14 +120,14 @@ public class EventService {
             EventStartDateAfterEndDateException,
             DeepLException,
             InterruptedException,
-            EventStartDateInPast {
+            EventStartDateInPastException {
         if (event.getStartDate().isAfter(event.getEndDate())) {
             throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
         }
         LocalDateTime newEventStartTime = event.getStartDate().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime newEventEndTime = event.getEndDate().withHour(23).withMinute(59).withSecond(59);
         if (newEventStartTime.getDayOfMonth() - LocalDate.now().getDayOfMonth() < 0) {
-            throw new EventStartDateInPast(ExceptionMessages.EVENT_START_IN_PAST);
+            throw new EventStartDateInPastException(ExceptionMessages.EVENT_START_IN_PAST);
         }
         event.setStartDate(newEventStartTime);
         event.setEndDate(newEventEndTime);
