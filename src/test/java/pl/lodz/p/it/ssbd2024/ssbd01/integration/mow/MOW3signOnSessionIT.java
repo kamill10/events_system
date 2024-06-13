@@ -31,8 +31,6 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
     public void getEtag() {
         var response = given()
                 .contentType("application/json")
-                .header("Authorization", "Bearer " + managerToken)
-                .header("Accept-Language", "en-US")
                 .when()
                 .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
                 .then()
