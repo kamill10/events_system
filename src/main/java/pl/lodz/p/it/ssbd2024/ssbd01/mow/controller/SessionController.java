@@ -50,7 +50,14 @@ public class SessionController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> updateSession(@PathVariable UUID id, @RequestHeader(HttpHeaders.IF_MATCH) String etag, @RequestBody @Valid UpdateSessionDTO updateSessionDTO) throws SessionMaxSeatLowerThanSoldTickets, OptLockException, SessionsExistOutsideRangeException, SessionStartDateInPast, SessionNotFoundException, SessionStartDateAfterEndDateException {
+    public ResponseEntity<?> updateSession(@PathVariable UUID id,
+                                           @RequestHeader(HttpHeaders.IF_MATCH) String etag,
+                                           @RequestBody @Valid UpdateSessionDTO updateSessionDTO) throws
+            OptLockException,
+            SessionsExistOutsideRangeException,
+            SessionStartDateInPast,
+            SessionNotFoundException,
+            SessionStartDateAfterEndDateException {
         Session session = SessionDTOConverter.getSession(updateSessionDTO);
         sessionService.updateSession(id, etag, session);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -78,8 +85,8 @@ public class SessionController {
     @GetMapping("/{id}/participants")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<GetParticipantDTO>> getParticipants(@PathVariable UUID id) {
-        List<GetParticipantDTO> particpantDTOs =
+        List<GetParticipantDTO> participantDTOS =
                 sessionService.getSessionParticipants(id).stream().map(ParticipantDTOConverter::getParticipantDTO).toList();
-        return ResponseEntity.status(HttpStatus.OK).body(particpantDTOs);
+        return ResponseEntity.status(HttpStatus.OK).body(participantDTOS);
     }
 }
