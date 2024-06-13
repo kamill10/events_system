@@ -25,3 +25,14 @@ export interface GetRoomResponse {
   name: string;
   maxCapacity: number;
 }
+
+export interface CreateRoom {
+  name: string;
+  locationId: string;
+  maxCapacity: number;
+}
+
+export interface CreateRoomInput {
+  name: string;
+  maxCapacity: number;
+}

@@ -60,9 +60,60 @@ export const useSessions = () => {
         }
     };
 
+    const getSession = async (id: string) => {
+        try {
+            setIsFetching(true);
+            const {data} = await api.getSession(id);
+            return data;
+        } catch (e) {
+            console.error(e);
+            if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+                sendNotification({
+                    type: "error",
+                    description: t(e.response?.data),
+                });
+            } else {
+                sendNotification({
+                    type: "error",
+                    description: t("getSessionError"),
+                });
+            }
+            return e;
+        } finally {
+            setIsFetching(false);
+        }
+    }
+
+    const getSessionParticipants = async (id: string) => {
+        try {
+            setIsFetching(true);
+            const {data} = await api.getSessionParticipants(id);
+            return data;
+        } catch (e) {
+            console.error(e);
+            if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+                sendNotification({
+                    type: "error",
+                    description: t(e.response?.data),
+                });
+            } else {
+                sendNotification({
+                    type: "error",
+                    description: t("getSessionParticipantsError"),
+                });
+            }
+            return e;
+        } finally {
+            setIsFetching(false);
+        }
+
+    }
+
 return {
     getDetailedSessions,
-    signOnSession
+    signOnSession,
+    getSession,
+    getSessionParticipants,
 };
 }
 ;

@@ -19,6 +19,8 @@ public record GetSessionForListDTO(
 
         Integer maxSeats,
 
+        Integer availableSeats,
+
         Boolean isActive,
 
         GetSpeakerDTO speaker,

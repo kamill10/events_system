@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.GetParticipantDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -51,7 +52,6 @@ public class EventController {
         GetEventDTO eventDTO = TranslationUtils.resolveEventLanguage(event, language);
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, etag).body(eventDTO);
     }
-
 
     @GetMapping("/sessions/{id}")
     @PreAuthorize("permitAll()")

@@ -5,6 +5,7 @@ import { RoomType, UpdateRoomType } from "../types/Room.ts";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { UpdateRoomSchema } from "../validation/schemas.ts";
+import DeleteIcon from '@mui/icons-material/Delete';
 import FormComponent from "./FormComponent.tsx";
 import { Button, Divider, Typography } from "@mui/material";
 import TextFieldComponent from "./TextFieldComponent.tsx";
@@ -22,7 +23,7 @@ export default function ChangeRoomDetailsComponent({
   getRooms: () => void;
 }) {
   const { t } = useTranslation();
-  const { updateRoomById } = useLocations();
+  const { updateRoomById, deleteRoomById } = useLocations();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const {
     handleSubmit,
@@ -55,8 +56,15 @@ export default function ChangeRoomDetailsComponent({
   useEffect(() => {
     setValue("name", room?.name ?? "");
     setValue("maxCapacity", room?.maxCapacity ?? 1);
-    console.log(room?.name, room?.maxCapacity);
   }, [room, setValue, trigger]);
+
+  const handleDelete = async () => {
+    await deleteRoomById(room?.id ?? "");
+    getRooms();
+    setConfirmOpen(false);
+    setOpen(false);
+  }
+  
   return (
     <>
       <FormComponent
@@ -96,6 +104,14 @@ export default function ChangeRoomDetailsComponent({
           }}
         >
           {t("saveChanges")}
+        </Button>
+        <Button
+        color="error"
+        variant="contained"
+        startIcon={<DeleteIcon/>}
+        onClick={handleDelete}
+        >
+          {t("delete")}
         </Button>
       </FormComponent>
       <ConfirmChangeModal

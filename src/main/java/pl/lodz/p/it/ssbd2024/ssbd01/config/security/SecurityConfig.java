@@ -69,6 +69,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/events").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/events/{id}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/events/sessions/{id}").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/events/session/{id}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/events/session/{id}/participants").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/events/session/{id}").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/events/session").hasRole("MANAGER")
@@ -76,7 +77,6 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.PUT, "/api/events/{id}").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/events").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.DELETE, "/api/events/{id}").hasRole("MANAGER")
-                            .requestMatchers(HttpMethod.POST, "/api/events/mail").hasRole("MANAGER")
 
                             .requestMatchers(HttpMethod.GET, "/api/sessions").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/sessions/{id}").permitAll()
