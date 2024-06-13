@@ -43,6 +43,20 @@ public class RoomController {
     }
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @GetMapping("/{locationId}/all")
+    public ResponseEntity<List<GetRoomDTO>> getAllRooms(
+            @PathVariable UUID locationId
+    ) {
+        var allRooms = roomService.getAllLocationRooms(locationId)
+                .stream()
+                .map(RoomDTOConverter::toRoomDto)
+                .toList();
+
+        return ResponseEntity.ok()
+                .body(allRooms);
+    }
+
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @GetMapping("/deleted/{locationId}")
     public ResponseEntity<List<GetRoomDTO>> getDeletedRooms(@PathVariable UUID locationId) {
         var rooms = roomService.getAllDeletedRooms(locationId)
