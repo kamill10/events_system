@@ -332,7 +332,7 @@ export const api = {
     apiWithEtag.patch(`/rooms/room/${id}`, room),
   deleteRoom: (
     id: string
-  ) => 
+  ) =>
     apiWithEtag.delete(`/rooms/room/${id}`),
   addRoom: (room: CreateRoom) =>
     apiWithAuthToken.post('/rooms/room', room),
@@ -354,17 +354,19 @@ export const api = {
     apiWithEtag.get(`/location/deleted/${id}`),
   restoreLocation: (id: string) => apiWithEtag.patch(`/location/${id}`),
   signOnSession: (id: string) =>
-      apiWithEtag.post(`/events/me/session/${id}`),
+    apiWithEtag.post(`/events/me/session/${id}`),
   cancelEvent: (id: string) => apiWithEtag.delete(`/events/${id}`),
-  getPastEventsPaginationResponse: (params: PaginationRequestParams )
-      : ApiResponseType<PaginationPastEventResponse> => {
+  getPastEventsPaginationResponse: (params: PaginationRequestParams)
+    : ApiResponseType<PaginationPastEventResponse> => {
     let url = getUrlWithPaginationParams(params, `/events/me/historical-events`);
     return apiWithAuthToken.get(url)
   },
   getSession: (id: string): ApiResponseType<SessionDetailedType> =>
-      apiWithEtag.get(`/events/session/${id}`),
+    apiWithEtag.get(`/sessions/${id}`),
+  getSessionForManager: (id: string): ApiResponseType<SessionDetailedType> =>
+    apiWithEtag.get(`/sessions/manager/${id}`),
   getSessionParticipants: (id: string): ApiResponseType<Participant[]> =>
-        apiWithEtag.get(`/events/session/${id}/participants`),
+    apiWithEtag.get(`/sessions/${id}/participants`),
 };
 
 const getUrlWithPaginationParams = (

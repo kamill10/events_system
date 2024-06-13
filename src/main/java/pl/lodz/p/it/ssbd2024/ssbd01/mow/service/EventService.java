@@ -1,8 +1,6 @@
 package pl.lodz.p.it.ssbd2024.ssbd01.mow.service;
 
 import com.deepl.api.DeepLException;
-import com.deepl.api.TextResult;
-import com.deepl.api.Translator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -23,10 +21,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.SessionRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.TicketRepository;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
-import pl.lodz.p.it.ssbd2024.ssbd01.util.Mail;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.TranslationUtils;
-import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
@@ -56,24 +52,6 @@ public class EventService {
     @PreAuthorize("permitAll()")
     public List<Session> getEventSessions(UUID id) {
         return sessionRepository.getByEventId(id);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void updateSession(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void createSession() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void cancelSession(UUID id) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
@@ -160,7 +138,6 @@ public class EventService {
         if (!event.getIsNotCanceled()) {
             throw new EventAlreadyCancelledException(ExceptionMessages.EVENT_ALREADY_CANCELLED);
         }
-
         event.setIsNotCanceled(false);
 
         List<Account> accounts = event.getSessions()
@@ -195,12 +172,5 @@ public class EventService {
                 .filter(Ticket::getIsNotCancelled)
                 .map(Ticket::getAccount)
                 .toList();
-    }
-
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    @PreAuthorize("permitAll()")
-    public Session getSession(UUID id) {
-        return sessionRepository.findById(id).orElseThrow(() -> new NoSuchElementException(ExceptionMessages.SESSION_NOT_FOUND));
     }
 }
