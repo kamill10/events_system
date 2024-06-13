@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.integration.AbstractControllerIT;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.UUID;
@@ -258,8 +259,8 @@ public class MOW11updateEventIT extends AbstractControllerIT {
         UpdateEventDTO eventDTO = new UpdateEventDTO(
                 RandomStringUtils.random(3, true, false),
                 RandomStringUtils.random(3, true, false),
-                LocalDateTime.now().minusDays(1),
-                LocalDateTime.now()
+                LocalDateTime.of(2020, Month.AUGUST, 10, 10, 10, 10),
+                LocalDateTime.of(2020, Month.AUGUST, 14, 10, 10, 10)
         );
 
         given()
