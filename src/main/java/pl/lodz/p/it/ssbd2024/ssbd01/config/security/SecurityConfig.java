@@ -78,6 +78,12 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.DELETE, "/api/events/{id}").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/events/mail").hasRole("MANAGER")
 
+                            .requestMatchers(HttpMethod.GET, "/api/sessions").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/sessions/{id}").permitAll()
+                            .requestMatchers(HttpMethod.PUT, "/api/sessions/{id}").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.POST, "/api/sessions").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.DELETE, "/sessions/{id}").hasRole("MANAGER")
+
 
                             .requestMatchers(HttpMethod.GET, "/api/location/**").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.DELETE, "/api/location/**").hasRole("MANAGER")

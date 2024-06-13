@@ -5,6 +5,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 
+import java.util.List;
+
 
 public class SessionDTOConverter {
 
@@ -61,5 +63,9 @@ public class SessionDTOConverter {
                 SpeakerDTOConverter.convertToDTO(session.getSpeaker()),
                 RoomDTOConverter.toRoomDetailedDto(session.getRoom())
         );
+    }
+
+    public static List<GetSessionForListDTO> getSessionsForListDTO(List<Session> session) {
+        return session.stream().map(SessionDTOConverter::getSessionForListDTO).toList();
     }
 }

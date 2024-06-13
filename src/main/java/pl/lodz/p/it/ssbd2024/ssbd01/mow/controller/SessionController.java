@@ -30,16 +30,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SessionController {
 
-    private final EventService eventService;
     private final SessionService sessionService;
 
 
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<GetEventDTO>> getAllNonPastEvents(@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language) {
-        List<Event> events = eventService.getAllNotEndedEvents();
-        List<GetEventDTO> eventDTOs = TranslationUtils.resolveEventsLanguage(events, language);
-        return ResponseEntity.status(HttpStatus.OK).body(eventDTOs);
+    public ResponseEntity<List<GetSessionForListDTO>> getAllSessions() throws SessionNotFoundException {
+        List<GetSessionForListDTO> sessions = SessionDTOConverter.getSessionsForListDTO(sessionService.getSessions());
+        return ResponseEntity.status(HttpStatus.OK).body(sessions);
     }
 
     @GetMapping("/{id}")

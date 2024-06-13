@@ -106,4 +106,13 @@ public class SessionService {
                 .findById(id)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
     }
+
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            rollbackFor = {Exception.class},
+            timeoutString = "${transaction.timeout}")
+    @PreAuthorize("permitAll()")
+    public List<Session> getSessions() throws SessionNotFoundException {
+        return sessionRepository.findAll();
+    }
 }
