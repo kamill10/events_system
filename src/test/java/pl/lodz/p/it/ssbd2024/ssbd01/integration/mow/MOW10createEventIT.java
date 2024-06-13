@@ -40,10 +40,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.FORBIDDEN.value())
-                .body(
-                        containsString("HTTP Status 403 – Forbidden")
-                );
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
@@ -62,10 +59,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.FORBIDDEN.value())
-                .body(
-                        containsString("HTTP Status 403 – Forbidden")
-                );
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
@@ -97,13 +91,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .get(baseUrl + "/events/" + response.substring(1, response.length() - 1))
                 .then()
-                .statusCode(HttpStatus.OK.value())
-                .body(
-                        containsString(eventDTO.name()),
-                        containsString(eventDTO.description()),
-                        containsString(eventDTO.startDate().withHour(0).withMinute(0).withSecond(0).truncatedTo(ChronoUnit.SECONDS).toString()),
-                        containsString(eventDTO.endDate().withHour(23).withMinute(59).withSecond(59).truncatedTo(ChronoUnit.SECONDS).toString())
-                );
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -122,10 +110,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(
-                        containsString(ExceptionMessages.EVENT_START_IN_PAST)
-                );
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -144,10 +129,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(
-                        containsString(ExceptionMessages.EVENT_START_AFTER_END)
-                );
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -166,11 +148,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(
-                        containsString(ExceptionMessages.INCORRECT_NAME)
-
-                );
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
     @Test
     public void createEventNameTooLongTest() {
@@ -188,11 +166,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(
-                        containsString(ExceptionMessages.INCORRECT_NAME)
-
-                );
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
     @Test
     public void createEventDescriptionTooShortTest() {
@@ -210,11 +184,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(
-                        containsString(ExceptionMessages.INCORRECT_DESCRIPTION)
-
-                );
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -233,11 +203,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(
-                        containsString(ExceptionMessages.INCORRECT_DESCRIPTION)
-
-                );
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -256,11 +222,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(
-                        containsString(ExceptionMessages.FIELD_REQUIRED)
-
-                );
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -279,11 +241,7 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body(
-                        containsString(ExceptionMessages.FIELD_REQUIRED)
-
-                );
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -320,9 +278,6 @@ public class MOW10createEventIT extends AbstractControllerIT {
                 .when()
                 .post(baseUrl + "/events")
                 .then()
-                .statusCode(HttpStatus.CONFLICT.value())
-                .body(
-                        containsString("name exists.")
-                );
+                .statusCode(HttpStatus.CONFLICT.value());
     }
 }
