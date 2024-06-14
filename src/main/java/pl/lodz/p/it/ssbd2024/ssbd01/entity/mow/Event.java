@@ -44,9 +44,6 @@ public class Event extends ControlledEntity {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "event")
     private List<Session> sessions = new ArrayList<>();
 
-    // TODO: Move to other table or remove
-    @PositiveOrZero
-    private long counter = 0;
 
     /**
      * Sessions that are part of event cannot start before start date.
