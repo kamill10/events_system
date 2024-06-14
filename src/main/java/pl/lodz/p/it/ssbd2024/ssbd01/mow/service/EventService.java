@@ -45,7 +45,7 @@ public class EventService {
     @PreAuthorize("permitAll()")
     public List<Event> getAllNotEndedEvents() {
         var currentDateTime = LocalDateTime.now();
-        return eventRepository.getByEndDateAfter(currentDateTime);
+        return eventRepository.getByEndDateAfterAndIsNotCanceledTrue(currentDateTime);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
