@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSearchSpeakerDTO;
+import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateSpeakerDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Speaker;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
@@ -15,6 +16,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.mow.service.SpeakerService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,6 +34,17 @@ public class SpeakerController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.ETAG, ETagBuilder.buildETag(speaker.getVersion().toString()))
                 .body(SpeakerDTOConverter.convertToDTO(speaker));
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public ResponseEntity<List<GetSpeakerDTO>> getAllSpeakers() {
+        var allSpeakers = speakerService.getAllSpeakers()
+                .stream()
+                .map(SpeakerDTOConverter::convertToDTO)
+                .toList();
+        return ResponseEntity.ok()
+                .body(allSpeakers);
     }
 
     @GetMapping

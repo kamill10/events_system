@@ -16,6 +16,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.PageUtils;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,6 +30,12 @@ public class LocationService {
     public Page<Location> getAllLocations(PageUtils pageUtils) {
         Pageable pageable = pageUtils.buildPageable();
         return locationRepository.findAllByIsActiveTrue(pageable);
+    }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public List<Location> getAllLocations() {
+        return locationRepository.findAll();
     }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")

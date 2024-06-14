@@ -112,6 +112,7 @@ export default function EventsPage() {
         <Button
           variant="contained"
           color="primary"
+          onClick={getEvents}
           sx={{
             marginY: 2,
           }}

@@ -24,6 +24,11 @@ public class SpeakerService {
 
     private final SpeakerRepository speakerRepository;
 
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public List<Speaker> getAllSpeakers() {
+        return speakerRepository.findAll();
+    }
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
@@ -62,4 +67,5 @@ public class SpeakerService {
     public List<Speaker> searchSpeakers(String firstName, String lastName) {
         return speakerRepository.findAllByFirstNameContainsIgnoreCaseAndLastNameContainsIgnoreCase(firstName, lastName);
     }
+
 }
