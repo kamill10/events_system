@@ -81,6 +81,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.GET, "/api/sessions").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/sessions/{id}").permitAll()
                             .requestMatchers(HttpMethod.GET, "/api/sessions/manager/{id}").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.GET, "/api/sessions/{id}/participants").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/sessions/{id}").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.POST, "/api/sessions").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.DELETE, "/api/sessions/{id}").hasRole("MANAGER")
