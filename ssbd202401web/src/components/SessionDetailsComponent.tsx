@@ -52,6 +52,7 @@ export function SessionDetailsComponent() {
 
   const handleRequest = async () => {
     await signOnSession(session?.id ?? "");
+    getSessionDetails();
   };
 
   const address = `${session?.room.location.street} ${session?.room.location.buildingNumber}, ${session?.room.location.postalCode}, ${session?.room.location.city}`;
@@ -63,7 +64,7 @@ export function SessionDetailsComponent() {
     { [t("startTimeTime")]: parseDate(session?.startTime ?? "") },
     { [t("endTimeTime")]: parseDate(session?.endTime ?? "") },
     { [t("allSeats")]: session?.maxSeats },
-    { [t("freeSeats")]: "TODO" },
+    { [t("freeSeats")]: session?.availableSeats },
     { [t("buildingAddress")]: address },
     { [t("roomName")]: session?.room.name },
     { [t("speaker")]: speaker },
