@@ -22,7 +22,7 @@ public class MOK5unblockAccountIT extends AbstractControllerIT {
     }
 
     @Test
-    public void blockAccountPositive() {
+    public void unblockAccountPositive() {
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
@@ -70,7 +70,7 @@ public class MOK5unblockAccountIT extends AbstractControllerIT {
 
         given()
                 .contentType("application/json")
-                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "pl")
                 .body(loginDTO)
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -79,7 +79,7 @@ public class MOK5unblockAccountIT extends AbstractControllerIT {
     }
 
     @Test
-    public void blockAccountNotFound() {
+    public void unblockAccountNotFound() {
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
@@ -99,7 +99,7 @@ public class MOK5unblockAccountIT extends AbstractControllerIT {
     }
 
     @Test
-    public void blockAccountAsParticipant() {
+    public void unblockAccountAsParticipant() {
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
@@ -119,7 +119,7 @@ public class MOK5unblockAccountIT extends AbstractControllerIT {
     }
 
     @Test
-    public void blockAccountAsManager() {
+    public void unblockAccountAsManager() {
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()

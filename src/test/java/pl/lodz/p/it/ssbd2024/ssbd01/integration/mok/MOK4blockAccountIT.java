@@ -22,7 +22,7 @@ public class MOK4blockAccountIT extends AbstractControllerIT {
     }
 
     @Test
-    public void unblockAccountPositive() {
+    public void blockAccountPositive() {
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
@@ -54,7 +54,7 @@ public class MOK4blockAccountIT extends AbstractControllerIT {
     }
 
     @Test
-    public void unblockAccountNotFound(){
+    public void blockAccountNotFound(){
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
@@ -74,7 +74,7 @@ public class MOK4blockAccountIT extends AbstractControllerIT {
     }
 
     @Test
-    public void unblockAccountAsParticipant() {
+    public void blockAccountAsParticipant() {
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
@@ -92,7 +92,7 @@ public class MOK4blockAccountIT extends AbstractControllerIT {
     }
 
     @Test
-    public void unblockAccountAsManager() {
+    public void blockAccountAsManager() {
         var response = given()
                 .header("Authorization", "Bearer " + adminToken)
                 .when()
