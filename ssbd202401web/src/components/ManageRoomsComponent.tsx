@@ -29,7 +29,10 @@ import {
   useForm,
 } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { CreateRoomSchema, PaginationRequestParamsSchema } from "../validation/schemas.ts";
+import {
+  CreateRoomSchema,
+  PaginationRequestParamsSchema,
+} from "../validation/schemas.ts";
 import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import FormComponent from "./FormComponent.tsx";
@@ -67,25 +70,25 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
       resolver: yupResolver(PaginationRequestParamsSchema),
     });
 
-    const {
-      handleSubmit: handleModalSubmit,
-      control: modalControl,
-      reset: modalReset,
-      trigger,
-      formState: { errors },
-    } = useForm<CreateRoomInput>({
-      defaultValues: {
-        name: "",
-        maxCapacity: 0,
-      },
-      resolver: yupResolver(CreateRoomSchema),
-    });
+  const {
+    handleSubmit: handleModalSubmit,
+    control: modalControl,
+    reset: modalReset,
+    trigger,
+    formState: { errors },
+  } = useForm<CreateRoomInput>({
+    defaultValues: {
+      name: "",
+      maxCapacity: 0,
+    },
+    resolver: yupResolver(CreateRoomSchema),
+  });
 
-    const handleAddRoom = (data: CreateRoomInput) => {
-      setPendingChanges(data);
-      setConfirmModalOpen(true);
-      getRooms();
-    }
+  const handleAddRoom = (data: CreateRoomInput) => {
+    setPendingChanges(data);
+    setConfirmModalOpen(true);
+    getRooms();
+  };
 
   async function getRooms() {
     const response = await getRoomsByLocationIdWithPagination(
@@ -132,15 +135,14 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
     handleSubmit(onSubmit)();
   };
 
-  
-
   const handleConfirmChanges = () => {
     if (pendingChanges) {
-      api.addRoom({
-        locationId: locationId,
-        name: pendingChanges.name,
-        maxCapacity: pendingChanges.maxCapacity
-      })
+      api
+        .addRoom({
+          locationId: locationId,
+          name: pendingChanges.name,
+          maxCapacity: pendingChanges.maxCapacity,
+        })
         .then(() => {
           setModalOpen(false);
           getRooms();
@@ -226,7 +228,9 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
                     >
                       <MenuItem value="id">{t("id")}</MenuItem>
                       <MenuItem value="name">{t("roomName")}</MenuItem>
-                      <MenuItem value="maxCapacity">{t("maxCapacity")}</MenuItem>
+                      <MenuItem value="maxCapacity">
+                        {t("maxCapacity")}
+                      </MenuItem>
                     </TextField>
                   );
                 }}
@@ -252,7 +256,9 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
                       id={field.name}
                     >
                       <ToggleButton value="asc">{t("ascending")}</ToggleButton>
-                      <ToggleButton value="desc">{t("descending")}</ToggleButton>
+                      <ToggleButton value="desc">
+                        {t("descending")}
+                      </ToggleButton>
                     </ToggleButtonGroup>
                   );
                 }}
@@ -333,10 +339,13 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
         handleClose={() => setConfirmModalOpen(false)}
         callback={handleConfirmChanges}
       />
-      <ModalComponent open={modalOpen} onClose={() => {
-        setModalOpen(false);
-        getRooms();
-        }}>
+      <ModalComponent
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          getRooms();
+        }}
+      >
         <>
           <Typography variant="h4" component="h2">
             {t("addRoom")}
@@ -355,7 +364,7 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
               type="text"
               label={t("name") + "*"}
             />
-             <TextFieldComponent
+            <TextFieldComponent
               control={modalControl}
               errors={errors}
               name="maxCapacity"

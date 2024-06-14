@@ -10,7 +10,7 @@ import {
   UpdateEventType,
 } from "../types/Event";
 import { useLoadingScreen } from "./useLoadingScreen";
-import {PaginationRequestParams} from "../types/PaginationRequestParams.ts";
+import { PaginationRequestParams } from "../types/PaginationRequestParams.ts";
 
 export const useEvents = () => {
   const sendNotification = useNotification();
@@ -180,8 +180,7 @@ export const useEvents = () => {
     } finally {
       setIsFetching(false);
     }
-
-  }
+  };
 
   return {
     events,
@@ -190,6 +189,6 @@ export const useEvents = () => {
     getEventById,
     updateEvent,
     cancelEvent,
-    getMyPastEvents
+    getMyPastEvents,
   };
 };

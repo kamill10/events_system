@@ -21,6 +21,7 @@ import { CreateEventType, UpdateEventType } from "../types/Event.ts";
 import { Dayjs } from "dayjs";
 import { CreateSpeaker, UpdateSpeakerDataType } from "../types/Speaker.ts";
 import { CreateRoomInput, UpdateRoomType } from "../types/Room.ts";
+import { CreateSessionType } from "../types/Session.ts";
 
 export let signInValidationSchema: yup.ObjectSchema<SignInCredentialsType>;
 export let LogInSchema: yup.ObjectSchema<LoginCredentialsType>;
@@ -41,6 +42,7 @@ export let ModifySpeakerSchema: yup.ObjectSchema<UpdateSpeakerDataType>;
 export let UpdateEventValidationSchema: yup.ObjectSchema<UpdateEventType>;
 export let UpdateRoomSchema: yup.ObjectSchema<UpdateRoomType>;
 export let CreateRoomSchema: yup.ObjectSchema<CreateRoomInput>;
+export let CreateSessionSchema: yup.ObjectSchema<CreateSessionType>;
 
 export function initValidation() {
   signInValidationSchema = yup.object<SignInCredentialsType>().shape({
@@ -438,5 +440,62 @@ export function initValidation() {
       .min(1, i18next.t("maxCapacityTooSmall"))
       .max(1000, i18next.t("maxCapacityTooBig"))
       .required(i18next.t("maxCapacityRequired")),
+  });
+
+  /*@ts-ignore*/
+  CreateSessionSchema = yup.object<CreateSessionType>().shape({
+    name: yup
+      .string()
+      .min(3, i18next.t("nameTooShort"))
+      .max(32, i18next.t("nameTooLong"))
+      .required(i18next.t("nameRequired")),
+    description: yup
+      .string()
+      .min(3, i18next.t("eventDescTooShort"))
+      .max(1024, i18next.t("eventDescTooLong"))
+      .required("eventDesRequired"),
+    startDate: yup.mixed().test("start-date-before-end", (value, context) => {
+      const tempStart = value as Dayjs;
+      const tempEnd = context.parent.endDate as Dayjs;
+      if (tempStart.diff(tempEnd) > 0) {
+        return context.createError({
+          path: context.path,
+          message: i18next.t("Event start date after end date."),
+        });
+      }
+      return true;
+    }),
+    endDate: yup.mixed().test("start-date-before-end", (value, context) => {
+      const tempEnd = value as Dayjs;
+      const tempStart = context.parent.startDate as Dayjs;
+      if (tempEnd.diff(tempStart) < 0) {
+        return context.createError({
+          path: context.path,
+          message: i18next.t("Event start date after end date."),
+        });
+      }
+      return true;
+    }),
+    maxSeats: yup
+      .number()
+      .min(1, i18next.t("maxSeatsTooLow"))
+      .max(1000, i18next.t("maxSeatsTooHigh"))
+      .required(i18next.t("maxSeatsRequired")),
+    eventId: yup
+      .string()
+      .min(3, i18next.t("eventIdNull"))
+      .required(i18next.t("eventIdRequired")),
+    roomId: yup
+      .string()
+      .min(3, i18next.t("roomIdNull"))
+      .required("roomIdRequired"),
+    speakerId: yup
+      .string()
+      .min(3, i18next.t("speakerIdNull"))
+      .required("speakerIdRequired"),
+    locationId: yup
+      .string()
+      .min(3, i18next.t("locationIdNull"))
+      .required("locationIdRequired"),
   });
 }

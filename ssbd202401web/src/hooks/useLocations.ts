@@ -46,6 +46,54 @@ export const useLocations = () => {
     }
   };
 
+  const getAllLocations = async () => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getAllLocations();
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getLocationsFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const getAllRoomsByLocationId = async (locationId: string) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getAllRoomsByLocationId(locationId);
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getRoomsByLocationIdWithPaginationFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const getLocationById = async (id: string) => {
     try {
       setIsFetching(true);
@@ -364,7 +412,7 @@ export const useLocations = () => {
     } finally {
       setIsFetching(false);
     }
-  }
+  };
 
   return {
     locations,
@@ -381,5 +429,7 @@ export const useLocations = () => {
     restoreLocation,
     deleteRoomById,
     addRoom,
+    getAllLocations,
+    getAllRoomsByLocationId,
   };
 };

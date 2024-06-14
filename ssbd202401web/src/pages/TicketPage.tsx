@@ -10,7 +10,7 @@ import { Pathnames } from "../router/Pathnames.ts";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { TicketDetailsComponent } from "../components/TicketDetailsComponent.tsx";
 import ConfirmChangeModal from "../components/ConfirmChangeModal.tsx";
-import {ClearIcon} from "@mui/x-date-pickers";
+import { ClearIcon } from "@mui/x-date-pickers";
 
 export function TicketPage() {
   const { t } = useTranslation();
@@ -78,18 +78,18 @@ export function TicketPage() {
       >
         {t("refreshData")}
       </Button>
-        {ticket?.isNotCancelled && (
-            <Button
-                variant="contained"
-                onClick={() => setOpen(true)}
-                startIcon={<ClearIcon />}
-                sx={{
-                    margin: 2,
-                }}
-            >
-                {t("singOutOfSession")}
-            </Button>
-        )}
+      {ticket?.isNotCancelled && (
+        <Button
+          variant="contained"
+          onClick={() => setOpen(true)}
+          startIcon={<ClearIcon />}
+          sx={{
+            margin: 2,
+          }}
+        >
+          {t("singOutOfSession")}
+        </Button>
+      )}
       <TicketDetailsComponent ticket={ticket}></TicketDetailsComponent>
       <ConfirmChangeModal
         callback={signOut}
