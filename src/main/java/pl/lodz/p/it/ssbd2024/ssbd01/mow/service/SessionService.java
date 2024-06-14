@@ -122,7 +122,7 @@ public class SessionService {
             SpeakerNotFoundException,
             RoomSeatsExceededException,
             RoomIsBusyException,
-            SpeakerIsBusyException {
+            SpeakerIsBusyException, SessionsExistOutsideRangeException {
         if (session.getStartTime().isBefore(LocalDateTime.now())) {
             throw new SessionStartDateInPast(ExceptionMessages.SESSION_START_IN_PAST);
         }
@@ -153,6 +153,10 @@ public class SessionService {
 
         if (session.getMaxSeats() > room.getMaxCapacity()) {
             throw new RoomSeatsExceededException(ExceptionMessages.ROOM_SEATS_EXCEEDED);
+        }
+
+        if (session.getStartTime().isBefore(event.getStartDate()) || session.getEndTime().isAfter(event.getEndDate())) {
+            throw new SessionsExistOutsideRangeException(ExceptionMessages.SESSIONS_OUTSIDE_RANGE);
         }
 
         List<Session> overlappingSessions = sessionRepository.findSessionsInsideRangeAtRoom(
