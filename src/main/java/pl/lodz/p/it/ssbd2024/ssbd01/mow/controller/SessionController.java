@@ -82,7 +82,7 @@ public class SessionController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> createSession(@RequestBody @Valid CreateSessionDTO createSessionDTO) throws
             SessionStartDateInPast, SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, EventNotFoundException,
-            RoomIsBusyException, RoomSeatsExceededException, SpeakerIsBusyException {
+            RoomIsBusyException, RoomSeatsExceededException, SpeakerIsBusyException, SessionsExistOutsideRangeException {
         Session session = SessionDTOConverter.getSession(createSessionDTO);
         String newSessionId =
                 sessionService.createSession(session, createSessionDTO.eventId(), createSessionDTO.speakerId(), createSessionDTO.roomId());
