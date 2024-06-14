@@ -60,9 +60,6 @@ public class Session extends ControlledEntity {
     @Max(1024)
     private Integer maxSeats;
 
-    @PositiveOrZero
-    private long counter;
-
     @Min(0)
     private int availableSeats;
 
