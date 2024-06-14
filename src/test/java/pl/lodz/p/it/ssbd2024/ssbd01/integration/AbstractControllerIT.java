@@ -40,6 +40,7 @@ public abstract class AbstractControllerIT {
     public static String managerToken;
 
     public static String secondParticipantToken;
+    public static String thirdParticipantToken;
 
     public static ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -147,6 +148,21 @@ public abstract class AbstractControllerIT {
 
         String jwtToken = response.extract().body().asString();
         secondParticipantToken = jwtToken.substring(1, jwtToken.length() - 1);
+    }
+
+    public static void authenticationToThirdParticipant() throws JsonProcessingException {
+        LoginDTO loginDTO = new LoginDTO("eugeniuszChrobak34", "P@ssw0rd");
+        var response = given()
+                .contentType("application/json")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
+                .body(objectMapper.writeValueAsString(loginDTO))
+                .when()
+                .post(baseUrl + "/auth/authenticate")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        String jwtToken = response.extract().body().asString();
+        thirdParticipantToken = jwtToken.substring(1, jwtToken.length() - 1);
     }
 
     @BeforeEach

@@ -22,6 +22,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
         authenticationToParticipantTest();
         authenticationToManagerTest();
         authenticationToSecondParticipant();
+        authenticationToThirdParticipant();
     }
 
 
@@ -30,7 +31,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
         var response = given()
                 .contentType("application/json")
                 .when()
-                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String etag = response.extract().header("ETag");
@@ -41,28 +42,49 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .header("Authorization", "Bearer " + secondParticipantToken)
                 .header("If-Match", etag)
                 .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
         given()
                 .contentType("application/json")
                 .header("Accept-Language", "en-US")
                 .when()
-                .get(baseUrl + "/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .get(baseUrl + "/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body(
-                        containsString("\"availableSeats\":\"0\"")
+                        containsString("\"availableSeats\":1")
                 );
 
 
+    }
+
+    @Test
+    public void signOnInactiveSessionTest() throws JsonProcessingException {
+        var response = given()
+                .contentType("application/json")
+                .when()
+                .get(baseUrl + "/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2e8")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        String etag = response.extract().header("ETag");
+        etag = etag.substring(1, etag.length() - 1);
+        assertNotEquals(etag, "");
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + secondParticipantToken)
+                .header("If-Match", etag)
+                .when()
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2e8")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
     @Test
     public void signOnSessionWithoutToken() throws JsonProcessingException {
         var response = given()
                 .contentType("application/json")
                 .when()
-                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String etag = response.extract().header("ETag");
@@ -71,7 +93,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .contentType("application/json")
                 .header("If-Match", etag)
                 .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
 
@@ -82,7 +104,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
         var response = given()
                 .contentType("application/json")
                 .when()
-                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String etag = response.extract().header("ETag");
@@ -92,7 +114,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .header("Authorization", "Bearer " + managerToken)
                 .header("If-Match", etag)
                 .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
 
@@ -108,22 +130,12 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .statusCode(HttpStatus.OK.value());
         String etag = response.extract().header("ETag");
         etag = etag.substring(1, etag.length() - 1);
-
-             given()
-                .contentType("application/json")
-                .header("Authorization", "Bearer " +  secondParticipantToken)
-                .header("If-Match", etag)
-                .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
-                .then()
-                .statusCode(HttpStatus.OK.value());
-             String inValidEtag = "W/\"e0fac8ecc72a5b6b28c56b0c8bb2ae47\"";
         given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + participantToken)
-                .header("If-Match", inValidEtag)
+                .header("If-Match", etag)
                 .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.PRECONDITION_FAILED.value());
 
@@ -155,7 +167,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
         var response = given()
                 .contentType("application/json")
                 .when()
-                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String etag = response.extract().header("ETag");
@@ -165,13 +177,13 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .header("Authorization", "Bearer " +  secondParticipantToken)
                 .header("If-Match", etag)
                 .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
         var response2 = given()
                 .contentType("application/json")
                 .when()
-                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String etag2 = response2.extract().header("ETag");
@@ -181,7 +193,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .header("Authorization", "Bearer " +  secondParticipantToken)
                 .header("If-Match", etag2)
                 .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d3")
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.CONFLICT.value());
 
@@ -192,7 +204,7 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
         var response = given()
                 .contentType("application/json")
                 .when()
-                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d4")
+                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
         String  etag = response.extract().header("ETag");
@@ -202,26 +214,28 @@ public class MOW3signOnSessionIT extends AbstractControllerIT {
                 .header("Authorization", "Bearer " + participantToken)
                 .header("If-Match", etag)
                 .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d4")
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.OK.value());
-        var response2 = given()
-                .contentType("application/json")
-                .when()
-                .get(baseUrl +"/sessions/4b2555e9-61f1-4c1d-9d7a-f425696eb2d4")
-                .then()
-                .statusCode(HttpStatus.OK.value());
-        String  etag2 = response.extract().header("ETag");
-        etag2 = etag2.substring(1, etag2.length() - 1);
         given()
                 .contentType("application/json")
                 .header("Authorization", "Bearer " + secondParticipantToken)
-                .header("If-Match", etag2)
+                .header("If-Match", etag)
                 .when()
-                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d4")
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + thirdParticipantToken)
+                .header("If-Match", etag)
+                .when()
+                .post(baseUrl + "/events/me/session/4b2555e9-61f1-4c1d-9d7a-f425696eb2d2")
                 .then()
                 .statusCode(HttpStatus.CONFLICT.value());
 
     }
+
+
 
 }
