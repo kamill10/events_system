@@ -106,7 +106,7 @@ export default function UpdateSessionComponent({ id }: { id: string }) {
         onError={onError}
         align="center"
       >
-        <Typography variant="h4">{t("addSession")}</Typography>
+        <Typography variant="h4">{t("updateSession")}</Typography>
         <TextFieldComponent
           control={control}
           errors={errors}
