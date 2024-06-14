@@ -14,17 +14,13 @@ public class TranslationUtils {
 
     public static void translateEvent(Event event, String language, String apiKey) throws DeepLException, InterruptedException {
 
-        if (apiKey == null) {
+        if (apiKey == null || apiKey.isEmpty()) {
             return;
         }
 
         Translator translator = new Translator(apiKey);
-        if (Objects.equals(language, "pl-PL")) {
-            event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
-        } else {
-            event.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
-            event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
-        }
+        event.setDescriptionPL(translator.translateText(event.getDescriptionPL(), null, "pl").getText());
+        event.setDescriptionEN(translator.translateText(event.getDescriptionPL(), null, "en-US").getText());
     }
 
     public static List<GetEventDTO> resolveEventsLanguage(List<Event> events, String language) {
@@ -38,7 +34,7 @@ public class TranslationUtils {
     }
 
     public static GetEventDTO resolveEventLanguage(Event event, String language) {
-        if (Objects.equals(language.substring(0, 5), "pl-PL")) {
+        if (Objects.equals(language.substring(0, 2), "pl")) {
             return EventDTOConverter.getEventPlDTO(event);
         } else {
             if (event.getDescriptionEN() == null || event.getDescriptionEN().isEmpty()) {
