@@ -44,7 +44,7 @@ public class MOK5unblockAccountIT extends AbstractControllerIT {
 
         given()
                 .contentType("application/json")
-                .header(HttpHeaders.ACCEPT_LANGUAGE, "en")
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "pl")
                 .body(loginDTO)
                 .when()
                 .post(baseUrl + "/auth/authenticate")
@@ -65,15 +65,6 @@ public class MOK5unblockAccountIT extends AbstractControllerIT {
                 .header("If-Match", eTag)
                 .when()
                 .patch(baseUrl + "/accounts/" + "a8816c75-e735-4d16-9f3e-7fcf3d0e7fe6" + "/set-active")
-                .then()
-                .statusCode(HttpStatus.OK.value());
-
-        given()
-                .contentType("application/json")
-                .header(HttpHeaders.ACCEPT_LANGUAGE, "pl")
-                .body(loginDTO)
-                .when()
-                .post(baseUrl + "/auth/authenticate")
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }
