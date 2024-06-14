@@ -1,5 +1,5 @@
 import { Dayjs } from "dayjs";
-import {PaginationResponse} from "./Pagination.ts";
+import { PaginationResponse } from "./Pagination.ts";
 
 export interface Event {
   id: string;
@@ -28,9 +28,10 @@ export interface UpdateEventType extends CreateEventType {}
 
 export interface UpdateEventDTOType extends CreateEventDTOType {}
 
-export interface PaginationPastEventResponse extends PaginationResponse<Event> {}
+export interface PaginationPastEventResponse
+  extends PaginationResponse<Event> {}
 
 export interface EventWithNumberOfElements {
-    events: Event[];
-    numberOfElements: number;
+  events: Event[];
+  numberOfElements: number;
 }

@@ -9,7 +9,6 @@ export interface SessionDetailedType {
   startTime: string;
   endTime: string;
   maxSeats: number;
-  availableSeats: number;
   isActive: boolean;
   speaker: Speaker;
   room: RoomType;

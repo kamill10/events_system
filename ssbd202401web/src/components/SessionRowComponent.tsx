@@ -1,10 +1,7 @@
-import {
-  TableCell,
-  TableRow,
-} from "@mui/material";
+import { TableCell, TableRow } from "@mui/material";
 import { SessionDetailedType } from "../types/SessionDetailed";
 import parseDate from "../validation/parseDate";
-import {useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function SessionRowComponent({
   session,

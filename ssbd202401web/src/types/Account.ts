@@ -69,8 +69,8 @@ export interface AccountsWithNumberOfElements {
 }
 
 export interface Participant {
-    firstName: string;
-    lastName: string;
-    email: string;
-    username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
 }

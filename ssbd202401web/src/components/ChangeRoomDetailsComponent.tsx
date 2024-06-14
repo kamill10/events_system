@@ -5,7 +5,7 @@ import { RoomType, UpdateRoomType } from "../types/Room.ts";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { UpdateRoomSchema } from "../validation/schemas.ts";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import FormComponent from "./FormComponent.tsx";
 import { Button, Divider, Typography } from "@mui/material";
 import TextFieldComponent from "./TextFieldComponent.tsx";
@@ -63,8 +63,8 @@ export default function ChangeRoomDetailsComponent({
     getRooms();
     setConfirmOpen(false);
     setOpen(false);
-  }
-  
+  };
+
   return (
     <>
       <FormComponent
@@ -106,10 +106,10 @@ export default function ChangeRoomDetailsComponent({
           {t("saveChanges")}
         </Button>
         <Button
-        color="error"
-        variant="contained"
-        startIcon={<DeleteIcon/>}
-        onClick={handleDelete}
+          color="error"
+          variant="contained"
+          startIcon={<DeleteIcon />}
+          onClick={handleDelete}
         >
           {t("delete")}
         </Button>

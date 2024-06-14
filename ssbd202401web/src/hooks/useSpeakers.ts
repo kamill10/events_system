@@ -45,6 +45,30 @@ export const useSpeakers = () => {
     }
   };
 
+  const getAllSpeakers = async () => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getAllSpeakers();
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getSpeakersFail"),
+        });
+      }
+      return e;
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const getSpeakerById = async (id: string) => {
     try {
       setIsFetching(true);
@@ -131,5 +155,6 @@ export const useSpeakers = () => {
     getSpeakerById,
     updateSpeakerById,
     addSpeaker,
+    getAllSpeakers,
   };
 };
