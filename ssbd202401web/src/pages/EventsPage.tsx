@@ -64,6 +64,7 @@ export default function EventsPage() {
       setNewEventId(response);
       setModalOpen(false);
       setRedirectOpen(true);
+      getEvents();
     } else {
     }
   }
