@@ -29,8 +29,8 @@ export default function ChangeSpeakerDataComponent({
     getValues,
   } = useForm<UpdateSpeakerDataType>({
     defaultValues: {
-      firstName: speaker?.firstName,
-      lastName: speaker?.lastName,
+      firstName: speaker?.firstName ?? "",
+      lastName: speaker?.lastName ?? "",
     },
     resolver: yupResolver(modifySpeakerSchema),
   });
