@@ -511,6 +511,7 @@ i18next
           updateSessionFail: "Nie udało się zaktualizować sesji",
           updateSession: "Zmień sesje",
           noChange: "Bez zmian",
+          speakerHistory: "HISTORIA ZMIAN",
         },
       },
       ENGLISH: {
@@ -977,6 +978,7 @@ i18next
           updateSessionFail: "Failed to update session",
           updateSession: "Update session",
           noChange: "No changes",
+          speakerHistory: "HISTORY",
         },
       },
     },

@@ -56,6 +56,7 @@ import {
   CreateSessionDTOType,
   UpdateSessionDTOType,
 } from "../types/Session.ts";
+import {SpeakerChanges} from "../types/SpeakerChanges.ts";
 
 const API_URL: string = import.meta.env.VITE_API_URL;
 const TIMEOUT_MS: number = 30000;
@@ -384,6 +385,8 @@ export const api = {
   cancelSession: (id: string) => apiWithEtag.delete("/sessions/" + id),
   updateSession: (id: string, data: UpdateSessionDTOType) =>
     apiWithEtag.put("/sessions/" + id, data),
+  getSpeakerHistory: (id :string): ApiResponseType<SpeakerChanges []> =>
+      apiWithAuthToken.get(`/speakers/history/${id}`)
 };
 
 const getUrlWithPaginationParams = (
