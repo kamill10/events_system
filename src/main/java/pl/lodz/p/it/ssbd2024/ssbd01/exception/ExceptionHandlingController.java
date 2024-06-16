@@ -18,9 +18,6 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 @RestControllerAdvice
@@ -123,4 +120,10 @@ public class ExceptionHandlingController {
     public ResponseEntity<String> handleHibernateException(HibernateException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionMessages.HIBERNATE_EXCEPTION);
     }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<String> handleForbiddenException(ForbiddenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
 }
