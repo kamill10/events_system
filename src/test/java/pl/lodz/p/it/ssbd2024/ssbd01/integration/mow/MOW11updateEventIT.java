@@ -255,27 +255,6 @@ public class MOW11updateEventIT extends AbstractControllerIT {
     }
 
     @Test
-    public void updateEventThrowsEventStartDateInPastException() {
-        UpdateEventDTO eventDTO = new UpdateEventDTO(
-                RandomStringUtils.random(3, true, false),
-                RandomStringUtils.random(3, true, false),
-                LocalDateTime.of(2020, Month.AUGUST, 10, 10, 10, 10),
-                LocalDateTime.of(2020, Month.AUGUST, 14, 10, 10, 10)
-        );
-
-        given()
-                .contentType("application/json")
-                .header("Accept-Language", "pl-PL")
-                .header("Authorization", "Bearer " + managerToken)
-                .header(HttpHeaders.IF_MATCH, etag)
-                .body(eventDTO)
-                .when()
-                .put(baseUrl + "/events/" + eventId)
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
     public void updateEventThrowsEventStartDateAfterEndDateException() {
         UpdateEventDTO eventDTO = new UpdateEventDTO(
                 RandomStringUtils.random(3, true, false),

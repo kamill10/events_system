@@ -75,4 +75,5 @@ public class ExceptionMessages {
     public static final String ROOM_BUSY = "Room is used in this time period";
     public static final String SPEAKER_IS_BUSY = "Speaker has session in that period";
     public static final String INCORRECT_MIN_CAPACITY = "Incorrect max capacity.";
+    public static final String ENTITY_IS_UNMODIFIABLE = "Entity is unmodifiable.";
 }

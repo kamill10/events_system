@@ -28,7 +28,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,8 +63,7 @@ public class EventService {
             SessionsExistOutsideRangeException,
             EventStartDateAfterEndDateException,
             DeepLException,
-            InterruptedException,
-            EventStartDateInPastException {
+            InterruptedException {
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
 
         if (!ETagBuilder.isETagValid(etag, String.valueOf(databaseEvent.getVersion()))) {
@@ -72,9 +72,7 @@ public class EventService {
 
         LocalDateTime newEventStartTime = event.getStartDate().withHour(0).withMinute(0).withSecond(0);
         LocalDateTime newEventEndTime = event.getEndDate().withHour(23).withMinute(59).withSecond(59);
-        if (newEventStartTime.getDayOfMonth() - LocalDate.now().getDayOfMonth() < 0) {
-            throw new EventStartDateInPastException(ExceptionMessages.EVENT_START_IN_PAST);
-        }
+
         List<Session> sessionsOutsideRange = sessionRepository.findSessionsOutsideRange(id, newEventStartTime, newEventEndTime);
 
         if (!sessionsOutsideRange.isEmpty()) {

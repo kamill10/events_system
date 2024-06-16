@@ -2,11 +2,10 @@ package pl.lodz.p.it.ssbd2024.ssbd01.entity.mow;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.EntityIsUnmodifiableException;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,5 +81,15 @@ public class Event extends ControlledEntity {
     @Override
     public int hashCode() {
         return Objects.hashCode(name);
+    }
+
+    @SneakyThrows
+    @Override
+    public void preUpdate() {
+        if (endDate.isBefore(LocalDateTime.now())) {
+            throw new EntityIsUnmodifiableException(ExceptionMessages.ENTITY_IS_UNMODIFIABLE);
+        }
+
+        super.preUpdate();
     }
 }
