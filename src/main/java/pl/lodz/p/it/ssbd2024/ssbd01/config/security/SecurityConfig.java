@@ -105,6 +105,7 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.POST, "/api/speakers").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.GET, "/api/speakers/{id}").hasRole("MANAGER")
                             .requestMatchers(HttpMethod.PUT, "/api/speakers/{id}").hasRole("MANAGER")
+                            .requestMatchers(HttpMethod.GET, "/api/speakers/history/{id}").hasRole("MANAGER")
 
 
                             .requestMatchers(HttpMethod.GET, "/api/events/me/**").hasRole("PARTICIPANT")
