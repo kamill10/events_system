@@ -57,6 +57,11 @@ public class LocationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void restoreLocation(UUID id, String eTag) throws LocationNotFoundException, OptLockException {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
@@ -72,6 +77,11 @@ public class LocationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public void deleteLocation(UUID id, String eTag)
             throws LocationNotFoundException, OptLockException, LocationAlreadyDeletedException {
         Location location = locationRepository.findById(id)
@@ -91,6 +101,11 @@ public class LocationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @Retryable(
+            retryFor = {UnexpectedRollbackException.class},
+            maxAttemptsExpression = "${transaction.retry.max}",
+            backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
+    )
     public Location createLocation(Location location) {
         return locationRepository.saveAndFlush(location);
     }
