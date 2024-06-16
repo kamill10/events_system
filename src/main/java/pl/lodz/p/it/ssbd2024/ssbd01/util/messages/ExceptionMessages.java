@@ -76,4 +76,6 @@ public class ExceptionMessages {
     public static final String SPEAKER_IS_BUSY = "Speaker has session in that period";
     public static final String INCORRECT_MIN_CAPACITY = "Incorrect max capacity.";
     public static final String ENTITY_IS_UNMODIFIABLE = "Entity is unmodifiable.";
+    public static final String INCORRECT_ACTIVE_STATUS = "Incorrect active status.";
+    public static final String LOCATION_CANNOT_BE_NULL = "Location cannot be null.";
 }

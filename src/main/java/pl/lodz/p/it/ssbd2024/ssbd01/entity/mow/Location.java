@@ -8,7 +8,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.validator.annotation.ValidLocation;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,36 +21,28 @@ import java.util.Objects;
 @Entity
 @Table(name = "location")
 @NoArgsConstructor
+@ValidLocation
 public class Location extends ControlledEntity {
 
     @Column(nullable = false, unique = true)
-    @NotBlank
-    @Size(min = 3, max = 128)
     private String name;
 
     @Column(nullable = false)
-    @NotBlank
     private String street;
 
     @Column(nullable = false)
-    @NotBlank
     private String buildingNumber;
 
     @Column(nullable = false)
-    @NotBlank
-    @Pattern(regexp = "\\d{2}-\\d{3}")
     private String postalCode;
 
     @Column(nullable = false)
-    @NotBlank
     private String city;
 
     @Column(nullable = false)
-    @NotBlank
     private String country;
 
     @Column(nullable = false)
-    @NotNull
     private Boolean isActive = true;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "location")
