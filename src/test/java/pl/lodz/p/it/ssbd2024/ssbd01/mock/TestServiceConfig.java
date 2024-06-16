@@ -176,4 +176,8 @@ public class TestServiceConfig {
         return Mockito.mock(TicketRepository.class);
     }
 
+    @Bean SpeakerHistoryRepository speakerHistoryRepository() {
+        return Mockito.mock(SpeakerHistoryRepository.class);
+    }
+
 }
