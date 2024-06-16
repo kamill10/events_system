@@ -42,7 +42,7 @@ public class MeEventService {
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @Retryable(
-            retryFor = {OptimisticLockException.class},
+            retryFor = {UnexpectedRollbackException.class,OptimisticLockException.class},
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
