@@ -47,7 +47,7 @@ public class MOW21updateSpeakerIT extends AbstractControllerIT {
                 .statusCode(HttpStatus.OK.value());
         String speakerEtag = responseGetSpeaker.extract().header(HttpHeaders.ETAG);
         speakerEtag = speakerEtag.substring(1, speakerEtag.length() - 1);
-        UpdateSpeakerDTO updateSpeakerDTO = new UpdateSpeakerDTO("Jacek", "Graniecki");
+        UpdateSpeakerDTO updateSpeakerDTO = new UpdateSpeakerDTO("JakiesImie", "JakiesNazwisko");
         Assertions.assertNotEquals(getSpeakerDTO.firstName(), updateSpeakerDTO.firstName());
         Assertions.assertNotEquals(getSpeakerDTO.lastName(), updateSpeakerDTO.lastName());
         var updateSpeakerResponse = given()

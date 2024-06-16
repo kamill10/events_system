@@ -41,6 +41,8 @@ GRANT SELECT, INSERT, UPDATE ON TABLE public.speaker TO ssbd01mow;
 
 GRANT SELECT, INSERT, DELETE, UPDATE ON TABLE public.ticket TO ssbd01mow;
 
+GRANT SELECT, INSERT ON TABLE public.speaker_history TO ssbd01mow;
+
 
 CREATE INDEX account_created_by_idx ON account USING btree (created_by);
 CREATE INDEX account_updated_by_idx ON account USING btree (updated_by);
@@ -88,6 +90,9 @@ CREATE INDEX session_updated_by_idx ON session USING btree (updated_by);
 
 CREATE INDEX speaker_created_by_idx ON speaker USING btree (created_by);
 CREATE INDEX speaker_updated_by_idx ON speaker USING btree (updated_by);
+CREATE INDEX speaker_history_speaker_id_idx ON speaker_history USING btree (speaker_id);
+CREATE INDEX speaker_history_created_by_idx ON speaker_history USING btree (created_by);
+CREATE INDEX speaker_history_updated_by_idx ON speaker_history USING btree (updated_by);
 
 CREATE INDEX ticket_account_id_idx ON ticket USING btree (account_id);
 CREATE INDEX ticket_created_by_idx ON ticket USING btree (created_by);
@@ -330,9 +335,17 @@ INSERT INTO public.room (id, version, name, location_id, maxCapacity, isactive, 
 INSERT INTO public.room (id, version, name, location_id, maxCapacity, isactive, created_at, action_type) VALUES ('fded6a37-5272-4e9c-94f0-436f5f17581c', 0, '42', 'da7cfcfa-5f1c-4a85-8f93-1022f28f747a', 30, true, '2024-06-13', 'CREATE');
 
 INSERT INTO public.speaker (id, version, firstName, lastName, created_at, action_type) VALUES ('713c84a3-03bd-4206-ac5c-ecf8d7d04ae6', 0, 'Krzysztof', 'Ślusarski', '2024-06-05 07:32:00', 'CREATE');
+INSERT INTO public.speaker_history (id, version, firstName, lastName, created_at, action_type, speaker_id) VALUES ('b706ed45-4ecc-4a36-9cd5-671ae1ad7ec1', 0, 'Krzysztof', 'Ślusarski', '2024-06-05 07:32:00', 'CREATE', '713c84a3-03bd-4206-ac5c-ecf8d7d04ae6');
+
 INSERT INTO public.speaker (id, firstname, lastname,created_at,action_type,version) VALUES ('f3c50886-bb5a-451c-99a3-6a79a6329cb5', 'Lionel', 'Mesi', '2024-04-09 07:32:00', 'CREATE',1);
+INSERT INTO public.speaker_history (id, firstname, lastname,created_at,action_type,version, speaker_id) VALUES ('2320eb06-d54f-4d87-8faa-774f0c56339f', 'Lionel', 'Mesi', '2024-04-09 07:32:00', 'CREATE',1, 'f3c50886-bb5a-451c-99a3-6a79a6329cb5');
+
 INSERT INTO public.speaker (id, firstname, lastname,created_at,action_type,version) VALUES ('f3c50886-bb5a-451c-99a3-6a79a6329cb6', 'Antoni', 'Nowak', '2024-04-09 07:32:00', 'CREATE',1);
+INSERT INTO public.speaker_history (id, firstname, lastname,created_at,action_type,version, speaker_id) VALUES ('67dee9aa-d64e-4050-9d7f-4ed09083a6e7', 'Antoni', 'Nowak', '2024-04-09 07:32:00', 'CREATE',1, 'f3c50886-bb5a-451c-99a3-6a79a6329cb6');
+
 INSERT INTO public.speaker (id, firstname, lastname,created_at,action_type,version) VALUES ('f3c50886-bb5a-451c-99a3-6a79a6329cb7', 'Piotr', 'Kowalski', '2024-04-09 07:32:00', 'CREATE',1);
+INSERT INTO public.speaker_history (id, firstname, lastname,created_at,action_type,version, speaker_id) VALUES ('a1884645-e567-4936-9a61-b19fd8c933b6', 'Piotr', 'Kowalski', '2024-04-09 07:32:00', 'CREATE',1, 'f3c50886-bb5a-451c-99a3-6a79a6329cb7');
+
 
 INSERT INTO public.session (id, version, room_id, speaker_id, name, event_id, isActive, description, startTime, endTime, maxSeats,availableSeats, created_at, action_type) VALUES ('4b2555e9-61f1-4c1d-9d7a-f425696eb2d2', 0, '78f0f497-10b7-4478-9a28-c9dc86118e67', '713c84a3-03bd-4206-ac5c-ecf8d7d04ae6', 'Dlaczego Java jest najlepsza', 'dbe1b405-aed0-4d0a-bda7-50938e7b45f1', true, 'Wykład o najlepszym języku programowania na świecie', '2024-11-13 12:00:00', '2024-11-13 15:00:00', 3,2, '2024-06-05', 'CREATE');
 INSERT INTO public.session (id, version, room_id, speaker_id, name, event_id, isActive, description, startTime, endTime, maxSeats,availableSeats, created_at, action_type) VALUES ('00afff55-19da-4359-8cbc-5ed7f28e0fad', 0, 'fded6a37-5272-4e9c-94f0-436f5f17581c', 'f3c50886-bb5a-451c-99a3-6a79a6329cb5', 'Dlaczego JakartaEE jest przestarzała', 'dbe1b405-aed0-4d0a-bda7-50938e7b45f1', true, 'Wykład o tym, jak nie tworzyć frameworka', '2024-11-13 15:15:00', '2024-11-13 17:00:00', 3,2, '2024-06-13', 'CREATE');
