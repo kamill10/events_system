@@ -35,10 +35,8 @@ export default function ChangeSpeakerDataComponent({
     resolver: yupResolver(modifySpeakerSchema),
   });
   const handleRequest = async () => {
-    const err = await updateSpeakerById(speaker?.id ?? "", getValues());
-    if (!err) {
+     await updateSpeakerById(speaker?.id ?? "", getValues());
       fetchSpeaker();
-    }
   };
   const onSubmit: SubmitHandler<UpdateSpeakerDataType> = async () => {
     setOpen(true);

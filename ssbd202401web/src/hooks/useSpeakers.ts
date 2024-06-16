@@ -148,6 +148,29 @@ export const useSpeakers = () => {
       setIsFetching(false);
     }
   };
+  const getSpeakerHistory = async (id: string) => {
+    try {
+      setIsFetching(true);
+      const { data } = await api.getSpeakerHistory(id);
+      return data;
+    } catch (e) {
+      console.error(e);
+      if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
+        sendNotification({
+          type: "error",
+          description: t(e.response?.data),
+        });
+      } else {
+        sendNotification({
+          type: "error",
+          description: t("getSpeakerHistoryFail"),
+        });
+      }
+      return null;
+    } finally {
+      setIsFetching(false);
+    }
+  }
 
   return {
     speakers,
@@ -156,5 +179,6 @@ export const useSpeakers = () => {
     updateSpeakerById,
     addSpeaker,
     getAllSpeakers,
+    getSpeakerHistory,
   };
 };
