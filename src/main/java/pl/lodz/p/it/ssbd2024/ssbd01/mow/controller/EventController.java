@@ -76,7 +76,7 @@ public class EventController {
             EventStartDateAfterEndDateException,
             DeepLException,
             InterruptedException,
-            EventStartDateInPastException {
+            EventStartDateInPastException, EntityIsUnmodifiableException {
         Event event = EventDTOConverter.getEvent(updateEventDTO);
         Event updatedEvent = eventService.updateEvent(id, etag, event);
         return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventPlDTO(updatedEvent));

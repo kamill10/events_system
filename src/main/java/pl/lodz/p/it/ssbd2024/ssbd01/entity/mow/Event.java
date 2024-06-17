@@ -83,13 +83,4 @@ public class Event extends ControlledEntity {
         return Objects.hashCode(name);
     }
 
-    @SneakyThrows
-    @Override
-    public void preUpdate() {
-        if (endDate.isBefore(LocalDateTime.now())) {
-            throw new EntityIsUnmodifiableException(ExceptionMessages.ENTITY_IS_UNMODIFIABLE);
-        }
-
-        super.preUpdate();
-    }
 }

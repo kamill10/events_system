@@ -63,8 +63,12 @@ public class EventService {
             SessionsExistOutsideRangeException,
             EventStartDateAfterEndDateException,
             DeepLException,
-            InterruptedException {
+            InterruptedException, EntityIsUnmodifiableException {
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
+
+        if (databaseEvent.getEndDate().isBefore(LocalDateTime.now())) {
+            throw new EntityIsUnmodifiableException(ExceptionMessages.ENTITY_IS_UNMODIFIABLE);
+        }
 
         if (!ETagBuilder.isETagValid(etag, String.valueOf(databaseEvent.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
