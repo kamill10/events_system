@@ -1,5 +1,13 @@
 DELETE FROM public.account_history_role;
 
+DELETE FROM public.personal_data_history;
+
+DELETE FROM public.account_history;
+
+DELETE FROM public.password_history;
+
+DELETE FROM public.speaker_history;
+
 DELETE FROM public.account_role;
 
 DELETE FROM public.account_unlock;
@@ -21,12 +29,6 @@ DELETE FROM public.credential_reset;
 DELETE FROM public.ticket;
 
 DELETE FROM public.jwt_whitelist_token;
-
-DELETE FROM public.personal_data_history;
-
-DELETE FROM public.account_history;
-
-DELETE FROM public.password_history;
 
 DELETE FROM public.personal_data;
 
