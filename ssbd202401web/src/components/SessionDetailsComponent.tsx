@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { t } from "i18next";
 import { Key, useEffect, useState } from "react";
-import parseDate from "../validation/parseDate.ts";
+import { parseDateNoOffset } from "../validation/parseDate.ts";
 import { SessionDetailedType } from "../types/SessionDetailed.ts";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -61,8 +61,8 @@ export function SessionDetailsComponent() {
   const data = [
     { [t("name")]: session?.name },
     { [t("description")]: session?.description },
-    { [t("startTimeTime")]: parseDate(session?.startTime ?? "") },
-    { [t("endTimeTime")]: parseDate(session?.endTime ?? "") },
+    { [t("startTimeTime")]: parseDateNoOffset(session?.startTime ?? "") },
+    { [t("endTimeTime")]: parseDateNoOffset(session?.endTime ?? "") },
     { [t("allSeats")]: session?.maxSeats },
     { [t("freeSeats")]: session?.availableSeats },
     { [t("buildingAddress")]: address },

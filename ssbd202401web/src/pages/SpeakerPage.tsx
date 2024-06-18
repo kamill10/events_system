@@ -17,7 +17,7 @@ import { useSpeakers } from "../hooks/useSpeakers.ts";
 import { Speaker } from "../types/Speaker.ts";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SpeakerHistory from "../components/SpeakerHistory.tsx";
-import {SpeakerChanges} from "../types/SpeakerChanges.ts";
+import { SpeakerChanges } from "../types/SpeakerChanges.ts";
 
 export default function SpeakerPage() {
   const { t } = useTranslation();
@@ -27,28 +27,28 @@ export default function SpeakerPage() {
   const sendNotification = useNotification();
   const [page, setPage] = useState(0);
   const { getSpeakerHistory } = useSpeakers();
-  const [speakerHistory, setSpeakerHistory] = useState <SpeakerChanges [] | null> (null);
+  const [speakerHistory, setSpeakerHistory] = useState<SpeakerChanges[] | null>(
+    null,
+  );
   const handleChange = (_: SyntheticEvent, newValue: number) => {
     setPage(newValue);
   };
 
   async function fetchSpeaker() {
     if (id) {
-        Promise.all( [
-            getSpeakerById(id),
-            getSpeakerHistory(id)
-        ]).then(([speaker,speakerHistory]) => {
-            setSpeaker(speaker);
-            setSpeakerHistory(speakerHistory);
-        });
-
+      Promise.all([getSpeakerById(id), getSpeakerHistory(id)]).then(
+        ([speaker, speakerHistory]) => {
+          setSpeaker(speaker);
+          setSpeakerHistory(speakerHistory);
+        },
+      );
     } else {
       sendNotification({
         type: "error",
         description: t("noURLParam"),
       });
     }
-      console.log(speakerHistory)
+    console.log(speakerHistory);
   }
 
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function SpeakerPage() {
       </Button>
       <Tabs value={page} onChange={handleChange}>
         <Tab label={t("changeSpeakerDetails")}></Tab>
-          <Tab label={t("speakerHistory")}></Tab>
+        <Tab label={t("speakerHistory")}></Tab>
       </Tabs>
 
       <Divider></Divider>
@@ -112,11 +112,9 @@ export default function SpeakerPage() {
           fetchSpeaker={fetchSpeaker}
         ></ChangeSpeakerDetails>
       )}
-        {page == 1 && (
-            <SpeakerHistory
-                speakerHistory={speakerHistory}
-            ></SpeakerHistory>
-        )}
+      {page == 1 && (
+        <SpeakerHistory speakerHistory={speakerHistory}></SpeakerHistory>
+      )}
     </ContainerComponent>
   );
 }

@@ -414,7 +414,6 @@ export const useLocations = () => {
     }
   };
 
-
   return {
     locations,
     getLocationsWithPagination,

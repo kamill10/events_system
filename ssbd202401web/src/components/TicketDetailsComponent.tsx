@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import parseDate from "../validation/parseDate.ts";
+import parseDate, { parseDateNoOffset } from "../validation/parseDate.ts";
 import { useAccount } from "../hooks/useAccount.ts";
 
 export function TicketDetailsComponent({
@@ -37,13 +37,13 @@ export function TicketDetailsComponent({
     { [t("eventName")]: ticket?.session.event.name },
     { [t("sessionName")]: ticket?.session.name },
     {
-      [t("sessionStartDate")]: parseDate(
+      [t("sessionStartDate")]: parseDateNoOffset(
         ticket?.session.startTime ?? "",
         myAccount.account?.accountTimeZone,
       ),
     },
     {
-      [t("sessionEndDate")]: parseDate(
+      [t("sessionEndDate")]: parseDateNoOffset(
         ticket?.session.endTime ?? "",
         myAccount.account?.accountTimeZone,
       ),

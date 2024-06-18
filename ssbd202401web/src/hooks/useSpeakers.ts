@@ -170,7 +170,7 @@ export const useSpeakers = () => {
     } finally {
       setIsFetching(false);
     }
-  }
+  };
 
   return {
     speakers,
