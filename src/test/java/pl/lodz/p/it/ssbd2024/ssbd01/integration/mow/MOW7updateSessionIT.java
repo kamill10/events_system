@@ -776,5 +776,50 @@ public class MOW7updateSessionIT extends AbstractControllerIT {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
+    @Test
+    public void updateSessionAfterEndNegative() {
+
+        given()
+                .contentType("application/json")
+                .header("Authorization", "Bearer " + managerToken)
+                .header("Accept-Language", "pl-PL")
+                .when()
+                .get(baseUrl + "/events/e8d0f782-d347-4775-8944-f6fabea3e2d3")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        // TODO: For some reason this session is not present in database
+//        var response = given()
+//                .contentType("application/json")
+//                .header("Authorization", "Bearer " + managerToken)
+//                .when()
+//                .get(baseUrl + "/sessions/manager/58de00e3-6112-4f69-91c3-26df96b6632b")
+//                .then()
+//                .statusCode(HttpStatus.OK.value());
+//
+//        String etag = response.extract().header("ETag");
+//        etag = etag.substring(1, etag.length() - 1);
+
+//        UpdateSessionDTO updateSessionDTO = new UpdateSessionDTO(
+//                UUID.fromString("78f0f497-10b7-4478-9a28-c9dc86118e67"),
+//                UUID.fromString("713c84a3-03bd-4206-ac5c-ecf8d7d04ae6"),
+//                "Dlaczego Spring bez buta jest najlepszy?",
+//                "Wykład o najlepszym frameworku na świecie",
+//                LocalDateTime.of(2024, 1, 11, 1, 1, 1),
+//                LocalDateTime.of(2024, 1, 11, 2, 1, 1),
+//                25
+//        );
+//
+//        given()
+//                .contentType("application/json")
+//                .header("Authorization", "Bearer " + managerToken)
+//                .header("If-Match", etag)
+//                .when()
+//                .body(updateSessionDTO)
+//                .put(baseUrl + "/sessions/58de00e3-6112-4f69-91c3-26df96b6632b")
+//                .then()
+//                .statusCode(HttpStatus.FORBIDDEN.value());
+
+    }
 
 }

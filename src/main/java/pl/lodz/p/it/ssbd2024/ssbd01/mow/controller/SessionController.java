@@ -72,7 +72,7 @@ public class SessionController {
             SessionStartDateInPast,
             SessionNotFoundException,
             SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, RoomIsBusyException, RoomSeatsExceededException,
-            SpeakerIsBusyException {
+            SpeakerIsBusyException, EntityIsUnmodifiableException {
         Session session = SessionDTOConverter.getSession(updateSessionDTO);
         sessionService.updateSession(id, etag, session, updateSessionDTO.speakerId(), updateSessionDTO.roomId());
         return ResponseEntity.status(HttpStatus.OK).build();

@@ -39,11 +39,16 @@ public class SessionService {
             SessionStartDateInPast,
             SessionStartDateAfterEndDateException,
             SessionsExistOutsideRangeException, RoomNotFoundException, SpeakerNotFoundException, SpeakerIsBusyException, RoomSeatsExceededException,
-            RoomIsBusyException {
+            RoomIsBusyException, EntityIsUnmodifiableException {
         Session pSession = sessionRepository.findById(id).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         if (!ETagBuilder.isETagValid(etag, String.valueOf(pSession.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
+
+        if (pSession.getEndTime().isBefore(LocalDateTime.now())) {
+            throw new EntityIsUnmodifiableException(ExceptionMessages.ENTITY_IS_UNMODIFIABLE);
+        }
+
         if (session.getStartTime().isAfter(session.getEndTime())) {
             throw new SessionStartDateAfterEndDateException(ExceptionMessages.SESSION_START_AFTER_END);
         }
