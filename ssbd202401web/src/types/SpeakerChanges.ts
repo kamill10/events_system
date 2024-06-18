@@ -1,7 +1,7 @@
-import {ActionTypeEnum} from "./enums/ActionType.enum.ts";
+import { ActionTypeEnum } from "./enums/ActionType.enum.ts";
 
 export interface SpeakerChanges {
-    id: string;
+  id: string;
   firstName: string;
   lastName: string;
   createdAt: string;
@@ -9,5 +9,4 @@ export interface SpeakerChanges {
   createdBy: string;
   updatedBy: string;
   actionType: ActionTypeEnum;
-
 }
