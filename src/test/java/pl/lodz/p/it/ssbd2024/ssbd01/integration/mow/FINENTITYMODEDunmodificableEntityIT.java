@@ -28,7 +28,7 @@ public class FINENTITYMODEDunmodificableEntityIT extends AbstractControllerIT {
                 .header("Authorization", "Bearer " + managerToken)
                 .header("Accept-Language", "pl-PL")
                 .when()
-                .get(baseUrl + "/events/5b9cd583-b097-40a6-887f-7d4f440f99c9")
+                .get(baseUrl + "/events/e8d0f782-d347-4775-8944-f6fabea3e2d3")
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -47,7 +47,7 @@ public class FINENTITYMODEDunmodificableEntityIT extends AbstractControllerIT {
                 .header(HttpHeaders.IF_MATCH, etag)
                 .body(eventDTO)
                 .when()
-                .put(baseUrl + "/events/5b9cd583-b097-40a6-887f-7d4f440f99c9")
+                .put(baseUrl + "/events/e8d0f782-d347-4775-8944-f6fabea3e2d3")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }

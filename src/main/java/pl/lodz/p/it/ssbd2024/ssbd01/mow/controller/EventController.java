@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.GetParticipantDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetEventDTO;
-import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
@@ -76,7 +75,7 @@ public class EventController {
             EventStartDateAfterEndDateException,
             DeepLException,
             InterruptedException,
-            EventStartDateInPastException, EntityIsUnmodifiableException {
+            EntityIsUnmodifiableException {
         Event event = EventDTOConverter.getEvent(updateEventDTO);
         Event updatedEvent = eventService.updateEvent(id, etag, event);
         return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventPlDTO(updatedEvent));
