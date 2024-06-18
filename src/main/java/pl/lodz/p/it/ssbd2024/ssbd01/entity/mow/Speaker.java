@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.lodz.p.it.ssbd2024.ssbd01.entity.validator.annotation.ValidSpeaker;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
 
 import java.util.Objects;
@@ -21,16 +22,13 @@ import java.util.Objects;
 @UniqueConstraint(columnNames = {"firstName", "lastName"}),
         name = "speaker"
 )
+@ValidSpeaker
 public class Speaker extends ControlledEntity {
 
     @Column(nullable = false, length = 32)
-    @NotBlank
-    @Size(min = 2, max = 32)
     private String firstName;
 
     @Column(nullable = false, length = 64)
-    @NotBlank
-    @Size(min = 2, max = 64)
     private String lastName;
 
     public Speaker(String firstName, String lastName) {
