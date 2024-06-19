@@ -12,3 +12,4 @@ test("resetPassword", async ({ page }) => {
   await page.getByRole("button", { name: "Change password" }).click();
   await expect(page.getByText("Request sent successfully!")).toBeVisible();
 });
+
