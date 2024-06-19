@@ -12,7 +12,7 @@ export function HistoricalEventRowComponent({ event }: { event: Event }) {
       <TableCell align="right">
         {parseDateNoOffset(event.startDate, account?.accountTimeZone)}
       </TableCell>
-      <TableCell align="right" >
+      <TableCell align="right">
         {parseDateNoOffset(event.endDate, account?.accountTimeZone)}
       </TableCell>
     </TableRow>
