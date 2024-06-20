@@ -15,11 +15,15 @@ import DateTimePickerComponent from "./DateTimePickerComponent";
 import FormComponent from "./FormComponent";
 import SaveIcon from "@mui/icons-material/Save";
 import TextFieldComponent from "./TextFieldComponent";
+import { useEvents } from "../hooks/useEvents";
+import { Event } from "../types/Event";
 
 export default function UpdateSessionComponent({ id }: { id: string }) {
   const { t } = useTranslation();
   const { getSessionForManager, updateSession } = useSessions();
   const [openConfirm, setOpenConfirm] = useState(false);
+  const { getEventById } = useEvents();
+  const [event, setEvent] = useState<Event | null>(null);
   const [session, setSession] = useState<SessionDetailedType | null>(null);
 
   const {
@@ -43,6 +47,13 @@ export default function UpdateSessionComponent({ id }: { id: string }) {
     },
     resolver: yupResolver(CreateSessionSchema),
   });
+
+  async function getEvent() {
+    const response = await getEventById(session?.event.id ?? "");
+    if (!(response instanceof AxiosError)) {
+      setEvent(response as Event);
+    }
+  }
 
   const fetchSession = async () => {
     const response = await getSessionForManager(id ?? "");
@@ -80,6 +91,13 @@ export default function UpdateSessionComponent({ id }: { id: string }) {
   useEffect(() => {
     fetchSession();
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      getEvent();
+    }
+  }, [session])
+
   useEffect(() => {
     setValue("description", session?.description ?? "");
     setValue("name", session?.name ?? "");
@@ -146,6 +164,8 @@ export default function UpdateSessionComponent({ id }: { id: string }) {
           trigger={trigger}
           type=""
           whatToValidate={["endDate"]}
+          minDate={dayjs(event?.startDate)}
+          maxDate={dayjs(event?.endDate)}
         ></DateTimePickerComponent>
         <DateTimePickerComponent
           control={control}
@@ -155,6 +175,8 @@ export default function UpdateSessionComponent({ id }: { id: string }) {
           trigger={trigger}
           type=""
           whatToValidate={["startDate"]}
+          minDate={dayjs(event?.startDate)}
+          maxDate={dayjs(event?.endDate)}
         ></DateTimePickerComponent>
         <Button
           type="submit"

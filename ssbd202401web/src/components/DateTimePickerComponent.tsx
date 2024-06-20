@@ -6,7 +6,16 @@ import { DatePickerProps } from "../types/Components";
 export default function DateTimePickerComponent<T extends FieldValues>(
   props: DatePickerProps<T>,
 ) {
-  const { control, name, label, errors, trigger, whatToValidate } = props;
+  const {
+    control,
+    name,
+    label,
+    errors,
+    trigger,
+    whatToValidate,
+    minDate,
+    maxDate,
+  } = props;
   return (
     <>
       <Controller
@@ -34,6 +43,8 @@ export default function DateTimePickerComponent<T extends FieldValues>(
               }}
               name={field.name}
               format="DD-MM-YYYY H:mm:ss"
+              minDateTime={minDate}
+              maxDateTime={maxDate}
             ></DateTimePicker>
           );
         }}

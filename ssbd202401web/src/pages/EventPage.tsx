@@ -140,6 +140,7 @@ export default function EventPage() {
         open={open}
         eventId={id ?? ""}
         getSessions={getSessions}
+        event={event}
       ></AddSessionModal>
     </>
   );

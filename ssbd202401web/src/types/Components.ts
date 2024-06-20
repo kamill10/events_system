@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import { HTMLInputTypeAttribute } from "react";
 import {
   Control,
@@ -23,6 +24,8 @@ export interface TextFieldProps<T extends FieldValues> {
 export interface DatePickerProps<T extends FieldValues>
   extends TextFieldProps<T> {
   whatToValidate?: string[];
+  minDate?: Dayjs;
+  maxDate?: Dayjs;
 }
 
 export interface RouteType {

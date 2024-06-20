@@ -11,6 +11,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { TicketDetailsComponent } from "../components/TicketDetailsComponent.tsx";
 import ConfirmChangeModal from "../components/ConfirmChangeModal.tsx";
 import { ClearIcon } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 export function TicketPage() {
   const { t } = useTranslation();
@@ -78,7 +79,7 @@ export function TicketPage() {
       >
         {t("refreshData")}
       </Button>
-      {ticket?.isNotCancelled && (
+      {ticket?.isNotCancelled && dayjs().diff(dayjs(ticket.session.startTime)) < 0 && (
         <Button
           variant="contained"
           onClick={() => setOpen(true)}
