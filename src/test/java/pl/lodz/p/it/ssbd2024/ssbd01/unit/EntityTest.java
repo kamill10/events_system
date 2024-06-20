@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntitityTest {
+public class EntityTest {
 
     private static Role role;
     private static Role role2;

@@ -47,9 +47,7 @@ export default function ChangeLocationDataComponent({
   const onSubmit: SubmitHandler<UpdateLocationDataType> = async () => {
     setOpen(true);
   };
-  const onError: SubmitErrorHandler<UpdateLocationDataType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<UpdateLocationDataType> = (_) => {};
   useEffect(() => {
     setValue("name", location?.name ?? "");
     setValue("city", location?.city ?? "");

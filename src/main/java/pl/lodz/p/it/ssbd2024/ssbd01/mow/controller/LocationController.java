@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateLocationDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationAlreadyDeletedException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
@@ -69,7 +70,8 @@ public class LocationController {
 
     @GetMapping("/deleted/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<GetLocationDTO> getDeletedLocation(@PathVariable UUID id) throws LocationNotFoundException {
+    public ResponseEntity<GetLocationDTO> getDeletedLocation(@PathVariable UUID id)
+            throws AppException {
         Location location = locationService.getDeletedLocationById(id);
         String eTag = ETagBuilder.buildETag(location.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)
@@ -80,7 +82,7 @@ public class LocationController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> restoreLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id)
-            throws LocationNotFoundException, OptLockException {
+            throws AppException {
         locationService.restoreLocation(id, eTagReceived);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -89,7 +91,7 @@ public class LocationController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> deleteLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @NotNull @PathVariable UUID id)
-            throws LocationNotFoundException, OptLockException, LocationAlreadyDeletedException {
+            throws AppException {
         locationService.deleteLocation(id, eTagReceived);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -106,7 +108,7 @@ public class LocationController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetLocationDTO> updateLocation(@RequestHeader(HttpHeaders.IF_MATCH) String eTagReceived, @PathVariable UUID id, @RequestBody
-    @Valid UpdateLocationDTO updateLocationDTO) throws LocationNotFoundException, OptLockException {
+    @Valid UpdateLocationDTO updateLocationDTO) throws AppException {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(LocationDTOConverter.toGetLocationDTO(locationService
                         .updateLocation(id, LocationDTOConverter
@@ -115,7 +117,7 @@ public class LocationController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<GetLocationDTO> getLocation(@PathVariable UUID id) throws LocationNotFoundException {
+    public ResponseEntity<GetLocationDTO> getLocation(@PathVariable UUID id) throws AppException {
         Location location = locationService.getLocationById(id);
         String eTag = ETagBuilder.buildETag(location.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK)

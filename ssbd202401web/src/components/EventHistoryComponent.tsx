@@ -76,9 +76,7 @@ export function EventHistoryComponent() {
     getHistoricalEvents();
   }, []);
 
-  const onError: SubmitErrorHandler<PaginationRequestParams> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<PaginationRequestParams> = (_) => {};
 
   const handleChangePage = (_: any, newPage: number) => {
     setValue("page", newPage);

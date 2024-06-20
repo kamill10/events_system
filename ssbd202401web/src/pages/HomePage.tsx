@@ -6,6 +6,7 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import EventCarouselComponent from "../components/EventCarouselComponent";
 import { Event } from "../types/Event";
+import { Box } from "@mui/material";
 const responsive = {
   superLargeDesktop: {
     // the naming can be any, depends on you.
@@ -38,16 +39,18 @@ export default function HomePage() {
   return (
     <ContainerComponent>
       {events != null && (
-        <Carousel responsive={responsive} keyBoardControl={true}>
-          {events?.map((event: Event) => {
-            return (
-              <EventCarouselComponent
-                key={event.id}
-                event={event}
-              ></EventCarouselComponent>
-            );
-          })}
-        </Carousel>
+        <Box>
+          <Carousel responsive={responsive} keyBoardControl={true}>
+            {events?.map((event: Event) => {
+              return (
+                <EventCarouselComponent
+                  key={event.id}
+                  event={event}
+                ></EventCarouselComponent>
+              );
+            })}
+          </Carousel>
+        </Box>
       )}
     </ContainerComponent>
   );

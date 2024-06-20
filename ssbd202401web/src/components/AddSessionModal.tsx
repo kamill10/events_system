@@ -8,23 +8,26 @@ import { CreateSessionType } from "../types/Session";
 import { useTranslation } from "react-i18next";
 import { useSessions } from "../hooks/useSessions";
 import FormComponent from "./FormComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextFieldComponent from "./TextFieldComponent";
 import AutocompletionComponent from "./AutocompletionComponent";
 import SaveIcon from "@mui/icons-material/Save";
 import ConfirmChangeModal from "./ConfirmChangeModal";
 import DateTimePickerComponent from "./DateTimePickerComponent";
+import { Event } from "../types/Event";
 
 export default function AddSessionModal({
   open,
   onClose,
   eventId,
   getSessions,
+  event,
 }: {
   open: boolean;
   onClose: () => void;
   eventId: string | null;
   getSessions: () => void;
+  event: Event | null;
 }) {
   const { t } = useTranslation();
   const { createSession } = useSessions();
@@ -44,13 +47,18 @@ export default function AddSessionModal({
       eventId: eventId ?? "",
       speakerId: "",
       roomId: "",
-      startDate: dayjs(),
-      endDate: dayjs(),
+      startDate: dayjs(event?.startDate),
+      endDate: dayjs(event?.endDate),
       maxSeats: 1,
       locationId: "",
     },
     resolver: yupResolver(CreateSessionSchema),
   });
+
+  useEffect(() => {
+    setValue("startDate", dayjs(event?.startDate));
+    setValue("endDate", dayjs(event?.endDate));
+  }, [event]);
 
   const setSpeakerId = (speakerId: string) => {
     setValue("speakerId", speakerId);
@@ -77,10 +85,7 @@ export default function AddSessionModal({
     setOpenConfirm(true);
   };
 
-  const onError: SubmitErrorHandler<CreateSessionType> = (err) => {
-    console.log(getValues());
-    console.error(err);
-  };
+  const onError: SubmitErrorHandler<CreateSessionType> = (_) => {};
 
   return (
     <>
@@ -107,6 +112,8 @@ export default function AddSessionModal({
             label={t("sessionDescLabel") + "*"}
             trigger={trigger}
             type="text"
+            multiline
+            rows={3}
           ></TextFieldComponent>
           <AutocompletionComponent
             setRoomId={setRoomId}
@@ -131,6 +138,8 @@ export default function AddSessionModal({
             trigger={trigger}
             type=""
             whatToValidate={["endDate"]}
+            minDate={dayjs(event?.startDate)}
+            maxDate={dayjs(event?.endDate)}
           ></DateTimePickerComponent>
           <DateTimePickerComponent
             control={control}
@@ -140,6 +149,8 @@ export default function AddSessionModal({
             trigger={trigger}
             type=""
             whatToValidate={["startDate"]}
+            minDate={dayjs(event?.startDate)}
+            maxDate={dayjs(event?.endDate)}
           ></DateTimePickerComponent>
           <Button
             type="submit"

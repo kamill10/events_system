@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,7 @@ public class ConfirmationReminder extends AbstractEntity {
 
     @OneToOne
     @JoinColumn(name = "account_id", nullable = false, updatable = false)
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_ACCOUNT)
     private Account account;
 
     @Column(nullable = false, updatable = false)

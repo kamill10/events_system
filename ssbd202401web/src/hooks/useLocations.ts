@@ -28,7 +28,6 @@ export const useLocations = () => {
       });
       return data.content;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -52,7 +51,6 @@ export const useLocations = () => {
       const { data } = await api.getAllLocations();
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -76,7 +74,6 @@ export const useLocations = () => {
       const { data } = await api.getAllRoomsByLocationId(locationId);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -100,7 +97,6 @@ export const useLocations = () => {
       const { data } = await api.getLocation(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -127,7 +123,6 @@ export const useLocations = () => {
         description: t("addLocationSuccess"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -156,7 +151,6 @@ export const useLocations = () => {
       });
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -183,7 +177,6 @@ export const useLocations = () => {
         description: t("deleteLocationSuccess"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -212,7 +205,6 @@ export const useLocations = () => {
       );
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -236,7 +228,6 @@ export const useLocations = () => {
       const { data } = await api.getRoomById(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -264,7 +255,6 @@ export const useLocations = () => {
       });
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -294,7 +284,6 @@ export const useLocations = () => {
       });
       return data.content;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -318,7 +307,6 @@ export const useLocations = () => {
       const { data } = await api.getDeletedLocation(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -345,7 +333,6 @@ export const useLocations = () => {
         description: t("restoreLocationSuccess"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -371,7 +358,6 @@ export const useLocations = () => {
         description: t("deleteRoomSuccess"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -397,7 +383,6 @@ export const useLocations = () => {
         description: t("addLocationSuccess"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",

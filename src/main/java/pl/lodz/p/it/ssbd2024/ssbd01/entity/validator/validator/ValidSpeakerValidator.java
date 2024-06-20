@@ -20,7 +20,8 @@ public class ValidSpeakerValidator implements ConstraintValidator<ValidSpeaker, 
         boolean isValid = true;
 
         if (speaker == null) {
-            return true;
+            isValid = false;
+            return isValid;
         }
         Pattern firstNamePattern = Pattern.compile("^[A-Z][a-zA-Z]{1,31}$");
         Pattern lastNamePattern = Pattern.compile("^[A-Z][a-zA-Z]{1,63}$");

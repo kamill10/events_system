@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.EventRepository;
@@ -57,13 +58,7 @@ public class EventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public Event updateEvent(UUID id, String etag, Event event) throws
-            EventNotFoundException,
-            OptLockException,
-            SessionsExistOutsideRangeException,
-            EventStartDateAfterEndDateException,
-            DeepLException,
-            InterruptedException, EntityIsUnmodifiableException {
+    public Event updateEvent(UUID id, String etag, Event event) throws Exception {
         Event databaseEvent = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
 
         if (databaseEvent.getEndDate().isBefore(LocalDateTime.now())) {
@@ -100,11 +95,7 @@ public class EventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public String createEvent(Event event) throws
-            EventStartDateAfterEndDateException,
-            DeepLException,
-            InterruptedException,
-            EventStartDateInPastException {
+    public String createEvent(Event event) throws Exception {
         if (event.getStartDate().isAfter(event.getEndDate())) {
             throw new EventStartDateAfterEndDateException(ExceptionMessages.EVENT_START_AFTER_END);
         }
@@ -130,7 +121,7 @@ public class EventService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void cancelEvent(UUID id, String etag) throws EventNotFoundException, EventAlreadyCancelledException, OptLockException {
+    public void cancelEvent(UUID id, String etag) throws AppException {
         Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
 
         if (!ETagBuilder.isETagValid(etag, String.valueOf(event.getVersion()))) {
@@ -161,7 +152,7 @@ public class EventService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")
-    public Event getEvent(UUID id) throws EventNotFoundException {
+    public Event getEvent(UUID id) throws AppException {
         return eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException(ExceptionMessages.EVENT_NOT_FOUND));
     }
 

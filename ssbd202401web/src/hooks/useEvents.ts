@@ -24,7 +24,6 @@ export const useEvents = () => {
       const { data } = await api.getNonPastEvents();
       setEvents(data);
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -57,7 +56,6 @@ export const useEvents = () => {
       });
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -81,7 +79,6 @@ export const useEvents = () => {
       const { data } = await api.getEventById(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -113,7 +110,6 @@ export const useEvents = () => {
         description: t("updateEventSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -140,7 +136,6 @@ export const useEvents = () => {
         description: t("cancelEventSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -164,7 +159,6 @@ export const useEvents = () => {
       const { data } = await api.getPastEventsPaginationResponse(params);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",

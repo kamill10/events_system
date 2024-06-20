@@ -27,7 +27,6 @@ export const useSpeakers = () => {
       });
       return data.content;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -51,7 +50,6 @@ export const useSpeakers = () => {
       const { data } = await api.getAllSpeakers();
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -75,7 +73,6 @@ export const useSpeakers = () => {
       const { data } = await api.getSpeaker(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -102,7 +99,6 @@ export const useSpeakers = () => {
         description: t("addSpeakerSuccess"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -131,7 +127,6 @@ export const useSpeakers = () => {
       });
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",
@@ -154,7 +149,6 @@ export const useSpeakers = () => {
       const { data } = await api.getSpeakerHistory(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) !== e.response?.data) {
         sendNotification({
           type: "error",

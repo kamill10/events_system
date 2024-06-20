@@ -56,7 +56,6 @@ export default function AutocompletionComponent({
       (obj) => `${obj.firstName} ${obj.lastName}` == fullSpeaker,
     )[0];
     if (speaker) {
-      console.log("speaker id from setSpeaker: " + speaker.id);
       setSpeakerId(speaker.id);
     } else {
       setSpeakerId("");
@@ -66,7 +65,6 @@ export default function AutocompletionComponent({
   function setRoom(roomName: string | null) {
     const room = rooms?.filter((obj) => obj.name == roomName)[0];
     if (room) {
-      console.log("room id from setRoom: " + room.id);
       setRoomId(room.id);
     } else {
       setRoomId("");

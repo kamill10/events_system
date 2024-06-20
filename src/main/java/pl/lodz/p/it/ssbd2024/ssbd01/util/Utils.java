@@ -5,6 +5,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Role;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.WrongRoleToAccountException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.AlreadySignUpException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.SessionNotActiveException;
@@ -20,14 +21,14 @@ public class Utils {
         return LocalDateTime.now().plusHours(expirationHours);
     }
 
-    public static void canAddManagerOrAdminRole(Account account) throws WrongRoleToAccountException {
+    public static void canAddManagerOrAdminRole(Account account) throws AppException {
         List<Role> accountRoles = account.getRoles();
         if (accountRoles.contains(new Role(AccountRoleEnum.ROLE_PARTICIPANT))) {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);
         }
     }
 
-    public static void canAddParticipantRole(Account account) throws WrongRoleToAccountException {
+    public static void canAddParticipantRole(Account account) throws AppException {
         List<Role> accountRoles = account.getRoles();
         if (!accountRoles.isEmpty()) {
             throw new WrongRoleToAccountException(ExceptionMessages.PARTICIPANT_CANNOT_HAVE_OTHER_ROLES);

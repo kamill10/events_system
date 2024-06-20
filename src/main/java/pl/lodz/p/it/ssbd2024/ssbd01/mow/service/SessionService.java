@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.*;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.*;
@@ -37,46 +38,32 @@ public class SessionService {
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void updateSession(UUID id, String etag, Session session, UUID speakerId, UUID roomId)
-            throws
-            SessionNotFoundException,
-            OptLockException,
-            SessionStartDateInPast,
-            SessionStartDateAfterEndDateException,
-            SessionsExistOutsideRangeException, RoomNotFoundException, SpeakerNotFoundException, SpeakerIsBusyException, RoomSeatsExceededException,
-            RoomIsBusyException, EntityIsUnmodifiableException {
+            throws AppException {
         Session pSession = sessionRepository.findById(id).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         if (!ETagBuilder.isETagValid(etag, String.valueOf(pSession.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
         }
-
         if (pSession.getEndTime().isBefore(LocalDateTime.now())) {
             throw new EntityIsUnmodifiableException(ExceptionMessages.ENTITY_IS_UNMODIFIABLE);
         }
-
         if (session.getStartTime().isAfter(session.getEndTime())) {
             throw new SessionStartDateAfterEndDateException(ExceptionMessages.SESSION_START_AFTER_END);
         }
-
         if (session.getStartTime().isBefore(LocalDateTime.now())) {
             throw new SessionStartDateInPast(ExceptionMessages.SESSION_START_IN_PAST);
         }
-
         Event pEvent = pSession.getEvent();
         if (session.getStartTime().isBefore(pEvent.getStartDate()) || session.getEndTime().isAfter(pEvent.getEndDate())) {
             throw new SessionsExistOutsideRangeException(ExceptionMessages.SESSIONS_OUTSIDE_RANGE);
         }
-
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
-
         Speaker speaker = speakerRepository.findById(speakerId)
                 .orElseThrow(() -> new SpeakerNotFoundException(ExceptionMessages.SPEAKER_NOT_FOUND));
-
         List<Session> speakerOverlappingSessions = sessionRepository.findSpeakerSessionsInRange(
                 speakerId,
                 session.getStartTime(),
                 session.getEndTime());
-
         if (!speakerOverlappingSessions.isEmpty()) {
             if (speakerOverlappingSessions.size() > 1) {
                 throw new SpeakerIsBusyException(ExceptionMessages.SPEAKER_IS_BUSY);
@@ -85,16 +72,13 @@ public class SessionService {
                 throw new SpeakerIsBusyException(ExceptionMessages.SPEAKER_IS_BUSY);
             }
         }
-
         if (session.getMaxSeats() > room.getMaxCapacity()) {
             throw new RoomSeatsExceededException(ExceptionMessages.ROOM_SEATS_EXCEEDED);
         }
-
         List<Session> overlappingSessions = sessionRepository.findSessionsInsideRangeAtRoom(
                 roomId,
                 session.getStartTime(),
                 session.getEndTime());
-
         if (!overlappingSessions.isEmpty()) {
             if (overlappingSessions.size() > 1) {
                 throw new RoomIsBusyException(ExceptionMessages.ROOM_BUSY);
@@ -103,8 +87,6 @@ public class SessionService {
                 throw new RoomIsBusyException(ExceptionMessages.ROOM_BUSY);
             }
         }
-
-
         pSession.setSpeaker(speaker);
         pSession.setRoom(room);
         pSession.setName(session.getName());
@@ -112,7 +94,6 @@ public class SessionService {
         pSession.setStartTime(session.getStartTime());
         pSession.setEndTime(session.getEndTime());
         pSession.setMaxSeats(session.getMaxSeats());
-
 
         sessionRepository.saveAndFlush(pSession);
     }
@@ -124,14 +105,7 @@ public class SessionService {
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public String createSession(Session session, UUID eventId, UUID speakerId, UUID roomId)
-            throws SessionStartDateAfterEndDateException,
-            SessionStartDateInPast,
-            EventNotFoundException,
-            RoomNotFoundException,
-            SpeakerNotFoundException,
-            RoomSeatsExceededException,
-            RoomIsBusyException,
-            SpeakerIsBusyException, SessionsExistOutsideRangeException {
+            throws AppException {
         if (session.getStartTime().isBefore(LocalDateTime.now())) {
             throw new SessionStartDateInPast(ExceptionMessages.SESSION_START_IN_PAST);
         }
@@ -189,7 +163,7 @@ public class SessionService {
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public void cancelSession(UUID id, String etag)
-            throws SessionNotFoundException, OptLockException, SessionAlreadyCanceledException {
+            throws AppException {
         Session session = sessionRepository.findById(id).orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));
         if (!ETagBuilder.isETagValid(etag, String.valueOf(session.getVersion()))) {
             throw new OptLockException(ExceptionMessages.OPTIMISTIC_LOCK_EXCEPTION);
@@ -228,7 +202,7 @@ public class SessionService {
             rollbackFor = {Exception.class},
             timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")
-    public Session getSession(UUID id) throws SessionNotFoundException {
+    public Session getSession(UUID id) throws AppException {
         return sessionRepository
                 .findById(id)
                 .orElseThrow(() -> new SessionNotFoundException(ExceptionMessages.SESSION_NOT_FOUND));

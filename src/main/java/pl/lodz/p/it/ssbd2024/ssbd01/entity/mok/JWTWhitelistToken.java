@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -19,7 +20,7 @@ public class JWTWhitelistToken extends AbstractEntity {
     @Column(unique = true, nullable = false, updatable = false)
     private String token;
 
-    @Future
+    @Future(message = ExceptionMessages.INCORRECT_EXPIRATION_DATE)
     private Date expirationDate;
 
     @ManyToOne

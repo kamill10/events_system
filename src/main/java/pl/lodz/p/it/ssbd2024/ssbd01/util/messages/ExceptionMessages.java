@@ -78,4 +78,19 @@ public class ExceptionMessages {
     public static final String ENTITY_IS_UNMODIFIABLE = "Entity is unmodifiable.";
     public static final String INCORRECT_ACTIVE_STATUS = "Incorrect active status.";
     public static final String LOCATION_CANNOT_BE_NULL = "Location cannot be null.";
+    public static final String INCORRECT_START_DATE = "Incorrect start date.";
+    public static final String INCORRECT_END_DATE = "Incorrect end date.";
+    public static final String INCORRECT_LOCATION = "Incorrect location.";
+    public static final String INCORRECT_SPEAKER = "Incorrect speaker.";
+    public static final String INCORRECT_ROOM = "Incorrect room.";
+    public static final String INCORRECT_MAX_SEATS = "Incorrect max seats.";
+    public static final String INCORRECT_AVAILABLE_SEATS = "Incorrect available seats.";
+    public static final String INCORRECT_ACCOUNT = "Incorrect account.";
+    public static final String INCORRECT_SESSION = "Incorrect session.";
+    public static final String INCORRECT_RESERVATION_TIME = "Incorrect reservation time.";
+    public static final String INCORRECT_TOKEN = "Incorrect token.";
+    public static final String INCORRECT_THEME = "Incorrect theme.";
+    public static final String INCORRECT_TIME_ZONE = "Incorrect time zone.";
+    public static final String INCORRECT_EXPIRATION_DATE = "Incorrect expiration date.";
+    public static final String INCORRECT_ROLE_NAME = "Incorrect role name.";
 }

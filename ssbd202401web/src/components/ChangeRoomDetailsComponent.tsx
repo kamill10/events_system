@@ -49,9 +49,7 @@ export default function ChangeRoomDetailsComponent({
     setConfirmOpen(true);
     fetchRoom();
   };
-  const onError: SubmitErrorHandler<UpdateRoomType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<UpdateRoomType> = (_) => {};
 
   useEffect(() => {
     setValue("name", room?.name ?? "");

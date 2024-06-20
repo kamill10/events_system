@@ -136,7 +136,7 @@ i18next
           addSpeakerText: "Dodaj prowadzącego",
           chooseOneOfRoles: "Wybierz jedną z dostępnych ról do nadania!",
           rolesAssignedToAcc: "Role przypisane do konta",
-          currentPassword: "Aktulane hasło",
+          currentPassword: "Aktualne hasło",
           areYouSure: "Czy jesteś pewnien, że chcesz kontynuować?",
           confirmChange: "Potwierdź zmiane",
           profileDetails: "Dane konta",
@@ -497,7 +497,7 @@ i18next
           sessionDescLabel: "Opis sesji",
           speakerIdLabel: "Prowadzący",
           locationIdLabel: "Budynek",
-          sessionMaxSeatsLabel: "Event is requiredIlość miejsc",
+          sessionMaxSeatsLabel: "Ilość miejsc",
           roomIdRequired: "Pomieszczenie jest wyRoom is requiredmagane",
           speakerIdRequired: "Prowadzący jest wymaganySpeaker is required",
           locationIdRequired: "Budynek jest wymaganyBuilding is required",
@@ -513,6 +513,13 @@ i18next
           updateSession: "Zmień sesje",
           noChange: "Bez zmian",
           speakerHistory: "HISTORIA ZMIAN",
+          errorPageTitle: "Oh oh... ☹️",
+          errorPageBody:
+            "Strona, którą próbujesz odwiedzić, nie istnieje lub nie masz do niej dostępu",
+          errorPageLink: "Sprawdź nadchodzące wydarzenia!",
+          speakerIdNull: "Prowadzący jest wymagany",
+          locationIdNull: "Budynek jest wymagany",
+          roomIdNull: "Pomieszczenie jest wymagane"
         },
       },
       ENGLISH: {
@@ -788,7 +795,7 @@ i18next
           passwordRequired: "Password is required",
           passwordWrongFormat:
             "Password must contain a 1 capital letter, 1 lowercase letter and 1 special character",
-          passwordsDontMatch: "Password's don't match",
+          passwordsDontMatch: "Passwords don't match",
           confirmPasswordRequired: "Confirm password is required",
           emailWrongFormat: "E-mail is in a wrong format",
           emailRequired: "E-mail is required",
@@ -981,6 +988,13 @@ i18next
           updateSession: "Update session",
           noChange: "No changes",
           speakerHistory: "HISTORY",
+          errorPageTitle: "Oh oh... ☹️",
+          errorPageBody:
+            "The page you try to access doesn't exist or you don't have access to it",
+          errorPageLink: "Check out upcoming events!",
+          speakerIdNull: "Speaker is required",
+          locationIdNull: "Location is required",
+          roomIdNull: "Room is required"
         },
       },
     },

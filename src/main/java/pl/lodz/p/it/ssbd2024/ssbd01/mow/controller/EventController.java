@@ -15,6 +15,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateEventDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Event;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
@@ -46,7 +47,7 @@ public class EventController {
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<GetEventDTO> getEvent(@RequestHeader(HttpHeaders.ACCEPT_LANGUAGE) String language, @PathVariable UUID id)
-            throws EventNotFoundException {
+            throws AppException {
         Event event = eventService.getEvent(id);
         String etag = ETagBuilder.buildETag(event.getVersion().toString());
         GetEventDTO eventDTO = TranslationUtils.resolveEventLanguage(event, language);
@@ -68,14 +69,7 @@ public class EventController {
     public ResponseEntity<GetEventDTO> updateEvent(
             @PathVariable UUID id,
             @RequestHeader(HttpHeaders.IF_MATCH) String etag,
-            @RequestBody @Valid UpdateEventDTO updateEventDTO) throws
-            OptLockException,
-            SessionsExistOutsideRangeException,
-            EventNotFoundException,
-            EventStartDateAfterEndDateException,
-            DeepLException,
-            InterruptedException,
-            EntityIsUnmodifiableException {
+            @RequestBody @Valid UpdateEventDTO updateEventDTO) throws Exception {
         Event event = EventDTOConverter.getEvent(updateEventDTO);
         Event updatedEvent = eventService.updateEvent(id, etag, event);
         return ResponseEntity.status(HttpStatus.OK).body(EventDTOConverter.getEventPlDTO(updatedEvent));
@@ -84,11 +78,7 @@ public class EventController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<String> createEvent(@RequestBody @Valid CreateEventDTO createEventDTO)
-            throws
-            EventStartDateAfterEndDateException,
-            DeepLException,
-            InterruptedException,
-            EventStartDateInPastException {
+            throws Exception {
         Event event = EventDTOConverter.getEvent(createEventDTO);
         String eventId = eventService.createEvent(event);
         return ResponseEntity.status(HttpStatus.CREATED).body(eventId);
@@ -97,7 +87,7 @@ public class EventController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> cancelEvent(@PathVariable UUID id, @RequestHeader(HttpHeaders.IF_MATCH) String etag)
-            throws EventNotFoundException, EventAlreadyCancelledException, OptLockException {
+            throws AppException {
         eventService.cancelEvent(id, etag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.AccountRoleEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 @ToString
 @Getter
@@ -21,8 +22,8 @@ import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 public class Role extends AbstractEntity {
 
     @Column(nullable = false, unique = true, updatable = false, length = 32)
-    @NotBlank
-    @Size(max = 32)
+    @NotBlank(message = ExceptionMessages.INCORRECT_ROLE_NAME)
+    @Size(max = 32, message = ExceptionMessages.INCORRECT_ROLE_NAME)
     @Enumerated(EnumType.STRING)
     private AccountRoleEnum name;
 

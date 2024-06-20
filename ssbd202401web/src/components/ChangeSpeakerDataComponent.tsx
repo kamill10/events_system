@@ -41,9 +41,7 @@ export default function ChangeSpeakerDataComponent({
   const onSubmit: SubmitHandler<UpdateSpeakerDataType> = async () => {
     setOpen(true);
   };
-  const onError: SubmitErrorHandler<UpdateSpeakerDataType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<UpdateSpeakerDataType> = (_) => {};
   useEffect(() => {
     setValue("firstName", speaker?.firstName ?? "");
     setValue("lastName", speaker?.lastName ?? "");
