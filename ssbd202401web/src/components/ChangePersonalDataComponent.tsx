@@ -58,9 +58,7 @@ export default function ChangePersonalDataComponent() {
     setOpen(true);
   };
 
-  const onError: SubmitErrorHandler<UpdatePersonalDataType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<UpdatePersonalDataType> = (_) => {};
 
   return (
     <>

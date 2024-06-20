@@ -16,7 +16,6 @@ export const useMySessions = () => {
       const { data } = await api.getMyHistoryTickets();
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -40,7 +39,6 @@ export const useMySessions = () => {
       const { data } = await api.getMyTicketsWithPagination(requestParams);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -64,7 +62,6 @@ export const useMySessions = () => {
       const { data } = await api.getTicket(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -87,7 +84,6 @@ export const useMySessions = () => {
       setIsFetching(true);
       await api.signOutOfSession(id);
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",

@@ -8,29 +8,34 @@ export default function RedirectPage() {
   const navigate = useNavigate();
   const { isAuthenticated, isAdmin, isManager, isParticipant } = useAccount();
 
+  function determineRoutes() {
+    let result = Object.values(Pathnames.public).concat(
+      Object.values(Pathnames.singlePage),
+    );
+    if (!isAuthenticated) {
+      return result.concat(Object.values(Pathnames.unauth));
+    }
+    if (isAuthenticated) {
+      result = result.concat(Object.values(Pathnames.auth));
+    }
+    if (isParticipant) {
+      result = result.concat(Object.values(Pathnames.participant));
+    }
+    if (isManager) {
+      result = result.concat(Object.values(Pathnames.manager));
+    }
+    if (isAdmin) {
+      result = result.concat(Object.values(Pathnames.admin));
+    }
+    return result;
+  }
+
   useEffect(() => {
-    if (
-      !isAuthenticated &&
-      !Object.values(Pathnames.public).includes(location.pathname)
-    ) {
-      navigate(Pathnames.public.home);
-    } else if (
-      isParticipant &&
-      !Object.values(Pathnames.participant).includes(location.pathname)
-    ) {
-      navigate(Pathnames.public.home);
-    } else if (
-      isManager &&
-      !Object.values(Pathnames.manager).includes(location.pathname)
-    ) {
-      navigate(Pathnames.public.home);
-    } else if (
-      isAdmin &&
-      !Object.values(Pathnames.admin).includes(location.pathname)
-    ) {
-      navigate(Pathnames.public.home);
-    } else {
+    const paths = determineRoutes();
+    if (paths.includes(location.pathname)) {
       navigate(location.pathname);
+    } else {
+      navigate(Pathnames.public.error);
     }
   }, [isAuthenticated, isAdmin, isManager, isParticipant]);
 

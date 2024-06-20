@@ -91,9 +91,7 @@ export default function SpeakersPage() {
           setModalOpen(false);
           getSpeakersWithPagination(getValues());
         })
-        .catch((error) => {
-          console.error("Error adding speaker:", error);
-        });
+        .catch((_) => {});
       setPendingChanges(null);
     }
     setConfirmModalOpen(false);
@@ -119,9 +117,7 @@ export default function SpeakersPage() {
     }
   }, [modalOpen, modalReset]);
 
-  const onError: SubmitErrorHandler<PaginationRequestParams> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<PaginationRequestParams> = (_) => {};
 
   const handleChangePage = (_: any, newPage: number) => {
     setValue("page", newPage);

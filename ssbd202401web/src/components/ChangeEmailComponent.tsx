@@ -37,9 +37,7 @@ export default function ChangeEmailComponent() {
     setOpen(true);
   };
 
-  const onError: SubmitErrorHandler<ChangeMyPasswordType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<ChangeMyPasswordType> = (_) => {};
 
   return (
     <>

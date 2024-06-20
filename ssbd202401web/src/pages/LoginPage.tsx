@@ -31,9 +31,7 @@ export default function LoginPage() {
     logIn(data);
   };
 
-  const onError: SubmitErrorHandler<LoginCredentialsType> = (errors) => {
-    console.error(errors);
-  };
+  const onError: SubmitErrorHandler<LoginCredentialsType> = (_) => {};
 
   return (
     <ContainerWithPictureComponent>

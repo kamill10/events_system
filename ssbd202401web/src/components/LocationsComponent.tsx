@@ -101,9 +101,7 @@ export default function LocationsComponent({
           setModalOpen(false);
           fetchLocations(getValues());
         })
-        .catch((error) => {
-          console.error("Error adding location:", error);
-        });
+        .catch((_) => {});
       setPendingChanges(null);
     }
     setConfirmModalOpen(false);
@@ -119,9 +117,7 @@ export default function LocationsComponent({
     setOpen(false);
   };
 
-  const onError: SubmitErrorHandler<PaginationRequestParams> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<PaginationRequestParams> = (_) => {};
 
   const handleChangePage = (_: any, newPage: number) => {
     setValue("page", newPage);

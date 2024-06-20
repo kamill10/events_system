@@ -25,9 +25,7 @@ export default function DeleteLocationButton({
       fetchLocation();
       setOpen(false);
       navigate(Pathnames.manager.locations);
-    } catch (error) {
-      console.error("Error deleting location:", error);
-    }
+    } catch (error) {}
   };
 
   return (

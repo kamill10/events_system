@@ -53,9 +53,7 @@ export default function ChangeAccountDataComponent({
     setOpen(true);
   };
 
-  const onError: SubmitErrorHandler<UpdatePersonalDataType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<UpdatePersonalDataType> = (_) => {};
 
   useEffect(() => {
     setValue("firstName", account?.firstName ?? "");

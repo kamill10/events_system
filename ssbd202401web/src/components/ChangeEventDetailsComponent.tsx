@@ -52,9 +52,7 @@ export default function ChangeEventDetailsComponent({
     setOpen(true);
   };
 
-  const onError: SubmitErrorHandler<CreateEventType> = (err) => {
-    console.error(err);
-  };
+  const onError: SubmitErrorHandler<CreateEventType> = (_) => {};
 
   useEffect(() => {
     setValue("name", event?.name ?? "");

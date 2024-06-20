@@ -497,7 +497,7 @@ i18next
           sessionDescLabel: "Opis sesji",
           speakerIdLabel: "Prowadzący",
           locationIdLabel: "Budynek",
-          sessionMaxSeatsLabel: "Event is requiredIlość miejsc",
+          sessionMaxSeatsLabel: "Ilość miejsc",
           roomIdRequired: "Pomieszczenie jest wyRoom is requiredmagane",
           speakerIdRequired: "Prowadzący jest wymaganySpeaker is required",
           locationIdRequired: "Budynek jest wymaganyBuilding is required",
@@ -513,6 +513,10 @@ i18next
           updateSession: "Zmień sesje",
           noChange: "Bez zmian",
           speakerHistory: "HISTORIA ZMIAN",
+          errorPageTitle: "Oh oh... ☹️",
+          errorPageBody:
+            "Strona, którą próbujesz odwiedzić, nie istnieje lub nie masz do niej dostępu",
+          errorPageLink: "Sprawdź nadchodzące wydarzenia!",
         },
       },
       ENGLISH: {
@@ -981,6 +985,10 @@ i18next
           updateSession: "Update session",
           noChange: "No changes",
           speakerHistory: "HISTORY",
+          errorPageTitle: "Oh oh... ☹️",
+          errorPageBody:
+            "The page you try to access doesn't exist or you don't have access to it",
+          errorPageLink: "Check out upcoming events!",
         },
       },
     },

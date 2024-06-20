@@ -75,10 +75,7 @@ export default function UpdateSessionComponent({ id }: { id: string }) {
     setOpenConfirm(true);
   };
 
-  const onError: SubmitErrorHandler<CreateSessionType> = (err) => {
-    console.log(getValues());
-    console.error(err);
-  };
+  const onError: SubmitErrorHandler<CreateSessionType> = (_) => {};
 
   useEffect(() => {
     fetchSession();
@@ -122,6 +119,8 @@ export default function UpdateSessionComponent({ id }: { id: string }) {
           label={t("sessionDescLabel") + "*"}
           trigger={trigger}
           type="text"
+          multiline
+          rows={4}
         ></TextFieldComponent>
         <AutocompletionComponent
           setRoomId={setRoomId}

@@ -61,7 +61,6 @@ export const useAccount = () => {
       navigate(Pathnames.public.home);
       getMyAccount();
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -116,7 +115,6 @@ export const useAccount = () => {
         description: t("logOutSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && e.response?.status !== 403) {
         if (t(e.response?.data) != e.response?.data) {
           sendNotification({
@@ -158,7 +156,6 @@ export const useAccount = () => {
       });
       navigate(Pathnames.unauth.login);
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -185,7 +182,6 @@ export const useAccount = () => {
         description: t("verifyAccountSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -212,7 +208,6 @@ export const useAccount = () => {
         description: t("changePasswordSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -239,7 +234,6 @@ export const useAccount = () => {
         description: t("changeEmailSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -266,7 +260,6 @@ export const useAccount = () => {
         description: t("confirmUnblockAccSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -292,7 +285,6 @@ export const useAccount = () => {
       i18n.changeLanguage(data.language);
       setTheme(data.accountTheme);
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -320,7 +312,6 @@ export const useAccount = () => {
         description: t("updateMyPersonalDataSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -347,7 +338,6 @@ export const useAccount = () => {
         description: t("updateMyPasswordSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -374,7 +364,6 @@ export const useAccount = () => {
         description: t("updateMyEmailSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -402,7 +391,6 @@ export const useAccount = () => {
       });
       navigate(Pathnames.unauth.login);
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -430,7 +418,6 @@ export const useAccount = () => {
       });
       navigate(Pathnames.unauth.login);
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -454,7 +441,6 @@ export const useAccount = () => {
       await api.setMyTheme(theme);
       setTheme(theme);
     } catch (e) {
-      console.error(e);
       sendNotification({
         description: t("setMyThemeFail"),
         type: "error",
@@ -472,7 +458,6 @@ export const useAccount = () => {
       setAdminLayout(true);
       navigate(Pathnames.public.home);
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -497,7 +482,6 @@ export const useAccount = () => {
       setAdminLayout(false);
       navigate(Pathnames.public.home);
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",

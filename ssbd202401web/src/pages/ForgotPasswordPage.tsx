@@ -30,9 +30,7 @@ export default function ForgotPasswordPage() {
     requestPasswordReset(data);
   };
 
-  const onError: SubmitErrorHandler<ForgotPasswordType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<ForgotPasswordType> = (_) => {};
 
   return (
     <ContainerWithPictureComponent>

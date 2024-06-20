@@ -25,8 +25,6 @@ export default function DeletedLocationRowComponent({
   const handleOpen = async () => {
     try {
       await getDeletedLocation(location.id);
-    } catch (error) {
-      console.error("Failed to get deleted location:", error);
     } finally {
       setOpen(true);
     }
@@ -39,8 +37,6 @@ export default function DeletedLocationRowComponent({
   const handleRestore = async () => {
     try {
       await restoreLocation(location.id);
-    } catch (error) {
-      console.error("Failed to restore location:", error);
     } finally {
       handleClose();
       fetchLocations(paginationRequestParams);
