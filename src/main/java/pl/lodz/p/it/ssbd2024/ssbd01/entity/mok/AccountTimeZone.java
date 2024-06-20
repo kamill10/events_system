@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.TimeZone;
 
@@ -16,8 +17,8 @@ import java.util.TimeZone;
 public class AccountTimeZone extends AbstractEntity {
 
     @Column(nullable = false, unique = true, updatable = false, length = 25)
-    @NotBlank
-    @Size(max = 25)
+    @NotBlank(message = ExceptionMessages.INCORRECT_TIME_ZONE)
+    @Size(max = 25, message = ExceptionMessages.INCORRECT_TIME_ZONE)
     private String timeZone;
 
 

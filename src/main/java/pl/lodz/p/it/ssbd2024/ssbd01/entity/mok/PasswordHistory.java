@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -18,14 +19,14 @@ public class PasswordHistory extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false,updatable = false)
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_ACCOUNT)
     private Account account;
 
 
     @ToString.Exclude
     @Column(nullable = false, length = 72)
-    @Size(min = 8, max = 72)
-    @NotNull
+    @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
+    @NotNull(message = ExceptionMessages.INCORRECT_PASSWORD)
     private String password;
 
     public PasswordHistory(Account account) {

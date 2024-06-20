@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.Objects;
 
@@ -18,8 +19,8 @@ import java.util.Objects;
 public class AccountTheme extends AbstractEntity {
 
     @Column(nullable = false, unique = true, updatable = false, length = 15)
-    @NotBlank
-    @Size(max = 15)
+    @NotBlank(message = ExceptionMessages.INCORRECT_THEME)
+    @Size(max = 15, message = ExceptionMessages.INCORRECT_THEME)
     private String theme;
 
 

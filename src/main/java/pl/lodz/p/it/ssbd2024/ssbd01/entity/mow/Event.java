@@ -22,17 +22,17 @@ import java.util.Objects;
 public class Event extends ControlledEntity {
 
     @Column(nullable = false, unique = true, updatable = true)
-    @NotBlank
-    @Size(min = 3, max = 128)
+    @NotBlank(message = ExceptionMessages.INCORRECT_NAME)
+    @Size(min = 3, max = 128, message = ExceptionMessages.INCORRECT_NAME)
     private String name;
 
-    @Size(max = 1024)
-    @NotNull
+    @Size(max = 1024, message = ExceptionMessages.INCORRECT_DESCRIPTION)
+    @NotNull(message = ExceptionMessages.INCORRECT_DESCRIPTION)
     @Column(columnDefinition = "varchar(1024)", nullable = false)
     private String descriptionPL;
 
-    @Size(max = 1024)
-    @NotNull
+    @Size(max = 1024, message = ExceptionMessages.INCORRECT_DESCRIPTION)
+    @NotNull(message = ExceptionMessages.INCORRECT_DESCRIPTION)
     @Column(columnDefinition = "varchar(1024)", nullable = false)
     private String descriptionEN;
 
@@ -47,13 +47,13 @@ public class Event extends ControlledEntity {
     /**
      * Sessions that are part of event cannot start before start date.
      */
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_START_DATE)
     private LocalDateTime startDate;
 
     /**
      * Sessions that are part of event cannot start after end date.
      */
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_END_DATE)
     private LocalDateTime endDate;
 
 
