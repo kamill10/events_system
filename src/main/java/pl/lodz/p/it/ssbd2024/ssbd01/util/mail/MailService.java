@@ -143,4 +143,8 @@ public class MailService {
     public void sendEmailOnEventCancel(Account account, String eventName) {
         mailTemplateService.sendEmailTemplate(account, "mail.event.cancel.subject", "mail.event.cancel.body", new Object[] {eventName});
     }
+
+    public void sendEmailOnSessionCancel(Account account, String sessionName) {
+        mailTemplateService.sendEmailTemplate(account, "mail.session.cancel.subject", "mail.session.cancel.body", new Object[] {sessionName});
+    }
 }

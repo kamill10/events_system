@@ -11,11 +11,14 @@ import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.repository.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ETagBuilder;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.RunAs;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.mail.MailService;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class SessionService {
     private final TicketRepository ticketRepository;
     private final SpeakerRepository speakerRepository;
     private final RoomRepository roomRepository;
+    private final MailService mailService;
 
     @Transactional(
             propagation = Propagation.REQUIRES_NEW,
@@ -194,8 +198,17 @@ public class SessionService {
         if (!session.getIsActive()) {
             throw new SessionAlreadyCanceledException(ExceptionMessages.SESSION_ALREADY_CANCELLED);
         }
-
         session.setIsActive(false);
+        List<Account> accounts = session.getTickets()
+                        .stream()
+                        .peek(ticket -> ticket.setIsNotCancelled(false))
+                        .collect(Collectors.groupingBy(Ticket::getAccount))
+                        .keySet()
+                        .stream()
+                        .toList();
+        accounts.forEach(account -> {
+            RunAs.runAsSystem(() -> mailService.sendEmailOnEventCancel(account, session.getName()));
+        });
         sessionRepository.saveAndFlush(session);
     }
 
