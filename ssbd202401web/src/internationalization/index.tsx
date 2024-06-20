@@ -795,7 +795,7 @@ i18next
           passwordRequired: "Password is required",
           passwordWrongFormat:
             "Password must contain a 1 capital letter, 1 lowercase letter and 1 special character",
-          passwordsDontMatch: "Password's don't match",
+          passwordsDontMatch: "Passwords don't match",
           confirmPasswordRequired: "Confirm password is required",
           emailWrongFormat: "E-mail is in a wrong format",
           emailRequired: "E-mail is required",
