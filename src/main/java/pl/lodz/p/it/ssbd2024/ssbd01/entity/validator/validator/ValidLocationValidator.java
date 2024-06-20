@@ -18,7 +18,8 @@ public class ValidLocationValidator implements ConstraintValidator<ValidLocation
         boolean isValid = true;
 
         if (location == null) {
-            return true;
+            isValid = false;
+            return isValid;
         }
 
         if (location.getName() == null || location.getName().isBlank() || location.getName().length() < 3 || location.getName().length() > 128) {
