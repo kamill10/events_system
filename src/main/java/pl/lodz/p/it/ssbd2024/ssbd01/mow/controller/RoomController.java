@@ -11,6 +11,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.create.CreateRoomDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetRoomDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateRoomDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.RoomNotFoundException;
@@ -69,7 +70,7 @@ public class RoomController {
     }
 
     @GetMapping("/room/deleted/{roomId}")
-    public ResponseEntity<GetRoomDTO> getDeletedRoomById(@PathVariable UUID roomId) throws RoomNotFoundException {
+    public ResponseEntity<GetRoomDTO> getDeletedRoomById(@PathVariable UUID roomId) throws AppException {
         Room room = roomService.getDeletedRoomById(roomId);
         String eTag = ETagBuilder.buildETag(room.getVersion().toString());
 
@@ -79,7 +80,7 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}")
-    public ResponseEntity<GetRoomDTO> getRoomById(@PathVariable UUID roomId) throws RoomNotFoundException {
+    public ResponseEntity<GetRoomDTO> getRoomById(@PathVariable UUID roomId) throws AppException {
         Room room = roomService.getRoomById(roomId);
         String eTag = ETagBuilder.buildETag(room.getVersion().toString());
 
@@ -90,7 +91,7 @@ public class RoomController {
 
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("/room")
-    public ResponseEntity<UUID> createRoom(@RequestBody @Valid CreateRoomDTO createRoomDTO) throws LocationNotFoundException {
+    public ResponseEntity<UUID> createRoom(@RequestBody @Valid CreateRoomDTO createRoomDTO) throws AppException {
         Room room = RoomDTOConverter.toRoom(createRoomDTO);
         var roomCreated = roomService.createRoom(room, createRoomDTO.locationId());
         return ResponseEntity.ok()
@@ -100,7 +101,7 @@ public class RoomController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/room/{roomId}")
     public ResponseEntity<?> deleteRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId)
-            throws OptLockException, RoomNotFoundException {
+            throws AppException {
         roomService.deleteRoom(roomId, eTagReceived);
 
         return ResponseEntity.ok()
@@ -110,7 +111,7 @@ public class RoomController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PatchMapping("/room/activate/{roomId}")
     public ResponseEntity<?> activateRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId)
-            throws OptLockException, RoomNotFoundException {
+            throws AppException {
         roomService.activateRoom(roomId, eTagReceived);
 
         return ResponseEntity.ok()
@@ -119,7 +120,7 @@ public class RoomController {
 
     @PatchMapping("/room/{roomId}")
     public ResponseEntity<GetRoomDTO> updateRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId, @RequestBody
-    UpdateRoomDTO roomDTO) throws RoomNotFoundException, OptLockException {
+    UpdateRoomDTO roomDTO) throws AppException {
         return ResponseEntity.ok()
                 .body(RoomDTOConverter.toRoomDto(roomService
                         .updateRoom(roomId, RoomDTOConverter.toRoom(roomDTO), eTagReceived)));

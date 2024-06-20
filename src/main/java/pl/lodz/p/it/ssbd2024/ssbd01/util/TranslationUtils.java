@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class TranslationUtils {
 
-    public static void translateEvent(Event event, String language, String apiKey) throws DeepLException, InterruptedException {
+    public static void translateEvent(Event event, String language, String apiKey) throws Exception {
 
         if (apiKey == null || apiKey.isEmpty()) {
             return;

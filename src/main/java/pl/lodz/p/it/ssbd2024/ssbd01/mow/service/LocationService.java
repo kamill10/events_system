@@ -11,6 +11,7 @@ import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Location;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationAlreadyDeletedException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
@@ -50,7 +51,7 @@ public class LocationService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public Location getDeletedLocationById(UUID id) throws LocationNotFoundException {
+    public Location getDeletedLocationById(UUID id) throws AppException {
         return locationRepository.findById(id)
                 .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
     }
@@ -62,7 +63,7 @@ public class LocationService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void restoreLocation(UUID id, String eTag) throws LocationNotFoundException, OptLockException {
+    public void restoreLocation(UUID id, String eTag) throws AppException {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(location.getVersion()))) {
@@ -82,8 +83,7 @@ public class LocationService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void deleteLocation(UUID id, String eTag)
-            throws LocationNotFoundException, OptLockException, LocationAlreadyDeletedException {
+    public void deleteLocation(UUID id, String eTag) throws AppException {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTag, location.getVersion().toString())) {
@@ -117,7 +117,7 @@ public class LocationService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public Location updateLocation(UUID id, Location location, String eTag) throws LocationNotFoundException, OptLockException {
+    public Location updateLocation(UUID id, Location location, String eTag) throws AppException {
         Location locationToUpdate = locationRepository.findById(id)
                 .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTag, String.valueOf(locationToUpdate.getVersion()))) {
@@ -134,7 +134,7 @@ public class LocationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public Location getLocationById(UUID id) throws LocationNotFoundException {
+    public Location getLocationById(UUID id) throws AppException {
         return locationRepository.findById(id)
                 .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
     }
