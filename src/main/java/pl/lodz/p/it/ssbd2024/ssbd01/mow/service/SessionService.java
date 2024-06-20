@@ -207,7 +207,7 @@ public class SessionService {
                         .stream()
                         .toList();
         accounts.forEach(account -> {
-            RunAs.runAsSystem(() -> mailService.sendEmailOnEventCancel(account, session.getName()));
+            RunAs.runAsSystem(() -> mailService.sendEmailOnSessionCancel(account, session.getName()));
         });
         sessionRepository.saveAndFlush(session);
     }
