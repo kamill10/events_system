@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.CustomAuthEntryPoint;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +33,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final CustomAuthEntryPoint customAuthenticationEntryPoint;
 
     @Bean(name = "mvcHandlerMappingIntrospector")
     public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
@@ -113,7 +115,9 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.DELETE, "/api/events/me/**").hasRole("PARTICIPANT");
 
 
-                });
+                })
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint));
         return http.build();
     }
 

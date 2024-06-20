@@ -10,6 +10,8 @@ import org.hibernate.MappingException;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -124,6 +126,16 @@ public class ExceptionHandlingController {
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<String> handleForbiddenException(ForbiddenException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bad credentials.");
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseEntity<String> handleInternalAuthServiceException(InternalAuthenticationServiceException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bad credentials.");
     }
 
 }
