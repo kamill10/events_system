@@ -45,9 +45,7 @@ export default function ChangeAccountEmailComponent({
     setOpen(true);
   };
 
-  const onError: SubmitErrorHandler<ChangeEmailType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<ChangeEmailType> = (_) => {};
 
   useEffect(() => {
     setValue("email", account?.email ?? "");

@@ -73,9 +73,7 @@ export default function AccountsPage() {
     getAccountsWithPagination(getValues());
   }, []);
 
-  const onError: SubmitErrorHandler<SortingRequestParams> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<SortingRequestParams> = (_) => {};
 
   const handleChangePage = (_: any, newPage: number) => {
     setValue("page", newPage);

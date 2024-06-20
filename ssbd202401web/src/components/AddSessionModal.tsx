@@ -77,10 +77,7 @@ export default function AddSessionModal({
     setOpenConfirm(true);
   };
 
-  const onError: SubmitErrorHandler<CreateSessionType> = (err) => {
-    console.log(getValues());
-    console.error(err);
-  };
+  const onError: SubmitErrorHandler<CreateSessionType> = (_) => {};
 
   return (
     <>

@@ -22,6 +22,7 @@ import { ConfirmEmailUpdatePage } from "../pages/ConfirmEmailUpdatePage.tsx";
 import { ConfirmUnblockAccountPage } from "../pages/ConfirmUnblockAccountPage.tsx";
 import { TicketPage } from "../pages/TicketPage.tsx";
 import SessionPage from "../pages/SessionPage.tsx";
+import ErrorPage from "../pages/ErrorPage.tsx";
 
 export const SinglePageRoutes: RouteType[] = [
   {
@@ -113,6 +114,13 @@ export const PublicRoutes: RouteType[] = [
     name: "Session",
     renderOnNavbar: false,
     renderOnDropdown: false,
+  },
+  {
+    pathname: Pathnames.public.error,
+    name: "Error",
+    page: ErrorPage,
+    renderOnDropdown: false,
+    renderOnNavbar: false,
   },
 ];
 

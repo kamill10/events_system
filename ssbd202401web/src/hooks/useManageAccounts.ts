@@ -20,7 +20,6 @@ export const useManageAccounts = () => {
       const { data } = await api.getAccountByUsername(username);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -44,7 +43,6 @@ export const useManageAccounts = () => {
       const { data } = await api.getAccountChanges(username);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -74,7 +72,6 @@ export const useManageAccounts = () => {
         description: t("updateAccountDataSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -101,7 +98,6 @@ export const useManageAccounts = () => {
         description: t("updateAccountPasswordSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -128,7 +124,6 @@ export const useManageAccounts = () => {
         description: t("updateAccountEmailSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -155,7 +150,6 @@ export const useManageAccounts = () => {
         description: t("activateAccountSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -182,7 +176,6 @@ export const useManageAccounts = () => {
         description: t("activateDeaccountSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -209,7 +202,6 @@ export const useManageAccounts = () => {
         description: t("addRoleSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -236,7 +228,6 @@ export const useManageAccounts = () => {
         description: t("removeRoleSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -266,7 +257,6 @@ export const useManageAccounts = () => {
       });
       return data.content;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",

@@ -119,9 +119,7 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
     }
   }, [modalOpen, modalReset]);
 
-  const onError: SubmitErrorHandler<PaginationRequestParams> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<PaginationRequestParams> = (_) => {};
 
   const handleChangePage = (_: any, newPage: number) => {
     setValue("page", newPage);
@@ -148,9 +146,7 @@ export function ManageRoomsComponent({ locationId }: { locationId: string }) {
           getRooms();
           // fetchLocations(getValues());
         })
-        .catch((error: any) => {
-          console.error("Error adding location:", error);
-        });
+        .catch((_) => {});
       setPendingChanges(null);
     }
     setConfirmModalOpen(false);

@@ -38,7 +38,7 @@ export default function SwitchRoleComponent() {
         {width < 1020 ? (
           <AdminPanelSettingsIcon></AdminPanelSettingsIcon>
         ) : (
-          t("ROLE_MANAGER")
+          t("ROLE_ADMIN")
         )}
       </Typography>
     </Box>

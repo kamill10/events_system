@@ -33,7 +33,7 @@ export default function AccountRowComponent({
           color: account.active ? "green" : "red",
         }}
       >
-        {account.active ? [t("yes")] : [t("yes")]}
+        {account.active ? [t("yes")] : [t("no")]}
       </TableCell>
     </TableRow>
   );

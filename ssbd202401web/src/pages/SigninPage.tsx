@@ -59,9 +59,7 @@ export default function SigninPage() {
     setOpen(true);
   };
 
-  const onError: SubmitErrorHandler<SignInCredentialsType> = (errors) => {
-    console.error(errors);
-  };
+  const onError: SubmitErrorHandler<SignInCredentialsType> = () => {};
 
   return (
     <ContainerWithPictureComponent>

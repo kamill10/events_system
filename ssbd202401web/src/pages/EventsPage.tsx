@@ -73,9 +73,7 @@ export default function EventsPage() {
     setConfirmOpen(true);
   };
 
-  const onError: SubmitErrorHandler<CreateEventType> = (err) => {
-    console.error(err);
-  };
+  const onError: SubmitErrorHandler<CreateEventType> = (_) => {};
 
   return (
     <ContainerComponent>

@@ -21,7 +21,6 @@ export const useSessions = () => {
       const { data } = await api.getEventDetailedSessions(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -48,7 +47,6 @@ export const useSessions = () => {
         description: t("signOnSessionSuccess"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -72,7 +70,6 @@ export const useSessions = () => {
       const { data } = await api.getSession(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -96,7 +93,6 @@ export const useSessions = () => {
       const { data } = await api.getSessionParticipants(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -120,7 +116,6 @@ export const useSessions = () => {
       const { data } = await api.getSessionForManager(id);
       return data;
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -152,7 +147,6 @@ export const useSessions = () => {
         description: t("createSessionSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -179,7 +173,6 @@ export const useSessions = () => {
         description: t("cancelSessionSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",
@@ -211,7 +204,6 @@ export const useSessions = () => {
         description: t("updateSessionSucc"),
       });
     } catch (e) {
-      console.error(e);
       if (e instanceof AxiosError && t(e.response?.data) != e.response?.data) {
         sendNotification({
           type: "error",

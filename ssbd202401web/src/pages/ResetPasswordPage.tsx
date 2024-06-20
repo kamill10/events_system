@@ -34,9 +34,7 @@ export default function ResetPasswordPage() {
     resetMyPassword(data);
   };
 
-  const onError: SubmitErrorHandler<ResetPasswordType> = (error) => {
-    console.error(error);
-  };
+  const onError: SubmitErrorHandler<ResetPasswordType> = (_) => {};
 
   return (
     <CenteredContainerComponent>

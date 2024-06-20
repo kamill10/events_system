@@ -48,7 +48,6 @@ export default function SpeakerPage() {
         description: t("noURLParam"),
       });
     }
-    console.log(speakerHistory);
   }
 
   useEffect(() => {
