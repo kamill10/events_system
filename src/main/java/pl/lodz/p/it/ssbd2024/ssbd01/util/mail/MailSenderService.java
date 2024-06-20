@@ -29,7 +29,7 @@ public class MailSenderService {
             mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom()));
             mimeMessageHelper.setTo(mail.getMailTo());
             mimeMessageHelper.setText(mail.getMailContent(), true);
-            //  mailSender.send(mimeMessageHelper.getMimeMessage());
+              mailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (Exception e) {
             Logger.getGlobal().severe(e.getMessage());
         }
