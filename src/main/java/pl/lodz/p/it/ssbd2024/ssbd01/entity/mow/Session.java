@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,18 +21,18 @@ import java.util.Objects;
 public class Session extends ControlledEntity {
 
     @ManyToOne
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_ROOM)
     @JoinColumn(nullable = false, name = "room_id")
     private Room room;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "speaker_id")
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_SPEAKER)
     private Speaker speaker;
 
     @Column(nullable = false)
-    @NotBlank
-    @Size(min = 3, max = 64)
+    @NotBlank(message = ExceptionMessages.INCORRECT_NAME)
+    @Size(min = 3, max = 64, message = ExceptionMessages.INCORRECT_NAME)
     private String name;
 
     @ManyToOne
@@ -45,22 +46,22 @@ public class Session extends ControlledEntity {
     @NotNull
     private Boolean isActive;
 
-    @Size(min = 3, max = 1024)
+    @Size(min = 3, max = 1024, message = ExceptionMessages.INCORRECT_DESCRIPTION)
     private String description;
 
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_START_DATE)
     private LocalDateTime startTime;
 
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_END_DATE)
     private LocalDateTime endTime;
 
     @Column(nullable = false, length = 4)
-    @NotNull
-    @Min(1)
-    @Max(1024)
+    @NotNull(message = ExceptionMessages.INCORRECT_MAX_SEATS)
+    @Min(value = 1, message = ExceptionMessages.INCORRECT_MAX_SEATS)
+    @Max(value = 1024, message = ExceptionMessages.INCORRECT_MAX_SEATS)
     private Integer maxSeats;
 
-    @Min(0)
+    @Min(value = 0, message = ExceptionMessages.INCORRECT_AVAILABLE_SEATS)
     private int availableSeats;
 
     public Session(Room room, Speaker speaker, String name, Event event,

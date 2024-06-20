@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -20,19 +21,19 @@ import java.util.UUID;
 public class Room extends ControlledEntity {
 
     @Column(nullable = false, unique = true)
-    @NotBlank
+    @NotBlank(message = ExceptionMessages.INCORRECT_NAME)
     @Size(min = 3, max = 32)
     private String name;
 
     @ManyToOne
     @JoinColumn(nullable = false, updatable = false, name = "location_id")
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_LOCATION)
     private Location location;
 
     @Column(nullable = false, length = 4)
-    @NotNull
-    @Min(1)
-    @Max(1000)
+    @NotNull(message = ExceptionMessages.INCORRECT_MAX_CAPACITY)
+    @Min(value = 1, message = ExceptionMessages.INCORRECT_MAX_CAPACITY)
+    @Max(value = 1000, message = ExceptionMessages.INCORRECT_MAX_CAPACITY)
     private Integer maxCapacity;
 
     @Column(nullable = false)

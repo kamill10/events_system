@@ -9,6 +9,7 @@ import lombok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.ActionTypeEnum;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 
@@ -23,16 +24,17 @@ public class SpeakerHistory extends AbstractEntity {
     @Setter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name = "speaker_id", nullable = false, updatable = false)
+    @NotNull(message = ExceptionMessages.INCORRECT_SPEAKER)
     private Speaker speaker;
 
     @Column(nullable = false, length = 32)
-    @NotBlank
-    @Size(min = 2, max = 32)
+    @NotBlank(message = ExceptionMessages.INCORRECT_FIRST_NAME)
+    @Size(min = 2, max = 32, message = ExceptionMessages.INCORRECT_FIRST_NAME)
     private String firstName;
 
     @Column(nullable = false, length = 64)
-    @NotBlank
-    @Size(min = 2, max = 64)
+    @NotBlank(message = ExceptionMessages.INCORRECT_LAST_NAME)
+    @Size(min = 2, max = 64, message = ExceptionMessages.INCORRECT_LAST_NAME)
     private String lastName;
 
     @NotNull

@@ -6,6 +6,7 @@ import lombok.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.ActionTypeEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util._enum.LanguageEnum;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,15 +29,15 @@ public class AccountHistory extends AbstractEntity {
 
     @Setter(AccessLevel.NONE)
     @Column(updatable = false, nullable = false, length = 32)
-    @Size(min = 3, max = 32)
-    @NotBlank
-    @Pattern(regexp = "^(?!anonymous$)[a-zA-Z0-9]{3,32}$")
+    @Size(min = 3, max = 32, message = ExceptionMessages.INCORRECT_USERNAME)
+    @NotBlank(message = ExceptionMessages.INCORRECT_USERNAME)
+    @Pattern(regexp = "^(?!anonymous$)[a-zA-Z0-9]{3,32}$", message = ExceptionMessages.INCORRECT_USERNAME)
     private String username;
 
     @ToString.Exclude
     @Column(nullable = false, length = 72)
-    @Size(min = 8, max = 72)
-    @NotNull
+    @Size(min = 8, max = 72, message = ExceptionMessages.INCORRECT_PASSWORD)
+    @NotNull(message = ExceptionMessages.INCORRECT_PASSWORD)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -77,22 +78,22 @@ public class AccountHistory extends AbstractEntity {
     private LocalDateTime lockedUntil;
 
     @Column(table = "personal_data_history", nullable = false)
-    @NotBlank
-    @Email
+    @NotBlank(message = ExceptionMessages.INCORRECT_EMAIL)
+    @Email(message = ExceptionMessages.INCORRECT_EMAIL)
     private String email;
 
     @Column(table = "personal_data_history", nullable = false)
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_GENDER)
     private Integer gender;
 
     @Column(table = "personal_data_history", nullable = false, length = 32)
-    @NotBlank
-    @Size(min = 2, max = 32)
+    @NotBlank(message = ExceptionMessages.INCORRECT_FIRST_NAME)
+    @Size(min = 2, max = 32, message = ExceptionMessages.INCORRECT_FIRST_NAME)
     private String firstName;
 
     @Column(table = "personal_data_history", nullable = false, length = 64)
-    @NotBlank
-    @Size(min = 2, max = 64)
+    @NotBlank(message = ExceptionMessages.INCORRECT_LAST_NAME)
+    @Size(min = 2, max = 64, message = ExceptionMessages.INCORRECT_LAST_NAME)
     private String lastName;
 
     @Enumerated(EnumType.STRING)

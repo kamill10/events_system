@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractCredentialChange;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 public class ChangeEmail extends AbstractCredentialChange {
 
     @Column(nullable = false)
-    @Email
+    @Email(message = ExceptionMessages.INCORRECT_EMAIL)
     private String email;
 
     public ChangeEmail(Account account, LocalDateTime expirationDate, String email) {

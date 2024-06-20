@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.AbstractEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -22,12 +23,12 @@ import java.util.Objects;
 public class AccountConfirmation extends AbstractEntity {
 
     @Column(nullable = false, unique = true)
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_TOKEN)
     private String token;
 
     @OneToOne
     @JoinColumn(name = "account_id", nullable = false)
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_ACCOUNT)
     private Account account;
 
     @Column(nullable = false)

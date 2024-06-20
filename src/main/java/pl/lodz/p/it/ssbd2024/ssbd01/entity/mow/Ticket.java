@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.util.ControlledEntity;
+import pl.lodz.p.it.ssbd2024.ssbd01.util.messages.ExceptionMessages;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -21,20 +22,20 @@ public class Ticket extends ControlledEntity {
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "account_id")
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_ACCOUNT)
     private Account account;
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "session_id")
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_SESSION)
     private Session session;
 
     @Column(nullable = false)
     @NotNull
     private Boolean isNotCancelled;
 
-    @PastOrPresent
-    @NotNull
+    @PastOrPresent(message = ExceptionMessages.INCORRECT_RESERVATION_TIME)
+    @NotNull(message = ExceptionMessages.INCORRECT_RESERVATION_TIME)
     private LocalDateTime reservationTime;
 
     public Ticket(Account account, Session session) {

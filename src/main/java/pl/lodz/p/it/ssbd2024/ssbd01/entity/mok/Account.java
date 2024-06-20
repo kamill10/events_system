@@ -26,15 +26,15 @@ public class Account extends ControlledEntity implements UserDetails {
 
     @Setter(AccessLevel.NONE)
     @Column(unique = true, updatable = false, nullable = false, length = 32)
-    @Size(min = 3, max = 32)
-    @NotBlank
-    @Pattern(regexp = "^(?!system$)(?!anonymous$)[a-zA-Z0-9]{3,32}$")
+    @Size(min = 3, max = 32, message = ExceptionMessages.INCORRECT_USERNAME)
+    @NotBlank(message = ExceptionMessages.INCORRECT_USERNAME)
+    @Pattern(regexp = "^(?!system$)(?!anonymous$)[a-zA-Z0-9]{3,32}$", message = ExceptionMessages.INCORRECT_USERNAME)
     private String username;
 
     @ToString.Exclude
     @Column(nullable = false, length = 72)
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,72}$")
-    @NotNull
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,72}$", message = ExceptionMessages.INCORRECT_PASSWORD)
+    @NotNull(message = ExceptionMessages.INCORRECT_PASSWORD)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -75,22 +75,22 @@ public class Account extends ControlledEntity implements UserDetails {
     private LocalDateTime lockedUntil;
 
     @Column(table = "personal_data", nullable = false, unique = true)
-    @NotBlank
-    @Email
+    @NotBlank(message = ExceptionMessages.INCORRECT_EMAIL)
+    @Email(message = ExceptionMessages.INCORRECT_EMAIL)
     private String email;
 
     @Column(table = "personal_data", nullable = false)
-    @NotNull
+    @NotNull(message = ExceptionMessages.INCORRECT_GENDER)
     private Integer gender;
 
     @Column(table = "personal_data", nullable = false, length = 32)
-    @NotBlank
-    @Size(min = 2, max = 32)
+    @NotBlank(message = ExceptionMessages.INCORRECT_FIRST_NAME)
+    @Size(min = 2, max = 32, message = ExceptionMessages.INCORRECT_FIRST_NAME)
     private String firstName;
 
     @Column(table = "personal_data", nullable = false, length = 64)
-    @NotBlank
-    @Size(min = 2, max = 64)
+    @NotBlank(message = ExceptionMessages.INCORRECT_LAST_NAME)
+    @Size(min = 2, max = 64, message = ExceptionMessages.INCORRECT_LAST_NAME)
     private String lastName;
 
     @Enumerated(EnumType.STRING)
