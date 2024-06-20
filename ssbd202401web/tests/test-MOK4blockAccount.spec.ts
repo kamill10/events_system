@@ -4,9 +4,9 @@ test("blockAccount", async ({ page }) => {
   // wykonanie testu przypadku uzycia
   await page.goto("https://team-1.proj-sum.it.p.lodz.pl/");
   await page
-    .getByRole("menuitem", { name: "Log in" })
-    .getByRole("paragraph")
-    .click();
+      .getByRole("menuitem", { name: "Log in" })
+      .getByRole("paragraph")
+      .click();
   await page.getByLabel("Username*").click();
   await page.getByLabel("Username*").fill("testAdmin");
   await page.getByLabel("Username*").press("Tab");
@@ -18,11 +18,11 @@ test("blockAccount", async ({ page }) => {
   await page.getByRole("checkbox").click();
   await page.getByRole("button", { name: "Yes" }).click();
   await expect(
-    page.getByText("Account deactivated successfully!"),
+      page.getByText("Account deactivated successfully!"),
   ).toBeVisible();
   await page.getByRole("tab", { name: "Profile details", exact: true }).click();
   await expect(
-    page.getByRole("cell", { name: "No", exact: true }),
+      page.getByRole("cell", { name: "No", exact: true }).first(),
   ).toBeVisible();
 
   // powrot do oryginalnego stanu
@@ -32,6 +32,6 @@ test("blockAccount", async ({ page }) => {
   await expect(page.getByText("Account activated successfully!")).toBeVisible();
   await page.getByRole("tab", { name: "Profile details", exact: true }).click();
   await expect(
-    page.getByRole("cell", { name: "Yes", exact: true }).first(),
+      page.getByRole("cell", { name: "Yes", exact: true }).first(),
   ).toBeVisible();
 });
