@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetTicketDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mok.Account;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Ticket;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.EventDTOConverter;
@@ -33,15 +34,14 @@ public class MeEventController {
     @PostMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public ResponseEntity<String> signUpForSession(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID id)
-            throws SessionNotFoundException, SessionNotActiveException, MaxSeatsOfSessionReachedException,
-            AlreadySignUpException, OptLockException {
+            throws AppException {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(meEventService.signUpForSession(id, eTagReceived).getSession().getName());
     }
 
     @GetMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
-    public ResponseEntity<GetTicketDetailedDTO> getSession(@PathVariable UUID id) throws TicketNotFoundException {
+    public ResponseEntity<GetTicketDetailedDTO> getSession(@PathVariable UUID id) throws AppException {
         Ticket ticket = meEventService.getSession(id);
         String eTag = ETagBuilder.buildETag(ticket.getVersion().toString());
         return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, eTag).body(TicketDTOConverter.toTicketDetailedDTO(ticket));
@@ -94,7 +94,7 @@ public class MeEventController {
     @DeleteMapping("/session/{id}")
     @PreAuthorize("hasRole('ROLE_PARTICIPANT')")
     public ResponseEntity<?> signOutOfSession(@PathVariable UUID id, @RequestHeader("If-Match") String eTag)
-            throws TicketNotFoundException, OptLockException, TicketAlreadyCancelledException {
+            throws AppException {
         meEventService.signOutOfSession(id, eTag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

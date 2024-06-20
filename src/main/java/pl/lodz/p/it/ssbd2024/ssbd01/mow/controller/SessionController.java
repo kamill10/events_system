@@ -13,6 +13,7 @@ import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionDetailedDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.get.GetSessionForListDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.dto.mow.update.UpdateSessionDTO;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Session;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.*;
 import pl.lodz.p.it.ssbd2024.ssbd01.mow.converter.ParticipantDTOConverter;
@@ -41,7 +42,7 @@ public class SessionController {
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<GetSessionDetailedDTO> getSession(@PathVariable UUID id)
-            throws SessionNotFoundException {
+            throws AppException {
         Session session = sessionService.getSession(id);
         // For signing at session we don't want to check if whole object has changed
         // We don't care about version, we can allow for aggregate to change, we just cant allow it to be negative
@@ -55,7 +56,7 @@ public class SessionController {
     @GetMapping("/manager/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetSessionDetailedDTO> getSessionForManager(@PathVariable UUID id)
-            throws SessionNotFoundException {
+            throws AppException {
         Session session = sessionService.getSession(id);
         String etag = ETagBuilder.buildETag(String.valueOf(session.getVersion()));
         GetSessionDetailedDTO sessionDetailedDTO = SessionDTOConverter.toGetDetailedSession(session);
@@ -66,13 +67,7 @@ public class SessionController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> updateSession(@PathVariable UUID id,
                                            @RequestHeader(HttpHeaders.IF_MATCH) String etag,
-                                           @RequestBody @Valid UpdateSessionDTO updateSessionDTO) throws
-            OptLockException,
-            SessionsExistOutsideRangeException,
-            SessionStartDateInPast,
-            SessionNotFoundException,
-            SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, RoomIsBusyException, RoomSeatsExceededException,
-            SpeakerIsBusyException, EntityIsUnmodifiableException {
+                                           @RequestBody @Valid UpdateSessionDTO updateSessionDTO) throws AppException {
         Session session = SessionDTOConverter.getSession(updateSessionDTO);
         sessionService.updateSession(id, etag, session, updateSessionDTO.speakerId(), updateSessionDTO.roomId());
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -80,9 +75,7 @@ public class SessionController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> createSession(@RequestBody @Valid CreateSessionDTO createSessionDTO) throws
-            SessionStartDateInPast, SessionStartDateAfterEndDateException, RoomNotFoundException, SpeakerNotFoundException, EventNotFoundException,
-            RoomIsBusyException, RoomSeatsExceededException, SpeakerIsBusyException, SessionsExistOutsideRangeException {
+    public ResponseEntity<?> createSession(@RequestBody @Valid CreateSessionDTO createSessionDTO) throws AppException {
         Session session = SessionDTOConverter.getSession(createSessionDTO);
         String newSessionId =
                 sessionService.createSession(session, createSessionDTO.eventId(), createSessionDTO.speakerId(), createSessionDTO.roomId());
@@ -92,7 +85,7 @@ public class SessionController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> cancelSession(@PathVariable UUID id, @RequestHeader(HttpHeaders.IF_MATCH) String etag)
-            throws SessionNotFoundException, OptLockException, SessionAlreadyCanceledException {
+            throws AppException {
         sessionService.cancelSession(id, etag);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -101,8 +94,8 @@ public class SessionController {
     @GetMapping("/{id}/participants")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<GetParticipantDTO>> getParticipants(@PathVariable UUID id) {
-        List<GetParticipantDTO> particpantDTOs =
+        List<GetParticipantDTO> participantDTOs =
                 sessionService.getSessionParticipants(id).stream().map(ParticipantDTOConverter::getParticipantDTO).toList();
-        return ResponseEntity.status(HttpStatus.OK).body(particpantDTOs);
+        return ResponseEntity.status(HttpStatus.OK).body(participantDTOs);
     }
 }

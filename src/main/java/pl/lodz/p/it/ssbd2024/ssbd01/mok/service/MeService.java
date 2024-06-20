@@ -56,7 +56,7 @@ public class MeService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PARTICIPANT')")
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
-    public Account getAccount() throws AccountNotFoundException {
+    public Account getAccount() throws AppException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
 
@@ -72,7 +72,7 @@ public class MeService {
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
     public void changeMyPasswordSendMail(String currentPassword, String newPassword)
-            throws WrongOldPasswordException, ThisPasswordAlreadyWasSetInHistory {
+            throws AppException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
 
@@ -105,7 +105,7 @@ public class MeService {
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
     public void changeMyEmailSendMail(String currentPassword, String newEmail)
-            throws WrongOldPasswordException, EmailAlreadyExistsException {
+            throws AppException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Account account = (Account) authentication.getPrincipal();
 

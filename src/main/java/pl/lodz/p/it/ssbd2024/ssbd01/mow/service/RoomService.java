@@ -11,6 +11,7 @@ import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.ssbd2024.ssbd01.entity.mow.Room;
+import pl.lodz.p.it.ssbd2024.ssbd01.exception.abstract_exception.AppException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mok.OptLockException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.LocationNotFoundException;
 import pl.lodz.p.it.ssbd2024.ssbd01.exception.mow.RoomNotFoundException;
@@ -51,7 +52,7 @@ public class RoomService {
 
     @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("permitAll()")
-    public Room getRoomById(UUID roomId) throws RoomNotFoundException {
+    public Room getRoomById(UUID roomId) throws AppException {
         return roomRepository.findByIdAndIsActiveTrue(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
     }
@@ -63,7 +64,7 @@ public class RoomService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public Room createRoom(Room room, UUID locationId) throws LocationNotFoundException {
+    public Room createRoom(Room room, UUID locationId) throws AppException {
         var location = locationRepository.findById(locationId)
                 .orElseThrow(() -> new LocationNotFoundException(ExceptionMessages.LOCATION_NOT_FOUND));
         room.setLocation(location);
@@ -77,7 +78,7 @@ public class RoomService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public Room updateRoom(UUID roomId, Room room, String eTagReceived) throws RoomNotFoundException, OptLockException {
+    public Room updateRoom(UUID roomId, Room room, String eTagReceived) throws AppException {
         Room roomToUpdate = roomRepository.findByIdAndIsActiveTrue(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTagReceived, String.valueOf(roomToUpdate.getVersion()))) {
@@ -95,7 +96,7 @@ public class RoomService {
             maxAttemptsExpression = "${transaction.retry.max}",
             backoff = @Backoff(delayExpression = "${transaction.retry.delay}")
     )
-    public void deleteRoom(UUID roomId, String eTagReceived) throws RoomNotFoundException, OptLockException {
+    public void deleteRoom(UUID roomId, String eTagReceived) throws AppException {
         var room = roomRepository.findByIdAndIsActiveTrue(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTagReceived, String.valueOf(room.getVersion()))) {
@@ -107,7 +108,7 @@ public class RoomService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public void activateRoom(UUID roomId, String eTagReceived) throws RoomNotFoundException, OptLockException {
+    public void activateRoom(UUID roomId, String eTagReceived) throws AppException {
         var room = roomRepository.findByIdAndIsActiveFalse(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
         if (!ETagBuilder.isETagValid(eTagReceived, String.valueOf(room.getVersion()))) {
@@ -119,7 +120,7 @@ public class RoomService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = {Exception.class}, timeoutString = "${transaction.timeout}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public Room getDeletedRoomById(UUID roomId) throws RoomNotFoundException {
+    public Room getDeletedRoomById(UUID roomId) throws AppException {
         return roomRepository.findByIdAndIsActiveFalse(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(ExceptionMessages.ROOM_NOT_FOUND));
     }
