@@ -31,6 +31,7 @@ public class RoomController {
     private final RoomService roomService;
 
     @GetMapping("/{locationId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<Page<GetRoomDTO>> getAllRooms(
             @PathVariable UUID locationId,
             @RequestParam(defaultValue = "0") int page,
@@ -43,8 +44,8 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.OK).body(RoomDTOConverter.roomDTOPage(rooms));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @GetMapping("/{locationId}/all")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<GetRoomDTO>> getAllRooms(
             @PathVariable UUID locationId
     ) {
@@ -57,8 +58,8 @@ public class RoomController {
                 .body(allRooms);
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @GetMapping("/deleted/{locationId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<List<GetRoomDTO>> getDeletedRooms(@PathVariable UUID locationId) {
         var rooms = roomService.getAllDeletedRooms(locationId)
                 .stream()
@@ -70,6 +71,7 @@ public class RoomController {
     }
 
     @GetMapping("/room/deleted/{roomId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetRoomDTO> getDeletedRoomById(@PathVariable UUID roomId) throws AppException {
         Room room = roomService.getDeletedRoomById(roomId);
         String eTag = ETagBuilder.buildETag(room.getVersion().toString());
@@ -80,6 +82,7 @@ public class RoomController {
     }
 
     @GetMapping("/room/{roomId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetRoomDTO> getRoomById(@PathVariable UUID roomId) throws AppException {
         Room room = roomService.getRoomById(roomId);
         String eTag = ETagBuilder.buildETag(room.getVersion().toString());
@@ -89,8 +92,8 @@ public class RoomController {
                 .body(RoomDTOConverter.toRoomDto(room));
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("/room")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<UUID> createRoom(@RequestBody @Valid CreateRoomDTO createRoomDTO) throws AppException {
         Room room = RoomDTOConverter.toRoom(createRoomDTO);
         var roomCreated = roomService.createRoom(room, createRoomDTO.locationId());
@@ -108,8 +111,8 @@ public class RoomController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PatchMapping("/room/activate/{roomId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<?> activateRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId)
             throws AppException {
         roomService.activateRoom(roomId, eTagReceived);
@@ -119,6 +122,7 @@ public class RoomController {
     }
 
     @PatchMapping("/room/{roomId}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public ResponseEntity<GetRoomDTO> updateRoom(@RequestHeader("If-Match") String eTagReceived, @PathVariable UUID roomId, @RequestBody
     UpdateRoomDTO roomDTO) throws AppException {
         return ResponseEntity.ok()
