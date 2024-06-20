@@ -136,7 +136,7 @@ i18next
           addSpeakerText: "Dodaj prowadzącego",
           chooseOneOfRoles: "Wybierz jedną z dostępnych ról do nadania!",
           rolesAssignedToAcc: "Role przypisane do konta",
-          currentPassword: "Aktulane hasło",
+          currentPassword: "Aktualne hasło",
           areYouSure: "Czy jesteś pewnien, że chcesz kontynuować?",
           confirmChange: "Potwierdź zmiane",
           profileDetails: "Dane konta",
@@ -517,6 +517,9 @@ i18next
           errorPageBody:
             "Strona, którą próbujesz odwiedzić, nie istnieje lub nie masz do niej dostępu",
           errorPageLink: "Sprawdź nadchodzące wydarzenia!",
+          speakerIdNull: "Prowadzący jest wymagany",
+          locationIdNull: "Budynek jest wymagany",
+          roomIdNull: "Pomieszczenie jest wymagane"
         },
       },
       ENGLISH: {
@@ -989,6 +992,9 @@ i18next
           errorPageBody:
             "The page you try to access doesn't exist or you don't have access to it",
           errorPageLink: "Check out upcoming events!",
+          speakerIdNull: "Speaker is required",
+          locationIdNull: "Location is required",
+          roomIdNull: "Room is required"
         },
       },
     },
